@@ -1,0 +1,12 @@
+::ng-deep .customer-logos .owl-carousel .owl-item img {
+  height: 70px;
+  width: 70px !important;
+}
+
+.list-unstyled li:hover a {
+  color: #fff !important;
+}
+
+.pt-100 {
+  padding-top: 100px;
+}/*# sourceMappingURL=landing-page.component.css.map */

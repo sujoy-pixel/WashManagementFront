@@ -1,0 +1,63 @@
+<app-page-header [title]="'Data table'" [items]="['Tables']" [active_item]="'Data table'"></app-page-header>
+
+
+<!-- Row -->
+<div class="row row-sm">
+    <div class="col-lg-12">
+        <div class="card custom-card">
+            <div class="card-header border-bottom">
+                <h3 class="card-title">Default Data Table</h3>
+            </div>
+            <div class="card-body ">
+                <div class="table-responsive">
+                    <app-basic-data-table></app-basic-data-table>                
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-12">
+        <div class="card custom-card">
+            <div class="card-header border-bottom">
+                <h3 class="card-title">Expandable Table</h3>
+            </div>
+            <div class="card-body ">
+                <div class="table-responsive">
+                    <app-expandable-rows></app-expandable-rows>           
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-12">
+        <div class="card custom-card">
+            <div class="card-header border-bottom">
+                <h3 class="card-title">retrieving data through HTTP</h3>
+            </div>
+            <div class="card-body ">
+                <app-retiveing-http></app-retiveing-http>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-12">
+        <div class="card custom-card">
+            <div class="card-header border-bottom">
+                <h3 class="card-title">Filter Sort Pagination Table</h3>
+            </div>
+            <div class="card-body ">
+                <app-filter-sort-pagination></app-filter-sort-pagination>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-12">
+        <div class="card custom-card">
+            <div class="card-header border-bottom">
+                <h3 class="card-title">Table with selection</h3>
+            </div>
+            <div class="card-body ">
+                <div class="table-responsive">
+                    <app-table-select></app-table-select>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- End Row -->

@@ -1,0 +1,3 @@
+::ng-deep .dark-mode .mat-autocomplete-panel .mat-option.mat-selected:not(.mat-active):not(:hover):not(.mat-option-disabled) {
+  color: #fff !important;
+}/*# sourceMappingURL=tags.component.css.map */

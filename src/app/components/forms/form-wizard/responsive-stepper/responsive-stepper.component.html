@@ -1,0 +1,111 @@
+<ng-container [ngSwitch]="stepperOrientation | async">
+    <div *ngSwitchCase="'horizontal'">Make your screen smaller to see a vertical stepper</div>
+    <div *ngSwitchCase="'vertical'">Make your screen larger to see a horizontal stepper</div>
+  </ng-container>
+  
+  <mat-stepper
+    class="example-stepper"
+    [orientation]="(stepperOrientation | async)!">
+    <mat-step [stepControl]="firstFormGroup" label="Personal Information">
+      <form [formGroup]="firstFormGroup">
+        <section>
+          <div class="control-group form-group">
+              <label class="form-label" for="name3">Name</label>
+              <input type="text" class="form-control" id="name3" placeholder="Name" required>
+          </div>
+          <div class="control-group form-group">
+              <label class="form-label" for="email3">Email</label>
+              <input type="email" class="form-control" id="email3" placeholder="Email Address" required>
+          </div>
+          <div class="control-group form-group">
+              <label class="form-label" for="phno3">Phone Number</label>
+              <input type="number" class="form-control" id="phno3" placeholder="Number" required>
+          </div>
+          <div class="control-group form-group mb-0">
+              <label class="form-label" for="address3">Address</label>
+              <input type="text" class="form-control" id="address3" placeholder="Address" required>
+          </div>
+      </section>
+        <div>
+          <button  class="btn btn-primary mt-2" mat-button matStepperNext>Next</button>
+        </div>
+      </form>
+    </mat-step>
+    <mat-step [stepControl]="secondFormGroup" label="Billing Information">
+      <form [formGroup]="secondFormGroup">
+        <section>
+          <div class="table-responsive0">
+              <table class="table table-bordered">
+                  <tbody>
+                      <tr>
+                          <td>Cart Subtotal</td>
+                          <td class="text-end">$792.00</td>
+                      </tr>
+                      <tr>
+                          <td><span>Totals</span></td>
+                          <td class="text-end text-muted"><span>$792.00</span></td>
+                      </tr>
+                      <tr>
+                          <td><span>Order Total</span></td>
+                          <td><h2 class="price text-end mb-0">$792.00</h2></td>
+                      </tr>
+                  </tbody>
+              </table>
+          </div>
+      </section>
+        <div>
+          <button class="btn btn-danger me-2" mat-button matStepperPrevious>Back</button>
+          <button class="btn btn-primary me-2" mat-button matStepperNext>Next</button>
+        </div>
+      </form>
+    </mat-step>
+    <mat-step [stepControl]="thirdFormGroup" label="Payment Details">
+      <form [formGroup]="thirdFormGroup">
+        <section>
+          <div class="form-group">
+              <label class="form-label" for="name12">Card Holder Name</label>
+              <input type="text" class="form-control" id="name12" placeholder="First Name">
+          </div>
+          <div class="form-group">
+              <label class="form-label" for="cardno12">Card number</label>
+              <div class="input-group">
+                  <input type="text" class="form-control" id="cardno12" placeholder="Search for...">
+                  <span class="input-group-text btn btn-info text-white shadow-none">
+                      <i class="fa fa-cc-visa"></i> &nbsp; <i class="fa fa-cc-amex"></i> &nbsp;
+                      <i class="fa fa-cc-mastercard"></i>
+                  </span>
+              </div>
+          </div>
+          <div class="row">
+              <div class="col-sm-8">
+                  <div class="form-group">
+                      <label class="form-label" for="expdate12">Expiration</label>
+                      <div class="input-group">
+                          <input type="number" id="expdate12" class="form-control" placeholder="MM" name="expiremonth">
+                          <input type="number" id="expdate13" class="form-control" placeholder="YYYY" name="expireyear">
+                      </div>
+                  </div>
+              </div>
+              <div class="col-sm-4 ">
+                  <div class="form-group mb-0">
+                      <label class="form-label" for="cvv12">CVV <i class="fa fa-question-circle"></i></label>
+                      <input type="number" class="form-control" id="cvv12" required>
+                  </div>
+              </div>
+          </div>
+      </section>
+        <div>
+          <button class="btn btn-danger me-2" mat-button matStepperPrevious>Back</button>
+          <button class="btn btn-primary me-2" mat-button matStepperNext>Next</button>
+        </div>
+      </form>
+    </mat-step>
+    <mat-step>
+      <ng-template matStepLabel>Done</ng-template>
+      <p>You are now done.</p>
+      <div>
+        <button class="btn btn-danger" mat-button matStepperPrevious>Back</button>
+      </div>
+    </mat-step>
+  </mat-stepper>
+  

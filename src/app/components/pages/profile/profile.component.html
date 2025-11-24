@@ -1,0 +1,1069 @@
+<app-page-header [title]="'Profile'" [items]="['Pages']" [active_item]="'Profile'"></app-page-header>
+
+<!-- ROW-1 OPEN -->
+<div class="row" id="user-profile">
+    <div class="col-lg-12">
+        <div class="card">
+            <div class="card-body">
+                <div class="row align-items-center">
+                    <div class="col-lg-12 col-md-12 col-xl-6">
+                        <div class="d-flex flex-wrap align-items-center">
+                            <div class="profile-img-main rounded">
+                                <img src="./assets/images/faces/6.jpg" alt="img" class="m-0 p-1 rounded hrem-6">
+                            </div>
+                            <div class="ms-4">
+                                <h4>Elena Gilbert</h4>
+                                <p class="text-muted mb-2">Member Since: November 2020</p>
+                                <a href="javascript:void(0)" class="btn btn-primary btn-sm me-2"><i class="fa fa-rss"></i> Follow</a>
+                                <a routerLink="/apps/mail/inbox" class="btn btn-secondary btn-sm me-2"><i class="fa fa-envelope"></i> E-mail</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-12 col-md-12 col-xl-6">
+                        <div class="d-flex flex-wrap justify-content-lg-end">
+                            <div class="media m-3 ms-0">
+                                <div class="media-icon bg-primary me-3 mt-1">
+                                    <i class="fe fe-file-plus fs-20 text-white"></i>
+                                </div>
+                                <div class="media-body">
+                                    <span class="text-muted">Posts</span>
+                                    <div class="fw-semibold fs-25">
+                                        328
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="media m-3">
+                                <div class="media-icon bg-info me-3 mt-1">
+                                    <i class="fe fe-users  fs-20 text-white"></i>
+                                </div>
+                                <div class="media-body">
+                                    <span class="text-muted">Followers</span>
+                                    <div class="fw-semibold fs-25">
+                                        937k
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="media m-3">
+                                <div class="media-icon bg-warning me-3 mt-1">
+                                    <i class="fe fe-wifi fs-20 text-white"></i>
+                                </div>
+                                <div class="media-body">
+                                    <span class="text-muted">Following</span>
+                                    <div class="fw-semibold fs-25">
+                                        2,876
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="border-top">
+                <div class="wideget-user-tab">
+                    <div class="tab-menu-heading">
+                        <div class="tabs-menu1">
+                            <ul ngbNav #nav="ngbNav" [activeId]="1">
+                                <li [ngbNavItem]="1">
+                                  <a ngbNavLink>Profile</a>
+                                  <ng-template ngbNavContent>
+                                    <div class="card">
+                                        <div class="card-body p-0">
+                                            <div class="p-5">
+                                                <h3 class="card-title">Biodata</h3>
+                                                <p class="text-dark-light">Hi I'm Teri Dactyl,has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type. Donec pede justo, fringilla vel, aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut, imperdiet a, venenatis vitae, justo. Nullam dictum felis eu pede mollis pretium. Integer tincidunt.Cras dapibus. Vivamus elementum semper nisi. Aenean vulputate eleifend tellus. Aenean leo ligula, porttitor eu, consequat vitae, eleifend ac, enim.</p>
+                                                <div>
+                                                    <div>
+                                                        <h5 class="text-dark text-14 mb-0">Lead designer / Developer</h5>
+                                                        <a href="javascript:void(0)" class="text-primary">websitenamename.com</a>
+                                                        <p class="mb-2 mt-3"><b>2010-2015</b></p>
+                                                        <p class="text-muted text-14">Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.</p>
+                                                    </div>
+
+                                                    <div>
+                                                        <h5 class="text-dark text-14 mb-0">Senior Graphic Designer</h5>
+                                                        <a href="javascript:void(0)" class="text-primary">samplewebsite.com</a>
+                                                        <p class="mb-2 mt-3"><b>2007-2009</b></p>
+                                                        <p class="text-muted text-14 mb-0">Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.</p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="border-top"></div>
+                                            <div class="table-responsive p-5">
+                                                <h3 class="card-title">Personal Info</h3>
+                                                <table class="table row table-borderless">
+                                                    <tbody class="col-lg-12 col-xl-6 p-0">
+                                                        <tr>
+                                                            <td><strong>Full Name :</strong> Elena Gilbert</td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td><strong>Location :</strong> USA</td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td><strong>Languages :</strong> English, German, Spanish</td>
+                                                        </tr>
+                                                    </tbody>
+                                                    <tbody class="col-lg-12 col-xl-6 p-0 border-top-0">
+                                                        <tr>
+                                                            <td><strong>Website :</strong> websitename.com</td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td><strong>Email :</strong> elenagilbert@websitename.com</td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td><strong>Phone :</strong> +125 254 3562 </td>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                            <div class="border-top"></div>
+                                            <div class="p-5">
+                                                <h3 class="card-title">Statistics</h3>
+                                                <div class="profile-cover__info ms-4 ms-auto p-0">
+                                                    <ul class="nav p-0 border-bottom-0 mb-0">
+                                                        <li class="border p-2 br-5 bg-light-lightest wpx-100 hpx-70 text-center my-1">
+                                                            <span class="border-0 mb-0 pb-0 fs-21">113</span>
+                                                            Projects
+                                                        </li>
+                                                        <li class="border p-2 br-5 bg-light-lightest wpx-100 hpx-70 text-center mx-2 my-1">
+                                                            <span class="border-0 mb-0 pb-0 fs-21">245</span>
+                                                            Followers
+                                                        </li>
+                                                        <li class="border p-2 br-5 bg-light-lightest wpx-100 hpx-70 text-center my-1">
+                                                            <span class="border-0 mb-0 pb-0 fs-21">128</span>
+                                                            Following
+                                                        </li>
+                                                    </ul>
+                                                </div>
+                                            </div>
+                                            <div class="border-top"></div>
+                                            <div class="p-5">
+                                                <h3 class="card-title">Contact</h3>
+                                                <div class="d-sm-flex">
+                                                    <div>
+                                                        <div class="main-profile-contact-list">
+                                                            <div class="media mx-2">
+                                                                <div class="media-icon bg-primary-transparent text-primary"> <i class="fe fe-phone fs-21"></i> </div>
+                                                                <div class="media-body ms-1">
+                                                                    <span class="text-muted">Mobile</span>
+                                                                    <p class="mb-0"> +245 354 654 </p>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div>
+                                                        <div class="main-profile-contact-list">
+                                                            <div class="media mx-2">
+                                                                <div class="media-icon bg-success-transparent text-success"> <i class="fe fe-slack fs-21"></i> </div>
+                                                                <div class="media-body ms-2">
+                                                                    <span class="text-muted">Slack</span>
+                                                                    <p class="mb-0"> @spruko.w </p>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div>
+                                                        <div class="main-profile-contact-list">
+                                                            <div class="media mx-2">
+                                                                <div class="media-icon bg-info-transparent text-info"> <i class="fe fe-map-pin fs-21"></i> </div>
+                                                                <div class="media-body ms-2">
+                                                                    <span class="text-muted">Current Address</span>
+                                                                    <p class="mb-0"> San Francisco, CA </p>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="border-top"></div>
+                                            <div class="p-5">
+                                                <h3 class="card-title">Social</h3>
+                                                <div class="d-md-flex">
+                                                    <div>
+                                                        <div class="main-profile-contact-list">
+                                                            <div class="media mx-2">
+                                                                <div class="media-icon bg-primary-transparent text-primary"> <i class="fe fe-github fs-21"></i> </div>
+                                                                <div class="media-body ms-1">
+                                                                    <span class="text-muted">Github</span>
+                                                                    <p class="mb-0"> <a href="javascript:void(0)" class="text-default">github.com/spruko</a> </p>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div>
+                                                        <div class="main-profile-contact-list">
+                                                            <div class="media mx-2">
+                                                                <div class="media-icon bg-success-transparent text-success"> <i class="fe fe-twitter fs-21"></i> </div>
+                                                                <div class="media-body ms-2">
+                                                                    <span class="text-muted">Twitter</span>
+                                                                    <p class="mb-0"> <a href="javascript:void(0)" class="text-default">twitter.com/spruko.me</a> </p>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div>
+                                                        <div class="main-profile-contact-list">
+                                                            <div class="media mx-2">
+                                                                <div class="media-icon bg-info-transparent text-info"> <i class="fe fe-linkedin fs-21"></i> </div>
+                                                                <div class="media-body ms-2">
+                                                                    <span class="text-muted">Linkedin</span>
+                                                                    <p class="mb-0"> <a href="javascript:void(0)" class="text-default">linkedin.com/in/spruko</a> </p>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                  </ng-template>
+                                </li>
+                                <li [ngbNavItem]="2">
+                                  <a ngbNavLink>Edit Profile</a>
+                                  <ng-template ngbNavContent>
+                                    <div class="card">
+                                        <div class="card-body border-0">
+                                            <form class="form-horizontal">
+                                                <div class="row mb-4">
+                                                    <p class="mb-4 text-17">Personal Info</p>
+                                                    <div class="col-md-12 col-lg-12 col-xl-6">
+                                                        <div class="form-group">
+                                                            <label for="username" class="form-label">User Name</label>
+                                                            <input type="text" class="form-control" id="username" value="Elena Gilbert">
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-12 col-lg-12 col-xl-6">
+                                                        <div class="form-group">
+                                                            <label for="firstname" class="form-label">First Name</label>
+                                                            <input type="text" class="form-control" id="firstname" placeholder="First Name" value="Elena">
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-12 col-lg-12 col-xl-6">
+                                                        <div class="form-group">
+                                                            <label for="lastname" class="form-label">last Name</label>
+                                                            <input type="text" class="form-control" id="lastname" placeholder="Last Name" value="Gilbert">
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-12 col-lg-12 col-xl-6">
+                                                        <div class="form-group">
+                                                            <label for="nickname" class="form-label">Nick Name</label>
+                                                            <input type="text" class="form-control" id="nickname" placeholder="Nick Name" value="Noa">
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-12 col-lg-12 col-xl-6">
+                                                        <div class="form-group">
+                                                            <label for="designation" class="form-label">Designation</label>
+                                                            <input type="text" class="form-control" id="designation" placeholder="Designation" value="Web Designer">
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <p class="mb-4 text-17">Contact Info</p>
+                                                <div class="form-group">
+                                                    <div class="row row-sm">
+                                                        <div class="col-md-3">
+                                                            <label for="email" class="form-label">Email</label>
+                                                        </div>
+                                                        <div class="col-md-9">
+                                                            <input type="text" class="form-control" id="email" placeholder="Email" value="info@noa.in">
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="form-group ">
+                                                    <div class="row row-sm">
+                                                        <div class="col-md-3">
+                                                            <label for="website" class="form-label">Website</label>
+                                                        </div>
+                                                        <div class="col-md-9">
+                                                            <input type="text" class="form-control" id="website" placeholder="Website" value="@spruko.w">
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="form-group ">
+                                                    <div class="row row-sm">
+                                                        <div class="col-md-3">
+                                                            <label for="phoneNumber" class="form-label">Phone</label>
+                                                        </div>
+                                                        <div class="col-md-9">
+                                                            <input type="text" class="form-control" id="phoneNumber" placeholder="phone number" value="+145 541 773">
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="form-group ">
+                                                    <div class="row row-sm">
+                                                        <div class="col-md-3">
+                                                            <label for="address" class="form-label">Address</label>
+                                                        </div>
+                                                        <div class="col-md-9">
+                                                            <textarea class="form-control" id="address" name="example-textarea-input" rows="2" placeholder="Address">San Francisco, CA</textarea>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <p class="mb-4 text-17">Social Info</p>
+                                                <div class="form-group ">
+                                                    <div class="row row-sm">
+                                                        <div class="col-md-3">
+                                                            <label for="twitter" class="form-label">Twitter</label>
+                                                        </div>
+                                                        <div class="col-md-9">
+                                                            <input type="text" class="form-control" id="twitter" placeholder="twitter" value="twitter.com/spruko.me">
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="form-group ">
+                                                    <div class="row row-sm">
+                                                        <div class="col-md-3">
+                                                            <label for="facebook" class="form-label">Facebook</label>
+                                                        </div>
+                                                        <div class="col-md-9">
+                                                            <input type="text" class="form-control" id="facebook" placeholder="facebook" value="https://www.facebook.com/Noa">
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="form-group ">
+                                                    <div class="row row-sm">
+                                                        <div class="col-md-3">
+                                                            <label for="googlePlus" class="form-label">Google+</label>
+                                                        </div>
+                                                        <div class="col-md-9">
+                                                            <input type="text" class="form-control" id="googlePlus" placeholder="google" value="spruko.com">
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="form-group ">
+                                                    <div class="row row-sm">
+                                                        <div class="col-md-3">
+                                                            <label for="linkedin" class="form-label">Linkedin</label>
+                                                        </div>
+                                                        <div class="col-md-9">
+                                                            <input type="text" class="form-control" id="linkedin" placeholder="linkedin" value="linkedin.com/in/spruko">
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="form-group ">
+                                                    <div class="row row-sm">
+                                                        <div class="col-md-3">
+                                                            <label for="github" class="form-label">Github</label>
+                                                        </div>
+                                                        <div class="col-md-9">
+                                                            <input type="text" class="form-control" id="github" placeholder="github" value="github.com/sprukos">
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <p class="mb-4 text-17">About Yourself</p>
+                                                <div class="form-group ">
+                                                    <div class="row row-sm">
+                                                        <div class="col-md-3">
+                                                            <label for="biographicalInfo" class="form-label">Biographical Info</label>
+                                                        </div>
+                                                        <div class="col-md-9">
+                                                            <textarea class="form-control" name="example-textarea-input" id="biographicalInfo" rows="4" placeholder="">pleasure rationally encounter but because pursue consequences that are extremely painful.occur in which toil and pain can procure him some great pleasure..</textarea>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <p class="mb-4 text-17">Email Preferences</p>
+                                                <div class="form-group mb-0">
+                                                    <div class="row row-sm">
+                                                        <div class="col-md-3">
+                                                            <label class="form-label">Verified User</label>
+                                                        </div>
+                                                        <div class="col-md-9">
+                                                            <div class="custom-controls-stacked">
+                                                                <label class="ckbox"><input type="checkbox" checked><span> Accept to receive post or page notification emails</span></label>
+                                                                <label class="ckbox"><input type="checkbox" checked><span> Accept to receive email sent to multiple recipients</span></label>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </div>
+                                  </ng-template>
+                                </li>
+                                <li [ngbNavItem]="3">
+                                  <a ngbNavLink>Timeline</a>
+                                  <ng-template ngbNavContent>
+                                    <div class="row row-sm">
+                                        <div class="col-12">
+                                            <div class="card border">
+                                                <div class="card-header border-bottom d-block p-4">
+                                                    <div class="media overflow-visible">
+                                                        <div class="media-user me-2">
+                                                            <div class="main-img-user"><img alt="" class="rounded-circle avatar-md" src="./assets/images/faces/6.jpg"></div>
+                                                        </div>
+                                                        <div class="media-body">
+                                                            <h6 class="mb-0 ms-2">Mintrona Pechon Pechon</h6><span class="text-primary ms-2">just now</span> </div>
+                                                        <div class="ms-auto">
+                                                            <div ngbDropdown class=" show main-contact-star">
+                                                                <a class="new option-dots2 no-caret" ngbDropdownToggle href="JavaScript:void(0);"><i  class="fe fe-more-vertical  tx-18"></i></a>
+                                                                <div ngbDropdownMenu class="shadow">
+                                                                    <a ngbDropdownItem href="javascript:void(0)">Edit Post</a>
+                                                                    <a ngbDropdownItem href="javascript:void(0)">Delete Post</a>
+                                                                    <a ngbDropdownItem href="javascript:void(0)">Personal Settings</a>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="card-body">
+                                                    <p>There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration in some form, by injected humour, or randomised words which don't look even slightly believable.</p>
+                                                    <div class="row row-sm">
+                                                        <div class="col">
+                                                        <img alt="img" class="h-200 mb-2 mt-2 me-4 br-5" src="./assets/images/media/timeline1.jpg">
+                                                        <img alt="img" class="h-200 br-5" src="./assets/images/media/timeline2.jpg">
+                                                        </div>
+                                                    </div>
+                                                    <div class="media mt-4 profile-footer align-items-center">
+                                                        <div class="avatar-list avatar-list-stacked me-4">
+                                                            <span><img class="avatar avatar-md rounded-circle bradius cover-image"  src= "./assets/images/users/8.jpg"></span>
+                                                            <span><img class="avatar avatar-md rounded-circle bradius cover-image"  src= "./assets/images/users/7.jpg"></span>
+                                                            <span><img class="avatar avatar-md rounded-circle bradius cover-image"  src= "./assets/images/users/9.jpg"></span>
+                                                            <span><img class="avatar avatar-md rounded-circle bradius cover-image"  src= "./assets/images/users/14.jpg"></span>
+                                                            <span><img class="avatar avatar-md rounded-circle bradius cover-image"  src= "./assets/images/users/11.jpg"></span>
+                                                            <span class="avatar avatar-md rounded-circle bradius bg-primary">+8</span>
+                                                        </div>
+                                                        <div class="media-body">
+                                                            <h6 class="mb-0 text-bold text-dark-light">28 people like your photo</h6>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="card border">
+                                                <div class="card-header border-bottom d-block p-4">
+                                                    <div class="media overflow-visible">
+                                                        <div class="media-user me-2">
+                                                            <div class="main-img-user"><img alt="" class="rounded-circle avatar-md" src="./assets/images/faces/6.jpg"></div>
+                                                        </div>
+                                                        <div class="media-body">
+                                                            <h6 class="mb-0 ms-2">Mintrona Pechon Pechon</h6><span class="text-primary ms-2">just now</span> </div>
+                                                        <div class="ms-auto">
+                                                            <div ngbDropdown class=" show main-contact-star">
+                                                                <a class="new option-dots2 no-caret" ngbDropdownToggle href="JavaScript:void(0);"><i  class="fe fe-more-vertical  tx-18"></i></a>
+                                                                <div ngbDropdownMenu class="shadow">
+                                                                    <a ngbDropdownItem href="javascript:void(0)">Edit Post</a>
+                                                                    <a ngbDropdownItem href="javascript:void(0)">Delete Post</a>
+                                                                    <a ngbDropdownItem href="javascript:void(0)">Personal Settings</a>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="card-body">
+                                                    <p>There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration in some form, by injected humour, or randomised words which don't look even slightly believable.</p>
+                                                    <div class="row row-sm">
+                                                        <div class="col">
+                                                        <img alt="img" class="h-200 mb-2 mt-2 me-4 br-5" src="./assets/images/media/timeline3.jpg">
+                                                        <img alt="img" class="h-200 br-5" src="./assets/images/media/timeline4.jpg">
+                                                        </div>
+                                                    </div>
+                                                    <div class="media mt-4 profile-footer align-items-center">
+                                                        <div class="avatar-list avatar-list-stacked me-4">
+                                                            <span><img class="avatar avatar-md rounded-circle bradius cover-image"  src= "./assets/images/users/8.jpg"></span>
+                                                            <span><img class="avatar avatar-md rounded-circle bradius cover-image"  src= "./assets/images/users/7.jpg"></span>
+                                                            <span><img class="avatar avatar-md rounded-circle bradius cover-image"  src= "./assets/images/users/9.jpg"></span>
+                                                            <span><img class="avatar avatar-md rounded-circle bradius cover-image"  src= "./assets/images/users/14.jpg"></span>
+                                                            <span><img class="avatar avatar-md rounded-circle bradius cover-image"  src= "./assets/images/users/11.jpg"></span>
+                                                            <span class="avatar avatar-md rounded-circle bradius bg-primary">+8</span>
+                                                        </div>
+                                                        <div class="media-body">
+                                                            <h6 class="mb-0 text-bold text-dark-light">28 people like your photo</h6>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="card border">
+                                                <div class="card-header border-bottom d-block p-4">
+                                                    <div class="media overflow-visible">
+                                                        <div class="media-user me-2">
+                                                            <div class="main-img-user"><img alt="" class="rounded-circle avatar-md" src="./assets/images/faces/6.jpg"></div>
+                                                        </div>
+                                                        <div class="media-body">
+                                                            <h6 class="mb-0 ms-2">Mintrona Pechon Pechon</h6><span class="text-primary ms-2">just now</span> </div>
+                                                        <div class="ms-auto">
+                                                            <div ngbDropdown class=" show main-contact-star">
+                                                                <a class="new option-dots2 no-caret" ngbDropdownToggle href="JavaScript:void(0);"><i  class="fe fe-more-vertical  tx-18"></i></a>
+                                                                <div ngbDropdownMenu class="shadow">
+                                                                    <a ngbDropdownItem href="javascript:void(0)">Edit Post</a>
+                                                                    <a ngbDropdownItem href="javascript:void(0)">Delete Post</a>
+                                                                    <a ngbDropdownItem href="javascript:void(0)">Personal Settings</a>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="card-body">
+                                                    <p>There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration in some form, by injected humour, or randomised words which don't look even slightly believable.</p>
+                                                    <div class="row row-sm">
+                                                        <div class="col">
+                                                        <img alt="img" class="h-200 mb-2 mt-2 me-4 br-5" src="./assets/images/media/timeline5.jpg">
+                                                        <img alt="img" class="h-200 br-5" src="./assets/images/media/timeline6.jpg">
+                                                        </div>
+                                                    </div>
+                                                    <div class="media mt-4 profile-footer align-items-center">
+                                                        <div class="avatar-list avatar-list-stacked me-4">
+                                                            <span><img class="avatar avatar-md rounded-circle bradius cover-image"  src= "./assets/images/users/8.jpg"></span>
+                                                            <span><img class="avatar avatar-md rounded-circle bradius cover-image"  src= "./assets/images/users/7.jpg"></span>
+                                                            <span><img class="avatar avatar-md rounded-circle bradius cover-image"  src= "./assets/images/users/9.jpg"></span>
+                                                            <span><img class="avatar avatar-md rounded-circle bradius cover-image"  src= "./assets/images/users/14.jpg"></span>
+                                                            <span><img class="avatar avatar-md rounded-circle bradius cover-image"  src= "./assets/images/users/11.jpg"></span>
+                                                            <span class="avatar avatar-md rounded-circle bradius bg-primary">+8</span>
+                                                        </div>
+                                                        <div class="media-body">
+                                                            <h6 class="mb-0 text-bold text-dark-light">28 people like your photo</h6>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="card">
+                                                <div class="card-header border-bottom d-block p-4">
+                                                    <div class="media overflow-visible">
+                                                        <div class="media-user me-2">
+                                                            <div class="main-img-user"><img alt="" class="rounded-circle avatar-md" src="./assets/images/faces/6.jpg"></div>
+                                                        </div>
+                                                        <div class="media-body">
+                                                            <h6 class="mb-0 ms-2">Mintrona Pechon Pechon</h6><span class="text-primary ms-2">just now</span> </div>
+                                                        <div class="ms-auto">
+                                                            <div ngbDropdown class=" show main-contact-star">
+                                                                <a class="new option-dots2 no-caret" ngbDropdownToggle href="JavaScript:void(0);"><i  class="fe fe-more-vertical  tx-18"></i></a>
+                                                                <div ngbDropdownMenu class="shadow">
+                                                                    <a ngbDropdownItem href="javascript:void(0)">Edit Post</a>
+                                                                    <a ngbDropdownItem href="javascript:void(0)">Delete Post</a>
+                                                                    <a ngbDropdownItem href="javascript:void(0)">Personal Settings</a>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="card-body">
+                                                    <p>There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration in some form, by injected humour, or randomised words which don't look even slightly believable.</p>
+                                                    <div class="row row-sm">
+                                                        <div class="col">
+                                                        <img alt="img" class="h-200 mb-2 mt-2 me-4 br-5" src="./assets/images/media/timeline7.jpg">
+                                                        <img alt="img" class="h-200 br-5" src="./assets/images/media/timeline9.jpg">
+                                                        </div>
+                                                    </div>
+                                                    <div class="media mt-4 profile-footer align-items-center">
+                                                        <div class="avatar-list avatar-list-stacked me-4">
+                                                            <span><img class="avatar avatar-md rounded-circle bradius cover-image"  src= "./assets/images/users/8.jpg"></span>
+                                                            <span><img class="avatar avatar-md rounded-circle bradius cover-image"  src= "./assets/images/users/7.jpg"></span>
+                                                            <span><img class="avatar avatar-md rounded-circle bradius cover-image"  src= "./assets/images/users/9.jpg"></span>
+                                                            <span><img class="avatar avatar-md rounded-circle bradius cover-image"  src= "./assets/images/users/14.jpg"></span>
+                                                            <span><img class="avatar avatar-md rounded-circle bradius cover-image"  src= "./assets/images/users/11.jpg"></span>
+                                                            <span class="avatar avatar-md rounded-circle bradius bg-primary">+8</span>
+                                                        </div>
+                                                        <div class="media-body">
+                                                            <h6 class="mb-0 text-bold text-dark-light">28 people like your photo</h6>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                  </ng-template>
+                                </li>
+                                <li [ngbNavItem]="4">
+                                  <a ngbNavLink>Gallery</a>
+                                  <ng-template ngbNavContent>
+                                    <!-- <div class="row  mb-5 img-gallery" gallerize>
+                                        <div *ngFor="let img of imageData" class="col-lg-3 col-md-6" >
+                                            <img class="img-fluid wp-100 mb-2 br-5" [src]="img.srcUrl" alt="banner image">
+                                        </div>
+                                    </div> -->
+                                    <div class="row  mb-5 img-gallery" gallerize>
+                                        <div  *ngFor="let items of images; let i = index" class="col-lg-3 col-md-6" >
+                                            <a href="javascript:void(0)">
+                                                <img class="img-fluid wp-100 mb-2 br-5" alt="profile img" src={{items.srcUrl}} >
+                                            </a>
+                                        </div>
+                                    </div>
+                                  </ng-template>
+                                </li>
+                                <li [ngbNavItem]="5">
+                                  <a ngbNavLink>Friends</a>
+                                  <ng-template ngbNavContent>
+                                    <div class="row row-sm">
+                                        <div class="col-sm-12 col-md-6 col-lg-6 col-xl-3">
+                                            <div class="card custom-card border">
+                                                <div class="card-body user-lock text-center">
+                                                    <div ngbDropdown class=" text-end">
+                                                        <a href="javascript:void(0)" class="no-caret" ngbDropdownToggle aria-haspopup="true" aria-expanded="true"> <i class="fe fe-more-vertical text-muted"></i> </a>
+                                                        <div ngbDropdownMenu class="dropdown-menu-right shadow"> <a ngbDropdownItem href="javascript:void(0)"><i class="fe fe-message-square me-2"></i> Message</a> <a ngbDropdownItem href="javascript:void(0)"><i class="fe fe-edit-2 me-2"></i> Edit</a> <a ngbDropdownItem href="javascript:void(0)"><i class="fe fe-eye me-2"></i> View</a> <a ngbDropdownItem href="javascript:void(0)"><i class="fe fe-trash-2 me-2"></i> Delete</a> </div>
+                                                    </div>
+                                                    <a href="javascript:void(0)">
+                                                        <img alt="avatar" class="avatar avatar-xl rounded" src="./assets/images/faces/1.jpg">
+                                                        <h4 class="fs-16 mb-0 mt-3 text-dark fw-semibold">Lisbon Taylor</h4>
+                                                        <span class="text-muted">Web designer</span>
+                                                    </a>
+                                                    <div class="footer-container-main border-0 my-2">
+                                                        <div class="footer p-0 icons-bg border-0">
+                                                            <div class="social">
+                                                                <ul class="text-center">
+                                                                    <li>
+                                                                        <a class="social-icon" href="javascript:void(0)" data-bs-toggle="tooltip" data-bs-placement="top" title="Facebook"><i class="fa fa-facebook"></i></a>
+                                                                    </li>
+                                                                    <li>
+                                                                        <a class="social-icon" href="javascript:void(0)" data-bs-toggle="tooltip" data-bs-placement="top" title="Twitter"><i class="fa fa-twitter"></i></a>
+                                                                    </li>
+                                                                    <li>
+                                                                        <a class="social-icon" href="javascript:void(0)" data-bs-toggle="tooltip" data-bs-placement="top" title="Linkedin"><i class="fa fa-linkedin"></i></a>
+                                                                    </li>
+                                                                </ul>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-12 col-md-6 col-lg-6 col-xl-3">
+                                            <div class="card custom-card border">
+                                                <div class="card-body  user-lock text-center">
+                                                    <div ngbDropdown class=" text-end">
+                                                        <a href="javascript:void(0)" class="no-caret" ngbDropdownToggle aria-haspopup="true" aria-expanded="true"> <i class="fe fe-more-vertical text-muted"></i> </a>
+                                                        <div ngbDropdownMenu class="dropdown-menu-right shadow"> <a ngbDropdownItem href="javascript:void(0)"><i class="fe fe-message-square me-2"></i> Message</a> <a ngbDropdownItem href="javascript:void(0)"><i class="fe fe-edit-2 me-2"></i> Edit</a> <a ngbDropdownItem href="javascript:void(0)"><i class="fe fe-eye me-2"></i> View</a> <a ngbDropdownItem href="javascript:void(0)"><i class="fe fe-trash-2 me-2"></i> Delete</a> </div>
+                                                    </div>
+                                                    <a href="javascript:void(0)">
+                                                        <img alt="avatar" class="avatar avatar-xl rounded" src="./assets/images/faces/11.jpg">
+                                                        <h4 class="fs-16 mb-0 mt-3 text-dark fw-semibold">jordan Ramsay</h4>
+                                                        <span class="text-muted">Web designer</span>
+                                                    </a>
+                                                    <div class="footer-container-main border-0 my-2">
+                                                        <div class="footer p-0 icons-bg border-0">
+                                                            <div class="social">
+                                                                <ul class="text-center">
+                                                                    <li>
+                                                                        <a class="social-icon" href="javascript:void(0)" data-bs-toggle="tooltip" data-bs-placement="top" title="Facebook"><i class="fa fa-facebook"></i></a>
+                                                                    </li>
+                                                                    <li>
+                                                                        <a class="social-icon" href="javascript:void(0)" data-bs-toggle="tooltip" data-bs-placement="top" title="Twitter"><i class="fa fa-twitter"></i></a>
+                                                                    </li>
+                                                                    <li>
+                                                                        <a class="social-icon" href="javascript:void(0)" data-bs-toggle="tooltip" data-bs-placement="top" title="Linkedin"><i class="fa fa-linkedin"></i></a>
+                                                                    </li>
+                                                                </ul>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-12 col-md-6 col-lg-6 col-xl-3">
+                                            <div class="card custom-card border">
+                                                <div class="card-body  user-lock text-center">
+                                                    <div ngbDropdown class=" text-end">
+                                                        <a href="javascript:void(0)" class="no-caret" ngbDropdownToggle aria-haspopup="true" aria-expanded="true"> <i class="fe fe-more-vertical text-muted"></i> </a>
+                                                        <div ngbDropdownMenu class="dropdown-menu-right shadow"> <a ngbDropdownItem href="javascript:void(0)"><i class="fe fe-message-square me-2"></i> Message</a> <a ngbDropdownItem href="javascript:void(0)"><i class="fe fe-edit-2 me-2"></i> Edit</a> <a ngbDropdownItem href="javascript:void(0)"><i class="fe fe-eye me-2"></i> View</a> <a ngbDropdownItem href="javascript:void(0)"><i class="fe fe-trash-2 me-2"></i> Delete</a> </div>
+                                                    </div>
+                                                    <a href="javascript:void(0)">
+                                                        <img alt="avatar" class="avatar avatar-xl rounded" src="./assets/images/faces/12.jpg">
+                                                        <h4 class="fs-16 mb-0 mt-3 text-dark fw-semibold">Corey Richard</h4>
+                                                        <span class="text-muted">Web designer</span>
+                                                    </a>
+                                                    <div class="footer-container-main border-0 my-2">
+                                                        <div class="footer p-0 icons-bg border-0">
+                                                            <div class="social">
+                                                                <ul class="text-center">
+                                                                    <li>
+                                                                        <a class="social-icon" href="javascript:void(0)" data-bs-toggle="tooltip" data-bs-placement="top" title="Facebook"><i class="fa fa-facebook"></i></a>
+                                                                    </li>
+                                                                    <li>
+                                                                        <a class="social-icon" href="javascript:void(0)" data-bs-toggle="tooltip" data-bs-placement="top" title="Twitter"><i class="fa fa-twitter"></i></a>
+                                                                    </li>
+                                                                    <li>
+                                                                        <a class="social-icon" href="javascript:void(0)" data-bs-toggle="tooltip" data-bs-placement="top" title="Linkedin"><i class="fa fa-linkedin"></i></a>
+                                                                    </li>
+                                                                </ul>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-12 col-md-6 col-lg-6 col-xl-3">
+                                            <div class="card custom-card border">
+                                                <div class="card-body  user-lock text-center">
+                                                    <div ngbDropdown class=" text-end">
+                                                        <a href="javascript:void(0)" class="no-caret" ngbDropdownToggle aria-haspopup="true" aria-expanded="true"> <i class="fe fe-more-vertical text-muted"></i> </a>
+                                                        <div ngbDropdownMenu class="dropdown-menu-right shadow"> <a ngbDropdownItem href="javascript:void(0)"><i class="fe fe-message-square me-2"></i> Message</a> <a ngbDropdownItem href="javascript:void(0)"><i class="fe fe-edit-2 me-2"></i> Edit</a> <a ngbDropdownItem href="javascript:void(0)"><i class="fe fe-eye me-2"></i> View</a> <a ngbDropdownItem href="javascript:void(0)"><i class="fe fe-trash-2 me-2"></i> Delete</a> </div>
+                                                    </div>
+                                                    <a href="javascript:void(0)">
+                                                        <img alt="avatar" class="avatar avatar-xl rounded" src="./assets/images/faces/5.jpg">
+                                                        <h4 class="fs-16 mb-0 mt-3 text-dark fw-semibold">Lana Del Rey</h4>
+                                                        <span class="text-muted">Web designer</span>
+                                                    </a>
+                                                    <div class="footer-container-main border-0 my-2">
+                                                        <div class="footer p-0 icons-bg border-0">
+                                                            <div class="social">
+                                                                <ul class="text-center">
+                                                                    <li>
+                                                                        <a class="social-icon" href="javascript:void(0)" data-bs-toggle="tooltip" data-bs-placement="top" title="Facebook"><i class="fa fa-facebook"></i></a>
+                                                                    </li>
+                                                                    <li>
+                                                                        <a class="social-icon" href="javascript:void(0)" data-bs-toggle="tooltip" data-bs-placement="top" title="Twitter"><i class="fa fa-twitter"></i></a>
+                                                                    </li>
+                                                                    <li>
+                                                                        <a class="social-icon" href="javascript:void(0)" data-bs-toggle="tooltip" data-bs-placement="top" title="Linkedin"><i class="fa fa-linkedin"></i></a>
+                                                                    </li>
+                                                                </ul>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-12 col-md-6 col-lg-6 col-xl-3">
+                                            <div class="card custom-card border">
+                                                <div class="card-body user-lock text-center">
+                                                    <div ngbDropdown class=" text-end">
+                                                        <a href="javascript:void(0)" class="no-caret" ngbDropdownToggle aria-haspopup="true" aria-expanded="true"> <i class="fe fe-more-vertical text-muted"></i> </a>
+                                                        <div ngbDropdownMenu class="dropdown-menu-right shadow"> <a ngbDropdownItem href="javascript:void(0)"><i class="fe fe-message-square me-2"></i> Message</a> <a ngbDropdownItem href="javascript:void(0)"><i class="fe fe-edit-2 me-2"></i> Edit</a> <a ngbDropdownItem href="javascript:void(0)"><i class="fe fe-eye me-2"></i> View</a> <a ngbDropdownItem href="javascript:void(0)"><i class="fe fe-trash-2 me-2"></i> Delete</a> </div>
+                                                    </div>
+                                                    <a href="javascript:void(0)">
+                                                        <img alt="avatar" class="avatar avatar-xl rounded" src="./assets/images/faces/7.jpg">
+                                                        <h4 class="fs-16 mb-0 mt-3 text-dark fw-semibold">Mariana Gold</h4>
+                                                        <span class="text-muted">Web designer</span>
+                                                    </a>
+                                                    <div class="footer-container-main border-0 my-2">
+                                                        <div class="footer p-0 icons-bg border-0">
+                                                            <div class="social">
+                                                                <ul class="text-center">
+                                                                    <li>
+                                                                        <a class="social-icon" href="javascript:void(0)" data-bs-toggle="tooltip" data-bs-placement="top" title="Facebook"><i class="fa fa-facebook"></i></a>
+                                                                    </li>
+                                                                    <li>
+                                                                        <a class="social-icon" href="javascript:void(0)" data-bs-toggle="tooltip" data-bs-placement="top" title="Twitter"><i class="fa fa-twitter"></i></a>
+                                                                    </li>
+                                                                    <li>
+                                                                        <a class="social-icon" href="javascript:void(0)" data-bs-toggle="tooltip" data-bs-placement="top" title="Linkedin"><i class="fa fa-linkedin"></i></a>
+                                                                    </li>
+                                                                </ul>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-12 col-md-6 col-lg-6 col-xl-3">
+                                            <div class="card custom-card border">
+                                                <div class="card-body  user-lock text-center">
+                                                    <div ngbDropdown class=" text-end">
+                                                        <a href="javascript:void(0)" class="no-caret" ngbDropdownToggle aria-haspopup="true" aria-expanded="true"> <i class="fe fe-more-vertical text-muted"></i> </a>
+                                                        <div ngbDropdownMenu class="dropdown-menu-right shadow"> <a ngbDropdownItem href="javascript:void(0)"><i class="fe fe-message-square me-2"></i> Message</a> <a ngbDropdownItem href="javascript:void(0)"><i class="fe fe-edit-2 me-2"></i> Edit</a> <a ngbDropdownItem href="javascript:void(0)"><i class="fe fe-eye me-2"></i> View</a> <a ngbDropdownItem href="javascript:void(0)"><i class="fe fe-trash-2 me-2"></i> Delete</a> </div>
+                                                    </div>
+                                                    <a href="javascript:void(0)">
+                                                        <img alt="avatar" class="avatar avatar-xl rounded" src="./assets/images/faces/13.jpg">
+                                                        <h4 class="fs-16 mb-0 mt-3 text-dark fw-semibold">Travis Bickle</h4>
+                                                        <span class="text-muted">Web designer</span>
+                                                    </a>
+                                                    <div class="footer-container-main border-0 my-2">
+                                                        <div class="footer p-0 icons-bg border-0">
+                                                            <div class="social">
+                                                                <ul class="text-center">
+                                                                    <li>
+                                                                        <a class="social-icon" href="javascript:void(0)" data-bs-toggle="tooltip" data-bs-placement="top" title="Facebook"><i class="fa fa-facebook"></i></a>
+                                                                    </li>
+                                                                    <li>
+                                                                        <a class="social-icon" href="javascript:void(0)" data-bs-toggle="tooltip" data-bs-placement="top" title="Twitter"><i class="fa fa-twitter"></i></a>
+                                                                    </li>
+                                                                    <li>
+                                                                        <a class="social-icon" href="javascript:void(0)" data-bs-toggle="tooltip" data-bs-placement="top" title="Linkedin"><i class="fa fa-linkedin"></i></a>
+                                                                    </li>
+                                                                </ul>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-12 col-md-6 col-lg-6 col-xl-3">
+                                            <div class="card custom-card border">
+                                                <div class="card-body  user-lock text-center">
+                                                    <div ngbDropdown class=" text-end">
+                                                        <a href="javascript:void(0)" class="no-caret" ngbDropdownToggle aria-haspopup="true" aria-expanded="true"> <i class="fe fe-more-vertical text-muted"></i> </a>
+                                                        <div ngbDropdownMenu class="dropdown-menu-right shadow"> <a ngbDropdownItem href="javascript:void(0)"><i class="fe fe-message-square me-2"></i> Message</a> <a ngbDropdownItem href="javascript:void(0)"><i class="fe fe-edit-2 me-2"></i> Edit</a> <a ngbDropdownItem href="javascript:void(0)"><i class="fe fe-eye me-2"></i> View</a> <a ngbDropdownItem href="javascript:void(0)"><i class="fe fe-trash-2 me-2"></i> Delete</a> </div>
+                                                    </div>
+                                                    <a href="javascript:void(0)">
+                                                        <img alt="avatar" class="avatar avatar-xl rounded" src="./assets/images/faces/8.jpg">
+                                                        <h4 class="fs-16 mb-0 mt-3 text-dark fw-semibold">Emilie Benett</h4>
+                                                        <span class="text-muted">Web designer</span>
+                                                    </a>
+                                                    <div class="footer-container-main border-0 my-2">
+                                                        <div class="footer p-0 icons-bg border-0">
+                                                            <div class="social">
+                                                                <ul class="text-center">
+                                                                    <li>
+                                                                        <a class="social-icon" href="javascript:void(0)" data-bs-toggle="tooltip" data-bs-placement="top" title="Facebook"><i class="fa fa-facebook"></i></a>
+                                                                    </li>
+                                                                    <li>
+                                                                        <a class="social-icon" href="javascript:void(0)" data-bs-toggle="tooltip" data-bs-placement="top" title="Twitter"><i class="fa fa-twitter"></i></a>
+                                                                    </li>
+                                                                    <li>
+                                                                        <a class="social-icon" href="javascript:void(0)" data-bs-toggle="tooltip" data-bs-placement="top" title="Linkedin"><i class="fa fa-linkedin"></i></a>
+                                                                    </li>
+                                                                </ul>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-12 col-md-6 col-lg-6 col-xl-3">
+                                            <div class="card custom-card border">
+                                                <div class="card-body  user-lock text-center">
+                                                    <div ngbDropdown class=" text-end">
+                                                        <a href="javascript:void(0)" class="no-caret" ngbDropdownToggle aria-haspopup="true" aria-expanded="true"> <i class="fe fe-more-vertical text-muted"></i> </a>
+                                                        <div ngbDropdownMenu class="dropdown-menu-right shadow"> <a ngbDropdownItem href="javascript:void(0)"><i class="fe fe-message-square me-2"></i> Message</a> <a ngbDropdownItem href="javascript:void(0)"><i class="fe fe-edit-2 me-2"></i> Edit</a> <a ngbDropdownItem href="javascript:void(0)"><i class="fe fe-eye me-2"></i> View</a> <a ngbDropdownItem href="javascript:void(0)"><i class="fe fe-trash-2 me-2"></i> Delete</a> </div>
+                                                    </div>
+                                                    <a href="javascript:void(0)">
+                                                        <img alt="avatar" class="avatar avatar-xl rounded" src="./assets/images/faces/4.jpg">
+                                                        <h4 class="fs-16 mb-0 mt-3 text-dark fw-semibold">James Thomas</h4>
+                                                        <span class="text-muted">Web designer</span>
+                                                    </a>
+                                                    <div class="footer-container-main border-0 my-2">
+                                                        <div class="footer p-0 icons-bg border-0">
+                                                            <div class="social">
+                                                                <ul class="text-center">
+                                                                    <li>
+                                                                        <a class="social-icon" href="javascript:void(0)" data-bs-toggle="tooltip" data-bs-placement="top" title="Facebook"><i class="fa fa-facebook"></i></a>
+                                                                    </li>
+                                                                    <li>
+                                                                        <a class="social-icon" href="javascript:void(0)" data-bs-toggle="tooltip" data-bs-placement="top" title="Twitter"><i class="fa fa-twitter"></i></a>
+                                                                    </li>
+                                                                    <li>
+                                                                        <a class="social-icon" href="javascript:void(0)" data-bs-toggle="tooltip" data-bs-placement="top" title="Linkedin"><i class="fa fa-linkedin"></i></a>
+                                                                    </li>
+                                                                </ul>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                  </ng-template>
+                                </li>
+                                <li [ngbNavItem]="6">
+                                  <a ngbNavLink>Account Settings</a>
+                                  <ng-template ngbNavContent>
+                                    <div class="card">
+                                        <div class="card-body">
+                                            <form class="form-horizontal" >
+                                                <div class="mb-4 main-content-label">Account</div>
+                                                <div class="form-group ">
+                                                    <div class="row row-sm">
+                                                        <div class="col-md-3">
+                                                            <label for="userName" class="form-label">User Name</label>
+                                                        </div>
+                                                        <div class="col-md-9">
+                                                            <input type="text" class="form-control" id="userName" placeholder="User Name" value="Elena Gilbert">
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="form-group ">
+                                                    <div class="row row-sm">
+                                                        <div class="col-md-3">
+                                                            <label for="eMail" class="form-label">Email</label>
+                                                        </div>
+                                                        <div class="col-md-9">
+                                                            <input type="text" class="form-control" id="eMail" placeholder="Email" value="info@elenagilbert.in">
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="form-group " >
+                                                    <div class="row" >
+                                                        <div class="col-md-3">
+                                                            <label for="language" class="form-label">Language</label>
+                                                        </div>
+                                                        <div class="col-md-9" >
+                                                            <ng-select placeholder="choose language" id="language" tabindex="-1" aria-hidden="true">
+                                                                <ng-option >Us English</ng-option>
+                                                                <ng-option >Arabic</ng-option>
+                                                                <ng-option >Korean</ng-option>
+                                                            </ng-select>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="form-group " >
+                                                    <div class="row" >
+                                                        <div class="col-md-3">
+                                                            <label for="timeZone" class="form-label">Timezone</label>
+                                                        </div>
+                                                        <div class="col-md-9" >
+                                                            <ng-select placeholder="choose city" tabindex="-1" aria-hidden="true">
+                                                                <ng-option value="Pacific/Midway" >(GMT-11:00) Midway Island, Samoa</ng-option>
+                                                                <ng-option value="America/Adak" >(GMT-10:00) Hawaii-Aleutian</ng-option>
+                                                                <ng-option value="Etc/GMT+10" >(GMT-10:00) Hawaii</ng-option>
+                                                                <ng-option value="Pacific/Marquesas" >(GMT-09:30) Marquesas Islands</ng-option>
+                                                                <ng-option value="Pacific/Gambier" >(GMT-09:00) Gambier Islands</ng-option>
+                                                                <ng-option value="America/Anchorage" >(GMT-09:00) Alaska</ng-option>
+                                                                <ng-option value="America/Ensenada" >(GMT-08:00) Tijuana, Baja California</ng-option>
+                                                                <ng-option value="Etc/GMT+8" >(GMT-08:00) Pitcairn Islands</ng-option>
+                                                                <ng-option value="America/Los_Angeles" >(GMT-08:00) Pacific Time (US &amp; Canada)</ng-option>
+                                                                <ng-option value="America/Denver" >(GMT-07:00) Mountain Time (US &amp; Canada)</ng-option>
+                                                                <ng-option value="America/Chihuahua" >(GMT-07:00) Chihuahua, La Paz, Mazatlan</ng-option>
+                                                                <ng-option value="America/Dawson_Creek" >(GMT-07:00) Arizona</ng-option>
+                                                                <ng-option value="America/Belize" >(GMT-06:00) Saskatchewan, Central America</ng-option>
+                                                                <ng-option value="America/Cancun" >(GMT-06:00) Guadalajara, Mexico City, Monterrey</ng-option>
+                                                                <ng-option value="Chile/EasterIsland" >(GMT-06:00) Easter Island</ng-option>
+                                                                <ng-option value="America/Chicago" >(GMT-06:00) Central Time (US &amp; Canada)</ng-option>
+                                                                <ng-option value="America/New_York" >(GMT-05:00) Eastern Time (US &amp; Canada)</ng-option>
+                                                                <ng-option value="America/Havana" >(GMT-05:00) Cuba</ng-option>
+                                                                <ng-option value="America/Bogota" >(GMT-05:00) Bogota, Lima, Quito, Rio Branco</ng-option>
+                                                                <ng-option value="America/Caracas" >(GMT-04:30) Caracas</ng-option>
+                                                                <ng-option value="America/Santiago" >(GMT-04:00) Santiago</ng-option>
+                                                                <ng-option value="America/La_Paz" >(GMT-04:00) La Paz</ng-option>
+                                                                <ng-option value="Atlantic/Stanley" >(GMT-04:00) Faukland Islands</ng-option>
+                                                                <ng-option value="America/Campo_Grande" >(GMT-04:00) Brazil</ng-option>
+                                                                <ng-option value="America/Goose_Bay" >(GMT-04:00) Atlantic Time (Goose Bay)</ng-option>
+                                                                <ng-option value="America/Glace_Bay" >(GMT-04:00) Atlantic Time (Canada)</ng-option>
+                                                                <ng-option value="America/St_Johns" >(GMT-03:30) Newfoundland</ng-option>
+                                                                <ng-option value="America/Araguaina" >(GMT-03:00) UTC-3</ng-option>
+                                                                <ng-option value="America/Montevideo" >(GMT-03:00) Montevideo</ng-option>
+                                                                <ng-option value="America/Miquelon" >(GMT-03:00) Miquelon, St. Pierre</ng-option>
+                                                                <ng-option value="America/Godthab" >(GMT-03:00) Greenland</ng-option>
+                                                                <ng-option value="America/Argentina/Buenos_Aires" >(GMT-03:00) Buenos Aires</ng-option>
+                                                                <ng-option value="America/Sao_Paulo" >(GMT-03:00) Brasilia</ng-option>
+                                                                <ng-option value="America/Noronha" >(GMT-02:00) Mid-Atlantic</ng-option>
+                                                                <ng-option value="Atlantic/Cape_Verde" >(GMT-01:00) Cape Verde Is.</ng-option>
+                                                                <ng-option value="Atlantic/Azores" >(GMT-01:00) Azores</ng-option>
+                                                                <ng-option value="Europe/Belfast" >(GMT) Greenwich Mean Time : Belfast</ng-option>
+                                                                <ng-option value="Europe/Dublin" >(GMT) Greenwich Mean Time : Dublin</ng-option>
+                                                                <ng-option value="Europe/Lisbon" >(GMT) Greenwich Mean Time : Lisbon</ng-option>
+                                                                <ng-option value="Europe/London" >(GMT) Greenwich Mean Time : London</ng-option>
+                                                                <ng-option value="Africa/Abidjan" >(GMT) Monrovia, Reykjavik</ng-option>
+                                                                <ng-option value="Europe/Amsterdam" >(GMT+01:00) Amsterdam, Berlin, Bern, Rome, Stockholm, Vienna</ng-option>
+                                                                <ng-option value="Europe/Belgrade" >(GMT+01:00) Belgrade, Bratislava, Budapest, Ljubljana, Prague</ng-option>
+                                                                <ng-option value="Europe/Brussels" >(GMT+01:00) Brussels, Copenhagen, Madrid, Paris</ng-option>
+                                                                <ng-option value="Africa/Algiers" >(GMT+01:00) West Central Africa</ng-option>
+                                                                <ng-option value="Africa/Windhoek" >(GMT+01:00) Windhoek</ng-option>
+                                                                <ng-option value="Asia/Beirut" >(GMT+02:00) Beirut</ng-option>
+                                                                <ng-option value="Africa/Cairo" >(GMT+02:00) Cairo</ng-option>
+                                                                <ng-option value="Asia/Gaza" >(GMT+02:00) Gaza</ng-option>
+                                                                <ng-option value="Africa/Blantyre" >(GMT+02:00) Harare, Pretoria</ng-option>
+                                                                <ng-option value="Asia/Jerusalem" >(GMT+02:00) Jerusalem</ng-option>
+                                                                <ng-option value="Europe/Minsk" >(GMT+02:00) Minsk</ng-option>
+                                                                <ng-option value="Asia/Damascus" >(GMT+02:00) Syria</ng-option>
+                                                                <ng-option value="Europe/Moscow" >(GMT+03:00) Moscow, St. Petersburg, Volgograd</ng-option>
+                                                                <ng-option value="Africa/Addis_Ababa" >(GMT+03:00) Nairobi</ng-option>
+                                                                <ng-option value="Asia/Tehran" >(GMT+03:30) Tehran</ng-option>
+                                                                <ng-option value="Asia/Dubai" >(GMT+04:00) Abu Dhabi, Muscat</ng-option>
+                                                                <ng-option value="Asia/Yerevan" >(GMT+04:00) Yerevan</ng-option>
+                                                                <ng-option value="Asia/Kabul" >(GMT+04:30) Kabul</ng-option>
+                                                                <ng-option value="Asia/Yekaterinburg" >(GMT+05:00) Ekaterinburg</ng-option>
+                                                                <ng-option value="Asia/Tashkent" >(GMT+05:00) Tashkent</ng-option>
+                                                                <ng-option value="Asia/Kolkata" >(GMT+05:30) Chennai, Kolkata, Mumbai, New Delhi</ng-option>
+                                                                <ng-option value="Asia/Katmandu" >(GMT+05:45) Kathmandu</ng-option>
+                                                                <ng-option value="Asia/Dhaka" >(GMT+06:00) Astana, Dhaka</ng-option>
+                                                                <ng-option value="Asia/Novosibirsk" >(GMT+06:00) Novosibirsk</ng-option>
+                                                                <ng-option value="Asia/Rangoon" >(GMT+06:30) Yangon (Rangoon)</ng-option>
+                                                                <ng-option value="Asia/Bangkok" >(GMT+07:00) Bangkok, Hanoi, Jakarta</ng-option>
+                                                                <ng-option value="Asia/Krasnoyarsk" >(GMT+07:00) Krasnoyarsk</ng-option>
+                                                                <ng-option value="Asia/Hong_Kong" >(GMT+08:00) Beijing, Chongqing, Hong Kong, Urumqi</ng-option>
+                                                                <ng-option value="Asia/Irkutsk" >(GMT+08:00) Irkutsk, Ulaan Bataar</ng-option>
+                                                                <ng-option value="Australia/Perth" >(GMT+08:00) Perth</ng-option>
+                                                                <ng-option value="Australia/Eucla" >(GMT+08:45) Eucla</ng-option>
+                                                                <ng-option value="Asia/Tokyo" >(GMT+09:00) Osaka, Sapporo, Tokyo</ng-option>
+                                                                <ng-option value="Asia/Seoul" >(GMT+09:00) Seoul</ng-option>
+                                                                <ng-option value="Asia/Yakutsk" >(GMT+09:00) Yakutsk</ng-option>
+                                                                <ng-option value="Australia/Adelaide" >(GMT+09:30) Adelaide</ng-option>
+                                                                <ng-option value="Australia/Darwin" >(GMT+09:30) Darwin</ng-option>
+                                                                <ng-option value="Australia/Brisbane" >(GMT+10:00) Brisbane</ng-option>
+                                                                <ng-option value="Australia/Hobart" >(GMT+10:00) Hobart</ng-option>
+                                                                <ng-option value="Asia/Vladivostok" >(GMT+10:00) Vladivostok</ng-option>
+                                                                <ng-option value="Australia/Lord_Howe" >(GMT+10:30) Lord Howe Island</ng-option>
+                                                                <ng-option value="Etc/GMT-11" >(GMT+11:00) Solomon Is., New Caledonia</ng-option>
+                                                                <ng-option value="Asia/Magadan" >(GMT+11:00) Magadan</ng-option>
+                                                                <ng-option value="Pacific/Norfolk" >(GMT+11:30) Norfolk Island</ng-option>
+                                                                <ng-option value="Asia/Anadyr" >(GMT+12:00) Anadyr, Kamchatka</ng-option>
+                                                                <ng-option value="Pacific/Auckland" >(GMT+12:00) Auckland, Wellington</ng-option>
+                                                                <ng-option value="Etc/GMT-12" >(GMT+12:00) Fiji, Kamchatka, Marshall Is.</ng-option>
+                                                                <ng-option value="Pacific/Chatham" >(GMT+12:45) Chatham Islands</ng-option>
+                                                                <ng-option value="Pacific/Tongatapu" >(GMT+13:00) Nuku'alofa</ng-option>
+                                                                <ng-option value="Pacific/Kiritimati" >(GMT+14:00) Kiritimati</ng-option>
+                                                            </ng-select>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="form-group ">
+                                                    <div class="row row-sm">
+                                                        <div class="col-md-3 col">
+                                                            <label class="form-label">Verification</label>
+                                                        </div>
+                                                        <div class="col-md-9 col">
+                                                            <label class="ckbox-f">
+                                                                <input type="checkbox"><span>Email</span></label>
+                                                            <label class="ckbox-f ms-1">
+                                                                <input checked type="checkbox"><span>SMS</span></label>
+                                                            <label class="ckbox-f ms-1">
+                                                                <input type="checkbox"><span>Phone</span></label>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="mb-4 main-content-label">Secuirity Settings</div>
+                                                <div class="form-group ">
+                                                    <div class="row row-sm">
+                                                        <div class="col-md-3">
+                                                            <label class="form-label">Login Verification</label>
+                                                        </div>
+                                                        <div class="col-md-9"> <a href="javascript:void(0)">Setup Verification</a> </div>
+                                                    </div>
+                                                </div>
+                                                <div class="form-group ">
+                                                    <div class="row row-sm">
+                                                        <div class="col-md-3">
+                                                            <label class="form-label">Password Verification</label>
+                                                        </div>
+                                                        <div class="col-md-9">
+                                                            <label class="ckbox-f">
+                                                                <input type="checkbox"><span>Require Personal Details</span>
+                                                            </label>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div>
+                                                    <div class="mb-4 main-content-label">Notifications</div>
+                                                    <div class="form-group mb-0">
+                                                        <div class="row row-sm">
+                                                            <div class="col-md-3">
+                                                                <label class="form-label">Configure Notifications</label>
+                                                            </div>
+                                                            <div class="col-md-9">
+                                                                <label class="d-block">
+                                                                    <input type="checkbox" name="custom-switch-checkbox" class="custom-switch-input" checked>
+                                                                    <span class="custom-switch-indicator"></span>
+                                                                    <span class="text-muted ms-2">Allow all Notifications</span>
+                                                                </label>
+                                                                <label class="d-block">
+                                                                    <input type="checkbox" name="custom-switch-checkbox" class="custom-switch-input">
+                                                                    <span class="custom-switch-indicator"></span>
+                                                                    <span class="text-muted ms-2">Disable all Notifications</span>
+                                                                </label>
+                                                                <label class="d-block">
+                                                                    <input type="checkbox" name="custom-switch-checkbox" class="custom-switch-input" checked>
+                                                                    <span class="custom-switch-indicator"></span>
+                                                                    <span class="text-muted ms-2">Notification Sounds</span>
+                                                                </label>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="form-group float-end">
+                                                    <div class="row row-sm">
+                                                        <div class="col-md-12">
+                                                            <a class="btn btn-info my-1 me-2" href="javascript:void(0)">Change Password</a>
+                                                            <a class="btn btn-outline-danger my-1 me-2" href="javascript:void(0)">Deactivate Account</a>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </div>
+                                  </ng-template>
+                                </li>
+                              </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div [ngbNavOutlet]="nav"></div>
+    </div><!-- COL-END -->
+</div>
+<!-- ROW-1 CLOSED -->

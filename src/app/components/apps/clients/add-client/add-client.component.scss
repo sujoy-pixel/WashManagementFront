@@ -1,0 +1,91 @@
+::ng-deep {
+  .dark-mode {
+    .mat-menu-panel {
+      background: var(--dark-body) !important;
+
+      button {
+        color: #fff !important;
+      }
+    }
+
+    .country-selector-code,
+    .mat-input-element {
+      color: #fff;
+    }
+
+    input.country-search {
+      border: none !important;
+      outline: none;
+      background: var(--dark-bg);
+      color: #fff;
+    }
+  }
+
+  .country-selector {
+    width: auto !important;
+    height: auto !important;
+    top: auto !important;
+    bottom: auto !important;
+    right: auto !important;
+    left: auto !important;
+  }
+
+  .country-selector {
+    opacity: 1 !important;
+  }
+
+  input.country-search {
+    outline: none;
+  }
+
+  .country-list-button {
+    font-size: 0.8rem !important;
+  }
+
+  .mat-menu-content:not(:empty) {
+    max-height: 250px;
+  }
+
+  .error {
+    color: red;
+  }
+
+  .country-selector-flag {
+    margin-left: -1.5ex;
+  }
+
+  .rtl .country-selector-flag {
+    margin-left: initial;
+    margin-right: 1rem !important;
+  }
+
+  .mat-flat-button.mat-primary,
+  .mat-raised-button.mat-primary,
+  .mat-fab.mat-primary,
+  .mat-mini-fab.mat-primary {
+    background-color: var(--primary-bg-color);
+  }
+
+  app-add-client {
+    ngx-mat-intl-tel-input.form-control {
+      border-radius: 0.25rem 0 0 0.25rem !important;
+    }
+
+    .mat-raised-button.mat-primary {
+      border-radius: 0 0.25rem 0.25rem 0;
+      height: 34px;
+    }
+  }
+  .rtl {
+      app-add-client {
+        ngx-mat-intl-tel-input.form-control {
+          border-radius: 0 0.25rem 0.25rem 0 !important;
+        }
+    
+        .mat-raised-button.mat-primary {
+          border-radius: 0.25rem 0 0 0.25rem ;
+          height: 34px;
+        }
+      }
+  }
+}

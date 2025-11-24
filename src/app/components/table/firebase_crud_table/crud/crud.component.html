@@ -1,0 +1,28 @@
+<div class="card">
+  <div class="card-body">
+    <nav class="navbar navbar-expand-md navbar-light bg-primary">
+      <button class="navbar-toggler text-light border-0" type="button" (click)="isMenuCollapsed = !isMenuCollapsed">
+        &#9776;
+      </button>
+      <div [ngbCollapse]="isMenuCollapsed" class="collapse navbar-collapse">
+        <ul class="d-md-flex s-sm-block me-auto mb-2">
+            <li class="nav-item">
+              <a class="nav-link me-2 " aria-current="page" routerLink="/table/editable-table/register-member" routerLinkActive="active">
+                <i class="fa fa-plus"></i>Add Member
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link me-2" routerLink="/table/editable-table/" routerLinkActive="active">
+                <i class="fa fa-list-ul"></i>Members List
+              </a>
+            </li>
+        </ul>
+        </div>
+    </nav>
+    <section>
+      <div class="mx-auto col-11 px-4">
+        <router-outlet></router-outlet>
+      </div>
+    </section>
+  </div>
+</div>

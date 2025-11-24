@@ -1,0 +1,38 @@
+::ng-deep app-accordions .accordion-button:not(.collapsed),
+::ng-deep app-accordions .mat-expansion-panel-header {
+  color: var(--primary-bg-color);
+  background-color: var(--primary01) !important;
+}
+::ng-deep app-accordions .accordion-button {
+  color: var(--primary-bg-color);
+  outline: none;
+}
+::ng-deep app-accordions .accordion-button {
+  box-shadow: none !important;
+  border-color: var(--primary-bg-hover);
+}
+::ng-deep app-accordions .panel-heading1 a.collapsed:before {
+  top: -2px !important;
+}
+::ng-deep app-accordions .mat-expansion-panel-header {
+  background-color: var(--primary-bg-color) !important;
+}
+::ng-deep app-accordions .mat-expansion-panel-header-title {
+  color: #fff;
+}
+::ng-deep app-accordions .mat-expansion-panel-header-description, ::ng-deep app-accordions .mat-expansion-indicator::after {
+  color: rgba(255, 255, 255, 0.84);
+}
+::ng-deep .dark-mode app-accordions .accordion-button {
+  color: var(--primary-bg-color);
+  background: var(--primary01) !important;
+}
+::ng-deep .dark-mode app-accordions mat-expansion-panel {
+  background-color: transparent;
+}
+::ng-deep .dark-mode app-accordions .panel-title1 a {
+  background: transparent !important;
+}
+::ng-deep .dark-mode app-accordions input {
+  color: #fff !important;
+}/*# sourceMappingURL=accordions.component.css.map */

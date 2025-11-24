@@ -1,0 +1,24 @@
+::ng-deep ngx-slider.animate {
+  animation: none !important;
+}
+::ng-deep .ngx-slider .ngx-slider-pointer,
+::ng-deep .ngx-slider .ngx-slider-selection {
+  background-color: var(--primary-bg-color) !important;
+}
+::ng-deep .ngx-slider .ngx-slider-pointer:after {
+  background: #d8e0f3 !important;
+}
+::ng-deep .dark-mode .ngx-slider .ngx-slider-bar {
+  background: var(--dark-bg);
+}
+::ng-deep .dark-mode .ngx-slider .ngx-slider-pointer:after,
+::ng-deep .dark-mode .ngx-slider .ngx-slider-tick {
+  background: #4b4e5b !important;
+}
+::ng-deep .dark-mode .ngx-slider .ngx-slider-bubble,
+::ng-deep .dark-mode .ngx-slider .ngx-slider-bubble.ngx-slider-limit {
+  color: #ccc;
+}
+::ng-deep .rtl .ngx-slider .ngx-slider-tick-legend {
+  transform: translate(50%, 0) !important;
+}/*# sourceMappingURL=range-slider.component.css.map */

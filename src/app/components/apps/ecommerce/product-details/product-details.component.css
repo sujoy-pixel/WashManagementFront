@@ -1,0 +1,8 @@
+@media screen and (max-width: 568px) {
+  ::ng-deep .flex-column[orientation=vertical] {
+    flex-direction: row !important;
+  }
+  ::ng-deep .flex-column[orientation=vertical] .nav-link {
+    padding: 5px !important;
+  }
+}/*# sourceMappingURL=product-details.component.css.map */

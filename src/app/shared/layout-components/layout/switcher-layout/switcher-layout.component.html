@@ -1,0 +1,22 @@
+<div class="horizontalMenucontainer">
+    <div class="page">
+      <div class="page-main">
+        <!-- // header -->
+        <app-switcher-layout-header></app-switcher-layout-header>
+        <!-- //sidebar -->
+        <app-sidebar appHoverEffectSidebar></app-sidebar>
+        <!-- <div class="jumps-prevent" style="padding-top: 74px;"></div> -->
+        <div class="app-content main-content mt-0">
+          <div class="side-app">
+            <div class="main-container container-fluid">
+  
+              <!-- // contetnt  -->
+              <router-outlet><app-loader></app-loader></router-outlet>
+            </div>
+          </div>
+        </div>
+      </div>
+      <app-footer></app-footer>
+    </div>
+  </div>
+  <app-tab-to-top></app-tab-to-top>

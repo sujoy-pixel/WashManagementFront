@@ -1,0 +1,96 @@
+::ng-deep .treeview-container {
+  width: 500px;
+}
+@media (max-width: 360px) {
+  ::ng-deep .treeview-container {
+    width: 100%;
+  }
+}
+::ng-deep .form-inline.row-item .form-check .form-check-input {
+  display: none;
+}
+::ng-deep .mat-h6, ::ng-deep .mat-typography h6 {
+  margin: 0 !important;
+}
+
+.example-tree-invisible {
+  display: none;
+}
+
+.example-tree ul,
+.example-tree li {
+  margin-top: 0;
+  margin-bottom: 0;
+  list-style-type: none;
+}
+
+/*
+* This padding sets alignment of the nested nodes.
+*/
+.example-tree .mat-nested-tree-node div[role=group] {
+  padding-left: 40px;
+}
+
+/*
+  * Padding for leaf nodes.
+  * Leaf nodes need to have padding so as to align with other non-leaf nodes
+  * under the same parent.
+  */
+.example-tree div[role=group] > .mat-tree-node {
+  padding-left: 0px;
+}
+
+.mat-tree button {
+  color: var(--primary-bg-color);
+  background: transparent;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 10px 10px 10px 0px;
+  border: none;
+}
+
+.mat-tree-node, .mat-nested-tree-node {
+  min-height: 26px !important;
+}
+
+.example-tree-progress-bar {
+  margin-left: 30px;
+}
+
+::ng-deep .dark-mode .mat-tree {
+  background: var(--dark-bg) !important;
+}
+::ng-deep .dark-mode .mat-tree-node, ::ng-deep .dark-mode .mat-nested-tree-node {
+  color: #fff !important;
+}
+::ng-deep .rtl {
+  /*
+  * This padding sets alignment of the nested nodes.
+  */
+  /*
+      * Padding for leaf nodes.
+      * Leaf nodes need to have padding so as to align with other non-leaf nodes
+      * under the same parent.
+      */
+}
+::ng-deep .rtl div[role=group] {
+  padding-left: initial !important;
+  padding-right: 40px;
+}
+::ng-deep .rtl div[role=group] > .mat-tree-node {
+  padding-right: 40px;
+  padding-left: initial !important;
+}
+::ng-deep .rtl .mat-tree-node[aria-level="2"] {
+  padding-right: 40px;
+  padding-left: initial !important;
+}
+::ng-deep .rtl .mat-tree-node[aria-level="3"] {
+  padding-right: 80px;
+  padding-left: initial !important;
+}
+
+button[disabled] {
+  display: none !important;
+}/*# sourceMappingURL=treeview.component.css.map */

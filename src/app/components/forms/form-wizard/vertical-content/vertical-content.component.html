@@ -1,0 +1,71 @@
+<mat-stepper orientation="vertical">
+    <mat-step>
+      <ng-template matStepLabel>Personal Information</ng-template>
+      <ng-template matStepContent>
+        <section>
+            <div class="row ">
+                <div class="col-md-5 col-lg-4">
+                    <label class="form-control-label" for="firstname">Firstname: <span class="tx-danger">*</span></label>
+                    <input class="form-control" id="firstname" name="firstname" placeholder="Enter firstname" required type="text">
+                </div>
+                <div class="col-md-5 col-lg-4">
+                    <label class="form-control-label" for="lastname">Lastname: <span class="tx-danger">*</span></label>
+                    <input class="form-control" id="lastname" name="lastname" placeholder="Enter lastname" required type="text">
+                </div>
+            </div>
+        </section>
+        <button class="btn btn-primary mt-2" mat-button matStepperNext>Next</button>
+      </ng-template>
+    </mat-step>
+    <mat-step>
+      <ng-template matStepLabel>Billing Information</ng-template>
+      <ng-template matStepContent>
+        <section>
+            <p>Wonderful transition effects.</p>
+            <div class="form-group">
+                <label class="form-control-label" for="email">Email: <span class="tx-danger">*</span></label>
+                <input class="form-control" id="email" name="email" placeholder="Enter email address" type="email" required>
+            </div>
+        </section>
+        <button class="btn btn-danger me-2" mat-button matStepperPrevious>Back</button>
+        <button class="btn btn-primary me-2" mat-button matStepperNext>Next</button>
+      </ng-template>
+    </mat-step>
+    <mat-step>
+      <ng-template matStepLabel>Payment Details</ng-template>
+      <section>
+        <div class="form-group">
+            <label class="form-label" for="name11">Card Holder Name</label>
+            <input type="text" class="form-control" id="name11" placeholder="First Name">
+        </div>
+        <div class="form-group">
+            <label class="form-label" for="cardno2">Card number</label>
+            <div class="input-group">
+                <input type="text" class="form-control" id="cardno2" placeholder="Search for...">
+                <span class="input-group-text btn btn-info text-white shadow-none">
+                    <i class="fa fa-cc-visa"></i> &nbsp; <i class="fa fa-cc-amex"></i> &nbsp;
+                    <i class="fa fa-cc-mastercard"></i>
+                </span>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-8">
+                <div class="form-group">
+                    <label class="form-label" for="expdate3">Expiration</label>
+                    <div class="input-group">
+                        <input type="number" class="form-control" id="expdate3" placeholder="MM" name="expiremonth">
+                        <input type="number" class="form-control" id="expdate31" placeholder="YYYY" name="expireyear">
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-4 ">
+                <div class="form-group mb-0 mt-2">
+                    <label class="form-label" for="cvv2">CVV <i class="fa fa-question-circle"></i></label>
+                    <input type="number" class="form-control" id="cvv2" required>
+                </div>
+            </div>
+        </div>
+    </section>
+      <button class="btn btn-danger" mat-button matStepperPrevious>Back</button>
+    </mat-step>
+  </mat-stepper>

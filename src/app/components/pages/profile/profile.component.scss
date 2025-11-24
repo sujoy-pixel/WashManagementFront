@@ -1,0 +1,5 @@
+::ng-deep{
+    body:not(.dark-mode) .wideget-user-tab .tab-menu-heading .nav li a {
+        color: #374254 !important;
+    }
+}

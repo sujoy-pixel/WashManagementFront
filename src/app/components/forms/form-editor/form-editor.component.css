@@ -1,0 +1,112 @@
+::ng-deep ngx-toggle-command svg,
+::ng-deep .NgxEditor__MenuItem svg {
+  fill: #000;
+}
+::ng-deep .NgxEditor__Popup--Col input {
+  border: 1px solid #eaedf1;
+}
+::ng-deep .NgxEditor__MenuBar {
+  background: transparent !important;
+  border: 1px solid rgb(234, 237, 241) !important;
+}
+::ng-deep .NgxEditor {
+  background: transparent !important;
+  border: 1px solid rgb(234, 237, 241) !important;
+}
+::ng-deep .dark-mode ngx-toggle-command svg,
+::ng-deep .dark-mode .NgxEditor__MenuItem svg {
+  fill: #eee;
+}
+::ng-deep .dark-mode .NgxEditor__Popup--Col input {
+  border: 1px solid var(--dark-border);
+  background: transparent;
+}
+::ng-deep .dark-mode .NgxEditor__Popup {
+  box-shadow: rgba(172, 172, 173, 0.1490196078) 0 2px 6px 2px !important;
+  background-color: var(--dark-body) !important;
+}
+::ng-deep .dark-mode .NgxEditor__Popup button {
+  color: var(--primary-bg-color);
+}
+::ng-deep .dark-mode .NgxEditor__Placeholder:before {
+  color: #fff;
+}
+::ng-deep .dark-mode .NgxEditor,
+::ng-deep .dark-mode .NgxEditor__MenuBar {
+  border: 1px solid var(--dark-border) !important;
+  color: #fff;
+}
+::ng-deep .dark-mode .NgxEditor__MenuItem:hover svg,
+::ng-deep .dark-mode .NgxEditor__MenuItem.NgxEditor__MenuItem--Active svg {
+  fill: #000 !important;
+}
+::ng-deep .dark-mode .NgxEditor__Dropdown:hover,
+::ng-deep .dark-mode .NgxEditor__Dropdown.NgxEditor__Dropdown--Selected {
+  color: #000;
+}
+::ng-deep .dark-mode .NgxEditor__Dropdown:hover .NgxEditor__Dropdown--DropdownMenu,
+::ng-deep .dark-mode .NgxEditor__Dropdown.NgxEditor__Dropdown--Selected .NgxEditor__Dropdown--DropdownMenu {
+  background-color: var(--dark-body);
+  color: #eee;
+}
+::ng-deep .dark-mode .ql-snow .ql-picker {
+  color: #eee;
+}
+::ng-deep .dark-mode .ql-snow .ql-fill,
+::ng-deep .dark-mode .ql-snow .ql-stroke.ql-fill {
+  fill: #eee;
+}
+::ng-deep .dark-mode .ql-editor.ql-blank::before {
+  color: #ccc;
+}
+::ng-deep .dark-mode .angular-editor .angular-editor-wrapper .angular-editor-textarea {
+  border: 1px solid var(--dark-border) !important;
+}
+::ng-deep .dark-mode .angular-editor-toolbar {
+  background-color: transparent !important;
+  border: 1px solid var(--dark-border) !important;
+}
+::ng-deep .dark-mode .angular-editor-toolbar .angular-editor-toolbar-set .angular-editor-button {
+  background-color: transparent !important;
+  border: 1px solid var(--dark-border) !important;
+  color: #fff;
+}
+::ng-deep .dark-mode .angular-editor-button.active {
+  color: #000 !important;
+}
+::ng-deep .dark-mode .ae-font .ae-picker-label {
+  color: #fff;
+  background-color: transparent;
+  border: 1px solid var(--dark-border);
+}
+::ng-deep .dark-mode .ae-font .ae-picker-label:before {
+  background: none;
+}
+::ng-deep .dark-mode .ae-font .ae-picker-label:hover,
+::ng-deep .dark-mode .ae-font .ae-picker-label:hover:before {
+  background: transparent;
+}
+::ng-deep .dark-mode ae-select:hover {
+  background-color: transparent !important;
+}
+::ng-deep .dark-mode .ae-font .ae-picker-options {
+  background-color: var(--dark-body);
+  border: 1px solid var(--dark-body);
+}
+::ng-deep .dark-mode .ae-font .ae-picker-options button {
+  color: #eee;
+}
+::ng-deep .dark-mode .ae-font.ae-expanded .ae-picker-options {
+  border-color: var(--dark-border) !important;
+}
+::ng-deep .ae-font .ae-picker-options .ae-picker-item.focused, ::ng-deep .ae-font .ae-picker-options .ae-picker-item:hover {
+  background-color: var(--primary-bg-color) !important;
+  color: #fff;
+}
+::ng-deep .angular-editor-wrapper .angular-editor-textarea {
+  outline: none;
+}
+::ng-deep .NgxEditor__Dropdown .NgxEditor__Dropdown--Item:hover,
+::ng-deep .NgxEditor__Dropdown .NgxEditor__Dropdown--Active {
+  background-color: var(--primary-bg-color) !important;
+}/*# sourceMappingURL=form-editor.component.css.map */

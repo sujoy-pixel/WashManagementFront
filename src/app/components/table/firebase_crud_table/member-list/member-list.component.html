@@ -1,0 +1,51 @@
+<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+  <h1 class="h2">Members List</h1>
+  <!-- It won't show if there is no member data -->
+  <a routerLink="/table/editable-table/register-member" class="btn btn-success overflow-auto" *ngIf="hideWhenNoMember">
+    <i class="fa fa-plus custom-fa-plus"></i>
+    Add Member
+  </a>
+</div>
+
+<div class="pricing-header mx-auto">
+
+  <!-- No data shows when their is no member data available -->
+  <div class="no-data text-center" *ngIf="noData">
+
+    <p class="nodata-msg">No member added yet!</p>
+    <a routerLink="/table/editable-table/register-member" class="btn btn-success">
+      <i class="fa fa-plus custom-fa-plus"></i>
+      Add Member
+    </a>
+  </div>
+
+  <!-- Showing members data -->
+  <div class="table-responsive" *ngIf="hideWhenNoMember">
+    <table class="table table-bordered table-responsive-sm table-responsive-md table-responsive-lg">
+      <thead>
+        <tr>
+          <th scope="col">Name</th>
+          <th scope="col">Email</th>
+          <th scope="col">Mobile number</th>
+          <th scope="col">Designation</th>
+          <th class="text-center" scope="col">Edit</th>
+        </tr>
+      </thead>
+      <tbody>
+
+        <tr *ngFor="let member of Member | paginate: { itemsPerPage: 10, currentPage: p }; let i = index;">
+          <td>{{member.firstName}} {{member.lastName}}</td>
+          <td>{{member.email}}</td>
+          <td>{{member.mobileNumber}}</td>
+          <td>{{member.designation}}</td>
+          <td class="text-center action-block">
+            <!-- routerLink="/edit-member/{{member.$key}}" is refered to { path: 'edit-member/:id', component: EditmemberComponent } in app-routing.moudles.ts -->
+            <i class="fa fa-edit text-primary" routerLink="/table/editable-table/edit-member/{{member.$key}}"></i>
+            <i class="fa fa-trash text-danger"  (click)="deletemember(member)"></i></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <!-- Pagination -->
+  <pagination-controls (pageChange)="p = $event" [autoHide]='true' [responsive]="true"></pagination-controls>
+</div>

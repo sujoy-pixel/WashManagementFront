@@ -1,0 +1,11 @@
+::ng-deep mat-datepicker-toggle svg {
+  color: var(--primary-bg-color) !important;
+  fill: var(--primary-bg-color) !important;
+  font-size: 2rem;
+}
+::ng-deep .mat-form-field-suffix {
+  margin: auto;
+}
+::ng-deep .dark-mode app-form-advanced select.form-select {
+  background-color: var(--dark-body) !important;
+}/*# sourceMappingURL=form-advanced.component.css.map */

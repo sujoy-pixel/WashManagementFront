@@ -1,0 +1,13 @@
+::ng-deep body:not(.horizontal) .main-content {
+  margin-top: 64px;
+}
+::ng-deep .main-content {
+  min-height: 100vh;
+}
+::ng-deep .horizontal .jumps-prevent {
+  padding-top: 0 !important;
+}
+
+.pt-60 {
+  padding-top: 60px;
+}/*# sourceMappingURL=content-layout.component.css.map */

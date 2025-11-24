@@ -1,0 +1,269 @@
+<app-page-header [title]="'Navigation'" [items]="['Ui-elements']" [active_item]="'Navigation'"></app-page-header>
+
+<!-- Row -->
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header border-bottom">
+                <h3 class="card-title">Basic Nav</h3>
+            </div>
+            <div class="card-body">
+                <ul ngbNav #nav="ngbNav" [activeId]="1" class="nav-basic br-7">
+                    <li [ngbNavItem]="1">
+                      <a ngbNavLink>Active</a>
+                      <ng-template ngbNavContent></ng-template>
+                    </li>
+                    <li [ngbNavItem]="2">
+                      <a ngbNavLink>Link</a>
+                      <ng-template ngbNavContent></ng-template>
+                    </li>
+                    <li [ngbNavItem]="3">
+                      <a ngbNavLink>Link</a>
+                      <ng-template ngbNavContent></ng-template>
+                    </li>
+                    <li [ngbNavItem]="4" [disabled]="true">
+                      <a ngbNavLink>Disabled</a>
+                      <ng-template ngbNavContent></ng-template>
+                    </li>
+                  </ul>
+                  <div [ngbNavOutlet]="nav"></div>
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-header border-bottom">
+                <h3 class="card-title">Horizontal Alignment</h3>
+            </div>
+            <div class="card-body">
+                <div class="example">
+                    <ul ngbNav #nav1="ngbNav" [activeId]="1" class="nav-basic br-7 justify-content-center">
+                        <li [ngbNavItem]="1">
+                          <a ngbNavLink>Active</a>
+                          <ng-template ngbNavContent></ng-template>
+                        </li>
+                        <li [ngbNavItem]="2">
+                          <a ngbNavLink>Link</a>
+                          <ng-template ngbNavContent></ng-template>
+                        </li>
+                        <li [ngbNavItem]="3">
+                          <a ngbNavLink>Link</a>
+                          <ng-template ngbNavContent></ng-template>
+                        </li>
+                        <li [ngbNavItem]="4" [disabled]="true">
+                          <a ngbNavLink>Disabled</a>
+                          <ng-template ngbNavContent></ng-template>
+                        </li>
+                      </ul>
+                      <div [ngbNavOutlet]="nav1"></div>
+                    <ul ngbNav #nav2="ngbNav" [activeId]="1" class="nav-basic br-7 justify-content-end">
+                        <li [ngbNavItem]="1">
+                          <a ngbNavLink>Active</a>
+                          <ng-template ngbNavContent></ng-template>
+                        </li>
+                        <li [ngbNavItem]="2">
+                          <a ngbNavLink>Link</a>
+                          <ng-template ngbNavContent></ng-template>
+                        </li>
+                        <li [ngbNavItem]="3">
+                          <a ngbNavLink>Link</a>
+                          <ng-template ngbNavContent></ng-template>
+                        </li>
+                        <li [ngbNavItem]="4" [disabled]="true">
+                          <a ngbNavLink>Disabled</a>
+                          <ng-template ngbNavContent></ng-template>
+                        </li>
+                      </ul>
+                      <div [ngbNavOutlet]="nav2"></div>
+                </div>
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-header border-bottom">
+                <h3 class="card-title">Nav Vertical</h3>
+            </div>
+            <div class="card-body">
+                <ul ngbNav #nav3="ngbNav" [activeId]="1" class="nav1 nav-column flex-column br-7">
+                    <li [ngbNavItem]="1">
+                      <a ngbNavLink>Active</a>
+                      <ng-template ngbNavContent></ng-template>
+                    </li>
+                    <li [ngbNavItem]="2">
+                      <a ngbNavLink>Link</a>
+                      <ng-template ngbNavContent></ng-template>
+                    </li>
+                    <li [ngbNavItem]="3">
+                      <a ngbNavLink>Link</a>
+                      <ng-template ngbNavContent></ng-template>
+                    </li>
+                    <li [ngbNavItem]="4" [disabled]="true">
+                      <a ngbNavLink>Disabled</a>
+                      <ng-template ngbNavContent></ng-template>
+                    </li>
+                  </ul>
+                  <div [ngbNavOutlet]="nav3"></div>
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-header border-bottom">
+                <h3 class="card-title">Icon Navigation</h3>
+            </div>
+            <div class="card-body">
+                <ul ngbNav #nav4="ngbNav" [activeId]="3" class="nav-pills nav-pills-circle">
+                    <li [ngbNavItem]="1">
+                      <a class="border py-2 px-4 m-1" ngbNavLink><span class="nav-link-icon d-block"><i class="fe fe-home"></i> Home</span></a>
+                      <ng-template ngbNavContent></ng-template>
+                    </li>
+                    <li [ngbNavItem]="2">
+                      <a class="border py-2 px-4 m-1" ngbNavLink><span class="nav-link-icon d-block"><i class="fe fe-unlock"></i> Lock </span></a>
+                      <ng-template ngbNavContent></ng-template>
+                    </li>
+                    <li [ngbNavItem]="3">
+                      <a class="border py-2 px-4 m-1" ngbNavLink><span class="nav-link-icon d-block"><i class="fe fe-play"></i> Videos</span></a>
+                      <ng-template ngbNavContent></ng-template>
+                    </li>
+                    <li [ngbNavItem]="4">
+                      <a class="border py-2 px-4 m-1" ngbNavLink><span class="nav-link-icon d-block"><i class="fe fe-layers"></i> Severs</span></a>
+                      <ng-template ngbNavContent></ng-template>
+                    </li>
+                    <li [ngbNavItem]="5">
+                      <a class="border py-2 px-4 m-1" ngbNavLink><span class="nav-link-icon d-block"><i class="fe fe-image"></i> Gallery </span></a>
+                      <ng-template ngbNavContent></ng-template>
+                    </li>
+                  </ul>
+                  <div [ngbNavOutlet]="nav4"></div>
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-header border-bottom">
+                <h3 class="card-title">Icon Nav Bar</h3>
+            </div>
+            <div class="card-body">
+                <ul ngbNav #nav5="ngbNav" [activeId]="3" class="nav-pills nav-pills-circle">
+                    <li [ngbNavItem]="1">
+                      <a class=" border w-7 h-7 text-center br-100 m-2" ngbNavLink><span class="nav-link-icon d-block text-center mx-auto"><i class="fe fe-home fs-15"></i></span></a>
+                      <ng-template ngbNavContent></ng-template>
+                    </li>
+                    <li [ngbNavItem]="2">
+                      <a class=" border w-7 h-7 text-center br-100 m-2" ngbNavLink><span class="nav-link-icon d-block text-center mx-auto"><i class="fe fe-unlock fs-15"></i></span></a>
+                      <ng-template ngbNavContent></ng-template>
+                    </li>
+                    <li [ngbNavItem]="3">
+                      <a class=" border w-7 h-7 text-center br-100 m-2" ngbNavLink><span class="nav-link-icon d-block text-center mx-auto"><i class="fe fe-play fs-15"></i></span></a>
+                      <ng-template ngbNavContent></ng-template>
+                    </li>
+                    <li [ngbNavItem]="4">
+                      <a class=" border w-7 h-7 text-center br-100 m-2" ngbNavLink><span class="nav-link-icon d-block text-center mx-auto"><i class="fe fe-layers fs-15"></i></span></a>
+                      <ng-template ngbNavContent></ng-template>
+                    </li>
+                    <li [ngbNavItem]="5">
+                      <a class=" border w-7 h-7 text-center br-100 m-2" ngbNavLink><span class="nav-link-icon d-block text-center mx-auto"><i class="fe fe-image fs-16"></i> </span></a>
+                      <ng-template ngbNavContent></ng-template>
+                    </li>
+                  </ul>
+                  <div [ngbNavOutlet]="nav5"></div>
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-header border-bottom">
+                <h3 class="card-title">Navigation backgrounds</h3>
+            </div>
+            <div class="card-body">
+                <ul ngbNav #nav6="ngbNav" [activeId]="1" class="nav1 colored bg-primary br-7">
+                    <li [ngbNavItem]="1">
+                      <a ngbNavLink>Active</a>
+                      <ng-template ngbNavContent></ng-template>
+                    </li>
+                    <li [ngbNavItem]="2">
+                      <a ngbNavLink>Link</a>
+                      <ng-template ngbNavContent></ng-template>
+                    </li>
+                    <li [ngbNavItem]="3">
+                      <a ngbNavLink>Link</a>
+                      <ng-template ngbNavContent></ng-template>
+                    </li>
+                    <li [ngbNavItem]="4" [disabled]="true">
+                      <a ngbNavLink>Disabled</a>
+                      <ng-template ngbNavContent></ng-template>
+                    </li>
+                  </ul>
+                  <div [ngbNavOutlet]="nav6"></div>
+                  <ul ngbNav #nav7="ngbNav" [activeId]="1" class="nav1 colored bg-info mt-4 br-7">
+                    <li [ngbNavItem]="1">
+                      <a ngbNavLink>Active</a>
+                      <ng-template ngbNavContent></ng-template>
+                    </li>
+                    <li [ngbNavItem]="2">
+                      <a ngbNavLink>Link</a>
+                      <ng-template ngbNavContent></ng-template>
+                    </li>
+                    <li [ngbNavItem]="3">
+                      <a ngbNavLink>Link</a>
+                      <ng-template ngbNavContent></ng-template>
+                    </li>
+                    <li [ngbNavItem]="4" [disabled]="true">
+                      <a ngbNavLink>Disabled</a>
+                      <ng-template ngbNavContent></ng-template>
+                    </li>
+                  </ul>
+                  <div [ngbNavOutlet]="nav7"></div>
+                  <ul ngbNav #nav8="ngbNav" [activeId]="1" class="nav1 colored bg-success mt-4 br-7">
+                    <li [ngbNavItem]="1">
+                      <a ngbNavLink>Active</a>
+                      <ng-template ngbNavContent></ng-template>
+                    </li>
+                    <li [ngbNavItem]="2">
+                      <a ngbNavLink>Link</a>
+                      <ng-template ngbNavContent></ng-template>
+                    </li>
+                    <li [ngbNavItem]="3">
+                      <a ngbNavLink>Link</a>
+                      <ng-template ngbNavContent></ng-template>
+                    </li>
+                    <li [ngbNavItem]="4" [disabled]="true">
+                      <a ngbNavLink>Disabled</a>
+                      <ng-template ngbNavContent></ng-template>
+                    </li>
+                  </ul>
+                  <div [ngbNavOutlet]="nav8"></div>
+                  <ul ngbNav #nav9="ngbNav" [activeId]="1" class="nav1 colored bg-secondary mt-4 br-7">
+                    <li [ngbNavItem]="1">
+                      <a ngbNavLink>Active</a>
+                      <ng-template ngbNavContent></ng-template>
+                    </li>
+                    <li [ngbNavItem]="2">
+                      <a ngbNavLink>Link</a>
+                      <ng-template ngbNavContent></ng-template>
+                    </li>
+                    <li [ngbNavItem]="3">
+                      <a ngbNavLink>Link</a>
+                      <ng-template ngbNavContent></ng-template>
+                    </li>
+                    <li [ngbNavItem]="4" [disabled]="true">
+                      <a ngbNavLink>Disabled</a>
+                      <ng-template ngbNavContent></ng-template>
+                    </li>
+                  </ul>
+                  <div [ngbNavOutlet]="nav9"></div>
+                  <ul ngbNav #nav10="ngbNav" [activeId]="1" class="nav1 colored bg-warning mt-4 br-7">
+                    <li [ngbNavItem]="1">
+                      <a ngbNavLink>Active</a>
+                      <ng-template ngbNavContent></ng-template>
+                    </li>
+                    <li [ngbNavItem]="2">
+                      <a ngbNavLink>Link</a>
+                      <ng-template ngbNavContent></ng-template>
+                    </li>
+                    <li [ngbNavItem]="3">
+                      <a ngbNavLink>Link</a>
+                      <ng-template ngbNavContent></ng-template>
+                    </li>
+                    <li [ngbNavItem]="4" [disabled]="true">
+                      <a ngbNavLink>Disabled</a>
+                      <ng-template ngbNavContent></ng-template>
+                    </li>
+                  </ul>
+                  <div [ngbNavOutlet]="nav10"></div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- End Row -->

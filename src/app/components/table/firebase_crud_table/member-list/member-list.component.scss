@@ -1,0 +1,9 @@
+.fa{
+    font-size: 16px;
+    margin-right: 10px;
+}
+::ng-deep{
+    .ngx-pagination .current{
+        background: #4454c3 !important;
+    }
+}

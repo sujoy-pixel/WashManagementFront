@@ -1,0 +1,20 @@
+::ng-deep app-faqs .accordion-button:not(.collapsed),
+::ng-deep app-faqs .mat-expansion-panel-header {
+  color: var(--primary-bg-color);
+  background-color: var(--primary01) !important;
+}
+::ng-deep app-faqs .accordion-button {
+  color: var(--primary-bg-color);
+  outline: none;
+}
+::ng-deep app-faqs .accordion-button {
+  box-shadow: none !important;
+  border-color: var(--primary-bg-hover);
+}
+::ng-deep app-faqs .panel-heading1 a.collapsed:before {
+  top: -2px !important;
+}
+::ng-deep .dark-mode app-faqs .accordion-button {
+  color: var(--primary-bg-color);
+  background: var(--primary01) !important;
+}/*# sourceMappingURL=faqs.component.css.map */

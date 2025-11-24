@@ -1,0 +1,220 @@
+<app-page-header [title]="'Add-client'" [items]="['Apps', 'Client']" [active_item]="'Add-client'"></app-page-header>
+
+<!--ROW OPENED-->
+<div class="row">
+    <div class="col-lg-12 col-md-12">
+        <div class="card">
+            <div class="card-header border-bottom">
+                <h4 class="mb-0">Client Info</h4>
+            </div>
+            <div class="card-body p-0 task-edit-main">
+                <div class="row p-5 border-bottom">
+                    <div class="col-sm-12 col-md-12 col-xl-3">
+                        <div class="form-group">
+                            <label class="form-label text-muted">Salution:</label>
+                            <ng-select class="text-dark" id="client-salution1" placeholder="Choose Category..."
+                                tabindex="-1" aria-hidden="true">
+                                <ng-option value="empty" selected>---</ng-option>
+                                <ng-option value="MR">Mr.</ng-option>
+                                <ng-option value="MS">Ms.</ng-option>
+                            </ng-select>
+                        </div>
+                    </div>
+                    <div class="col-sm-12 col-md-12 col-xl-3">
+                        <div class="form-group">
+                            <label class="form-label text-muted">Client Name:</label>
+                            <div class="input-group" id="client-name">
+                                <input type="text" class="form-control text-dark" placeholder="Enter Client Name">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-12 col-md-12 col-xl-3">
+                        <div class="form-group">
+                            <label class="form-label text-muted">Email:</label>
+                            <div class="input-group" id="client-email">
+                                <input type="text" class="form-control text-dark" placeholder="Enter Client Email">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-12 col-md-12 col-xl-3">
+                        <div class="form-group">
+                            <label class="form-label text-muted">Password:</label>
+                            <div class="input-group" id="client-password">
+                                <input #password type="password" class="form-control text-dark input-password"
+                                    placeholder="Enter Password">
+                                <span
+                                    (click)="ShowPassword(password); eyeClose.classList.toggle('d-none'); eyeOpen.classList.toggle('d-none')"
+                                    class="input-group-text btn btn-primary text-white show-password">
+                                    <i #eyeOpen class="fe fe-eye eye-open"></i>
+                                    <i #eyeClose class="fe fe-eye-off eye-close d-none"></i>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-12 col-md-12 col-xl-3">
+                        <div class="form-group">
+                            <label class="form-label text-muted">Mobile Number:</label>
+                            <div class="input-group" id="client-mobilenumber">
+                                <input type="number" class="form-control text-dark" placeholder="Enter Mobile Number">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-12 col-md-12 col-xl-3">
+                        <div class="form-group">
+                            <label class="form-label text-muted">Gender:</label>
+                            <ng-select class="text-dark" id="client-salution2" placeholder="Select Gender" tabindex="-1"
+                                aria-hidden="true">
+                                <ng-option value="empty" selected>---</ng-option>
+                                <ng-option value="MA">Male</ng-option>
+                                <ng-option value="FE">Female</ng-option>
+                                <ng-option value="OT">Others</ng-option>
+                            </ng-select>
+                        </div>
+                    </div>
+                    <div class="col-sm-12 col-md-12 col-xl-3">
+                        <div class="form-group">
+                            <label class="form-label text-muted">Category:</label>
+                            <ng-select class="text-dark" id="client-salution3" placeholder="Select Gender" tabindex="-1"
+                                aria-hidden="true">
+                                <ng-option value="empty" selected>---</ng-option>
+                                <ng-option value="MA">Marketing</ng-option>
+                                <ng-option value="IT">IT Development</ng-option>
+                                <ng-option value="CC">Cloud Computing</ng-option>
+                                <ng-option value="MR">Medical Research</ng-option>
+                            </ng-select>
+                        </div>
+                    </div>
+                    <div class="col-sm-12 col-md-12 col-xl-3">
+                        <div class="form-group">
+                            <label class="form-label text-muted">Sub Category:</label>
+                            <ng-select class="text-dark" id="client-salution4" placeholder="Select Gender" tabindex="-1"
+                                aria-hidden="true">
+                                <ng-option value="empty" selected>---</ng-option>
+                                <ng-option value="MA">Marketing</ng-option>
+                                <ng-option value="IT">IT Development</ng-option>
+                                <ng-option value="CC">Cloud Computing</ng-option>
+                                <ng-option value="MR">Medical Research</ng-option>
+                            </ng-select>
+                        </div>
+                    </div>
+                    <div class="col-sm-12 col-md-12 col-xl-3">
+                        <div class="form-group">
+                            <label class="form-label text-muted">Can User Login To App?</label>
+                            <div class="d-flex align-items-center mt-3">
+                                <label class="custom-control custom-radio me-3">
+                                    <input type="radio" class="custom-control-input" name="login-radio" value="yes"
+                                        checked>
+                                    <span class="custom-control-label">Yes</span>
+                                </label>
+                                <label class="custom-control custom-radio">
+                                    <input type="radio" class="custom-control-input" name="login-radio" value="no">
+                                    <span class="custom-control-label">No</span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-12 col-md-12 col-xl-3">
+                        <div class="form-group">
+                            <label class="form-label text-muted">Can User Receive Email Notifications?</label>
+                            <div class="d-flex align-items-center mt-3">
+                                <label class="custom-control custom-radio me-3">
+                                    <input type="radio" class="custom-control-input" name="notifications-radio"
+                                        value="yes" checked>
+                                    <span class="custom-control-label">Yes</span>
+                                </label>
+                                <label class="custom-control custom-radio">
+                                    <input type="radio" class="custom-control-input" name="notifications-radio"
+                                        value="no">
+                                    <span class="custom-control-label">No</span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row p-5 border-bottom">
+                    <div class="col-xl-12">
+                        <h4 class="mb-4">Company Details</h4>
+                    </div>
+                    <div class="col-sm-12 col-md-12 col-xl-4">
+                        <div class="form-group">
+                            <label class="form-label text-muted">Company Name:</label>
+                            <div class="input-group" id="company-name">
+                                <input type="text" class="form-control text-dark" placeholder="Enter Company Name">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-12 col-md-12 col-xl-4">
+                        <div class="form-group">
+                            <label class="form-label text-muted">Company Website:</label>
+                            <div class="input-group" id="company-website">
+                                <input type="text" class="form-control text-dark"
+                                    placeholder="ex: http://www.spruko.com/">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-12 col-md-12 col-xl-4">
+                        <div class="form-group">
+                            <label class="form-label text-muted">GST Number:</label>
+                            <div class="input-group" id="company-gstnumber">
+                                <input type="number" class="form-control text-dark" placeholder="Enter GST Number">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-12 col-md-12 col-xl-3">
+                        <div class="form-group">
+                            <label class="form-label text-muted">Office Phone Number:</label>
+                            <div class="input-group" id="company-phonenumber">
+                                <input type="number" class="form-control text-dark" placeholder="Enter Phone Number">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-12 col-md-12 col-xl-3">
+                        <div class="form-group">
+                            <label class="form-label text-muted">City:</label>
+                            <div class="input-group" id="company-city">
+                                <input type="text" class="form-control text-dark" placeholder="City">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-12 col-md-12 col-xl-3">
+                        <div class="form-group">
+                            <label class="form-label text-muted">State:</label>
+                            <div class="input-group" id="company-state">
+                                <input type="text" class="form-control text-dark" placeholder="State">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-12 col-md-12 col-xl-3">
+                        <div class="form-group">
+                            <label class="form-label text-muted">Postal Code:</label>
+                            <div class="input-group" id="company-postalcode">
+                                <input type="text" class="form-control text-dark" placeholder="Postal Code">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-12 col-md-12 col-xl-6">
+                        <div class="form-group">
+                            <label class="form-label text-muted">Company Address:</label>
+                            <textarea class="form-control" name="company-address" id="company-address" cols="30"
+                                rows="4" placeholder="Plat No., Street, Lane No, City"></textarea>
+                        </div>
+                    </div>
+                    <div class="col-sm-12 col-md-12 col-xl-6">
+                        <div class="form-group">
+                            <label class="form-label text-muted">Shipping Address:</label>
+                            <textarea class="form-control" name="company-shippingaddress" id="company-shippingaddress"
+                                cols="30" rows="4" placeholder="Plat No., Street, Lane No, City"></textarea>
+                        </div>
+                    </div>
+                </div>
+                <div class="row p-5">
+                    <div class="btn-list text-end">
+                        <button class="btn btn-outline-danger"> <i class="fe fe-x-circle"></i> Cancel</button>
+                        <button class="btn btn-primary"> <i class="fe fe-check-circle"></i> Save</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!--ROW CLOSED-->

@@ -1,0 +1,45 @@
+
+.search-result{
+    .header-list-group:hover{
+        background-color: var(--primary-bg-color);
+        color: #fff;
+    }
+}
+.list-group-item.no-result{
+    display: none;
+}
+.list-group-item.no-result.show{
+    display: block;
+}
+
+.p-absolute{
+    position: absolute;
+}
+.border-start-end-top-0{
+    border-left: 0 !important;
+    border-top: 0 !important;
+    border-right: 0 !important;
+}
+.br-0{
+    border-radius: 0 !important;
+}
+.list-group .list-group-item:last-child{    
+    border-bottom-right-radius: 0.25rem !important;
+    border-bottom-left-radius: 0.25rem !important;
+}
+
+.serach-result-empty{
+    z-index: 99;
+}
+
+input:not(.dark-mode)::placeholder{
+    color: #333;
+}
+
+::ng-deep{
+    .dark-mode{
+        .search-result {
+            background: var(--dark-body) !important;
+        }
+    }
+}

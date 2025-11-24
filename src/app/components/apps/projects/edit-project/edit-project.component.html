@@ -1,0 +1,195 @@
+<app-page-header [title]="'Edit-project'" [items]="['Apps', 'Projects']" [active_item]="'Edit-project'"></app-page-header>
+
+<!--ROW OPENED-->
+<div class="row">
+    <div class="col-lg-12 col-md-12">
+        <div  class="card">
+            <div class="card-header border-bottom">
+                <h4 class="mb-0">Project Info</h4>
+            </div>
+            <div class="card-body p-0 project-edit-main">
+                <div class="row p-5 border-bottom">
+                    <div class="col-sm-12 col-md-12 col-xl-3">
+                        <div class="form-group">
+                            <label for="project-name" class="form-label text-muted">Project Name:</label>
+                            <div class="input-group">
+                                <input type="text" id="project-name" class="form-control text-dark" placeholder="Enter Project Name" value="Noa Dashboard UI">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-12 col-md-12 col-xl-3">
+                        <div class="form-group">
+                            <label for="project-start-date" class="form-label text-muted">Project Date:</label>
+                            <div id="ps-datepicker" class="input-group date" data-date-format="dd-mm-yyyy">
+                                <span class="input-group-addon input-group-text bg-primary-transparent"><i class="fe fe-calendar text-primary-dark"></i></span>
+                                <input id="project-start-date" class="form-control" type="text" placeholder="Select Start Date"/>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-12 col-md-12 col-xl-3 end-date-container">
+                        <div class="form-group">
+                            <label for="project-end-date" class="form-label text-muted">End Date:</label>
+                            <div id="pe-datepicker" class="input-group date" data-date-format="dd-mm-yyyy">
+                                <span class="input-group-addon input-group-text bg-primary-transparent"><i class="fe fe-calendar text-primary-dark"></i></span>
+                                <input id="project-end-date" class="form-control" type="text" placeholder="Select End Date"/>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-12 col-md-12 col-xl-3 no-date-checkbox">
+                        <div class="form-group">
+                            <label class="custom-control custom-checkbox end-date-checkbox-container">
+                                <input type="checkbox" class="custom-control-input end-date-checkbox" value="option2">
+                                <span class="custom-control-label">No End Date.</span>
+                            </label>
+                        </div>
+                    </div>
+                    <div class="col-sm-12 col-md-12 col-xl-4">
+                        <div class="form-group">
+                            <label for="project-category" class="form-label text-muted">Project Category:</label>
+                            <ng-select class="text-dark" #select [items]="projectCategory" [searchable]="false" [(ngModel)]="selectedProjectCategory" bindLabel="name" placeholder="Choose Type.."
+                            bindValue="name">
+                                <ng-template ng-header-tmp>
+                                    <input style="width: 100%; line-height: 24px" type="text"
+                                    (input)="select.filter($any($event.target).value)" />
+                                </ng-template>
+                            </ng-select>
+                        </div>
+                    </div>
+                    <div class="col-sm-12 col-md-12 col-xl-4">
+                        <div class="form-group">
+                            <label for="project-department" class="form-label text-muted">Department:</label>
+                            <ng-select class="text-dark" #select [items]="Department" [searchable]="false" [(ngModel)]="selectedDepartment" bindLabel="name" placeholder="Choose Type.."
+                            bindValue="name">
+                                <ng-template ng-header-tmp>
+                                    <input style="width: 100%; line-height: 24px" type="text"
+                                    (input)="select.filter($any($event.target).value)" />
+                                </ng-template>
+                            </ng-select>
+                        </div>
+                    </div>
+                    <div class="col-sm-12 col-md-12 col-xl-4">
+                        <div class="form-group">
+                            <label class="form-label text-muted">Client: </label>
+                            <ul>
+                                <li class="select-client">
+                                    <ng-select class="text-dark" #select [items]="Client" [searchable]="false" [(ngModel)]="selectedClient" bindLabel="name" placeholder="Choose Type.." bindValue="name">
+                                        <ng-template ng-header-tmp>
+                                            <input style="width: 100%; line-height: 24px" type="text"
+                                            (input)="select.filter($any($event.target).value)" />
+                                        </ng-template>
+                                    </ng-select>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="col-sm-12 col-md-12 col-xl-6">
+                        <label class="form-label text-muted">Project Summary: </label>
+                        <div class="form-group">
+                            <div id="summernote3"><p>Elitr consetetur ut voluptua invidunt sed aliquyam tempor dolores. Vero clita takimata clita justo. Dolore sed accusam sit amet voluptua.</p></div>
+                        </div>
+                    </div>
+                    <div class="col-sm-12 col-md-12 col-xl-6">
+                        <label class="form-label text-muted">Project Notes: </label>
+                        <div class="form-group">
+                            <div id="summernote4"><p>Dolor amet vero lorem diam lorem sit duo, vero sit stet takimata clita, lorem duo.</p></div>
+                        </div>
+                    </div>
+                    <div class="col-sm-12 col-md-12 col-xl-4">
+                        <div class="form-group">
+                            <label class="form-label text-muted">Project Status: </label>
+                            <ul>
+                                <li class="select-status">
+                                    <ng-select placeholder="Select Status">
+                                        <ng-option value="IP">In Progress</ng-option>
+                                        <ng-option value="OH">On Hold</ng-option>
+                                        <ng-option value="CP">Completed</ng-option>
+                                    </ng-select>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="row p-5 border-bottom">
+                    <div class="col-xl-12">
+                        <h4 class="mb-0 d-flex other-details" (click)="otherDetails.classList.toggle('d-none')">Other Details<i class="fe fe-chevron-down down-arrow fs-20"></i><i class="fe fe-chevron-up up-arrow d-none fs-20"></i></h4>
+                        <div #otherDetails class="row other-details-main d-none mt-4">
+                            <div class="col-sm-12 col-md-12 col-xl-12">
+                                <label class="form-label text-muted">Add Files: </label>
+                                <div class="form-group">
+                                    <form method="post">
+                                        <ngx-dropzone (change)="onSelect($event)">
+                                            <ngx-dropzone-label>Drop it, Here!</ngx-dropzone-label>
+                                            <ngx-dropzone-image-preview *ngFor="let f of files"  [file]="f" [removable]="true" (removed)="onRemove(f)">
+                                              <ngx-dropzone-label>{{ f.name }} ({{ f.type }})</ngx-dropzone-label>
+                                            </ngx-dropzone-image-preview>
+                                          </ngx-dropzone>
+                                    </form>
+                                </div>
+                            </div>
+                            <div class="col-sm-12 col-md-12 col-xl-4">
+                                <div class="form-group">
+                                    <label class="form-label text-muted">Currency:</label>
+                                    <div class="input-group">
+                                        <ng-select class="text-dark" id="currency-type" placeholder="Choose Type..." tabindex="-1" aria-hidden="true">
+                                            <ng-option value="day">USD($)</ng-option>
+                                            <ng-option value="day">GBP(£)</ng-option>
+                                            <ng-option value="day">EUR(€)</ng-option>
+                                            <ng-option value="day">INR(₹)</ng-option>
+                                        </ng-select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-sm-12 col-md-12 col-xl-4">
+                                <div class="form-group">
+                                    <label class="form-label text-muted">Budget:</label>
+                                    <input type="number" class="form-control" placeholder="e.g. 1000" min="0">
+                                </div>
+                            </div>
+                            <div class="col-sm-12 col-md-12 col-xl-4">
+                                <div class="form-group">
+                                    <label class="form-label text-muted">Estimated Hours:</label>
+                                    <input type="number" class="form-control" placeholder="e.g. 700" min="0">
+                                </div>
+                            </div>
+                            <div class="col-sm-12 col-md-12 col-xl-4 align-self-end">
+                                <div class="form-group">
+                                    <label class="custom-control custom-checkbox">
+                                        <input type="checkbox" class="custom-control-input">
+                                        <span class="custom-control-label">Manual Time Logs.</span>
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="col-sm-12 col-md-12 col-xl-4">
+                                <div class="form-group">
+                                    <label class="form-label text-muted">Assign To: </label>
+                                    <ul>
+                                        <li class="select-client">
+                                            <ng-select [items]="AssignedTo" [(ngModel)]="AssignedToList" [multiple]="true" bindLabel="name" bindValue="name" placeholder="select client">
+                                                <ng-template ng-label-tmp let-item="item">
+                                                 <span> <img class="rounded-circle avatar-sm me-2" [src]="item.avatar" />{{item.name}}</span>
+                                                </ng-template>
+                                              </ng-select>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row p-5">
+                    <div class="btn-list text-end">
+                        <button class="btn btn-outline-danger">
+                            <i class="fe fe-x-circle"></i>
+                            Cancel
+                        </button>
+                        <button class="btn btn-primary">
+                            <i class="fe fe-check-circle"></i>
+                            Save
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!--ROW CLOSED-->

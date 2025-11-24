@@ -1,0 +1,284 @@
+<app-page-header [title]="'Form-validation'" [items]="['Forms']" [active_item]="'Form-validation'"></app-page-header>
+
+
+
+<!-- ROW -->
+<div class="row">
+  <div class="col-lg-12 col-md-12">
+    <div class="card">
+      <div class="card-header border-bottom">
+        <h3 class="card-title">Modern Driven Form Validation</h3>
+      </div>
+      <div class="card-body">
+        <form [formGroup]="angForm" novalidate>
+          <div class="form-group">
+            <label>Name:</label>
+            <input class="form-control" formControlName="name" type="text">
+          </div>
+          <div
+            *ngIf="angForm.controls['name'].invalid && (angForm.controls['name'].dirty || angForm.controls['name'].touched)"
+            class="alert alert-danger">
+            <div *ngIf="angForm.controls['name'].errors?.['required']">Name is required.</div>
+          </div>
+          <div class="form-group">
+            <label>Address:</label>
+            <input class="form-control" formControlName="address" type="text">
+          </div>
+          <div
+            *ngIf="angForm.controls['address'].invalid && (angForm.controls['address'].dirty || angForm.controls['address'].touched)"
+            class="alert alert-danger">
+            <div *ngIf="angForm.controls['address'].errors?.['required']">email is required.</div>
+          </div>
+          <button type="submit" [disabled]="angForm.pristine || angForm.invalid" class="btn btn-primary">
+            Save
+          </button>
+        </form>
+        <br />
+        <p>Form value: {{ angForm.value | json }}</p>
+        <p>Form status: {{ angForm.status | json }}</p>
+      </div>
+    </div>
+  </div>
+  <div class="col-lg-12 col-md-12">
+    <div class="card">
+      <div class="card-header border-bottom">
+        <h3 class="card-title">Template Driven Form Validation</h3>
+      </div>
+      <div class="card-body">
+        <form #contactForm="ngForm" (ngSubmit)="submit(contactForm.value)">
+
+          <div class="form-group">
+            <label for="firstName">First Name</label>
+            <input required minlength="3" maxlength="10" ngModel name="firstName" type="text" #firstName="ngModel"
+              class="form-control" id="firstName">
+            <div class="alert alert-danger" *ngIf="firstName.touched && !firstName.valid">
+              <div *ngIf="firstName.errors && firstName.errors['required']">First Name is required.</div>
+              <div *ngIf="firstName.errors && firstName.errors['minlength']">First Name is minimum
+                {{ firstName.errors && firstName.errors['minlength'].requiredLength }} character.</div>
+              <div *ngIf="firstName.errors && firstName.errors['maxlength']">First Name is maximum 10 character.</div>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="lastName">Last Name</label>
+            <input required ngModel name="lastName" type="text" #lastName="ngModel" class="form-control" id="lastName">
+            <div class="alert alert-danger" *ngIf="lastName.touched && !lastName.valid">
+              Last Name is required.
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="comment">Comment</label>
+            <textarea required ngModel #comment="ngModel" name="comment" id="comment" cols="30" rows="10"
+              class="form-control"></textarea>
+            <div class="alert alert-danger" *ngIf="comment.touched && !comment.valid">
+              Comment is required.
+            </div>
+          </div>
+          <div class="mb-3 form-group">
+            <ng-select class="" required ngModel #selectedList="ngModel" name="selectedList" id="selectedList"
+              placeholder="" Choose option>
+              <ng-option value="1">One</ng-option>
+              <ng-option value="2">Two</ng-option>
+              <ng-option value="3">Three</ng-option>
+            </ng-select>
+            <div class="alert alert-danger" *ngIf="selectedList.touched && !selectedList.valid">
+              Select one option
+            </div>
+          </div>
+
+          <div class="mb-3 form-group">
+            <input type="file" class="form-control" ngModel #checkedStatus="ngModel" name="checkedStatus"
+              id="checkedStatus" required>
+            <div class="alert alert-danger" *ngIf="checkedStatus.touched && !checkedStatus.valid">
+              checked box is required
+            </div>
+          </div>
+
+          <button class="btn btn-primary" type="submit" [class.disabled]="!contactForm.valid">Submit</button>
+
+        </form>
+      </div>
+    </div>
+  </div>
+  <div class="col-lg-12 col-md-12">
+    <div class="card">
+      <div class="card-header border-bottom">
+        <h3 class="card-title">Template Driven Form Validation 1</h3>
+      </div>
+      <div class="card-body">
+        <p *ngIf="isValidFormSubmitted" [ngClass]="'success'">
+          Form submitted successfully.
+        </p>
+        <form #userForm="ngForm" (ngSubmit)="onFormSubmit(userForm)">
+          <div class="form-group">
+            <label for="tempName">Name</label>
+            <input required name="userName" [ngModel]="user.userName" minlength="5" maxlength="10" #uname="ngModel" class="form-control"/>
+            <div class="alert alert-danger" *ngIf="uname.errors && userForm.submitted && !isValidFormSubmitted" [ngClass]="'error'">
+              <!-- <div *ngIf="uname.errors?.['minlength']"> -->
+                Name must be at least 5 characters long.
+              <!-- </div> -->
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="tempName">Name</label>
+            <input required name="city" [ngModel]="user.city" minlength="3" maxlength="8" #city="ngModel" class="form-control"/>
+            <div class="alert alert-danger" *ngIf="city.errors && userForm.submitted && !isValidFormSubmitted" [ngClass]="'error'">
+              <!-- <div *ngIf="city.errors?.['minlength']"> -->
+                city must be at least 3 characters long.
+              <!-- </div> -->
+            </div>
+          </div>
+          <button class="btn btn-primary" type="submit">Submit</button>
+        </form>
+      </div>
+    </div>
+  </div>
+  <div class="col-lg-12 col-md-12">
+    <div class="card">
+      <div class="card-header border-bottom">
+        <h3 class="card-title">Reactive Form Validation 1</h3>
+      </div>
+      <div class="card-body">
+        <p *ngIf="isValidFormSubmittedReactive && reactiveuserForm.pristine" [ngClass] = "'success'">
+          Form submitted successfully.
+      </p>
+      <form [formGroup]="reactiveuserForm" (ngSubmit)="onFormSubmitReactive()">
+        <div class="form-group">
+          <label>Name:</label>
+          <input class="form-control" formControlName="UserName" type="text">
+        </div>
+        <div *ngIf="UserName?.errors && isValidFormSubmittedReactive != null && !isValidFormSubmittedReactive" [ngClass] = "'error'" class="alert alert-danger">
+          <div *ngIf="UserName?.errors?.['required']"> UserName required. </div>
+          <div *ngIf="UserName?.errors?.['minlength']">  Name must be at least 5 characters long. </div>
+          <div *ngIf="UserName?.errors?.['maxlength']"> Name can be max 10 characters long.</div>	
+        </div>
+        <div class="form-group">
+          <label>City:</label>
+          <input class="form-control" formControlName="cityName" type="text">
+        </div>
+        <div *ngIf="cityName?.errors && isValidFormSubmittedReactive != null && !isValidFormSubmittedReactive" [ngClass] = "'error'" class="alert alert-danger">
+          <div *ngIf="cityName?.errors?.['required']"> 
+            CityName required. 
+          </div>			  
+          <div *ngIf="cityName?.errors?.['minlength']"> 
+            CityName must be at least 3 characters long.
+          </div>	
+          <div *ngIf="cityName?.errors?.['maxlength']"> 
+            CityName can be max 8 characters long.
+          </div>	
+        </div>
+        <button type="submit"  class="btn btn-primary">Save</button>
+      </form> 
+      </div>
+    </div>
+  </div>
+  <div class="col-lg-12 col-md-12">
+    <div class="card">
+      <div class="card-header border-botto">
+        <h3 class="card-title">Server Side Validation</h3>
+      </div>
+      <div class="card-body">
+        <form>
+          <div class="form-row">
+            <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12 mb-3">
+              <label for="validationServer01">First name</label>
+              <input type="text" class="form-control is-valid" id="validationServer01" value="Mark" required>
+              <div class="valid-feedback">Looks good!</div>
+            </div>
+            <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12 mb-3">
+              <label for="validationServer02">Last name</label>
+              <input type="text" class="form-control is-valid" id="validationServer02" value="Otto" required>
+              <div class="valid-feedback">Looks good!</div>
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12 mb-3">
+              <label for="validationServer03">City</label>
+              <input type="text" class="form-control is-invalid" id="validationServer03"
+                aria-describedby="validationServer03Feedback" required>
+              <div id="validationServer03Feedback" class="invalid-feedback">Please provide a valid city.</div>
+            </div>
+            <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12 mb-3">
+              <label for="validationServer04">State</label>
+              <select class="form-select select2 form-control is-invalid" id="validationServer04"
+                aria-describedby="validationServer04Feedback" required>
+                <option selected disabled value="">Choose...</option>
+                <option>...</option>
+              </select>
+              <div id="validationServer04Feedback" class="invalid-feedback">Please select a valid state.</div>
+            </div>
+            <div class="col-xl-3 col-lg-3 col-md-12 col-sm-12 mb-3">
+              <label for="validationServer05">Zip</label>
+              <input type="text" class="form-control is-invalid" id="validationServer05"
+                aria-describedby="validationServer05Feedback" required>
+              <div id="validationServer05Feedback" class="invalid-feedback">Please provide a valid zip.</div>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="ckbox">
+              <input type="checkbox" id="invalidCheck2" required>
+              <span class="text-13">I agree terms and conditions</span>
+            </label>
+          </div>
+          <button class="btn btn-primary" type="submit">Submit form</button>
+        </form>
+      </div>
+    </div>
+  </div>
+  <div class="col-lg-12 col-md-12">
+    <div class="card">
+      <div class="card-header border-bottom">
+        <h3 class="card-title">Supported Elements</h3>
+      </div>
+      <div class="card-body">
+        <form class="was-validated">
+          <div class="mb-3">
+            <label for="validationTextarea" class="form-label">Textarea</label>
+            <textarea class="form-control is-invalid" id="validationTextarea" placeholder="Required example textarea"
+              required></textarea>
+            <div class="invalid-feedback">
+              Please enter a message in the textarea.
+            </div>
+          </div>
+
+          <div class="form-check mb-3">
+            <input type="checkbox" class="form-check-input" id="validationFormCheck1" required>
+            <label class="form-check-label" for="validationFormCheck1">Check this checkbox</label>
+            <div class="invalid-feedback">Example invalid feedback text</div>
+          </div>
+
+          <div class="form-check">
+            <input type="radio" class="form-check-input" id="validationFormCheck2" name="radio-stacked" required>
+            <label class="form-check-label" for="validationFormCheck2">Toggle this radio</label>
+          </div>
+          <div class="form-check mb-3">
+            <input type="radio" class="form-check-input" id="validationFormCheck3" name="radio-stacked" required>
+            <label class="form-check-label" for="validationFormCheck3">Or toggle this other radio</label>
+            <div class="invalid-feedback">More example invalid feedback text</div>
+          </div>
+
+          <div class="mb-3">
+            <select class="form-select" required aria-label="select example">
+              <option value="">Open this select menu</option>
+              <option value="1">One</option>
+              <option value="2">Two</option>
+              <option value="3">Three</option>
+            </select>
+            <div class="invalid-feedback">Example invalid select feedback</div>
+          </div>
+
+          <div class="mb-3">
+            <input type="file" class="form-control" aria-label="file example" required>
+            <div class="invalid-feedback">Example invalid form file feedback</div>
+          </div>
+
+          <div class="mb-3">
+            <button class="btn btn-primary" type="submit" disabled>Submit form</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- ROW CLOSED -->

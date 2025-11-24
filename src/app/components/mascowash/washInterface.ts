@@ -1,0 +1,163 @@
+export interface iMasterLc {
+  masterLcId;
+  masterLcFileNo;
+  unitId;
+  buyerId;
+  styleId;
+  jobId;
+  piNumber;
+  piDate;
+  mpo;
+  fileNo;
+  concernPersonId;
+  designation;
+  itemDetails;
+  qty;
+  uom;
+  lcNo;
+  lcDate;
+  shipmentDate;
+  expireDate;
+  lcValue;
+  currencyId;
+  exchangeRate;
+  lcBankId;
+  lcBranchId;
+  udno;
+  lastShipDate;
+  checkData;
+  discountper;
+  consumeper;
+  tenor;
+  masterLcNo;
+}
+
+export interface iB2bLc {
+  b2bLcId;
+  masterLcId;
+  masterLcNo;
+  lcDate;
+  lcValue;
+  piNumber;
+  supplierName;
+  piDate;
+  mpo;
+  checkData;
+  masterLcConcern;
+  masterLcConcernCode;
+  buyerId;
+  buyerName;
+  hiddenbuyerid;
+  hiddenConcernPersonId;
+  b2BLCFTT;
+  b2bLcDate;
+  shipmentDate;
+  expireDate;
+  exchangeRate;
+  b2bSLNo;
+  itemDetails;
+  b2bLcQty;
+  uom;
+  b2bLcValue;
+  currencyId;
+  discount;
+  b2bSupplierId;
+  paymentType;
+  hsCode;
+  udNo;
+  b2bLcBankId;
+  b2bLcBranchId;
+  b2bConcern;
+  billOfEntryMushokNo;
+  mushokBillDate;
+  b2bTenor;
+  b2bLcDetailId;
+  paidDuty;
+}
+export interface iTTFTT {
+  cashLcMasterId;
+  cashLcDetailId;
+  cashLcFileNo;
+  amendmentNo;
+  amendmentDate;
+  amendmentDateCashLcNoWise;
+  supplierId;
+  piNo;
+  piDate;
+  mpoNo;
+  paymentType;
+  ttNo;
+  date;
+  bankId;
+  branchId;
+  value;
+  currencyId;
+  tenor;
+  multiSelect;
+  lcfttNo;
+  totalQty;
+  totalValue;
+  shipmentDate;
+  expireDate;
+  exchangeRate;
+  companyId;
+}
+export interface iADATE {
+  adId;
+  value;
+  masterLcDate;
+  b2bLcId;
+  b2BLcDate;
+  shipmentDate;
+  expireDate;
+  supplierId;
+  piNo;
+  piDate;
+  mpoNo;
+  mpoDate;
+  etdDate;
+  actualDispatchDate;
+  etaDate;
+  actualArrivalDate;
+  ttDate;
+  forwardingDate;
+  customerClearanceDate;
+}
+export interface iMPORTCost {
+  iCostId;
+  supplierId;
+  piNo;
+  mpoNo;
+  totalPaidDuty;
+  totalPaidCurrencyId;
+  totalCNFCost;
+  totalCNFCurrencyId;
+  miscellaneousCost;
+  miscellaneousCurrencyId;
+  localTransportCost;
+  localTransportCurrencyId;
+  demmurage;
+  demmurageCurrencyId;
+}
+export interface ICAction {
+  id;
+  masterLcId;
+  masterLcDate;
+  b2BLcId;
+  b2BLcDate;
+  supplierId;
+  piNo;
+  mpoNo;
+  comments;
+  remarks;
+}
+export interface IReq {
+  id;
+  requestLetterFor;
+  reqSLNo;
+}
+export interface ITenor {
+  id;
+  tenor;
+  isActive;
+}

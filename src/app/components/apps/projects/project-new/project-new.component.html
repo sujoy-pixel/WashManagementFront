@@ -1,0 +1,215 @@
+<app-page-header [title]="'Project-new'" [items]="['Apps', 'Projects']" [active_item]="'Project-new'"></app-page-header>
+
+<!--ROW OPENED-->
+<div class="row">
+    <div class="col-lg-12 col-md-12">
+        <div  class="card">
+            <div class="card-header border-bottom">
+                <h4 class="mb-0">Project Details</h4>
+            </div>
+            <div class="card-body p-0 create-project-main">
+                <div class="row p-5 border-bottom">
+                    <div class="col-sm-12 col-md-12 col-xl-3">
+                        <div class="form-group">
+                            <label for="project-name" class="form-label text-muted">Project Name:</label>
+                            <div class="input-group">
+                                <input id="project-name" type="text" class="form-control text-dark" placeholder="Enter Project Name">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-12 col-md-12 col-xl-3">
+                        <div class="form-group">
+                            <label for="project-start-date" class="form-label text-muted">Project Date:</label>
+                            <div id="ps-datepicker" class="input-group date" data-date-format="dd-mm-yyyy">
+                                <span class="input-group-addon input-group-text bg-primary-transparent"><i class="fe fe-calendar text-primary-dark"></i></span>
+                                <input id="project-start-date" class="form-control" type="text" (click)="a.toggle()" [(ngModel)]="model" ngbDatepicker #a="ngbDatepicker" placeholder="Select Start Date"/>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-12 col-md-12 col-xl-3 end-date-container">
+                        <div class="form-group">
+                            <label for="project-end-date" class="form-label text-muted">End Date:</label>
+                            <div id="pe-datepicker" class="input-group date" data-date-format="dd-mm-yyyy">
+                                <span class="input-group-addon input-group-text bg-primary-transparent"><i class="fe fe-calendar text-primary-dark"></i></span>
+                                <input id="project-end-date" class="form-control" type="text" (click)="b.toggle()" [(ngModel)]="model1" ngbDatepicker #b="ngbDatepicker" placeholder="Select End Date"/>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-12 col-md-12 col-xl-3 no-date-checkbox">
+                        <div class="form-group">
+                            <label class="custom-control custom-checkbox end-date-checkbox-container">
+                                <input type="checkbox" class="custom-control-input end-date-checkbox" value="option2">
+                                <span class="custom-control-label">No End date.</span>
+                            </label>
+                        </div>
+                    </div>
+                    <div class="col-sm-12 col-md-12 col-xl-4">
+                        <div class="form-group">
+                            <label for="project-category" class="form-label text-muted">Project Category:</label>
+                            <ng-select id="project-category" placeholder="Choose Type...">
+                                <ng-option value="sample">Nonumy</ng-option>
+                                <ng-option value="sample">Sea</ng-option>
+                                <ng-option value="sample">Vero</ng-option>
+                                <ng-option value="sample">Dolore</ng-option>
+                                <ng-option value="sample">Lorem</ng-option>
+                                <ng-option value="sample">Eos</ng-option>
+                            </ng-select>
+                        </div>
+                    </div>
+                    <div class="col-sm-12 col-md-12 col-xl-4">
+                        <div class="form-group">
+                            <label for="project-department" class="form-label text-muted">Department:</label>
+                            <ng-select id="project-department" data-placeholder="Choose Type...">
+                                <ng-option value="sample">Sales</ng-option>
+                                <ng-option value="sample">Marketing</ng-option>
+                                <ng-option value="sample">Finance</ng-option>
+                                <ng-option value="sample">Stocks</ng-option>
+                                <ng-option value="sample">Medical</ng-option>
+                                <ng-option value="sample">Human Resources</ng-option>
+                            </ng-select>
+                        </div>
+                    </div>
+                    <div class="col-sm-12 col-md-12 col-xl-4">
+                        <div class="form-group">
+                            <label class="form-label text-muted">Client: </label>
+                            <ng-select placeholder="Select Client">
+                                <ng-option value="1">Angeline Julliet</ng-option>
+                                <ng-option value="2">Helena Rose</ng-option>
+                                <ng-option value="13">Daniel Obrien</ng-option>
+                                <ng-option value="15">Jorah Randy</ng-option>
+                                <ng-option value="3">Emma Watson</ng-option>
+                                <ng-option value="5">Bonny Benett</ng-option>
+                                <ng-option value="7">Jessie Spears</ng-option>
+                                <ng-option value="9">Skyler Hilda</ng-option>
+                                <ng-option value="11">Randy Orton</ng-option>
+                                <ng-option value="14">Benjamin Button</ng-option>
+                            </ng-select>
+                        </div>
+                    </div>
+                    <div class="col-sm-12 col-md-12 col-xl-6">
+                        <label class="form-label text-muted">Project Summary: </label>
+                        <div class="form-group">
+                            <form [formGroup]="form1">
+                                <div class="editor">
+                                    <ngx-editor-menu class="border-1" [editor]="editor1" [toolbar]="toolbar1">
+                                    </ngx-editor-menu>
+                                    <ngx-editor [editor]="editor1" formControlName="editorContent">
+                                    </ngx-editor>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                    <div class="col-sm-12 col-md-12 col-xl-6">
+                        <label class="form-label text-muted">Project Notes: </label>
+                        <div class="form-group">
+                            <form [formGroup]="form2">
+                                <div class="editor">
+                                    <ngx-editor-menu class="border-1" [editor]="editor2" [toolbar]="toolbar2">
+                                    </ngx-editor-menu>
+                                    <ngx-editor [editor]="editor2" formControlName="editorContentProject">
+                                    </ngx-editor>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                    <div class="col-sm-12 col-md-12 col-xl-12">
+                        <label class="form-label text-muted">Assign To: </label>
+                        <div class="form-group">
+                            <ul>
+                                <li class="select-client">
+                                    <ng-select [items]="withAvatar" [(ngModel)]="withAvatarList" [multiple]="true" bindLabel="name" bindValue="name">
+                                        <ng-template ng-label-tmp let-item="item">
+                                         <span> <img class="rounded-circle avatar-sm me-2" [src]="item.avatar" />{{item.name}}</span>
+                                        </ng-template>
+                                      </ng-select>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="row p-5 border-bottom">
+                    <div class="col-xl-12">
+                        <h6 class="mb-0 d-flex other-details" (click)="OtherDetails.classList.toggle('d-none')">Other Details<i class="fe fe-chevron-down down-arrow fs-15"></i><i class="fe fe-chevron-up up-arrow d-none fs-15"></i></h6>
+                        <div #OtherDetails class="row other-details-main d-none mt-4">
+                            <div class="col-sm-12 col-md-12 col-xl-12">
+                                <label class="form-label text-muted">Add Files: </label>
+                                <div class="form-group">
+                                    <form method="post">
+                                        <ngx-dropzone (change)="onSelect($event)">
+                                            <ngx-dropzone-label>Drop it, Here!</ngx-dropzone-label>
+                                            <ngx-dropzone-preview *ngFor="let f of files" [removable]="true" (removed)="onRemove(f)">
+                                              <ngx-dropzone-label>{{ f.name }} ({{ f.type }})</ngx-dropzone-label>
+                                            </ngx-dropzone-preview>
+                                          </ngx-dropzone>
+                                    </form>
+                                </div>
+                            </div>
+                            <div class="col-sm-12 col-md-12 col-xl-4">
+                                <div class="form-group">
+                                    <label class="form-label text-muted">Currency:</label>
+                                    <div class="input-group">
+                                        <ng-select id="currency-type" placeholder="Choose Type...">
+                                            <ng-option value="day">USD($)</ng-option>
+                                            <ng-option value="day">GBP(£)</ng-option>
+                                            <ng-option value="day">EUR(€)</ng-option>
+                                            <ng-option value="day">INR(₹)</ng-option>
+                                        </ng-select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-sm-12 col-md-12 col-xl-4">
+                                <div class="form-group">
+                                    <label class="form-label text-muted">Budget:</label>
+                                    <input type="number" class="form-control" placeholder="e.g. 1000" min="0">
+                                </div>
+                            </div>
+                            <div class="col-sm-12 col-md-12 col-xl-4">
+                                <div class="form-group">
+                                    <label class="form-label text-muted">Estimated Hours:</label>
+                                    <input type="number" class="form-control" placeholder="e.g. 700" min="0">
+                                </div>
+                            </div>
+                            <div class="col-sm-12 col-md-12 col-xl-4 mt-2">
+                                <div class="form-group">
+                                    <label class="custom-control custom-checkbox">
+                                        <input type="checkbox" class="custom-control-input">
+                                        <span class="custom-control-label">Manual Time Logs.</span>
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="col-sm-12 col-md-12 col-xl-4 mt-2">
+                                <div class="form-group">
+                                    <label class="custom-control custom-checkbox client-checkbox-container">
+                                        <input type="checkbox" class="custom-control-input client-checkbox">
+                                        <span class="custom-control-label">Client Can Manage Tasks Of This Project.</span>
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="col-sm-12 col-md-12 col-xl-4 mt-2 d-none notifications-container">
+                                <div class="form-group">
+                                    <label class="custom-control custom-checkbox">
+                                        <input type="checkbox" class="custom-control-input">
+                                        <span class="custom-control-label">Task Notifications To Client.</span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row p-5">
+                    <div class="btn-list text-end">
+                        <button class="btn btn-outline-danger">
+                            <i class="fe fe-x-circle"></i>
+                            Cancel
+                        </button>
+                        <button class="btn btn-primary">
+                            <i class="fe fe-check-circle"></i>
+                            Save
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!--ROW CLOSED-->

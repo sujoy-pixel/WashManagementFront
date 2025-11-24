@@ -1,0 +1,11 @@
+::ng-deep {
+  @media screen and (max-width:568px) {
+    .flex-column[orientation="vertical"] {
+      flex-direction: row !important;
+
+      .nav-link {
+        padding: 5px !important;
+      }
+    }
+  }
+}

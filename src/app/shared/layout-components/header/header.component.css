@@ -1,0 +1,104 @@
+.app-header {
+  position: fixed;
+  left: 0;
+  right: 0;
+  top: 0;
+  width: 100%;
+  display: flex;
+  z-index: 99 !important;
+  background: #ffffff;
+  transition: all ease 0.2s;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1019607843), 0 8px 10px -6px rgba(0, 0, 0, 0.1019607843);
+}
+
+.header .school-title span {
+  font-weight: 700;
+  color: brown;
+}
+
+li::marker {
+  color: transparent;
+}
+
+.main-header-notification.show > a::after, .main-header-message.show > a::after, .drop-flag.show > a::after {
+  display: none;
+}
+
+.dropdown-toggle::after {
+  display: none;
+}
+
+::ng-deep .sidenav-toggled .open-toggle {
+  display: none;
+}
+::ng-deep .sidenav-toggled .close-toggle {
+  display: block;
+  color: #000;
+}
+::ng-deep .dark-mode .btn-check:checked + .btn-country,
+::ng-deep .dark-mode .btn-country.active,
+::ng-deep .dark-mode .btn-country:active {
+  color: #eee;
+  background-color: #2a2e3f;
+}
+::ng-deep .dark-mode .search-result,
+::ng-deep .dark-mode .serach-result-empty {
+  background: var(--dark-body) !important;
+}
+::ng-deep .rtl .modal-header .close {
+  margin: -1rem auto -1rem 1rem !important;
+}
+::ng-deep .rtl app-header .input-group > :not(:first-child):not(.dropdown-menu):not(.valid-tooltip):not(.valid-feedback):not(.invalid-tooltip):not(.invalid-feedback) {
+  border-top-right-radius: 7px;
+  border-bottom-right-radius: 7px;
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+}
+
+.search-result .header-list-group:hover {
+  background-color: var(--primary-bg-color);
+  color: #fff;
+}
+
+.list-group-item.no-result {
+  display: none;
+}
+
+.list-group-item.no-result.show {
+  display: block;
+}
+
+.p-absolute {
+  position: absolute;
+}
+
+.border-start-end-top-0 {
+  border-left: 0 !important;
+  border-top: 0 !important;
+  border-right: 0 !important;
+}
+
+.br-0 {
+  border-radius: 0 !important;
+}
+
+.list-group .list-group-item:last-child {
+  border-bottom-right-radius: 0.25rem !important;
+  border-bottom-left-radius: 0.25rem !important;
+}
+
+.serach-result-empty {
+  z-index: 99;
+}
+
+input:not(.dark-mode)::-moz-placeholder {
+  color: #333;
+}
+
+input:not(.dark-mode)::placeholder {
+  color: #333;
+}
+
+.search-result {
+  z-index: 9999;
+}/*# sourceMappingURL=header.component.css.map */

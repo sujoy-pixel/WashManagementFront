@@ -1,0 +1,43 @@
+<app-page-header [title]="'Range-slider'" [items]="['Ui-elements']" [active_item]="'Range-slider'"></app-page-header>
+
+<!--div-->
+<div class="card">
+    <div class="card-header border-bottom-0">
+        <div class="card-title">
+            Range Slider (Modern Skin)
+        </div>
+    </div>
+    <div class="card-body">
+        <div class="row row-sm">
+            <div class="col-lg-12">
+                <ngx-slider [(value)]="value" [options]="options"></ngx-slider>
+            </div>
+            <div class="col-lg-12">
+                <ngx-slider [(value)]="value6" [options]="options6"></ngx-slider>
+            </div>
+            <div class="col-lg-12">
+                <ngx-slider [(value)]="value5" [options]="options5"></ngx-slider>
+            </div>
+            <div class="col-lg-12">
+                <ngx-slider [(value)]="value7" [options]="options7"></ngx-slider>
+            </div>
+            <div class="col-lg-12 mt-4">
+                <ngx-slider [(value)]="value1" [(highValue)]="highValue1" [options]="options1"></ngx-slider>
+            </div>
+            <div class="col-lg-12 mt-4">
+                <ngx-slider [(value)]="minValue3" [(highValue)]="maxValue3" [options]="options3"></ngx-slider>
+            </div>
+            <div class="col-lg-12 mt-4">
+                <ngx-slider [(value)]="minValue4" [(highValue)]="maxValue4" [options]="options4"></ngx-slider>
+            </div>
+            <div class="col-lg-12 mt-4">
+                <ngx-slider [(value)]="value2" [options]="options2"></ngx-slider>
+            </div>
+            <div class="col-lg-12 mt-4">
+                <ngx-slider [(value)]="value8" [options]="options8"></ngx-slider>
+            </div>
+            
+        </div>
+    </div>
+</div>
+<!--/div-->

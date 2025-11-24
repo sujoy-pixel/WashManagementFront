@@ -1,0 +1,157 @@
+<app-page-header [title]="'Rating'" [items]="['Components']" [active_item]="'Rating'"></app-page-header>
+
+<!-- Row -->
+<div class="row row-cards">
+  <div class="col-md-6">
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title">
+          Star Rating
+        </div>
+      </div>
+      <div class="card-body">
+        <ngb-rating [rate]="8"></ngb-rating>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-6">
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title">
+          Heart Rating
+        </div>
+      </div>
+      <div class="card-body heart-rating">
+        <button class="btn btn-sm btn-outline-primary me-2" (click)="currentRate = 1.35">1.35</button>
+        <button class="btn btn-sm btn-outline-primary me-2" (click)="currentRate = 4.72">4.72</button>
+        <ng-template #t let-fill="fill">
+          <span class="star" [class.full]="fill === 100">
+            <span class="half" [style.width.%]="fill">&hearts;</span>&hearts;
+          </span>
+        </ng-template>
+
+        <ngb-rating [(rate)]="currentRate" [starTemplate]="t" [readonly]="true" [max]="5"></ngb-rating>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-6">
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title">
+          Control Enable State
+        </div>
+      </div>
+      <div class="card-body">
+
+        <div class="mb-3">
+          <ngb-rating [formControl]="ctrl"></ngb-rating>
+          <div class="form-text small">
+            <div *ngIf="ctrl.valid" class="text-success">Thanks!</div>
+            <div *ngIf="ctrl.invalid" class="text-danger">Please rate us</div>
+          </div>
+        </div>
+
+        <hr>
+        <pre>Model: <b>{{ ctrl.value }}</b></pre>
+        <button class="btn btn-sm btn-outline-{{ ctrl.disabled ? 'danger' : 'success'}} me-2" (click)="toggle()">
+          {{ ctrl.disabled ? "control disabled" : " control enabled" }}
+        </button>
+        <button class="btn btn-sm btn-outline-primary me-2" (click)="ctrl.setValue(null)">Clear</button>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-6">
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title">
+          Events and readonly ratings
+        </div>
+      </div>
+      <div class="card-body">
+        <ngb-rating [(rate)]="selected" (hover)="hovered=$event" (leave)="hovered=0" [readonly]="readonly"></ngb-rating>
+        <hr>
+        <pre>Selected: <b>{{selected}}</b>
+Hovered: <b>{{hovered}}</b></pre>
+        <button class="btn btn-sm btn-outline-{{readonly ? 'danger' : 'success'}}" (click)="readonly = !readonly">
+          {{ readonly ? "readonly" : "editable"}}
+        </button>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-6">
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title">
+          Custom Rating
+        </div>
+      </div>
+      <div class="card-body custom-rating">
+        <ngb-rating [rate]="5">
+          <ng-template let-fill="fill" let-index="index">
+            <span class="star" [class.filled]="fill === 100" [class.bad]="index < 3">&#9733;</span>
+          </ng-template>
+        </ngb-rating>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-6">
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title">
+            Custom Rating Max 5
+        </div>
+      </div>
+      <div class="card-body custom-rating">
+        <ngb-rating [rate]="3" [max]="5" >
+            <ng-template let-fill="fill" let-index="index">
+              <span class="star" [class.filled]="fill === 100" [class.bad]="index < 2">&#9733;</span>
+            </ng-template>
+          </ngb-rating>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- End Row -->
+
+<div class="row">
+
+
+  <!-- <div class="col-md-6">
+
+    <div class="card card-primary">
+      <div class="card-header"><h3 class="card-title">Status Rating</h3></div>
+      <div class="card-body">
+        <bar-rating name="rating" [(rate)]="StatusRate" [max]="4" [theme]="'Status'" [showText]="true"
+          [titles]="['No Rating', 'Bad', 'Mediocre' , 'Good', 'Awesome']"></bar-rating>
+      </div>
+    </div>
+    </div> -->
+  <div class="col-md-6">
+    <div class="card card-primary">
+      <div class="card-header"> <h3 class="card-title"> Square Rating</h3></div>
+      <div class="card-body">
+        <bar-rating [(rate)]="squareRate" [max]="5" [theme]="'square'"></bar-rating>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-6">
+
+    <div class="card">
+      <div class="card-header"><h3 class="card-title">
+        Horizontal Rating
+      </h3></div>
+      <div class="card-body">
+        <bar-rating [(rate)]="horiRate" [max]="10" [theme]="'horizontal'" [showText]="true"></bar-rating>
+      </div>
+    </div>
+  </div>
+    <div class="col-md-6">
+    <div class="card card-warning">
+      <div class="card-header"><h3 class="card-title">Vertical Rating</h3></div>
+      <div class="card-body">
+        <bar-rating [(rate)]="vertRate" [max]="10" [theme]="'vertical'" [showText]="true"></bar-rating>
+      </div>
+    </div>
+  </div>
+
+  </div>

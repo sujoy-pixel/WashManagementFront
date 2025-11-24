@@ -1,0 +1,5 @@
+@media screen and (max-width: 767.9px) {
+  ::ng-deep .horizontal .breadcrumb-header {
+    margin-top: 64px;
+  }
+}/*# sourceMappingURL=page-header.component.css.map */

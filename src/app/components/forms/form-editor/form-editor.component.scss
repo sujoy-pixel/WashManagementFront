@@ -1,0 +1,141 @@
+::ng-deep {
+
+  ngx-toggle-command svg,
+  .NgxEditor__MenuItem svg {
+    fill: #000
+  }
+  .NgxEditor__Popup--Col input{
+    border: 1px solid #eaedf1;
+  }
+
+  .NgxEditor__MenuBar {
+    background: transparent !important;
+    border: 1px solid rgb(234 237 241) !important;
+  }
+
+  .NgxEditor {
+    background: transparent !important;
+    border: 1px solid rgb(234 237 241) !important;
+  }
+
+  .dark-mode {
+
+    ngx-toggle-command svg,
+    .NgxEditor__MenuItem svg {
+      fill: #eee
+    }
+    .NgxEditor__Popup--Col input{
+      border: 1px solid var(--dark-border);
+      background: transparent;
+    }
+    .NgxEditor__Popup {
+      box-shadow: #acacad26 0 2px 6px 2px !important;
+      background-color: var(--dark-body) !important;
+      button{
+        color: var(--primary-bg-color);
+      }
+    }
+    .NgxEditor__Placeholder:before {
+      color: #fff;
+    }
+    .NgxEditor,
+    .NgxEditor__MenuBar {
+      border: 1px solid var(--dark-border) !important;
+      color: #fff;
+    }
+
+    .NgxEditor__MenuItem:hover svg,
+    .NgxEditor__MenuItem.NgxEditor__MenuItem--Active svg {
+      fill: #000 !important;
+    }
+
+    .NgxEditor__Dropdown:hover,
+    .NgxEditor__Dropdown.NgxEditor__Dropdown--Selected {
+      color: #000;
+    }
+
+    .NgxEditor__Dropdown:hover .NgxEditor__Dropdown--DropdownMenu,
+    .NgxEditor__Dropdown.NgxEditor__Dropdown--Selected .NgxEditor__Dropdown--DropdownMenu {
+      background-color: var(--dark-body);
+      color: #eee;
+    }
+
+    .ql-snow .ql-picker {
+      color: #eee;
+    }
+
+    .ql-snow .ql-fill,
+    .ql-snow .ql-stroke.ql-fill {
+      fill: #eee;
+    }
+
+    .ql-editor.ql-blank::before {
+      color: #ccc;
+    }
+
+    .angular-editor .angular-editor-wrapper .angular-editor-textarea {
+      border: 1px solid var(--dark-border) !important;
+    }
+
+    .angular-editor-toolbar {
+      background-color: transparent !important;
+      border: 1px solid var(--dark-border) !important;
+    }
+
+    .angular-editor-toolbar .angular-editor-toolbar-set .angular-editor-button {
+      background-color: transparent !important;
+      border: 1px solid var(--dark-border) !important;
+      color: #fff;
+    }
+
+    .angular-editor-button.active {
+      color: #000 !important;
+    }
+
+    .ae-font .ae-picker-label {
+      color: #fff;
+      background-color: transparent;
+      border: 1px solid var(--dark-border);
+    }
+
+    .ae-font .ae-picker-label:before {
+      background: none;
+    }
+
+    .ae-font .ae-picker-label:hover,
+    .ae-font .ae-picker-label:hover:before {
+      background: transparent;
+    }
+
+    ae-select:hover {
+      background-color: transparent !important;
+    }
+
+    .ae-font .ae-picker-options {
+      button {
+        color: #eee;
+      }
+
+      background-color: var(--dark-body);
+      border: 1px solid var(--dark-body);
+    }
+    .ae-font.ae-expanded .ae-picker-options{
+      border-color: var(--dark-border) !important;
+    }
+  }
+  .ae-font .ae-picker-options .ae-picker-item.focused, .ae-font .ae-picker-options .ae-picker-item:hover{
+    background-color: var(--primary-bg-color) !important;
+    color: #fff;
+  }
+
+  .angular-editor-wrapper .angular-editor-textarea {
+    outline: none;
+  }
+
+  .NgxEditor__Dropdown .NgxEditor__Dropdown--Item:hover,
+  .NgxEditor__Dropdown .NgxEditor__Dropdown--Active {
+    background-color: var(--primary-bg-color) !important;
+  }
+
+
+}

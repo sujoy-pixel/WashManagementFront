@@ -1,0 +1,96 @@
+<!-- PAGE -->
+<div class="page">
+  <div>
+    <!-- CONTAINER OPEN -->
+    <!-- <div class="col col-login mx-auto text-center">
+      <a routerLink="/" class="text-center">
+        <img src="./assets/images/brand/logo.png" class="header-brand-img" alt="">
+      </a>
+    </div> -->
+    <div class="container-login100">
+      <!-- <div class="wrap-login100 p-0"> -->
+        <div class="card-body login_container front">
+          <div class="img_holder">                    
+            <img src="../../../../assets/images/bg_com2.jpg" alt="">  
+            <!-- <div class="welcome_text text-center">
+                <h1>WELCOME TO <br> MASCO COMMERCIAL</h1>
+            </div> -->
+        </div>
+          <div class="text_holder login_form">
+            <form class="login100-form validate-form" [formGroup]="loginForm">
+              <div class="text-center d-flex justify-content-center">
+  
+                <a routerLink="/" class="text-center">
+                  <img src="./assets/images/brand/logo-2.png" class="header-brand-img" alt="">
+                </a>
+              </div>
+              <span class="login100-form-title">
+                Login
+              </span>
+              <div class="wrap-input100 validate-input" data-bs-validate="Valid username is required">
+                <input class="input100" placeholder="Enter your UserId" type="text" required=""
+                  placeholder="User Id" formControlName="username">
+                <span class="focus-input100"></span>
+                <span class="symbol-input100">
+                  <i class="zmdi zmdi-email" aria-hidden="true"></i>
+                </span>
+              </div>
+              <!-- <div *ngIf="loginForm.controls.username?.touched && loginForm.controls.username.errors?.required"
+                class="text text-danger mt-1">
+                Email is required
+              </div> -->
+              <!-- <div *ngIf="loginForm.controls.username?.touched && loginForm.controls.username.errors?.email"
+                class="text text-danger mt-1">
+                Invalid Email
+                [disabled]="!loginForm.valid || authService.showLoader" 
+              </div> -->
+              <div class="wrap-input100 validate-input" data-bs-validate="Password is required">
+                <input class="input100" placeholder="Enter your password" type="password" formControlName="password">
+                <span class="focus-input100"></span>
+                <span class="symbol-input100">
+                  <i class="zmdi zmdi-lock" aria-hidden="true"></i>
+                </span>
+              </div>
+              <div *ngIf="loginForm.controls.password?.touched && loginForm.controls.password.errors?.required"
+                class="text text-danger mt-1">
+                Password is required
+              </div>
+              <div class="text-end pt-1">
+                <p class="mb-0"><a routerLink="/auth/forgot-password" class="text-primary ms-1">Forgot Password?</a></p>
+              </div>
+              <div class="container-login100-form-btn">
+                <button class="login100-form-btn btn-primary" [class.loader--text]="authService.showLoader"
+                  
+                  (click)="login()">
+                  Login
+                </button>
+              </div>
+              <div class="text-center pt-3">
+                <p class="text-dark mb-0">Not a member?<a routerLink="/auth/register" class="text-primary ms-1">Create an
+                    Account</a></p>
+              </div>
+            </form>
+          </div>
+        </div>
+        <!-- <div class="card-footer">
+          <div class="d-flex justify-content-center my-3">
+            <a (click)="loginGoogle()" href="javascript:void(0)" class="social-login  text-center me-4">
+              <i class="fa fa-google"></i>
+            </a>
+            <a (click)="loginFacebook()" href="javascript:void(0)" class="social-login  text-center me-4">
+              <i class="fa fa-facebook"></i>
+            </a>
+            <a (click)="loginTwitter()" href="javascript:void(0)" class="social-login  text-center">
+              <i class="fa fa-twitter"></i>
+            </a>
+          </div>
+        </div> -->
+      <!-- </div> -->
+    </div>
+    <!-- CONTAINER CLOSED -->
+  </div>
+</div>
+<!-- End PAGE -->
+<!-- <div class="">
+
+</div> -->

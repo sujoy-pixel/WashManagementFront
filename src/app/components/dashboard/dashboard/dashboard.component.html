@@ -1,0 +1,91 @@
+
+<!-- <h5 class="text-center mb-4 text-primary">📊 Dashboard Overview</h5> -->
+
+<!-- Full Width Summary & Charts -->
+<div class="container-fluid px-4"> <!-- Changed to container-fluid for full width -->
+    <!-- Summary Section -->
+    <!-- <div class="row justify-content-center mb-3">
+        <div class="col-md-8 d-flex flex-column align-items-center gap-2">
+            <div class="px-2 py-1 bg-primary text-white rounded-pill shadow-sm fw-semibold w-100 text-center">
+                Year: <span class="fw-bold">{{ currentYear }}</span>
+            </div>
+            <div class="px-2 py-1 bg-success text-white rounded-pill shadow-sm fw-semibold w-100 text-center">
+                Total Master LC No = <span class="fw-bold">{{ _TotalMasterLC }}</span>
+            </div>
+            <div class="px-2 py-1 bg-info text-white rounded-pill shadow-sm fw-semibold w-100 text-center">
+                Total B2B LC No = <span class="fw-bold">{{ _TotalB2BLC }}</span>
+            </div>
+        </div>
+    </div> -->
+<!-- Summary Section -->
+<!-- Summary Section with Round Boxes -->
+<div class="container-fluid px-4">
+    <div class="row justify-content-center mb-4">
+        <div class="col-lg-10">
+            <div class="row g-3">
+                <div class="col-md-4">
+                    <div class="bg-primary text-white rounded-pill shadow-sm fw-semibold text-center px-4 py-3">
+                        Year: <span class="fw-bold">{{ currentYear }}</span>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="bg-success text-white rounded-pill shadow-sm fw-semibold text-center px-4 py-3">
+                        Total Wash Qty = <span class="fw-bold">{{ _TotalMasterLC }}</span>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="bg-info text-white rounded-pill shadow-sm fw-semibold text-center px-4 py-3">
+                        Total Wash Qty = <span class="fw-bold">{{ _TotalB2BLC }}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+    <!-- Chart Section -->
+    <div class="row justify-content-center g-4">
+        <!-- Monthly Master LC Chart -->
+        <div class="col-lg-6 col-md-12">
+            <div class="card shadow-sm border-0 h-100">
+                <div class="card-body">
+                    <h5 class="card-title text-center mb-4">
+                        <span class="bg-secondary text-white px-4 py-2 rounded-1 shadow d-inline-block fw-semibold">
+                            🏢 Monthly Wash
+                        </span>
+                    </h5>
+                      
+                      
+                      
+                    <div style="position: relative; width: 100%; height: 350px;">
+                        <canvas baseChart [data]="barChartDataMaster" [options]="barChartOptions"
+                            [plugins]="[ChartDataLabels]" [type]="barChartType">
+                        </canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Monthly B2B LC Chart -->
+        <div class="col-lg-6 col-md-12">
+            <div class="card shadow-sm border-0 h-100">
+                <div class="card-body">
+  
+                    <h5 class="card-title text-center mb-4">
+                        <span class="bg-secondary text-white px-4 py-2 rounded-1 shadow d-inline-block fw-semibold">
+                            🏢 Monthly B2B LC                   
+                        </span>
+                    </h5>
+                      
+                    <!-- <h5 class="card-title text-center mb-4">🏢 Monthly B2B LC</h5> -->
+                    <div style="position: relative; width: 100%; height: 350px;">
+                        <canvas baseChart [data]="barChartDataB2B" [options]="barChartOptions"
+                            [plugins]="[ChartDataLabels]" [type]="barChartType">
+                        </canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

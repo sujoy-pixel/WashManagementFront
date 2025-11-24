@@ -1,0 +1,190 @@
+<app-page-header [title]="'Calendar'" [items]="['Apps']" [active_item]="'Calendar'"></app-page-header>
+
+<!-- ROW OPEN -->
+<div class="row">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">Calendar With different Color Events</h3>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-12 col-xl-3">
+                        <div id="external-events">
+                            <h4>Draggable Events</h4>
+                            <div mwlDroppable (drop)="externalDrop($event.dropData.event)" dragOverClass="drag-over">
+                                <div>
+                                    <p *ngIf="events.length === 0"><em>No events added</em></p>
+                                    <ul class="">
+                                        <li *ngFor="let event of events" mwlDraggable [dropData]="{event: event}"
+                                            [touchStartLongPress]="{ delay: 300, delta: 30 }" dragActiveClass="drag-active" class='{{event.cssClass}} fc-event fc-h-event fc-daygrid-event fc-daygrid-block-event sample-event'>
+                                            <a href="javascript:;" class="text-white" >
+                                                {{ event.title }}
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div id="custom-events" class="mt-6">
+                            <form>
+                                <h4>Custom Event</h4>
+                                <label class="mt-3">Event Title:</label>
+                                <div class="mg-b-30 mb-3">
+                                    <div class="input-group">
+                                        <input class="form-control" placeholder="your title here..." type="text">
+                                    </div>
+                                </div>
+                                <label>Event Date:</label>
+                                <div class="mg-b-30 mb-3">
+                                    <div class="input-group">
+                                        <div id="datePickerStyle1" class="input-group date" data-date-format="mm-dd-yyyy">
+                                            <span class="input-group-addon input-group-text bg-primary-transparent"><i class="fe fe-calendar text-primary-dark"></i></span>
+                                            <input class="form-control" id="bootstrapDatePicker" type="text" placeholder="DD/MM/YYYY"/>
+                                        </div>
+                                    </div>
+                                </div>
+                                <label>Event Type:</label>
+                                <div class="mg-b-30 mb-3">
+                                    <div class="form-group">
+                                        <ng-select placeholder="Choose Type..." tabindex="-1" aria-hidden="true">
+                                            <ng-option value="day">Birthday</ng-option>
+                                            <ng-option value="day">Anniversary</ng-option>
+                                            <ng-option value="day">Wedding Day</ng-option>
+                                            <ng-option value="day">Others</ng-option>
+                                        </ng-select>
+                                    </div>
+                                </div>
+                                <label>Reminder:</label>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="mg-b-30 mb-3">
+                                            <div class="form-group">
+                                                <ng-select placeholder="Choose one" tabindex="-1" aria-hidden="true">
+                                                    <ng-option value="day">1 day before</ng-option>
+                                                    <ng-option value="day">3 days before</ng-option>
+                                                    <ng-option value="day">5 days before</ng-option>
+                                                    <ng-option value="day">1 week before</ng-option>
+                                                </ng-select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <input class="form-control" id="tp3" placeholder="Set time" type="text">
+                                    </div>
+                                </div>
+                                <div class="wd-150 mg-b-30 ce-btn-group my-1">
+                                    <button class="btn btn-primary ce-add me-2">ADD</button>
+                                    <button class="btn btn-secondary ce-reset me-2">RESET</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                    <div class="col-md-12 col-xl-9">
+
+                        <div class="row text-center d-flex flex-wrap flex-column flex-md-row">
+                            <div class="col-md-3 text-start mb-2">
+                                <div class="btn-group">
+                                    <div class="btn btn-primary" mwlCalendarPreviousView [view]="view"
+                                        [(viewDate)]="viewDate" (viewDateChange)="closeOpenMonthViewDay()">
+                                        <i class="fa fa-chevron-left" aria-hidden="true"></i>
+                                    </div>
+                                    <div class="btn btn-primary" mwlCalendarNextView [view]="view"
+                                        [(viewDate)]="viewDate" (viewDateChange)="closeOpenMonthViewDay()">
+                                        <i class="fa fa-chevron-right" aria-hidden="true"></i>
+                                    </div>
+                                    <div class="btn btn-primary" mwlCalendarToday [(viewDate)]="viewDate">
+                                        Today
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4 mb-2">
+                                <h3>{{ viewDate | calendarDate:(view + 'ViewTitle'):'en' }}</h3>
+                            </div>
+                            <div class="col-md-5 text-end mb-2 overflow-auto">
+                                <div class="btn-group">
+                                    <div class="btn btn-primary mb-1" (click)="setView(CalendarView.Month)"
+                                        [class.active]="view === CalendarView.Month">
+                                        Month
+                                    </div>
+                                    <div class="btn btn-primary mb-1" (click)="setView(CalendarView.Week)"
+                                        [class.active]="view === CalendarView.Week">
+                                        Week
+                                    </div>
+                                    <div class="btn btn-primary mb-1" (click)="setView(CalendarView.Day)"
+                                        [class.active]="view === CalendarView.Day">
+                                        Day
+                                    </div>
+                                    <button class="btn btn-raised btn-primary float-end mb-1" (click)="addEvent()">
+                                        Add Event
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+
+                        <div class="row">
+                            <div class="col-12">
+
+                            </div>
+                        </div>
+                        <br />
+
+                        <div [ngSwitch]="view">
+                            <mwl-calendar-month-view *ngSwitchCase="CalendarView.Month" [viewDate]="viewDate"
+                                [events]="events" [activeDayIsOpen]="activeDayIsOpen" [refresh]="refresh"
+                                (dayClicked)="dayClicked($event.day)"
+                                (eventClicked)="handleEvent('Clicked', $event.event)"
+                                (eventTimesChanged)="eventTimesChanged($event)">
+                            </mwl-calendar-month-view>
+                            <mwl-calendar-week-view *ngSwitchCase="CalendarView.Week" [viewDate]="viewDate"
+                                [events]="events" [refresh]="refresh" [snapDraggedEvents]="false"
+                                (eventClicked)="handleEvent('Clicked', $event.event)"
+                                (eventTimesChanged)="eventDropped($event)">
+                            </mwl-calendar-week-view>
+                            <mwl-calendar-day-view *ngSwitchCase="CalendarView.Day" [viewDate]="viewDate"
+                                [events]="events" [refresh]="refresh" [snapDraggedEvents]="false"
+                                (eventClicked)="handleEvent('Clicked', $event.event)"
+                                (eventTimesChanged)="eventDropped($event)">
+                            </mwl-calendar-day-view>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- ROW CLOSED -->
+
+
+
+<ng-template #modalContent let-close="close">
+    <div class="modal-header">
+        <h5 class="modal-title">{{ modalData?.action }}</h5>
+        <button type="button" class="close" (click)="close()">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body">
+        <form action="#" class="form form-horizontal">
+            <div class="form-body">
+                <div class="form-group">
+                    <label>Event Title:</label>
+                    <input type="text" name="event-title" class="form-control" [(ngModel)]="modalData?.event.title"
+                        (keyup)="refresh.next(refresh)" autocomplete="off">
+                </div>
+                <div class="form-group">
+                    <label>Starts At:</label>
+                    <input class="form-control text-dark" type="text" name="flatpicker"
+                        [(ngModel)]="modalData?.event.start" (click)="d.toggle()" ngbDatepicker #d="ngbDatepicker"
+                        dateFormat="Y-m-dTH:i" altFormat="F j, Y H:i" placeholder="Select Date" />
+                </div>
+
+            </div>
+        </form>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-primary" (click)="close()">OK</button>
+    </div>
+</ng-template>

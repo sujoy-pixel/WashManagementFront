@@ -1,0 +1,40 @@
+::ng-deep app-rating .custom-rating .star {
+  font-size: 1.5rem;
+  color: #b0c4de;
+}
+::ng-deep app-rating .custom-rating .filled {
+  color: #1e90ff;
+}
+::ng-deep app-rating .custom-rating .bad {
+  color: #deb0b0;
+}
+::ng-deep app-rating .custom-rating .filled.bad {
+  color: #ff1e1e;
+}
+::ng-deep app-rating .heart-rating.card-body {
+  padding: 0 1.5rem;
+}
+::ng-deep app-rating .heart-rating .star {
+  position: relative;
+  display: inline-block;
+  font-size: 3rem;
+  color: #d3d3d3;
+}
+::ng-deep app-rating .heart-rating .full {
+  color: red;
+}
+::ng-deep app-rating .heart-rating .half {
+  position: absolute;
+  display: inline-block;
+  overflow: hidden;
+  color: red;
+}
+::ng-deep app-rating ngb-rating > span {
+  font-size: 2rem;
+  color: gold;
+}
+@media screen and (max-width: 374.98px) {
+  ::ng-deep app-rating ngb-rating > span {
+    font-size: 1.5rem;
+  }
+}/*# sourceMappingURL=rating.component.css.map */

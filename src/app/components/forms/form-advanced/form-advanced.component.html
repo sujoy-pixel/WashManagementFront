@@ -1,0 +1,389 @@
+<app-page-header [title]="'Form-advanced'" [items]="['Forms']" [active_item]="'Form-advanced'"></app-page-header>
+
+<!-- Row -->
+<div class="row">
+  <div class="col-md-12">
+    <div class="card">
+      <div class="card-header border-bottom">
+        <h3 class="card-title">Dropdowns Select</h3>
+      </div>
+      <div class="card-body">
+        <div class="example">
+          <div class="form-group">
+            <label class="form-label" for="default-dropdown">Default Select</label>
+            <ng-select [items]="withAvatar" [(ngModel)]="withAvatarList" bindLabel="name" bindValue="name">
+              <ng-template ng-label-tmp let-item="item">
+                <img height="15" width="15" [src]="item.avatar" />
+                {{item.name}}
+              </ng-template>
+            </ng-select>
+
+          </div>
+          <div class="form-group">
+            <label class="form-label">Select2 With Search</label>
+            <ng-select #select [items]="cities" [searchable]="false" [(ngModel)]="selectedCity" bindLabel="name"
+              bindValue="name">
+              <ng-template ng-header-tmp>
+                <input style="width: 100%; line-height: 24px" type="text"
+                  (input)="select.filter($any($event.target).value)" />
+              </ng-template>
+            </ng-select>
+
+          </div>
+          <div class="form-group">
+            <label class="form-label">Multi Select</label>
+            <ng-select [items]="multiSelect" bindLabel="name" bindValue="name" [groupBy]="groupByFn"
+              [groupValue]="groupValueFn" [multiple]="true" [(ngModel)]="multiSelectSelected">
+              <ng-template ng-optgroup-tmp let-item="item">
+                <span style="vertical-align: middle;">{{item.name}}</span>
+                <span class="ml-1 badge badge-secondary">{{item.total}}</span>
+              </ng-template>
+            </ng-select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Multiple Group Select</label>
+            <ng-select [items]="multiSelectGroup" bindLabel="name" groupBy="country" [multiple]="true" [closeOnSelect]="false"
+              [selectableGroup]="true" [selectableGroupAsModel]="false" [compareWith]="compareAccounts"
+              [(ngModel)]="multiSelectGroupSelected">
+              <ng-template ng-optgroup-tmp let-item="item">
+                {{item.country || 'Unnamed group'}}
+              </ng-template>
+            </ng-select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Group Select with checkbox</label>
+            <ng-select
+            [items]="people"
+            [multiple]="true"
+            bindLabel="name"
+            groupBy="gender"
+            [selectableGroup]="true"
+            [selectableGroupAsModel]="false"
+            [closeOnSelect]="false"
+            bindValue="id"
+            [(ngModel)]="selectedPeople">
+            <ng-template ng-optgroup-tmp let-item="item" let-item$="item$" let-index="index">
+                <input id="item-{{index}}" type="checkbox" [ngModel]="item$.selected"/> {{item.gender | uppercase}}
+            </ng-template>
+            <ng-template ng-option-tmp let-item="item" let-item$="item$" let-index="index">
+                <input id="item-{{index}}" type="checkbox" [ngModel]="item$.selected"/> {{item.name}}
+            </ng-template>
+        </ng-select>
+        
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- Row Closed-->
+
+<!-- Row -->
+<div class="row">
+  <div class="col-md-12">
+    <div class="card">
+      <div class="card-header border-bottom">
+        <h3 class="card-title">Angular material</h3>
+      </div>
+      <div class="card-body">
+        <div class="example">
+          <div class="row">
+            <div class="col-sm-12 col-md-6">
+              <div class="form-group">
+                <label class="form-label">Select with custom trigger text: </label>
+                <mat-form-field>
+                  <mat-label>Toppings</mat-label>
+                  <mat-select [formControl]="toppings" multiple>
+                    <mat-select-trigger>
+                      {{toppings.value ? toppings.value[0] : ''}}
+                      <span *ngIf="toppings.value?.length > 1" class="example-additional-selection">
+                        (+{{toppings.value.length - 1}} {{toppings.value?.length === 2 ? 'other' : 'others'}})
+                      </span>
+                    </mat-select-trigger>
+                    <mat-option *ngFor="let topping of toppingList" [value]="topping">{{topping}}</mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </div>
+            </div>
+            <div class="col-sm-12 col-md-6">
+              <div class="form-group">
+                <label class="form-label">Disabled: </label>
+                <mat-form-field>
+                  <mat-label>Choose an option</mat-label>
+                  <mat-select [disabled]="disableSelect.value">
+                    <mat-option value="option1">Option 1</mat-option>
+                    <mat-option value="option2" disabled>Option 2 (disabled)</mat-option>
+                    <mat-option value="option3">Option 3</mat-option>
+                  </mat-select>
+                </mat-form-field>
+                <p class="ms-3">
+                  <mat-checkbox [formControl]="disableSelect">Disable select</mat-checkbox>
+                </p>
+              </div>
+            </div>
+            <div class="col-sm-12 col-md-6">
+              <div class="form-group">
+                <label class="form-label">Select with a custom ErrorStateMatcher: </label>
+                <mat-form-field>
+                  <mat-label>Choose one</mat-label>
+                  <mat-select [formControl]="selected" [errorStateMatcher]="matcher">
+                    <mat-option>Clear</mat-option>
+                    <mat-option value="valid">Valid option</mat-option>
+                    <mat-option value="invalid">Invalid option</mat-option>
+                  </mat-select>
+                  <mat-hint>Errors appear instantly!</mat-hint>
+                  <mat-error *ngIf="selected.hasError('required')">You must make a selection</mat-error>
+                  <mat-error *ngIf="selected.hasError('pattern') && !selected.hasError('required')">
+                    Your selection is invalid
+                  </mat-error>
+                </mat-form-field>
+
+              </div>
+            </div>
+            <div class="col-sm-12 col-md-6">
+              <div class="form-group">
+                <label class="form-label">Select with multiple selection: </label>
+                <mat-form-field>
+                  <mat-label>Toppings</mat-label>
+                  <mat-select [formControl]="toppings" multiple>
+                    <mat-option *ngFor="let topping of toppingList" [value]="topping">{{topping}}</mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </div>
+            </div>
+            <div class="col-sm-12 col-md-6">
+              <div class="form-group">
+                <label class="form-label">Select with option groups: </label>
+                <mat-form-field>
+                  <mat-label>OptionData</mat-label>
+                  <mat-select [formControl]="OptionDataControl">
+                    <mat-option>-- None --</mat-option>
+                    <mat-optgroup *ngFor="let group of OptionDataGroups" [label]="group.name"
+                      [disabled]="group.disabled">
+                      <mat-option *ngFor="let OptionData of group.OptionData" [value]="OptionData.value">
+                        {{OptionData.viewValue}}
+                      </mat-option>
+                    </mat-optgroup>
+                  </mat-select>
+                </mat-form-field>
+              </div>
+            </div>
+            <div class="col-sm-12 col-md-6">
+              <div class="form-group">
+                <label class="form-label">Select with 2-way value binding: </label>
+                <mat-form-field>
+                  <mat-label>Select an option</mat-label>
+                  <mat-select [(value)]="selectedData">
+                    <mat-option>None</mat-option>
+                    <mat-option value="option1">Option 1</mat-option>
+                    <mat-option value="option2">Option 2</mat-option>
+                    <mat-option value="option3">Option 3</mat-option>
+                  </mat-select>
+                </mat-form-field>
+
+                <p>You selected: {{selectedData}}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- Row Closed-->
+
+<!-- Row -->
+<div class="row">
+  <div class="col-md-12 col-xl-12 col-xs-12 col-sm-12">
+    <div class="card">
+      <div class="card-header border-bottom">
+        <h3 class="card-title">Angular material Date Range Picker</h3>
+      </div>
+      <div class="card-body">
+        <div class="example">
+          <div class="row row-sm">
+            <div class="col-lg-4 mb-3">
+              <label for="datepicker-date">Basic date range picker</label>
+              <mat-form-field class="input-group">
+                <mat-label>Choose a date</mat-label>
+                <input matInput [matDatepicker]="picker">
+                <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                <mat-datepicker #picker></mat-datepicker>
+              </mat-form-field>
+              <!-- input-group -->
+            </div><!-- col-4 -->
+            <div class="col-lg-4 mb-3">
+              <label for="datepicker-month">Date range picker with custom a selection strategy</label>
+
+              <mat-form-field class="input-group">
+                <mat-label>Enter a date range</mat-label>
+                <mat-date-range-input [rangePicker]="picker1">
+                  <input matStartDate placeholder="Start date">
+                  <input matEndDate placeholder="End date">
+                </mat-date-range-input>
+                <mat-datepicker-toggle matSuffix [for]="picker1"> </mat-datepicker-toggle>
+                <mat-date-range-picker #picker1></mat-date-range-picker>
+              </mat-form-field><!-- input-group -->
+            </div>
+            <div class="col-lg-4 mb-3">
+              <label for="datepicker-year">Datepicker start date</label>
+              <!-- <div > -->
+              <mat-form-field class="input-group">
+                <mat-label>Choose a date</mat-label>
+                <input matInput [matDatepicker]="picker2">
+                <mat-datepicker-toggle matSuffix [for]="picker2"></mat-datepicker-toggle>
+                <mat-datepicker #picker2 startView="year" [startAt]="startDate"></mat-datepicker>
+              </mat-form-field>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- Row Closed -->
+
+<!-- Row -->
+<div class="row">
+  <div class="col-md-12">
+    <div class="card">
+      <div class="card-header border-bottom">
+        <h3 class="card-title">Date & Time Pickers</h3>
+      </div>
+      <div class="card-body">
+        <div class="row">
+          <div class="col-md-12 col-lg-12 col-xl-6 mb-3">
+            <div class="example">
+              <label for="datetimepicker1">Simple UI Date Picker</label>
+              <div class="input-group col-md-6 ps-0 mb-1">
+                <div class="input-group-text bg-primary-transparent text-primary">
+                  <i class="fe fe-calendar text-20"></i>
+                </div>
+                <input (click)="d2.toggle()" class="form-control" placeholder="dd/mm/yyyy" name="d2" #c2="ngModel"
+                  [(ngModel)]="model2" ngbDatepicker #d2="ngbDatepicker">
+                </div><!-- input-group -->
+                <button class="btn btn-sm btn-outline-primary my-2" (click)="model2 = today">Select Today</button>
+              <pre>Model: {{ model2 | json }}, State: {{ c2.status }}</pre>
+            </div>
+          </div><!-- col-6 -->
+          <div class="col-md-12 col-lg-12 col-xl-6 mb-3">
+            <div class="example">
+              <label for="datetimepicker2">Ng Bootstrap Date Picker</label>
+              <div class="input-group col-md-6 ps-0 mb-3">
+                <div class="input-group-text bg-primary-transparent text-primary">
+                  <i class="fe fe-calendar text-20"></i>
+                </div>
+                <input #buttonEl (click)="d.toggle()" class="form-control" placeholder="yyyy-mm-dd" name="dp"
+                  [(ngModel)]="model1" ngbDatepicker #d="ngbDatepicker" [placement]="placement"
+                  [positionTarget]="buttonEl">
+              </div><!-- input-group -->
+              <div class="row">
+                <div class="col-sm-3">
+                  <label for="placement">Placement</label>
+                  <ng-select id="placement" [(ngModel)]="placement">
+                    <ng-option value="top">Top</ng-option>
+                    <ng-option value="bottom">Bottom</ng-option>
+                    <ng-option value="left">Left</ng-option>
+                    <ng-option value="right">Right</ng-option>
+                  </ng-select>
+                </div>
+              </div>
+            </div>
+          </div><!-- col-6 -->
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- Row Closed -->
+
+<!-- Row -->
+<div class="row">
+  <div class="col-md-12">
+    <div class="card">
+      <div class="card-header border-bottom">
+        <h3 class="card-title">Bootstrap Maxlength</h3>
+      </div>
+      <div class="card-body">
+        <p class="card-sub-title text-muted">Bootstrap-Maxlength uses a Twitter Bootstrap label to show a visual
+          feedback to the user about the maximum length of the field where the user is inserting text. Uses the HTML5
+          attribute <code class="highlighter-rouge">maxlength</code> to work.</p>
+        <div class="example row">
+          <div class="col-md-6">
+            <form class="example-form">
+              <mat-form-field class="example-full-width">
+                <mat-label>Message</mat-label>
+                <input matInput #message maxlength="25" placeholder="Ex. You can type only 25 letters">
+                <mat-hint align="start"><strong>Don't disclose personal info</strong> </mat-hint>
+                <mat-hint align="end">{{message.value.length}} / 25</mat-hint>
+              </mat-form-field>
+            </form>
+          </div>
+          <div class="col-md-6">
+            <form class="example-form">
+              <mat-form-field class="example-full-width">
+                <mat-label>Message</mat-label>
+                <input matInput #message maxlength="25" placeholder="Ex. You can type only 25 letters">
+                <mat-hint align="end">{{message.value.length}} / 25</mat-hint>
+              </mat-form-field>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- Row Closed -->
+
+<!-- row -->
+<div class="row">
+  <div class="col-lg-12 col-md-12">
+    <div class="card">
+      <div class="card-header border-bottom">
+        <h3 class="card-title">File Upload</h3>
+      </div>
+      <div class="card-body">
+        <p class="text-muted card-sub-title">Dropify is a jQuery plugin to create a beautiful file uploader that
+          converts a standard <code>input type="file"</code> into a nice drag & drop zone with previews and custom
+          styles.</p>
+        <div class="row mb-4">
+          <div class="col-sm-12 col-md-4">
+            <ngx-dropzone (change)="onSelect($event)">
+              <ngx-dropzone-label>Drop it, Here!</ngx-dropzone-label>
+              <ngx-dropzone-preview *ngFor="let f of files" [removable]="true" (removed)="onRemove(f)">
+                <ngx-dropzone-label>{{ f.name }} ({{ f.type }})</ngx-dropzone-label>
+              </ngx-dropzone-preview>
+            </ngx-dropzone>
+          </div>
+          <div class="col-sm-12 col-md-4 mg-t-10 mg-sm-t-0">
+            <ngx-dropzone (change)="onSelect($event)" [disabled]="true" [expandable]="true">
+              <ngx-dropzone-label>Drop it, Here!</ngx-dropzone-label>
+              <ngx-dropzone-preview *ngFor="let f of files">
+                <ngx-dropzone-label>{{ f.name }} ({{ f.type }})</ngx-dropzone-label>
+              </ngx-dropzone-preview>
+            </ngx-dropzone>
+          </div>
+          <div class="col-sm-12 col-md-4 mg-t-10 mg-sm-t-0">
+            <div class="custom-dropzone" ngx-dropzone [accept]="'image/*'" (change)="onSelect($event)">
+              <ngx-dropzone-label>
+                <div>
+                  <h2>My custom dropzone</h2>
+                </div>
+              </ngx-dropzone-label>
+              <ngx-dropzone-image-preview ngProjectAs="ngx-dropzone-preview" *ngFor="let f of files" [file]="f"
+                [removable]="true" (removed)="onRemove(f)">
+                <ngx-dropzone-label>{{ f.name }} ({{ f.type }})</ngx-dropzone-label>
+              </ngx-dropzone-image-preview>
+            </div>
+          </div>
+        </div>
+        <div class="upload">
+          <input class="form-control" #Image type="file" (change)="handleFileInput($event)"
+            accept=".jpg,.svg,.png,.jpeg" />
+          <img width="100%" height="100%" style="max-height: 400px; max-width: 400px;" *ngIf="imageUrl" [src]="imageUrl" class="image" />
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- row closed -->

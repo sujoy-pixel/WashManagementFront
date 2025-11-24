@@ -1,0 +1,48 @@
+::ng-deep{
+    app-rating{
+        .custom-rating{
+        .star {
+            font-size: 1.5rem;
+            color: #b0c4de;
+          }
+          .filled {
+            color: #1e90ff;
+          }
+          .bad {
+            color: #deb0b0;
+          }
+          .filled.bad {
+            color: #ff1e1e;
+          }
+        }
+        .heart-rating{
+            &.card-body{
+                padding: 0 1.5rem;
+            }
+          .star {
+            position: relative;
+            display: inline-block;
+            font-size: 3rem;
+            color: #d3d3d3;
+          }
+          .full {
+            color: red;
+          }
+          .half {
+            position: absolute;
+            display: inline-block;
+            overflow: hidden;
+            color: red;
+          }
+        }
+        ngb-rating > span{
+            font-size: 2rem;
+            color: gold;
+        }
+        @media screen and (max-width:374.98px) {
+            ngb-rating > span{
+                font-size: 1.5rem;
+            }
+        }
+    }
+}

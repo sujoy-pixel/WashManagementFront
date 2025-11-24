@@ -1,0 +1,18 @@
+::ng-deep{
+    .mat-step-header .mat-step-icon-selected, .mat-step-header .mat-step-icon-state-done, .mat-step-header .mat-step-icon-state-edit{
+        background-color: var(--primary-bg-color) !important;
+    }
+
+    .dark-mode{
+        .mat-horizontal-stepper-header::before, 
+        .mat-horizontal-stepper-header::after, 
+        .mat-stepper-horizontal-line {
+            border-top-color: var(--dark-border);
+        }
+    }
+    @media (max-width: 767.9px){
+        .mat-horizontal-stepper-header-container{
+          display: block !important;
+        }
+      }
+}

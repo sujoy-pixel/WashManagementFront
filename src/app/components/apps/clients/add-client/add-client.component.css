@@ -1,0 +1,66 @@
+::ng-deep .dark-mode .mat-menu-panel {
+  background: var(--dark-body) !important;
+}
+::ng-deep .dark-mode .mat-menu-panel button {
+  color: #fff !important;
+}
+::ng-deep .dark-mode .country-selector-code,
+::ng-deep .dark-mode .mat-input-element {
+  color: #fff;
+}
+::ng-deep .dark-mode input.country-search {
+  border: none !important;
+  outline: none;
+  background: var(--dark-bg);
+  color: #fff;
+}
+::ng-deep .country-selector {
+  width: auto !important;
+  height: auto !important;
+  top: auto !important;
+  bottom: auto !important;
+  right: auto !important;
+  left: auto !important;
+}
+::ng-deep .country-selector {
+  opacity: 1 !important;
+}
+::ng-deep input.country-search {
+  outline: none;
+}
+::ng-deep .country-list-button {
+  font-size: 0.8rem !important;
+}
+::ng-deep .mat-menu-content:not(:empty) {
+  max-height: 250px;
+}
+::ng-deep .error {
+  color: red;
+}
+::ng-deep .country-selector-flag {
+  margin-left: -1.5ex;
+}
+::ng-deep .rtl .country-selector-flag {
+  margin-left: initial;
+  margin-right: 1rem !important;
+}
+::ng-deep .mat-flat-button.mat-primary,
+::ng-deep .mat-raised-button.mat-primary,
+::ng-deep .mat-fab.mat-primary,
+::ng-deep .mat-mini-fab.mat-primary {
+  background-color: var(--primary-bg-color);
+}
+::ng-deep app-add-client ngx-mat-intl-tel-input.form-control {
+  border-radius: 0.25rem 0 0 0.25rem !important;
+}
+::ng-deep app-add-client .mat-raised-button.mat-primary {
+  border-radius: 0 0.25rem 0.25rem 0;
+  height: 34px;
+}
+::ng-deep .rtl app-add-client ngx-mat-intl-tel-input.form-control {
+  border-radius: 0 0.25rem 0.25rem 0 !important;
+}
+::ng-deep .rtl app-add-client .mat-raised-button.mat-primary {
+  border-radius: 0.25rem 0 0 0.25rem;
+  height: 34px;
+}/*# sourceMappingURL=add-client.component.css.map */

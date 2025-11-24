@@ -1,0 +1,13 @@
+::ng-deep .mat-step-header .mat-step-icon-selected, ::ng-deep .mat-step-header .mat-step-icon-state-done, ::ng-deep .mat-step-header .mat-step-icon-state-edit {
+  background-color: var(--primary-bg-color) !important;
+}
+::ng-deep .dark-mode .mat-horizontal-stepper-header::before,
+::ng-deep .dark-mode .mat-horizontal-stepper-header::after,
+::ng-deep .dark-mode .mat-stepper-horizontal-line {
+  border-top-color: var(--dark-border);
+}
+@media (max-width: 767.9px) {
+  ::ng-deep .mat-horizontal-stepper-header-container {
+    display: block !important;
+  }
+}/*# sourceMappingURL=form-wizard.component.css.map */

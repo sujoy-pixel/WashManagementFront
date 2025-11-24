@@ -1,0 +1,270 @@
+::ng-deep .drag-active {
+  z-index: 99;
+}
+::ng-deep .cal-draggable {
+  padding: 5px;
+}
+::ng-deep .cal-month-view .cal-day-number {
+  font-size: 1.1em;
+  margin-top: 5px;
+  margin-right: 5px;
+  color: #1d212f;
+}
+::ng-deep .cal-month-view .cal-day-cell:not(:last-child) {
+  border-right-color: #ebf1ff;
+}
+::ng-deep .main-content-body-calendar .btn {
+  border-radius: 4px;
+  color: var(--primary-bg-color);
+}
+::ng-deep .cal-month-view .cal-days .cal-cell-row {
+  border-bottom-color: #ebf1ff;
+}
+::ng-deep .cal-month-view .cal-open-day-events {
+  color: #242222;
+  background-color: #f7f6fd;
+  box-shadow: none;
+  border: 1px solid #ebf1ff;
+  border-top: 0;
+}
+::ng-deep .cal-month-view .cal-event-title:hover {
+  text-decoration: none;
+}
+::ng-deep .cal-event-action:focus {
+  outline: 0;
+}
+::ng-deep mwl-calendar-event-title:focus {
+  outline: 0;
+}
+::ng-deep .cal-month-view .cal-days {
+  border-color: #ebf1ff;
+}
+::ng-deep .cal-month-view .cal-cell-row:hover {
+  background-color: #f7f6fd;
+}
+::ng-deep .cal-month-view .cal-day-cell.cal-today {
+  background-color: rgb(238, 241, 249);
+}
+::ng-deep .cal-month-view .cal-cell.cal-has-events.cal-open {
+  background-color: #f7f6fd;
+}
+::ng-deep .cal-month-view .cal-cell-row .cal-cell:hover {
+  background-color: #f7f6fd;
+}
+::ng-deep .cal-month-view .cal-day-cell.cal-weekend .cal-day-number {
+  color: #728096;
+}
+::ng-deep .cal-month-view .cal-day-badge {
+  background-color: var(--primary-bg-color);
+}
+::ng-deep .cal-month-view .cal-cell:focus {
+  outline: 0;
+}
+::ng-deep .table.table-bordered {
+  border-top: 1px solid #ebf1ff;
+}
+::ng-deep .cal-header {
+  border-top: 1px solid #ebf1ff;
+  border-left: 1px solid #ebf1ff;
+  border-right: 1px solid #ebf1ff;
+}
+::ng-deep .cal-month-view .cal-header .cal-cell {
+  padding: 10px 0;
+}
+::ng-deep .cal-cell {
+  border-right: 1px solid #ebf1ff;
+}
+::ng-deep .cal-cell:last-child {
+  border-right: 0;
+}
+::ng-deep .cal-month-view .cal-cell.cal-has-events.cal-open {
+  background: #eef1f9;
+}
+::ng-deep .cal-month-view .cal-day-cell.cal-today .cal-day-number {
+  color: #1a1630;
+}
+::ng-deep .flatpickr-calendar {
+  border: 1px solid #ebf1ff;
+  box-shadow: 0px 6px 8px rgba(4, 4, 7, 0.1);
+}
+::ng-deep .flatpickr-day.today,
+::ng-deep .flatpickr-day.today:hover,
+::ng-deep .flatpickr-day.today:focus {
+  border-color: var(--primary-bg-color);
+  background: var(--primary-bg-color);
+  color: #fff;
+}
+::ng-deep .flatpickr-day.selected,
+::ng-deep .flatpickr-day.startRange,
+::ng-deep .flatpickr-day.endRange,
+::ng-deep .flatpickr-day.selected.inRange,
+::ng-deep .flatpickr-day.startRange.inRange,
+::ng-deep .flatpickr-day.endRange.inRange,
+::ng-deep .flatpickr-day.selected:focus,
+::ng-deep .flatpickr-day.startRange:focus,
+::ng-deep .flatpickr-day.endRange:focus,
+::ng-deep .flatpickr-day.selected:hover,
+::ng-deep .flatpickr-day.startRange:hover,
+::ng-deep .flatpickr-day.endRange:hover,
+::ng-deep .flatpickr-day.selected.prevMonthDay,
+::ng-deep .flatpickr-day.startRange.prevMonthDay,
+::ng-deep .flatpickr-day.endRange.prevMonthDay,
+::ng-deep .flatpickr-day.selected.nextMonthDay,
+::ng-deep .flatpickr-day.startRange.nextMonthDay,
+::ng-deep .flatpickr-day.endRange.nextMonthDay {
+  border-color: var(--primary-bg-color);
+  background: var(--primary-bg-color);
+  color: #fff;
+}
+::ng-deep .flatpickr-day.inRange,
+::ng-deep .flatpickr-day.prevMonthDay.inRange,
+::ng-deep .flatpickr-day.nextMonthDay.inRange,
+::ng-deep .flatpickr-day.today.inRange,
+::ng-deep .flatpickr-day.prevMonthDay.today.inRange,
+::ng-deep .flatpickr-day.nextMonthDay.today.inRange,
+::ng-deep .flatpickr-day:hover,
+::ng-deep .flatpickr-day.prevMonthDay:hover,
+::ng-deep .flatpickr-day.nextMonthDay:hover,
+::ng-deep .flatpickr-day:focus,
+::ng-deep .flatpickr-day.prevMonthDay:focus,
+::ng-deep .flatpickr-day.nextMonthDay:focus {
+  border-color: var(--primary-bg-color);
+  background: var(--primary-bg-color);
+  color: #fff;
+}
+@media (max-width: 991px) {
+  ::ng-deep #external-events-1 .btn-group {
+    margin-top: 10px;
+    margin-bottom: 10px;
+  }
+  ::ng-deep #external-events-1 .btn-group .btn {
+    padding: 0.2rem;
+    line-height: 2.5;
+  }
+}
+@media (max-width: 669px) {
+  ::ng-deep #external-events-1 .text-left, ::ng-deep #external-events-1 .text-right {
+    text-align: center !important;
+  }
+  ::ng-deep .cal-month-view .cal-cell-top {
+    min-height: 10px;
+  }
+  ::ng-deep .cal-month-view .cal-day-cell {
+    min-height: 10px;
+    min-height: 10px;
+  }
+  ::ng-deep .cal-month-view .cal-day-badge {
+    display: none;
+  }
+  ::ng-deep .cal-month-view .cal-day-cell.cal-today .cal-day-number {
+    font-size: 1.2em;
+  }
+}
+
+::ng-deep [dir=rtl] .dark-mode .cal-month-view .cal-day-cell:not(:last-child) {
+  border-right-color: initial;
+  border-left-color: var(--dark-border) !important;
+}
+::ng-deep .cal-week-view .cal-header.cal-weekend span {
+  color: var(--primary-bg-color);
+}
+::ng-deep .dark-mode .cal-month-view .cal-cell-row .cal-cell {
+  background-color: var(--dark-body);
+}
+::ng-deep .dark-mode .cal-month-view .cal-cell-row .cal-cell:hover {
+  background-color: var(--dark-body);
+}
+::ng-deep .dark-mode .cal-month-view .cal-day-cell:not(:last-child) {
+  border-right-color: var(--dark-border);
+}
+::ng-deep .dark-mode .cal-month-view .cal-days .cal-cell-row {
+  border-bottom-color: #4b4e5b;
+}
+::ng-deep .dark-mode .cal-header {
+  border-top: 1px solid #4b4e5b;
+  border-left: 1px solid #4b4e5b;
+  border-right: 1px solid #4b4e5b;
+}
+::ng-deep .dark-mode .cal-cell {
+  border-right: 1px solid var(--dark-border);
+}
+::ng-deep .dark-mode .cal-month-view .cal-days {
+  border-color: #4b4e5b;
+}
+::ng-deep .dark-mode .cal-month-view .cal-cell-row .cal-cell:hover,
+::ng-deep .dark-mode .cal-month-view .cal-cell-row .cal-cell.cal-open {
+  background-color: var(--dark-body) !important;
+}
+::ng-deep .dark-mode .cal-month-view .cal-cell-row:hover {
+  background-color: #23243e !important;
+}
+::ng-deep .dark-mode .cal-month-view .cal-day-number {
+  color: #fff !important;
+}
+::ng-deep .dark-mode .cal-week-view .cal-header.cal-today {
+  background-color: #4b4e5b;
+}
+::ng-deep .dark-mode .cal-month-view .cal-open-day-events {
+  color: #ffffff;
+  background-color: var(--dark-body);
+  box-shadow: none;
+  border: 1px solid var(--dark-border);
+  border-top: 0;
+}
+::ng-deep .dark-mode .cal-month-view .cal-day-cell.cal-drag-over {
+  background-color: var(--dark-border) !important;
+}
+::ng-deep .dark-mode .cal-week-view {
+  background-color: var(--dark-body);
+  border-top: solid 1px var(--dark-border);
+}
+::ng-deep .dark-mode .cal-week-view .cal-time-events .cal-day-columns:not(.cal-resize-active) .cal-hour-segment:hover {
+  background-color: var(--dark-border);
+}
+::ng-deep .dark-mode .cal-week-view .cal-hour:not(:last-child) .cal-hour-segment,
+::ng-deep .dark-mode .cal-week-view .cal-hour:last-child :not(:last-child) .cal-hour-segment {
+  border-bottom-color: var(--dark-border);
+}
+::ng-deep .dark-mode .cal-week-view .cal-day-column {
+  border-left-color: var(--dark-border);
+}
+::ng-deep .dark-mode .cal-week-view .cal-hour-odd {
+  background-color: var(--dark-body);
+}
+::ng-deep .dark-mode .cal-week-view .cal-day-headers {
+  border-color: var(--dark-border);
+}
+::ng-deep .dark-mode .cal-week-view .cal-day-headers .cal-header:hover, ::ng-deep .dark-mode .cal-week-view .cal-day-headers .cal-drag-over {
+  background-color: var(--dark-border);
+}
+::ng-deep .dark-mode .cal-week-view .cal-day-headers .cal-header:first-child {
+  border-left-color: var(--dark-border);
+}
+::ng-deep .dark-mode .cal-week-view .cal-day-headers .cal-header:not(:last-child) {
+  border-right-color: var(--dark-border);
+}
+::ng-deep .dark-mode .cal-week-view .cal-all-day-events {
+  border-color: var(--dark-border);
+}
+::ng-deep .dark-mode .cal-week-view .cal-time-events {
+  border-color: var(--dark-border);
+}
+::ng-deep .dark-mode .cal-week-view .cal-drag-over .cal-hour-segment {
+  background-color: var(--dark-body);
+}
+::ng-deep .rtl app-calendar .fa.fa-chevron-right {
+  transform: rotate(180deg);
+}
+::ng-deep .rtl app-calendar .fa.fa-chevron-left {
+  transform: rotate(180deg);
+}
+::ng-deep .rtl.dark-mode .cal-week-view .cal-day-column {
+  border-right-color: var(--dark-border);
+}
+::ng-deep .rtl.dark-mode .cal-week-view .cal-day-headers .cal-header:not(:last-child) {
+  border-left: 1px solid var(--dark-border) !important;
+}
+
+.nav-link {
+  width: 100%;
+}/*# sourceMappingURL=calendar.component.css.map */

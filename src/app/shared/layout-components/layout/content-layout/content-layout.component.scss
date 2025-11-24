@@ -1,0 +1,14 @@
+::ng-deep{
+    body:not(.horizontal) .main-content {
+        margin-top: 64px;
+    }
+    .main-content{
+        min-height: 100vh;
+    }
+    .horizontal .jumps-prevent {
+        padding-top: 0 !important;
+    }
+}
+.pt-60{
+    padding-top: 60px;
+}

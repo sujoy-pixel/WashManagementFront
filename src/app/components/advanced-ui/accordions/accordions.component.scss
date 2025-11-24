@@ -1,0 +1,54 @@
+// accordion
+::ng-deep {
+  app-accordions {
+
+    .accordion-button:not(.collapsed),
+    .mat-expansion-panel-header {
+      color: var(--primary-bg-color);
+      background-color: var(--primary01) !important;
+    }
+
+    .accordion-button {
+      color: var(--primary-bg-color);
+      outline: none;
+    }
+
+    .accordion-button {
+      box-shadow: none !important;
+      border-color: var(--primary-bg-hover);
+    }
+
+    .panel-heading1 a.collapsed:before {
+      top: -2px !important;
+    }
+
+    .mat-expansion-panel-header {
+      background-color: var(--primary-bg-color) !important;
+    }
+    .mat-expansion-panel-header-title{
+        color: #fff;
+    }
+    .mat-expansion-panel-header-description, .mat-expansion-indicator::after {
+        color: rgb(255 255 255 / 84%);
+    }
+    
+  }
+
+  .dark-mode {
+    app-accordions {
+      .accordion-button {
+        color: var(--primary-bg-color);
+        background: var(--primary01) !important;
+      }
+      mat-expansion-panel{
+          background-color: transparent;
+      }
+      .panel-title1 a {
+        background: transparent !important;
+      }
+      input{
+          color: #fff !important;
+      }
+    }
+  }
+}
