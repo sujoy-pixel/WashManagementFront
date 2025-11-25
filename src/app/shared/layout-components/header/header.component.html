@@ -1,21 +1,25 @@
 <!-- app-Header -->
 <div class="app-header header sticky">
   <div class="container-fluid">
-    <div class="d-flex align-items-center" >
-      <a #toggleSidebar aria-label="Hide Sidebar" class="app-sidebar__toggle" appSidemenuToggle href="javascript:;">
-
+    <div class="d-flex align-items-center">
+      <a
+        #toggleSidebar
+        aria-label="Hide Sidebar"
+        class="app-sidebar__toggle"
+        appSidemenuToggle
+        href="javascript:;"
+      >
       </a>
-      
+
       <!-- sidebar-toggle-->
-    <a class="logo-horizontal" routerLink="dashboard">
+      <a class="logo-horizontal" routerLink="dashboard">
         <img
           src="./assets/images/brand/logo.png"
           class="header-brand-img desktop-logo c"
           alt="logo"
         />
-      
       </a>
-      <h3 class="school-title"><span>MASCO Commercial</span></h3>
+      <h3 class="school-title"><span>MASCO Wash</span></h3>
       <!-- LOGO -->
       <div class="main-header-center ms-3 d-none d-xl-block">
         <!-- <input class="form-control" placeholder="Search for results..." type="search"> -->
@@ -28,101 +32,215 @@
               d="M21.2529297,17.6464844l-2.8994141-2.8994141c-0.0021973-0.0021973-0.0043945-0.0043945-0.0065918-0.0065918c-0.8752441-0.8721313-2.2249146-0.9760132-3.2143555-0.3148804l-0.8467407-0.8467407c1.0981445-1.2668457,1.7143555-2.887146,1.715332-4.5747681c0.0021973-3.8643799-3.1286621-6.9989014-6.993042-7.0011597S2.0092773,5.1315308,2.007019,8.9959106S5.1356201,15.994812,9,15.9970703c1.6889038,0.0029907,3.3114014-0.6120605,4.5789185-1.7111206l0.84729,0.84729c-0.6630859,0.9924316-0.5566406,2.3459473,0.3208618,3.2202759l2.8994141,2.8994141c0.4780884,0.4786987,1.1271973,0.7471313,1.8037109,0.7460938c0.6766357,0.0001831,1.3256226-0.2686768,1.803894-0.7472534C22.2493286,20.2558594,22.2488403,18.6417236,21.2529297,17.6464844z M9.0084229,14.9970703c-3.3120728,0.0023193-5.9989624-2.6807861-6.0012817-5.9928589S5.6879272,3.005249,9,3.0029297c1.5910034-0.0026855,3.1175537,0.628479,4.2421875,1.7539062c1.1252441,1.1238403,1.7579956,2.6486206,1.7590942,4.2389526C15.0036011,12.3078613,12.3204956,14.994751,9.0084229,14.9970703z M20.5458984,20.5413818c-0.604126,0.6066284-1.5856934,0.6087036-2.1923828,0.0045166l-2.8994141-2.8994141c-0.2913818-0.2910156-0.4549561-0.6861572-0.4544678-1.0979614C15.0006714,15.6928101,15.6951294,15,16.5507812,15.0009766c0.4109497-0.0005493,0.8051758,0.1624756,1.0957031,0.453125l2.8994141,2.8994141C21.1482544,18.9584351,21.1482544,19.9364624,20.5458984,20.5413818z" />
           </svg>
         </button> -->
-        <div class="search-result p-absolute w-100 card border mt-1" *ngIf="menuItems?.length; else elseBlock">
-            <div class="card-header">
-              <h4 class="card-title me-2">Search result of "{{text}}" </h4> <small> limit dropdown 5 only</small>
-            </div>
-              <ul class="list-group text-break" >
-                <li *ngFor="let menuItem of menuItems | slice:0:5" [routerLink]="menuItem?.path" class="list-group-item header-list-group border-start-end-top-0 br-0" (click)="clearSearch()">
-                  <i class="fa fa-angle-double-right me-2" aria-hidden="true"></i>{{menuItem?.title}}</li>
-              </ul>
+        <div
+          class="search-result p-absolute w-100 card border mt-1"
+          *ngIf="menuItems?.length; else elseBlock"
+        >
+          <div class="card-header">
+            <h4 class="card-title me-2">Search result of "{{ text }}"</h4>
+            <small> limit dropdown 5 only</small>
+          </div>
+          <ul class="list-group text-break">
+            <li
+              *ngFor="let menuItem of menuItems | slice : 0 : 5"
+              [routerLink]="menuItem?.path"
+              class="list-group-item header-list-group border-start-end-top-0 br-0"
+              (click)="clearSearch()"
+            >
+              <i class="fa fa-angle-double-right me-2" aria-hidden="true"></i
+              >{{ menuItem?.title }}
+            </li>
+          </ul>
         </div>
         <ng-template #elseBlock>
-          <ul class="list-group p-absolute w-100 mt-1 serach-result-empty text-break">
-            <li class="list-group-item no-result" [ngClass]="{'show':SearchResultEmpty}"><i
-                class="fa fa-frown-o text-primary me-2" aria-hidden="true"></i>No Search Result Found with "{{text}}"</li>
+          <ul
+            class="list-group p-absolute w-100 mt-1 serach-result-empty text-break"
+          >
+            <li
+              class="list-group-item no-result"
+              [ngClass]="{ show: SearchResultEmpty }"
+            >
+              <i class="fa fa-frown-o text-primary me-2" aria-hidden="true"></i
+              >No Search Result Found with "{{ text }}"
+            </li>
           </ul>
         </ng-template>
       </div>
       <div class="d-flex order-lg-2 ms-auto header-right-icons">
         <div ngbDropdown class="d-xl-none d-md-block d-none">
           <a href="javascript:;" class="nav-link icon" ngbDropdownToggle>
-            <svg xmlns="http://www.w3.org/2000/svg" enable-background="new 0 0 24 24" viewBox="0 0 24 24">
-              <path fill=""
-                d="M21.2529297,17.6464844l-2.8994141-2.8994141c-0.0021973-0.0021973-0.0043945-0.0043945-0.0065918-0.0065918c-0.8752441-0.8721313-2.2249146-0.9760132-3.2143555-0.3148804l-0.8467407-0.8467407c1.0981445-1.2668457,1.7143555-2.887146,1.715332-4.5747681c0.0021973-3.8643799-3.1286621-6.9989014-6.993042-7.0011597S2.0092773,5.1315308,2.007019,8.9959106S5.1356201,15.994812,9,15.9970703c1.6889038,0.0029907,3.3114014-0.6120605,4.5789185-1.7111206l0.84729,0.84729c-0.6630859,0.9924316-0.5566406,2.3459473,0.3208618,3.2202759l2.8994141,2.8994141c0.4780884,0.4786987,1.1271973,0.7471313,1.8037109,0.7460938c0.6766357,0.0001831,1.3256226-0.2686768,1.803894-0.7472534C22.2493286,20.2558594,22.2488403,18.6417236,21.2529297,17.6464844z M9.0084229,14.9970703c-3.3120728,0.0023193-5.9989624-2.6807861-6.0012817-5.9928589S5.6879272,3.005249,9,3.0029297c1.5910034-0.0026855,3.1175537,0.628479,4.2421875,1.7539062c1.1252441,1.1238403,1.7579956,2.6486206,1.7590942,4.2389526C15.0036011,12.3078613,12.3204956,14.994751,9.0084229,14.9970703z M20.5458984,20.5413818c-0.604126,0.6066284-1.5856934,0.6087036-2.1923828,0.0045166l-2.8994141-2.8994141c-0.2913818-0.2910156-0.4549561-0.6861572-0.4544678-1.0979614C15.0006714,15.6928101,15.6951294,15,16.5507812,15.0009766c0.4109497-0.0005493,0.8051758,0.1624756,1.0957031,0.453125l2.8994141,2.8994141C21.1482544,18.9584351,21.1482544,19.9364624,20.5458984,20.5413818z" />
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              enable-background="new 0 0 24 24"
+              viewBox="0 0 24 24"
+            >
+              <path
+                fill=""
+                d="M21.2529297,17.6464844l-2.8994141-2.8994141c-0.0021973-0.0021973-0.0043945-0.0043945-0.0065918-0.0065918c-0.8752441-0.8721313-2.2249146-0.9760132-3.2143555-0.3148804l-0.8467407-0.8467407c1.0981445-1.2668457,1.7143555-2.887146,1.715332-4.5747681c0.0021973-3.8643799-3.1286621-6.9989014-6.993042-7.0011597S2.0092773,5.1315308,2.007019,8.9959106S5.1356201,15.994812,9,15.9970703c1.6889038,0.0029907,3.3114014-0.6120605,4.5789185-1.7111206l0.84729,0.84729c-0.6630859,0.9924316-0.5566406,2.3459473,0.3208618,3.2202759l2.8994141,2.8994141c0.4780884,0.4786987,1.1271973,0.7471313,1.8037109,0.7460938c0.6766357,0.0001831,1.3256226-0.2686768,1.803894-0.7472534C22.2493286,20.2558594,22.2488403,18.6417236,21.2529297,17.6464844z M9.0084229,14.9970703c-3.3120728,0.0023193-5.9989624-2.6807861-6.0012817-5.9928589S5.6879272,3.005249,9,3.0029297c1.5910034-0.0026855,3.1175537,0.628479,4.2421875,1.7539062c1.1252441,1.1238403,1.7579956,2.6486206,1.7590942,4.2389526C15.0036011,12.3078613,12.3204956,14.994751,9.0084229,14.9970703z M20.5458984,20.5413818c-0.604126,0.6066284-1.5856934,0.6087036-2.1923828,0.0045166l-2.8994141-2.8994141c-0.2913818-0.2910156-0.4549561-0.6861572-0.4544678-1.0979614C15.0006714,15.6928101,15.6951294,15,16.5507812,15.0009766c0.4109497-0.0005493,0.8051758,0.1624756,1.0957031,0.453125l2.8994141,2.8994141C21.1482544,18.9584351,21.1482544,19.9364624,20.5458984,20.5413818z"
+              />
             </svg>
           </a>
           <div ngbDropdownMenu class="header-search dropdown-menu-start">
             <div class="input-group w-100 p-2">
-              <input type="search" class="form-control" placeholder="Search…"
-              aria-label="Search" tabindex="1" [(ngModel)]="text" [ngModelOptions]="{standalone: true}"
-              (keyup)="Search(text)" autocomplete="off">
-              <div class="input-group-text btn btn-primary" style="z-index: 9999;">
-                <svg xmlns="http://www.w3.org/2000/svg" enable-background="new 0 0 24 24" viewBox="0 0 24 24">
+              <input
+                type="search"
+                class="form-control"
+                placeholder="Search…"
+                aria-label="Search"
+                tabindex="1"
+                [(ngModel)]="text"
+                [ngModelOptions]="{ standalone: true }"
+                (keyup)="Search(text)"
+                autocomplete="off"
+              />
+              <div
+                class="input-group-text btn btn-primary"
+                style="z-index: 9999"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  enable-background="new 0 0 24 24"
+                  viewBox="0 0 24 24"
+                >
                   <path
-                    d="M21.2529297,17.6464844l-2.8994141-2.8994141c-0.0021973-0.0021973-0.0043945-0.0043945-0.0065918-0.0065918c-0.8752441-0.8721313-2.2249146-0.9760132-3.2143555-0.3148804l-0.8467407-0.8467407c1.0981445-1.2668457,1.7143555-2.887146,1.715332-4.5747681c0.0021973-3.8643799-3.1286621-6.9989014-6.993042-7.0011597S2.0092773,5.1315308,2.007019,8.9959106S5.1356201,15.994812,9,15.9970703c1.6889038,0.0029907,3.3114014-0.6120605,4.5789185-1.7111206l0.84729,0.84729c-0.6630859,0.9924316-0.5566406,2.3459473,0.3208618,3.2202759l2.8994141,2.8994141c0.4780884,0.4786987,1.1271973,0.7471313,1.8037109,0.7460938c0.6766357,0.0001831,1.3256226-0.2686768,1.803894-0.7472534C22.2493286,20.2558594,22.2488403,18.6417236,21.2529297,17.6464844z M9.0084229,14.9970703c-3.3120728,0.0023193-5.9989624-2.6807861-6.0012817-5.9928589S5.6879272,3.005249,9,3.0029297c1.5910034-0.0026855,3.1175537,0.628479,4.2421875,1.7539062c1.1252441,1.1238403,1.7579956,2.6486206,1.7590942,4.2389526C15.0036011,12.3078613,12.3204956,14.994751,9.0084229,14.9970703z M20.5458984,20.5413818c-0.604126,0.6066284-1.5856934,0.6087036-2.1923828,0.0045166l-2.8994141-2.8994141c-0.2913818-0.2910156-0.4549561-0.6861572-0.4544678-1.0979614C15.0006714,15.6928101,15.6951294,15,16.5507812,15.0009766c0.4109497-0.0005493,0.8051758,0.1624756,1.0957031,0.453125l2.8994141,2.8994141C21.1482544,18.9584351,21.1482544,19.9364624,20.5458984,20.5413818z" />
+                    d="M21.2529297,17.6464844l-2.8994141-2.8994141c-0.0021973-0.0021973-0.0043945-0.0043945-0.0065918-0.0065918c-0.8752441-0.8721313-2.2249146-0.9760132-3.2143555-0.3148804l-0.8467407-0.8467407c1.0981445-1.2668457,1.7143555-2.887146,1.715332-4.5747681c0.0021973-3.8643799-3.1286621-6.9989014-6.993042-7.0011597S2.0092773,5.1315308,2.007019,8.9959106S5.1356201,15.994812,9,15.9970703c1.6889038,0.0029907,3.3114014-0.6120605,4.5789185-1.7111206l0.84729,0.84729c-0.6630859,0.9924316-0.5566406,2.3459473,0.3208618,3.2202759l2.8994141,2.8994141c0.4780884,0.4786987,1.1271973,0.7471313,1.8037109,0.7460938c0.6766357,0.0001831,1.3256226-0.2686768,1.803894-0.7472534C22.2493286,20.2558594,22.2488403,18.6417236,21.2529297,17.6464844z M9.0084229,14.9970703c-3.3120728,0.0023193-5.9989624-2.6807861-6.0012817-5.9928589S5.6879272,3.005249,9,3.0029297c1.5910034-0.0026855,3.1175537,0.628479,4.2421875,1.7539062c1.1252441,1.1238403,1.7579956,2.6486206,1.7590942,4.2389526C15.0036011,12.3078613,12.3204956,14.994751,9.0084229,14.9970703z M20.5458984,20.5413818c-0.604126,0.6066284-1.5856934,0.6087036-2.1923828,0.0045166l-2.8994141-2.8994141c-0.2913818-0.2910156-0.4549561-0.6861572-0.4544678-1.0979614C15.0006714,15.6928101,15.6951294,15,16.5507812,15.0009766c0.4109497-0.0005493,0.8051758,0.1624756,1.0957031,0.453125l2.8994141,2.8994141C21.1482544,18.9584351,21.1482544,19.9364624,20.5458984,20.5413818z"
+                  />
                 </svg>
               </div>
             </div>
-            <div class="search-result p-absolute w-100 card border mt-1" *ngIf="menuItems?.length; else elseBlock">
+            <div
+              class="search-result p-absolute w-100 card border mt-1"
+              *ngIf="menuItems?.length; else elseBlock"
+            >
               <div class="card-header">
                 <h4 class="card-title">Search result</h4>
               </div>
-                <ul class="list-group text-break" >
-                  <li *ngFor="let menuItem of menuItems | slice:0:5" [routerLink]="menuItem?.path" class="list-group-item header-list-group border-start-end-top-0 br-0" (click)="clearSearch()">
-                    <i class="fa fa-angle-double-right me-2" aria-hidden="true"></i>{{menuItem?.title}}</li>
-                </ul>
-          </div>
-          <ng-template #elseBlock>
-            <ul class="list-group p-absolute w-100 mt-1 serach-result-empty text-break">
-              <li class="list-group-item no-result" [ngClass]="{'show':SearchResultEmpty}"><i
-                  class="fa fa-frown-o text-primary me-2" aria-hidden="true"></i>No Search Result Found...</li>
-            </ul>
-          </ng-template>
+              <ul class="list-group text-break">
+                <li
+                  *ngFor="let menuItem of menuItems | slice : 0 : 5"
+                  [routerLink]="menuItem?.path"
+                  class="list-group-item header-list-group border-start-end-top-0 br-0"
+                  (click)="clearSearch()"
+                >
+                  <i
+                    class="fa fa-angle-double-right me-2"
+                    aria-hidden="true"
+                  ></i
+                  >{{ menuItem?.title }}
+                </li>
+              </ul>
+            </div>
+            <ng-template #elseBlock>
+              <ul
+                class="list-group p-absolute w-100 mt-1 serach-result-empty text-break"
+              >
+                <li
+                  class="list-group-item no-result"
+                  [ngClass]="{ show: SearchResultEmpty }"
+                >
+                  <i
+                    class="fa fa-frown-o text-primary me-2"
+                    aria-hidden="true"
+                  ></i
+                  >No Search Result Found...
+                </li>
+              </ul>
+            </ng-template>
           </div>
         </div>
         <!-- SEARCH -->
-        <button class="navbar-toggler navresponsive-toggler d-md-none ms-auto" type="button" (click)="collapse.toggle()" [attr.aria-expanded]="!isCollapsed">
+        <button
+          class="navbar-toggler navresponsive-toggler d-md-none ms-auto"
+          type="button"
+          (click)="collapse.toggle()"
+          [attr.aria-expanded]="!isCollapsed"
+        >
           <span class="navbar-toggler-icon fe fe-more-vertical"></span>
         </button>
         <div class="navbar navbar-collapse responsive-navbar p-0">
-          <div class="collapse navbar-collapse" id="navbarSupportedContent-4" #collapse="ngbCollapse" [(ngbCollapse)]="isCollapsed">
+          <div
+            class="collapse navbar-collapse"
+            id="navbarSupportedContent-4"
+            #collapse="ngbCollapse"
+            [(ngbCollapse)]="isCollapsed"
+          >
             <div class="d-flex order-lg-2">
               <div ngbDropdown class="d-md-none d-flex">
                 <a href="javascript:;" class="nav-link icon" ngbDropdownToggle>
-                  <svg xmlns="http://www.w3.org/2000/svg" class="header-icon" enable-background="new 0 0 24 24"
-                    viewBox="0 0 24 24">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    class="header-icon"
+                    enable-background="new 0 0 24 24"
+                    viewBox="0 0 24 24"
+                  >
                     <path
-                      d="M21.2529297,17.6464844l-2.8994141-2.8994141c-0.0021973-0.0021973-0.0043945-0.0043945-0.0065918-0.0065918c-0.8752441-0.8721313-2.2249146-0.9760132-3.2143555-0.3148804l-0.8467407-0.8467407c1.0981445-1.2668457,1.7143555-2.887146,1.715332-4.5747681c0.0021973-3.8643799-3.1286621-6.9989014-6.993042-7.0011597S2.0092773,5.1315308,2.007019,8.9959106S5.1356201,15.994812,9,15.9970703c1.6889038,0.0029907,3.3114014-0.6120605,4.5789185-1.7111206l0.84729,0.84729c-0.6630859,0.9924316-0.5566406,2.3459473,0.3208618,3.2202759l2.8994141,2.8994141c0.4780884,0.4786987,1.1271973,0.7471313,1.8037109,0.7460938c0.6766357,0.0001831,1.3256226-0.2686768,1.803894-0.7472534C22.2493286,20.2558594,22.2488403,18.6417236,21.2529297,17.6464844z M9.0084229,14.9970703c-3.3120728,0.0023193-5.9989624-2.6807861-6.0012817-5.9928589S5.6879272,3.005249,9,3.0029297c1.5910034-0.0026855,3.1175537,0.628479,4.2421875,1.7539062c1.1252441,1.1238403,1.7579956,2.6486206,1.7590942,4.2389526C15.0036011,12.3078613,12.3204956,14.994751,9.0084229,14.9970703z M20.5458984,20.5413818c-0.604126,0.6066284-1.5856934,0.6087036-2.1923828,0.0045166l-2.8994141-2.8994141c-0.2913818-0.2910156-0.4549561-0.6861572-0.4544678-1.0979614C15.0006714,15.6928101,15.6951294,15,16.5507812,15.0009766c0.4109497-0.0005493,0.8051758,0.1624756,1.0957031,0.453125l2.8994141,2.8994141C21.1482544,18.9584351,21.1482544,19.9364624,20.5458984,20.5413818z" />
+                      d="M21.2529297,17.6464844l-2.8994141-2.8994141c-0.0021973-0.0021973-0.0043945-0.0043945-0.0065918-0.0065918c-0.8752441-0.8721313-2.2249146-0.9760132-3.2143555-0.3148804l-0.8467407-0.8467407c1.0981445-1.2668457,1.7143555-2.887146,1.715332-4.5747681c0.0021973-3.8643799-3.1286621-6.9989014-6.993042-7.0011597S2.0092773,5.1315308,2.007019,8.9959106S5.1356201,15.994812,9,15.9970703c1.6889038,0.0029907,3.3114014-0.6120605,4.5789185-1.7111206l0.84729,0.84729c-0.6630859,0.9924316-0.5566406,2.3459473,0.3208618,3.2202759l2.8994141,2.8994141c0.4780884,0.4786987,1.1271973,0.7471313,1.8037109,0.7460938c0.6766357,0.0001831,1.3256226-0.2686768,1.803894-0.7472534C22.2493286,20.2558594,22.2488403,18.6417236,21.2529297,17.6464844z M9.0084229,14.9970703c-3.3120728,0.0023193-5.9989624-2.6807861-6.0012817-5.9928589S5.6879272,3.005249,9,3.0029297c1.5910034-0.0026855,3.1175537,0.628479,4.2421875,1.7539062c1.1252441,1.1238403,1.7579956,2.6486206,1.7590942,4.2389526C15.0036011,12.3078613,12.3204956,14.994751,9.0084229,14.9970703z M20.5458984,20.5413818c-0.604126,0.6066284-1.5856934,0.6087036-2.1923828,0.0045166l-2.8994141-2.8994141c-0.2913818-0.2910156-0.4549561-0.6861572-0.4544678-1.0979614C15.0006714,15.6928101,15.6951294,15,16.5507812,15.0009766c0.4109497-0.0005493,0.8051758,0.1624756,1.0957031,0.453125l2.8994141,2.8994141C21.1482544,18.9584351,21.1482544,19.9364624,20.5458984,20.5413818z"
+                    />
                   </svg>
                 </a>
                 <div ngbDropdownMenu class="header-search dropdown-menu-start">
                   <div class="input-group w-100 p-2">
-                    <input type="search" class="form-control yews" placeholder="Search…"
-              aria-label="Search" tabindex="1" [(ngModel)]="text" [ngModelOptions]="{standalone: true}"
-              (keyup)="Search(text)" autocomplete="off">
+                    <input
+                      type="search"
+                      class="form-control yews"
+                      placeholder="Search…"
+                      aria-label="Search"
+                      tabindex="1"
+                      [(ngModel)]="text"
+                      [ngModelOptions]="{ standalone: true }"
+                      (keyup)="Search(text)"
+                      autocomplete="off"
+                    />
                     <div class="input-group-text btn btn-primary">
-                      <svg xmlns="http://www.w3.org/2000/svg" enable-background="new 0 0 24 24" viewBox="0 0 24 24">
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        enable-background="new 0 0 24 24"
+                        viewBox="0 0 24 24"
+                      >
                         <path
-                          d="M21.2529297,17.6464844l-2.8994141-2.8994141c-0.0021973-0.0021973-0.0043945-0.0043945-0.0065918-0.0065918c-0.8752441-0.8721313-2.2249146-0.9760132-3.2143555-0.3148804l-0.8467407-0.8467407c1.0981445-1.2668457,1.7143555-2.887146,1.715332-4.5747681c0.0021973-3.8643799-3.1286621-6.9989014-6.993042-7.0011597S2.0092773,5.1315308,2.007019,8.9959106S5.1356201,15.994812,9,15.9970703c1.6889038,0.0029907,3.3114014-0.6120605,4.5789185-1.7111206l0.84729,0.84729c-0.6630859,0.9924316-0.5566406,2.3459473,0.3208618,3.2202759l2.8994141,2.8994141c0.4780884,0.4786987,1.1271973,0.7471313,1.8037109,0.7460938c0.6766357,0.0001831,1.3256226-0.2686768,1.803894-0.7472534C22.2493286,20.2558594,22.2488403,18.6417236,21.2529297,17.6464844z M9.0084229,14.9970703c-3.3120728,0.0023193-5.9989624-2.6807861-6.0012817-5.9928589S5.6879272,3.005249,9,3.0029297c1.5910034-0.0026855,3.1175537,0.628479,4.2421875,1.7539062c1.1252441,1.1238403,1.7579956,2.6486206,1.7590942,4.2389526C15.0036011,12.3078613,12.3204956,14.994751,9.0084229,14.9970703z M20.5458984,20.5413818c-0.604126,0.6066284-1.5856934,0.6087036-2.1923828,0.0045166l-2.8994141-2.8994141c-0.2913818-0.2910156-0.4549561-0.6861572-0.4544678-1.0979614C15.0006714,15.6928101,15.6951294,15,16.5507812,15.0009766c0.4109497-0.0005493,0.8051758,0.1624756,1.0957031,0.453125l2.8994141,2.8994141C21.1482544,18.9584351,21.1482544,19.9364624,20.5458984,20.5413818z" />
+                          d="M21.2529297,17.6464844l-2.8994141-2.8994141c-0.0021973-0.0021973-0.0043945-0.0043945-0.0065918-0.0065918c-0.8752441-0.8721313-2.2249146-0.9760132-3.2143555-0.3148804l-0.8467407-0.8467407c1.0981445-1.2668457,1.7143555-2.887146,1.715332-4.5747681c0.0021973-3.8643799-3.1286621-6.9989014-6.993042-7.0011597S2.0092773,5.1315308,2.007019,8.9959106S5.1356201,15.994812,9,15.9970703c1.6889038,0.0029907,3.3114014-0.6120605,4.5789185-1.7111206l0.84729,0.84729c-0.6630859,0.9924316-0.5566406,2.3459473,0.3208618,3.2202759l2.8994141,2.8994141c0.4780884,0.4786987,1.1271973,0.7471313,1.8037109,0.7460938c0.6766357,0.0001831,1.3256226-0.2686768,1.803894-0.7472534C22.2493286,20.2558594,22.2488403,18.6417236,21.2529297,17.6464844z M9.0084229,14.9970703c-3.3120728,0.0023193-5.9989624-2.6807861-6.0012817-5.9928589S5.6879272,3.005249,9,3.0029297c1.5910034-0.0026855,3.1175537,0.628479,4.2421875,1.7539062c1.1252441,1.1238403,1.7579956,2.6486206,1.7590942,4.2389526C15.0036011,12.3078613,12.3204956,14.994751,9.0084229,14.9970703z M20.5458984,20.5413818c-0.604126,0.6066284-1.5856934,0.6087036-2.1923828,0.0045166l-2.8994141-2.8994141c-0.2913818-0.2910156-0.4549561-0.6861572-0.4544678-1.0979614C15.0006714,15.6928101,15.6951294,15,16.5507812,15.0009766c0.4109497-0.0005493,0.8051758,0.1624756,1.0957031,0.453125l2.8994141,2.8994141C21.1482544,18.9584351,21.1482544,19.9364624,20.5458984,20.5413818z"
+                        />
                       </svg>
                     </div>
                   </div>
-                  <div class="search-result p-absolute w-100 card border mt-1" *ngIf="menuItems?.length; else elseBlock">
+                  <div
+                    class="search-result p-absolute w-100 card border mt-1"
+                    *ngIf="menuItems?.length; else elseBlock"
+                  >
                     <div class="card-header">
                       <h4 class="card-title">Search result</h4>
                     </div>
-                      <ul class="list-group text-break" >
-                        <li *ngFor="let menuItem of menuItems | slice:0:5" [routerLink]="menuItem?.path" class="list-group-item header-list-group border-start-end-top-0 br-0" (click)="clearSearch()">
-                          <i class="fa fa-angle-double-right me-2" aria-hidden="true"></i>{{menuItem?.title}}</li>
-                      </ul>
-                </div>
-                <ng-template #elseBlock>
-                  <ul class="list-group p-absolute w-100 mt-1 serach-result-empty text-break">
-                    <li class="list-group-item no-result" [ngClass]="{'show':SearchResultEmpty}"><i
-                        class="fa fa-frown-o text-primary me-2" aria-hidden="true"></i>No Search Result Found...</li>
-                  </ul>
-                </ng-template>
+                    <ul class="list-group text-break">
+                      <li
+                        *ngFor="let menuItem of menuItems | slice : 0 : 5"
+                        [routerLink]="menuItem?.path"
+                        class="list-group-item header-list-group border-start-end-top-0 br-0"
+                        (click)="clearSearch()"
+                      >
+                        <i
+                          class="fa fa-angle-double-right me-2"
+                          aria-hidden="true"
+                        ></i
+                        >{{ menuItem?.title }}
+                      </li>
+                    </ul>
+                  </div>
+                  <ng-template #elseBlock>
+                    <ul
+                      class="list-group p-absolute w-100 mt-1 serach-result-empty text-break"
+                    >
+                      <li
+                        class="list-group-item no-result"
+                        [ngClass]="{ show: SearchResultEmpty }"
+                      >
+                        <i
+                          class="fa fa-frown-o text-primary me-2"
+                          aria-hidden="true"
+                        ></i
+                        >No Search Result Found...
+                      </li>
+                    </ul>
+                  </ng-template>
                 </div>
               </div>
               <!-- COUNTRY -->
@@ -156,7 +274,10 @@
                       d="M10.5,13h-7C3.2,13,3,13.2,3,13.5v7C3,20.8,3.2,21,3.5,21h7c0.3,0,0.5-0.2,0.5-0.5v-7C11,13.2,10.8,13,10.5,13z M10,20H4v-6h6V20z M10.5,3h-7C3.2,3,3,3.2,3,3.5v7C3,10.8,3.2,11,3.5,11h7c0.3,0,0.5-0.2,0.5-0.5v-7C11,3.2,10.8,3,10.5,3z M10,10H4V4h6V10z M20.5,3h-7C13.2,3,13,3.2,13,3.5v7c0,0.3,0.2,0.5,0.5,0.5h7c0.3,0,0.5-0.2,0.5-0.5v-7C21,3.2,20.8,3,20.5,3z M20,10h-6V4h6V10z M20.5,16.5h-3v-3c0-0.3-0.2-0.5-0.5-0.5s-0.5,0.2-0.5,0.5v3h-3c-0.3,0-0.5,0.2-0.5,0.5s0.2,0.5,0.5,0.5h3v3c0,0.3,0.2,0.5,0.5,0.5h0c0.3,0,0.5-0.2,0.5-0.5v-3h3c0.3,0,0.5-0.2,0.5-0.5S20.8,16.5,20.5,16.5z" />
                   </svg>
                 </a> -->
-                <div ngbDropdownMenu class="dropdown-menu-end dropdown-menu-arrow source-logo-menu pt-2 pb-2">
+                <div
+                  ngbDropdownMenu
+                  class="dropdown-menu-end dropdown-menu-arrow source-logo-menu pt-2 pb-2"
+                >
                   <!-- <div class="drop-heading border-bottom d-f-ai-c">
                     <h6 class="mb-0 fs-15 text-dark">SHORTCUTS</h6>
                     <div class="ms-auto d-flex">
@@ -510,17 +631,30 @@
               </div> -->
               <!-- NOTIFICATIONS -->
               <div ngbDropdown class="d-md-flex profile-1">
-                <a href="javascript:;" ngbDropdownToggle class="nav-link pe-2 leading-none d-flex animate">
+                <a
+                  href="javascript:;"
+                  ngbDropdownToggle
+                  class="nav-link pe-2 leading-none d-flex animate"
+                >
                   <span>
-                    <img style="width: 50px;height: 50px !important;" [src]="image" alt="profile-user"
-                      class="avatar  profile-user brround cover-image">
-                      
+                    <img
+                      style="width: 50px; height: 50px !important"
+                      [src]="image"
+                      alt="profile-user"
+                      class="avatar profile-user brround cover-image"
+                    />
                   </span>
                   <div class="text-center p-1 d-flex d-lg-none-max">
-                    <h6 class="mb-0" id="profile-heading">{{userName}}<i class="user-angle ms-1 fa fa-angle-down "></i></h6>
+                    <h6 class="mb-0" id="profile-heading">
+                      {{ userName
+                      }}<i class="user-angle ms-1 fa fa-angle-down"></i>
+                    </h6>
                   </div>
                 </a>
-                <div ngbDropdownMenu class="dropdown-menu-end dropdown-menu-arrow">
+                <div
+                  ngbDropdownMenu
+                  class="dropdown-menu-end dropdown-menu-arrow"
+                >
                   <!-- <a ngbDropdownItem class=""  routerLink="/pages/profile">
                     <svg xmlns="http://www.w3.org/2000/svg" class="w-inner-icn" enable-background="new 0 0 24 24"
                       viewBox="0 0 24 24">
@@ -555,10 +689,15 @@
                     Lock Screen
                   </a> -->
                   <a ngbDropdownItem class="" (click)="signout()">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="w-inner-icn" enable-background="new 0 0 24 24"
-                      viewBox="0 0 24 24">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      class="w-inner-icn"
+                      enable-background="new 0 0 24 24"
+                      viewBox="0 0 24 24"
+                    >
                       <path
-                        d="M10.6523438,16.140625c-0.09375,0.09375-0.1464233,0.2208862-0.1464233,0.3534546c0,0.276123,0.2238159,0.5,0.499939,0.500061c0.1326294,0.0001221,0.2598267-0.0525513,0.3534546-0.1464844l4.4941406-4.4941406c0.000061-0.000061,0.0001221-0.000061,0.0001831-0.0001221c0.1951294-0.1952515,0.1950684-0.5117188-0.0001831-0.7068481L11.359314,7.1524048c-0.1937256-0.1871338-0.5009155-0.1871338-0.6947021,0c-0.1986084,0.1918335-0.2041016,0.5083618-0.0122681,0.7069702L14.2930298,11.5H2.5C2.223877,11.5,2,11.723877,2,12s0.223877,0.5,0.5,0.5h11.7930298L10.6523438,16.140625z M16.4199829,3.0454102C11.4741821,0.5905762,5.4748535,2.6099243,3.0200195,7.5556641C2.8970337,7.8029175,2.9978027,8.1030884,3.2450562,8.2260742C3.4923706,8.3490601,3.7925415,8.248291,3.9155273,8.0010376c0.8737793-1.7612305,2.300354-3.1878052,4.0615845-4.0615845C12.428833,1.730835,17.828064,3.5492554,20.0366821,8.0010376c2.2085571,4.4517212,0.3901367,9.8509521-4.0615845,12.0595703c-4.4517212,2.2085571-9.8510132,0.3901367-12.0595703-4.0615845c-0.1229858-0.2473145-0.4231567-0.3480835-0.6704102-0.2250977c-0.2473145,0.1229858-0.3480835,0.4230957-0.2250977,0.6704102c1.6773682,3.4109497,5.1530762,5.5667114,8.9541016,5.5537109c3.7976685,0.0003662,7.2676392-2.1509399,8.9560547-5.5526733C23.3850098,11.4996338,21.3657227,5.5002441,16.4199829,3.0454102z" />
+                        d="M10.6523438,16.140625c-0.09375,0.09375-0.1464233,0.2208862-0.1464233,0.3534546c0,0.276123,0.2238159,0.5,0.499939,0.500061c0.1326294,0.0001221,0.2598267-0.0525513,0.3534546-0.1464844l4.4941406-4.4941406c0.000061-0.000061,0.0001221-0.000061,0.0001831-0.0001221c0.1951294-0.1952515,0.1950684-0.5117188-0.0001831-0.7068481L11.359314,7.1524048c-0.1937256-0.1871338-0.5009155-0.1871338-0.6947021,0c-0.1986084,0.1918335-0.2041016,0.5083618-0.0122681,0.7069702L14.2930298,11.5H2.5C2.223877,11.5,2,11.723877,2,12s0.223877,0.5,0.5,0.5h11.7930298L10.6523438,16.140625z M16.4199829,3.0454102C11.4741821,0.5905762,5.4748535,2.6099243,3.0200195,7.5556641C2.8970337,7.8029175,2.9978027,8.1030884,3.2450562,8.2260742C3.4923706,8.3490601,3.7925415,8.248291,3.9155273,8.0010376c0.8737793-1.7612305,2.300354-3.1878052,4.0615845-4.0615845C12.428833,1.730835,17.828064,3.5492554,20.0366821,8.0010376c2.2085571,4.4517212,0.3901367,9.8509521-4.0615845,12.0595703c-4.4517212,2.2085571-9.8510132,0.3901367-12.0595703-4.0615845c-0.1229858-0.2473145-0.4231567-0.3480835-0.6704102-0.2250977c-0.2473145,0.1229858-0.3480835,0.4230957-0.2250977,0.6704102c1.6773682,3.4109497,5.1530762,5.5667114,8.9541016,5.5537109c3.7976685,0.0003662,7.2676392-2.1509399,8.9560547-5.5526733C23.3850098,11.4996338,21.3657227,5.5002441,16.4199829,3.0454102z"
+                      />
                     </svg>
                     Log out
                   </a>
@@ -569,24 +708,32 @@
           </div>
         </div>
         <div class="demo-icon nav-link icon fe-spin">
-          <svg (click)="toggleSwitcher()" xmlns="http://www.w3.org/2000/svg" enable-background="new 0 0 24 24"
-            viewBox="0 0 24 24">
+          <svg
+            (click)="toggleSwitcher()"
+            xmlns="http://www.w3.org/2000/svg"
+            enable-background="new 0 0 24 24"
+            viewBox="0 0 24 24"
+          >
             <path
-              d="M11.5,7.9c-2.3,0-4,1.9-4,4.2s1.9,4,4.2,4c2.2,0,4-1.9,4-4.1c0,0,0-0.1,0-0.1C15.6,9.7,13.7,7.9,11.5,7.9z M14.6,12.1c0,1.7-1.5,3-3.2,3c-1.7,0-3-1.5-3-3.2c0-1.7,1.5-3,3.2-3C13.3,8.9,14.7,10.3,14.6,12.1C14.6,12,14.6,12.1,14.6,12.1z M20,13.1c-0.5-0.6-0.5-1.5,0-2.1l1.4-1.5c0.1-0.2,0.2-0.4,0.1-0.6l-2.1-3.7c-0.1-0.2-0.3-0.3-0.5-0.2l-2,0.4c-0.8,0.2-1.6-0.3-1.9-1.1l-0.6-1.9C14.2,2.1,14,2,13.8,2H9.5C9.3,2,9.1,2.1,9,2.3L8.4,4.3C8.1,5,7.3,5.5,6.5,5.3l-2-0.4C4.3,4.9,4.1,5,4,5.2L1.9,8.8C1.8,9,1.8,9.2,2,9.4l1.4,1.5c0.5,0.6,0.5,1.5,0,2.1L2,14.6c-0.1,0.2-0.2,0.4-0.1,0.6L4,18.8c0.1,0.2,0.3,0.3,0.5,0.2l2-0.4c0.8-0.2,1.6,0.3,1.9,1.1L9,21.7C9.1,21.9,9.3,22,9.5,22h4.2c0.2,0,0.4-0.1,0.5-0.3l0.6-1.9c0.3-0.8,1.1-1.2,1.9-1.1l2,0.4c0.2,0,0.4-0.1,0.5-0.2l2.1-3.7c0.1-0.2,0.1-0.4-0.1-0.6L20,13.1z M18.6,18l-1.6-0.3c-1.3-0.3-2.6,0.5-3,1.7L13.4,21H9.9l-0.5-1.6c-0.4-1.3-1.7-2-3-1.7L4.7,18l-1.8-3l1.1-1.3c0.9-1,0.9-2.5,0-3.5L2.9,9l1.8-3l1.6,0.3c1.3,0.3,2.6-0.5,3-1.7L9.9,3h3.5l0.5,1.6c0.4,1.3,1.7,2,3,1.7L18.6,6l1.8,3l-1.1,1.3c-0.9,1-0.9,2.5,0,3.5l1.1,1.3L18.6,18z" />
+              d="M11.5,7.9c-2.3,0-4,1.9-4,4.2s1.9,4,4.2,4c2.2,0,4-1.9,4-4.1c0,0,0-0.1,0-0.1C15.6,9.7,13.7,7.9,11.5,7.9z M14.6,12.1c0,1.7-1.5,3-3.2,3c-1.7,0-3-1.5-3-3.2c0-1.7,1.5-3,3.2-3C13.3,8.9,14.7,10.3,14.6,12.1C14.6,12,14.6,12.1,14.6,12.1z M20,13.1c-0.5-0.6-0.5-1.5,0-2.1l1.4-1.5c0.1-0.2,0.2-0.4,0.1-0.6l-2.1-3.7c-0.1-0.2-0.3-0.3-0.5-0.2l-2,0.4c-0.8,0.2-1.6-0.3-1.9-1.1l-0.6-1.9C14.2,2.1,14,2,13.8,2H9.5C9.3,2,9.1,2.1,9,2.3L8.4,4.3C8.1,5,7.3,5.5,6.5,5.3l-2-0.4C4.3,4.9,4.1,5,4,5.2L1.9,8.8C1.8,9,1.8,9.2,2,9.4l1.4,1.5c0.5,0.6,0.5,1.5,0,2.1L2,14.6c-0.1,0.2-0.2,0.4-0.1,0.6L4,18.8c0.1,0.2,0.3,0.3,0.5,0.2l2-0.4c0.8-0.2,1.6,0.3,1.9,1.1L9,21.7C9.1,21.9,9.3,22,9.5,22h4.2c0.2,0,0.4-0.1,0.5-0.3l0.6-1.9c0.3-0.8,1.1-1.2,1.9-1.1l2,0.4c0.2,0,0.4-0.1,0.5-0.2l2.1-3.7c0.1-0.2,0.1-0.4-0.1-0.6L20,13.1z M18.6,18l-1.6-0.3c-1.3-0.3-2.6,0.5-3,1.7L13.4,21H9.9l-0.5-1.6c-0.4-1.3-1.7-2-3-1.7L4.7,18l-1.8-3l1.1-1.3c0.9-1,0.9-2.5,0-3.5L2.9,9l1.8-3l1.6,0.3c1.3,0.3,2.6-0.5,3-1.7L9.9,3h3.5l0.5,1.6c0.4,1.3,1.7,2,3,1.7L18.6,6l1.8,3l-1.1,1.3c-0.9,1-0.9,2.5,0,3.5l1.1,1.3L18.6,18z"
+            />
           </svg>
-        </div> 
+        </div>
       </div>
     </div>
   </div>
 </div>
 <!-- /app-Header -->
 
-
-
 <ng-template #content let-modal>
   <div class="modal-header align-items-center">
     <h6 class="modal-title">Choose Country</h6>
-    <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+    <button
+      type="button"
+      class="close"
+      aria-label="Close"
+      (click)="modal.dismiss('Cross click')"
+    >
       <span aria-hidden="true">&times;</span>
     </button>
   </div>
@@ -594,77 +741,152 @@
     <ul class="row p-3">
       <li class="col-lg-4 mb-2">
         <a class="btn btn-country btn-lg btn-block active">
-          <span class="country-selector"><img alt="unitedstates" src="./assets/images/flags/us_flag.jpg" class="me-2 language"></span>United States
+          <span class="country-selector"
+            ><img
+              alt="unitedstates"
+              src="./assets/images/flags/us_flag.jpg"
+              class="me-2 language" /></span
+          >United States
         </a>
       </li>
       <li class="col-lg-4 mb-2">
         <a class="btn btn-country btn-lg btn-block">
-          <span class="country-selector"><img alt="italy" src="./assets/images/flags/italy_flag.jpg" class="me-2 language"></span>Italy
+          <span class="country-selector"
+            ><img
+              alt="italy"
+              src="./assets/images/flags/italy_flag.jpg"
+              class="me-2 language" /></span
+          >Italy
         </a>
       </li>
       <li class="col-lg-4 mb-2">
         <a class="btn btn-country btn-lg btn-block">
-          <span class="country-selector"><img alt="spain" src="./assets/images/flags/spain_flag.jpg" class="me-2 language"></span>Spain
+          <span class="country-selector"
+            ><img
+              alt="spain"
+              src="./assets/images/flags/spain_flag.jpg"
+              class="me-2 language" /></span
+          >Spain
         </a>
       </li>
       <li class="col-lg-4 mb-2">
         <a class="btn btn-country btn-lg btn-block">
-          <span class="country-selector"><img alt="india" src="./assets/images/flags/india_flag.jpg" class="me-2 language"></span>India
+          <span class="country-selector"
+            ><img
+              alt="india"
+              src="./assets/images/flags/india_flag.jpg"
+              class="me-2 language" /></span
+          >India
         </a>
       </li>
       <li class="col-lg-4 mb-2">
         <a class="btn btn-country btn-lg btn-block">
-          <span class="country-selector"><img alt="french" src="./assets/images/flags/french_flag.jpg" class="me-2 language"></span>French
+          <span class="country-selector"
+            ><img
+              alt="french"
+              src="./assets/images/flags/french_flag.jpg"
+              class="me-2 language" /></span
+          >French
         </a>
       </li>
       <li class="col-lg-4 mb-2">
         <a class="btn btn-country btn-lg btn-block">
-          <span class="country-selector"><img alt="russia" src="./assets/images/flags/russia_flag.jpg" class="me-2 language"></span>Russia
+          <span class="country-selector"
+            ><img
+              alt="russia"
+              src="./assets/images/flags/russia_flag.jpg"
+              class="me-2 language" /></span
+          >Russia
         </a>
       </li>
       <li class="col-lg-4 mb-2">
         <a class="btn btn-country btn-lg btn-block">
-          <span class="country-selector"><img alt="germany" src="./assets/images/flags/germany_flag.jpg" class="me-2 language"></span>Germany
+          <span class="country-selector"
+            ><img
+              alt="germany"
+              src="./assets/images/flags/germany_flag.jpg"
+              class="me-2 language" /></span
+          >Germany
         </a>
       </li>
       <li class="col-lg-4 mb-2">
         <a class="btn btn-country btn-lg btn-block">
-          <span class="country-selector"><img alt="argentina" src="./assets/images/flags/argentina_flag.jpg" class="me-2 language"></span>Argentina
+          <span class="country-selector"
+            ><img
+              alt="argentina"
+              src="./assets/images/flags/argentina_flag.jpg"
+              class="me-2 language" /></span
+          >Argentina
         </a>
       </li>
       <li class="col-lg-4 mb-2">
         <a class="btn btn-country btn-lg btn-block">
-          <span class="country-selector"><img alt="uae" src="./assets/images/flags/uae_flag.jpg" class="me-2 language"></span>UAE
+          <span class="country-selector"
+            ><img
+              alt="uae"
+              src="./assets/images/flags/uae_flag.jpg"
+              class="me-2 language" /></span
+          >UAE
         </a>
       </li>
       <li class="col-lg-4 mb-2">
         <a class="btn btn-country btn-lg btn-block">
-          <span class="country-selector"><img alt="austria" src="./assets/images/flags/austria_flag.jpg" class="me-2 language"></span>Austria
+          <span class="country-selector"
+            ><img
+              alt="austria"
+              src="./assets/images/flags/austria_flag.jpg"
+              class="me-2 language" /></span
+          >Austria
         </a>
       </li>
       <li class="col-lg-4 mb-2">
         <a class="btn btn-country btn-lg btn-block">
-          <span class="country-selector"><img alt="mexico" src="./assets/images/flags/mexico_flag.jpg" class="me-2 language"></span>Mexico
+          <span class="country-selector"
+            ><img
+              alt="mexico"
+              src="./assets/images/flags/mexico_flag.jpg"
+              class="me-2 language" /></span
+          >Mexico
         </a>
       </li>
       <li class="col-lg-4 mb-2">
         <a class="btn btn-country btn-lg btn-block">
-          <span class="country-selector"><img alt="china" src="./assets/images/flags/china_flag.jpg" class="me-2 language"></span>China
+          <span class="country-selector"
+            ><img
+              alt="china"
+              src="./assets/images/flags/china_flag.jpg"
+              class="me-2 language" /></span
+          >China
         </a>
       </li>
       <li class="col-lg-4 mb-2">
         <a class="btn btn-country btn-lg btn-block">
-          <span class="country-selector"><img alt="poland" src="./assets/images/flags/poland_flag.jpg" class="me-2 language"></span>Poland
+          <span class="country-selector"
+            ><img
+              alt="poland"
+              src="./assets/images/flags/poland_flag.jpg"
+              class="me-2 language" /></span
+          >Poland
         </a>
       </li>
       <li class="col-lg-4 mb-2">
         <a class="btn btn-country btn-lg btn-block">
-          <span class="country-selector"><img alt="canada" src="./assets/images/flags/canada_flag.jpg" class="me-2 language"></span>Canada
+          <span class="country-selector"
+            ><img
+              alt="canada"
+              src="./assets/images/flags/canada_flag.jpg"
+              class="me-2 language" /></span
+          >Canada
         </a>
       </li>
       <li class="col-lg-4 mb-2">
         <a class="btn btn-country btn-lg btn-block">
-          <span class="country-selector"><img alt="malaysia" src="./assets/images/flags/malaysia_flag.jpg" class="me-2 language"></span>Malaysia
+          <span class="country-selector"
+            ><img
+              alt="malaysia"
+              src="./assets/images/flags/malaysia_flag.jpg"
+              class="me-2 language" /></span
+          >Malaysia
         </a>
       </li>
     </ul>
