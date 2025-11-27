@@ -22,6 +22,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 
 import { NgxChartsModule } from '@swimlane/ngx-charts';
+import { ProcessNameEntryComponent } from './setup/entry/process-name-entry/process-name-entry.component';
 
 
 //
@@ -31,7 +32,8 @@ import { NgxChartsModule } from '@swimlane/ngx-charts';
 @NgModule({
   declarations: [
     MascowashComponent,
-    ActualDateEntryComponent
+    ActualDateEntryComponent,
+    ProcessNameEntryComponent
   
   ],
   imports: [

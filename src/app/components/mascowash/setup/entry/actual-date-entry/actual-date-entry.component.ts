@@ -117,13 +117,20 @@ export class ActualDateEntryComponent {
     { field: 'supplierName', header: 'supplierName', display: '' },
     { field: 'invoiceNo', header: 'invoiceNo', display: '' },
 
-    { field: 'shipmentClearanceDate', header: 'shipmentClearanceDate', display: '' },
+    {
+      field: 'shipmentClearanceDate',
+      header: 'shipmentClearanceDate',
+      display: '',
+    },
     { field: 'commonLandingDate', header: 'commonLandingDate', display: '' },
-    { field: 'shipmentClearanceDays', header: 'shipmentClearanceDays', display: '' },
+    {
+      field: 'shipmentClearanceDays',
+      header: 'shipmentClearanceDays',
+      display: '',
+    },
     { field: 'etdDate', header: 'etdDate', display: '' },
     { field: 'etaDate', header: 'etaDate', display: '' },
     { field: 'actualDispatchDate', header: 'actualDispatchDate', display: '' },
-  
   ];
 
   @ViewChild('companySelect', { static: false })
@@ -140,12 +147,12 @@ export class ActualDateEntryComponent {
   }
 
   @ViewChild('fileNoSelect') fileNoSelect!: NgSelectComponent;
-  CompanyChangeEvent(event,masterLcSelect:NgSelectComponent): void {
+  CompanyChangeEvent(event, masterLcSelect: NgSelectComponent): void {
     masterLcSelect.focus();
     this.refreshAll();
     console.log('event Unit', event);
     this.Model.fileNo = null;
-    this.Model.supplierName = "";
+    this.Model.supplierName = '';
     this.LoadMasterFileNoList(event);
 
     setTimeout(() => {
@@ -156,19 +163,18 @@ export class ActualDateEntryComponent {
   refreshAll() {
     this.Model.lcNo = null;
     this.B2BLcSelectedList = [];
-    this.Model.lcDate = "";
-    this.Model.invoiceNo = "";
-    this.Model.shipmentClearanceDate = "";
-    this.Model.commonLandingDate = "";
-    this.Model.shipmentClearanceDays = "";
-    this.Model.etdDate = "";
-    this.Model.etaDate = "";
-    this.Model.actualDispatchDate = "";
-    this.Model.acArrivalDateInput = "";
-    this.ItemList=[];
-
+    this.Model.lcDate = '';
+    this.Model.invoiceNo = '';
+    this.Model.shipmentClearanceDate = '';
+    this.Model.commonLandingDate = '';
+    this.Model.shipmentClearanceDays = '';
+    this.Model.etdDate = '';
+    this.Model.etaDate = '';
+    this.Model.actualDispatchDate = '';
+    this.Model.acArrivalDateInput = '';
+    this.ItemList = [];
   }
-  
+
   LoadCompanyList() {
     this.UnitList = [];
     this.service.GetAccepCompanyName().subscribe(
@@ -217,79 +223,6 @@ export class ActualDateEntryComponent {
       },
       (error) => {}
     );
-
-    ///////////////////
-
-    // this.Model.adId = iData.adId;
-    // this.Model.masterLcId = iData.value;
-
-    // this.Model.supplierId = iData.supplierId;
-    // this.Model.piNo = iData.piNo;
-    // const date = new Date(iData.piDate);
-    // // Extract the month, day, and year from the Date object
-    // const month = ('0' + (date.getMonth() + 1)).slice(-2);
-    // const day = ('0' + date.getDate()).slice(-2);
-    // const year = date.getFullYear();
-    // this.Model.piDate = month + '/' + day + '/' + year;
-
-    // this.Model.mpoNo = iData.mpoNo;
-
-    // const date2 = new Date(iData.mpoDate);
-    // // Extract the month, day, and year from the Date object
-    // const month2 = ('0' + (date2.getMonth() + 1)).slice(-2);
-    // const day2 = ('0' + date2.getDate()).slice(-2);
-    // const year2 = date2.getFullYear();
-    // this.Model.mpoDate = month2 + '/' + day2 + '/' + year2;
-
-    // const date3 = new Date(iData.etdDate);
-    // // Extract the month, day, and year from the Date object
-    // const month3 = ('0' + (date3.getMonth() + 1)).slice(-2);
-    // const day3 = ('0' + date3.getDate()).slice(-2);
-    // const year3 = date3.getFullYear();
-    // this.Model.etdDate = month3 + '/' + day3 + '/' + year3;
-
-    // const date4 = new Date(iData.actualDispatchDate);
-    // // Extract the month, day, and year from the Date object
-    // const month4 = ('0' + (date4.getMonth() + 1)).slice(-2);
-    // const day4 = ('0' + date4.getDate()).slice(-2);
-    // const year4 = date4.getFullYear();
-    // this.Model.actualDispatchDate = month4 + '/' + day4 + '/' + year4;
-
-    // const date5 = new Date(iData.etaDate);
-    // // Extract the month, day, and year from the Date object
-    // const month5 = ('0' + (date5.getMonth() + 1)).slice(-2);
-    // const day5 = ('0' + date5.getDate()).slice(-2);
-    // const year5 = date5.getFullYear();
-    // this.Model.etaDate = month5 + '/' + day5 + '/' + year5;
-
-    // const date6 = new Date(iData.actualArrivalDate);
-    // // Extract the month, day, and year from the Date object
-    // const month6 = ('0' + (date6.getMonth() + 1)).slice(-2);
-    // const day6 = ('0' + date6.getDate()).slice(-2);
-    // const year6 = date6.getFullYear();
-    // this.Model.actualArrivalDate = month6 + '/' + day6 + '/' + year6;
-
-    // const date7 = new Date(iData.ttDate);
-    // // Extract the month, day, and year from the Date object
-    // const month7 = ('0' + (date7.getMonth() + 1)).slice(-2);
-    // const day7 = ('0' + date7.getDate()).slice(-2);
-    // const year7 = date7.getFullYear();
-    // this.Model.ttDate = month7 + '/' + day7 + '/' + year7;
-
-    // const date8 = new Date(iData.forwardingDate);
-    // // Extract the month, day, and year from the Date object
-    // const month8 = ('0' + (date8.getMonth() + 1)).slice(-2);
-    // const day8 = ('0' + date8.getDate()).slice(-2);
-    // const year8 = date8.getFullYear();
-    // this.Model.forwardingDate = month8 + '/' + day8 + '/' + year8;
-
-    // const date9 = new Date(iData.customerClearanceDate);
-    // // Extract the month, day, and year from the Date object
-    // const month9 = ('0' + (date9.getMonth() + 1)).slice(-2);
-    // const day9 = ('0' + date9.getDate()).slice(-2);
-    // const year9 = date9.getFullYear();
-    // this.Model.customerClearanceDate = month9 + '/' + day9 + '/' + year9;
-
     this.customForm = this.fb.group({
       adId: [this.Model.adId, Validators.required],
       operation: ['Update'],
@@ -390,63 +323,7 @@ export class ActualDateEntryComponent {
   PiNoChangeEvent(event) {
     this.LoadMpoList(event);
   }
-  changeETDDate(event) {
-    //alert(event);
-    // if (event != undefined) {
-    //   const result = new Date(event);
-    //   result.setDate(result.getDate() + 10);
-    //   this.Model.etaDate = result;
-    // }
-  }
-  // LoadMpoList(PiNo) {
-  //   //this.Model.mpoNo=null;
-  //   // this.Model.mpoNo = null;
-  //   // this.Model.etdDate = null;
-  //   // this.Model.piDate = null;
-  //   // this.Model.mpoDate = null;
-  //   // this.Model.ttDate = null;
-  //   // this.Model.etaDate = null;
-  //   this.MpoSelectedList = [];
-  //   this.service.GetMpoName(PiNo).subscribe(
-  //     (data: any[]) => {
-  //       this.MpoSelectedList.push({ label: '--- Select ---', value: null });
-  //       for (var i = 0; i < data.length; i++) {
-  //         this.MpoSelectedList.push({
-  //           label: data[i].mpoNo,
-  //           value: data[i].mpoNo,
-  //           // mpoNo: data[i].mpoNo,
-  //           // etdDate:
-  //           //   data[i].etdDate === '01/01/1900 00:00:00' ? '' : data[i].etdDate,
-  //           // piDate: data[i].piDate,
-  //           // mpoDate:
-  //           //   data[i].mpoDate === '01/01/1900 00:00:00' ? '' : data[i].mpoDate,
-  //           // ttDate: data[i].lcDate,
-  //         });
-  //       }
-  //       debugger;
-
-  //       if (this.MpoSelectedList.length == 2) {
-  //         this.Model.mpoNo = data[0].mpoNo;
-  //         this.Model.etdDate =
-  //           data[0].etdDate === '01/01/1900 00:00:00' ? '' : data[0].etdDate;
-  //         this.Model.piDate = data[0].piDate;
-  //         this.Model.mpoDate =
-  //           data[0].mpoDate === '01/01/1900 00:00:00' ? '' : data[0].mpoDate;
-  //         this.Model.ttDate = data[0].lcDate;
-  //       } else {
-  //         this.Model.mpoNo = null;
-  //         this.Model.etdDate = null;
-  //         this.Model.piDate = null;
-  //         this.Model.mpoDate = null;
-  //         this.Model.ttDate = null;
-  //         this.Model.etaDate = null;
-  //       }
-
-  //       //console.log('piwise', data);
-  //     },
-  //     (error) => {}
-  //   );
-  // }
+  changeETDDate(event) {}
 
   LoadMpoList(PiNo) {
     this.MpoSelectedList = [];
@@ -458,65 +335,34 @@ export class ActualDateEntryComponent {
           this.MpoSelectedList.push({
             label: data[i].mpoNo,
             value: data[i].mpoNo,
-            // mpoNo: data[i].mpoNo,
-            // etdDate:
-            //   data[i].etdDate === '01/01/1900 00:00:00' ? '' : data[i].etdDate,
-            // piDate: data[i].piDate,
-            // mpoDate:
-            //   data[i].mpoDate === '01/01/1900 00:00:00' ? '' : data[i].mpoDate,
-            // ttDate: data[i].lcDate,
           });
         }
         debugger;
-
-        // if (this.MpoSelectedList.length == 2) {
-        //   //console.log('mpoListLenght', this.MpoSelectedList);
-        //   this.Model.mpoNo = data[0].mpoNo;
-        //   // this.Model.etdDate =
-        //   //   data[0].etdDate === '01/01/1900 00:00:00' ? '' : data[0].etdDate;
-        //   // this.Model.piDate = data[0].piDate;
-        //   // this.Model.mpoDate =
-        //   //   data[0].mpoDate === '01/01/1900 00:00:00' ? '' : data[0].mpoDate;
-        //   // this.Model.ttDate = data[0].lcDate;
-        // } else {
-        //   this.Model.mpoNo = null;
-        //   this.Model.etdDate = null;
-        //   this.Model.piDate = null;
-        //   this.Model.mpoDate = null;
-        //   this.Model.ttDate = null;
-        //   this.Model.etaDate = null;
-        // }
-
-        //console.log('piwise', data);
       },
       (error) => {}
     );
   }
 
   MasterLcChangeEvent(event, nextInput: NgSelectComponent): void {
-    
-    console.log("masterFileNoList",this.masterFileNoList);
-    const selectedValue = this.masterFileNoList.find(u => u.value === event);
-    if (selectedValue)
-    {
+    console.log('masterFileNoList', this.masterFileNoList);
+    const selectedValue = this.masterFileNoList.find((u) => u.value === event);
+    if (selectedValue) {
       this.Model.supplierName = selectedValue.option1;
       this.LoadLCDropDownList(selectedValue.label);
       this.global_File_No = selectedValue.label;
     }
-    
+
     this.refreshAll();
-   
+
     nextInput.focus();
   }
   InvoiceNoChangeEvent(event, nextInput: HTMLInputElement): void {
     nextInput.focus();
   }
 
-  
-
   LcChangeEvent(event, nextInput: HTMLInputElement): void {
     this.LoadItemListByLcNo(this.global_File_No, event);
-    
+
     const selectedItem = this.B2BLcSelectedList.filter(
       (f) => f.value === event
     );
@@ -534,41 +380,51 @@ export class ActualDateEntryComponent {
       this.Model.shipmentClearanceDays = selectedData.shipmentClearanceDays;
       this.Model.etdDate = selectedData.etdDate;
       this.Model.etaDate = selectedData.etaDate;
-      this.Model.actualDispatchDate=selectedData.actualDispatchDate;
+      this.Model.actualDispatchDate = selectedData.actualDispatchDate;
     }
 
     nextInput.focus();
   }
-LcdateChangeEvent(event: Event, nextInput: HTMLInputElement): void {
+  LcdateChangeEvent(event: Event, nextInput: HTMLInputElement): void {
     nextInput.focus();
   }
-  ShipmentClearanceDateChangeEvent(event: Event, nextInput: HTMLInputElement): void {
+  ShipmentClearanceDateChangeEvent(
+    event: Event,
+    nextInput: HTMLInputElement
+  ): void {
     nextInput.focus();
   }
-   CommonLandingDateChangeEvent(event: Event, nextInput: HTMLInputElement): void {
-     nextInput.focus();
-     const days = this.getDaysBetweenDates(this.Model.shipmentClearanceDate,this.Model.commonLandingDate);
-     this.Model.shipmentClearanceDays = days;
+  CommonLandingDateChangeEvent(
+    event: Event,
+    nextInput: HTMLInputElement
+  ): void {
+    nextInput.focus();
+    const days = this.getDaysBetweenDates(
+      this.Model.shipmentClearanceDate,
+      this.Model.commonLandingDate
+    );
+    this.Model.shipmentClearanceDays = days;
   }
-  AcDispatchDateChangeEvent(event: Event): void {
- 
-  }
+  AcDispatchDateChangeEvent(event: Event): void {}
   ChangeAcArrivalDateInput(event: Event, nextInput: HTMLInputElement): void {
     nextInput.focus();
   }
 
-  getDaysBetweenDates(startDate: string | Date, endDate: string | Date): number {
-  const start = new Date(startDate);
-  const end = new Date(endDate);
+  getDaysBetweenDates(
+    startDate: string | Date,
+    endDate: string | Date
+  ): number {
+    const start = new Date(startDate);
+    const end = new Date(endDate);
 
-  // Calculate difference in milliseconds
-  const diffInMs = end.getTime() - start.getTime();
+    // Calculate difference in milliseconds
+    const diffInMs = end.getTime() - start.getTime();
 
-  // Convert milliseconds to days
-  const diffInDays = Math.ceil(diffInMs / (1000 * 60 * 60 * 24));
+    // Convert milliseconds to days
+    const diffInDays = Math.ceil(diffInMs / (1000 * 60 * 60 * 24));
 
-  return diffInDays;
-}
+    return diffInDays;
+  }
 
   LoadB2bLcListMaster(MasterLc, b2bLcDetailId) {
     // this.B2BLcListMaster = [];
@@ -661,8 +517,7 @@ LcdateChangeEvent(event: Event, nextInput: HTMLInputElement): void {
 
   ngOnInit(): void {
     this.createForm();
-    this.LoadCompanyList()
-    
+    this.LoadCompanyList();
   }
 
   createForm() {
@@ -693,13 +548,13 @@ LcdateChangeEvent(event: Event, nextInput: HTMLInputElement): void {
       //this.onClear();
     }
   }
-  onClear(){ 
+  onClear() {
     this.saveButtonTitle = 'Save';
     this.refreshAll();
     this.Model.companyId = null;
     this.Model.fileNo = null;
     this.Model.lcNo = null;
-    this.Model.supplierName = "";
+    this.Model.supplierName = '';
   }
   LoadMasterFileNoList(CompanyId) {
     this.masterFileNoList = [];
@@ -708,13 +563,13 @@ LcdateChangeEvent(event: Event, nextInput: HTMLInputElement): void {
         this.masterFileNoList.push({
           label: '--- Select ---',
           value: null,
-          option1:null
+          option1: null,
         });
         for (var i = 0; i < data.length; i++) {
           this.masterFileNoList.push({
             label: data[i].displayName,
             value: data[i].id,
-            option1:data[i].option1
+            option1: data[i].option1,
           });
         }
       },
@@ -750,7 +605,6 @@ LcdateChangeEvent(event: Event, nextInput: HTMLInputElement): void {
     );
   }
 
-  
   LoadItemListByLcNo(FileNo, LcNo) {
     this.ItemList = [];
     this.service.GetItemDataAcDate(FileNo, LcNo).subscribe(
@@ -779,7 +633,7 @@ LcdateChangeEvent(event: Event, nextInput: HTMLInputElement): void {
             shipmentClearanceDays: data[i].option6,
             etdDate: data[i].option7,
             etaDate: data[i].option8,
-            actualDispatchDate:data[i].option9
+            actualDispatchDate: data[i].option9,
           });
         }
 
@@ -791,7 +645,7 @@ LcdateChangeEvent(event: Event, nextInput: HTMLInputElement): void {
 
   master: any = {};
   onSubmit() {
-     if (
+    if (
       this.Model.companyId === null ||
       this.Model.companyId === '' ||
       this.Model.companyId === undefined
@@ -840,7 +694,6 @@ LcdateChangeEvent(event: Event, nextInput: HTMLInputElement): void {
       this.toastr.warning('Invoice Needed', 'Warning');
       return;
     }
-    
 
     if (
       this.Model.shipmentClearanceDate === null ||
@@ -919,12 +772,14 @@ LcdateChangeEvent(event: Event, nextInput: HTMLInputElement): void {
 
     const ShipmentClearanceDate = new Date(
       new Date(
-        this.Model.shipmentClearanceDate === '' || this.Model.shipmentClearanceDate === undefined
+        this.Model.shipmentClearanceDate === '' ||
+        this.Model.shipmentClearanceDate === undefined
           ? null
           : this.Model.shipmentClearanceDate
       ).getTime() -
         new Date(
-          this.Model.shipmentClearanceDate === '' || this.Model.shipmentClearanceDate === undefined
+          this.Model.shipmentClearanceDate === '' ||
+          this.Model.shipmentClearanceDate === undefined
             ? null
             : this.Model.shipmentClearanceDate
         ).getTimezoneOffset() *
@@ -933,12 +788,14 @@ LcdateChangeEvent(event: Event, nextInput: HTMLInputElement): void {
 
     const CommonLandingDate = new Date(
       new Date(
-        this.Model.commonLandingDate === '' || this.Model.commonLandingDate === undefined
+        this.Model.commonLandingDate === '' ||
+        this.Model.commonLandingDate === undefined
           ? null
           : this.Model.commonLandingDate
       ).getTime() -
         new Date(
-          this.Model.commonLandingDate === '' || this.Model.commonLandingDate === undefined
+          this.Model.commonLandingDate === '' ||
+          this.Model.commonLandingDate === undefined
             ? null
             : this.Model.commonLandingDate
         ).getTimezoneOffset() *
@@ -948,14 +805,12 @@ LcdateChangeEvent(event: Event, nextInput: HTMLInputElement): void {
 
     const ETD = new Date(
       new Date(
-        this.Model.etdDate === '' ||
-        this.Model.etdDate === undefined
+        this.Model.etdDate === '' || this.Model.etdDate === undefined
           ? null
           : this.Model.etdDate
       ).getTime() -
         new Date(
-          this.Model.etdDate === '' ||
-          this.Model.etdDate === undefined
+          this.Model.etdDate === '' || this.Model.etdDate === undefined
             ? null
             : this.Model.etdDate
         ).getTimezoneOffset() *
@@ -964,14 +819,12 @@ LcdateChangeEvent(event: Event, nextInput: HTMLInputElement): void {
 
     const ETA = new Date(
       new Date(
-        this.Model.etaDate === '' ||
-        this.Model.etaDate === undefined
+        this.Model.etaDate === '' || this.Model.etaDate === undefined
           ? null
           : this.Model.etaDate
       ).getTime() -
         new Date(
-          this.Model.etaDate === '' ||
-          this.Model.etaDate === undefined
+          this.Model.etaDate === '' || this.Model.etaDate === undefined
             ? null
             : this.Model.etaDate
         ).getTimezoneOffset() *
@@ -999,7 +852,7 @@ LcdateChangeEvent(event: Event, nextInput: HTMLInputElement): void {
     this.master = {
       operation: 'Save',
       adId: 0,
-      companyId:CompanyId,
+      companyId: CompanyId,
       fileNo: this.global_File_No,
       lcNo: LcNo,
       lcDate: LcDate,
@@ -1007,10 +860,10 @@ LcdateChangeEvent(event: Event, nextInput: HTMLInputElement): void {
       invoiceNo: InvoiceNo,
       shipmentClearanceDate: ShipmentClearanceDate,
       commonLandingDate: CommonLandingDate,
-      shipmentClearanceDays:ShipmentClearanceDays,
+      shipmentClearanceDays: ShipmentClearanceDays,
       etdDate: ETD,
       etaDate: ETA,
-      actualDispatchDate: ActualDispatchDate
+      actualDispatchDate: ActualDispatchDate,
     };
 
     console.log('saveActualList', this.master);
@@ -1027,15 +880,14 @@ LcdateChangeEvent(event: Event, nextInput: HTMLInputElement): void {
             this.refreshAll();
             this.Model.companyId = null;
             this.Model.fileNo = null;
-            this.Model.supplierName = "";
-
+            this.Model.supplierName = '';
           } else {
             this.toastr.success('Submitted Successfully', 'Actual Date');
             this.saveButtonTitle = 'Save';
             this.refreshAll();
             this.Model.companyId = null;
             this.Model.fileNo = null;
-            this.Model.supplierName = "";
+            this.Model.supplierName = '';
           }
 
           this.commonService.LoadActualDateList();
