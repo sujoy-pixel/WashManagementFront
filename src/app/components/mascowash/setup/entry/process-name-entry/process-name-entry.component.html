@@ -2,7 +2,7 @@
   <div class="col-md-12">
     <div class="card custom-card">
       <div class="card-header border-bottom justify-content-between">
-        <div class="card-title">Company Bank Info</div>
+        <div class="card-title">Process Name Entry</div>
       </div>
 
       <div class="card-body">
@@ -18,18 +18,18 @@
             <div class="row align-items-center">
               <label class="form-label col-md-2">
                 <!-- For larger screens -->
-                <span class="d-none d-sm-inline text-dark" title="Company Name"
-                  >Company Name
+                <span class="d-none d-sm-inline text-dark" title="Unit"
+                  >Unit
                   <span style="color: red !important; font-size: 1.5em"
                     >*</span
                   ></span
                 >
                 <!-- For smaller screens -->
-                <span class="d-inline d-sm-none text-dark" title="Company Name"
+                <!-- <span class="d-inline d-sm-none text-dark" title="Unit"
                   >Company
                   <span style="color: red !important; font-size: 1.5em">*</span>
                   <br />Name</span
-                >
+                > -->
               </label>
               <div
                 class="form-control col-md-4 common-border"
@@ -53,161 +53,6 @@
             </div>
           </div>
         </div>
-        <div class="row my-2">
-          <div class="col-md-12">
-            <div class="row align-items-center">
-              <label class="form-label col-md-2">
-                <!-- For larger screens -->
-                <span
-                  class="d-none d-sm-inline text-dark"
-                  title="Company Address"
-                  >Company Address
-                  <!-- <span style="color: red !important; font-size: 1.5em">*</span> -->
-                </span>
-                <!-- For smaller screens -->
-                <span
-                  class="d-inline d-sm-none text-dark"
-                  title="Company Address"
-                  >Company
-                  <!-- <span style="color: red !important; font-size: 1.5em">*</span> -->
-                  <br />Address</span
-                >
-              </label>
-              <div
-                class="form-control col-md-4 common-border"
-                [class.focused-border]="currentFocus === 'CompanyAddressData'"
-              >
-                <textarea
-                  #CompanyAddressData
-                  type="text"
-                  [(ngModel)]="Model.CompanyAddress"
-                  (focus)="setFocus('CompanyAddressData')"
-                  (blur)="clearFocus()"
-                  [disabled]="true"
-                  rows="3"
-                  style="width: 100%"
-                ></textarea>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div class="row my-2">
-          <div class="col-md-12">
-            <div class="row align-items-center">
-              <label class="form-label col-md-2">
-                <!-- For larger screens -->
-                <span class="d-none d-sm-inline text-dark" title="Bank Name"
-                  >Bank Name
-                  <span style="color: red !important; font-size: 1.5em"
-                    >*</span
-                  ></span
-                >
-                <!-- For smaller screens -->
-                <span class="d-inline d-sm-none text-dark" title="Bank Name"
-                  >Bank
-                  <span style="color: red !important; font-size: 1.5em">*</span>
-                  <br />Name</span
-                >
-              </label>
-              <div
-                class="form-control col-md-4 common-border"
-                [class.focused-border]="currentFocus === 'BankNameData'"
-              >
-                <ng-select
-                  #BankNameSelect
-                  [(ngModel)]="Model.BankName"
-                  (change)="BankChangeEvent($event)"
-                  (focus)="setFocus('BankNameSelect')"
-                  (blur)="clearFocus()"
-                  placeholder="Select"
-                >
-                  <ng-option *ngFor="let item of this.BankList" [value]="item"
-                    >{{ item.label }}
-                  </ng-option>
-                </ng-select>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div class="row my-2">
-          <div class="col-md-12">
-            <div class="row align-items-center">
-              <label class="form-label col-md-2">
-                <!-- For larger screens -->
-                <span class="d-none d-sm-inline text-dark" title="Bank Branch"
-                  >Bank Branch
-                  <span style="color: red !important; font-size: 1.5em"
-                    >*</span
-                  ></span
-                >
-                <!-- For smaller screens -->
-                <span class="d-inline d-sm-none text-dark" title="Bank Branch"
-                  >Bank
-                  <span style="color: red !important; font-size: 1.5em">*</span>
-                  <br />Branch</span
-                >
-              </label>
-              <div
-                class="form-control col-md-4 common-border"
-                [class.focused-border]="currentFocus === 'BankBranchNameData'"
-              >
-                <ng-select
-                  #BankBranchNameSelect
-                  [(ngModel)]="Model.BranchName"
-                  (change)="BranchChangeEvent($event)"
-                  (focus)="setFocus('BankBranchNameSelect')"
-                  (blur)="clearFocus()"
-                  placeholder="Select"
-                >
-                  <ng-option *ngFor="let item of this.BranchList" [value]="item"
-                    >{{ item.label }}
-                  </ng-option>
-                </ng-select>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div class="row my-2">
-          <div class="col-md-12">
-            <div class="row align-items-center">
-              <label class="form-label col-md-2">
-                <!-- For larger screens -->
-                <span
-                  class="d-none d-sm-inline text-dark"
-                  title="Branch Address"
-                  >Branch Address
-                  <!-- <span style="color: red !important; font-size: 1.5em" >*</span > -->
-                </span>
-                <!-- For smaller screens -->
-                <span
-                  class="d-inline d-sm-none text-dark"
-                  title="Branch Address"
-                  >Branch
-                  <!-- <span style="color: red !important; font-size: 1.5em">*</span> -->
-                  <br />Address</span
-                >
-              </label>
-              <div
-                class="form-control col-md-4 common-border"
-                [class.focused-border]="currentFocus === 'BranchAddressData'"
-              >
-                <textarea
-                  #BranchAddressData
-                  type="text"
-                  [(ngModel)]="Model.BranchAddress"
-                  (focus)="setFocus('BranchAddressData')"
-                  (blur)="clearFocus()"
-                  [disabled]="true"
-                  rows="3"
-                  style="width: 100%"
-                ></textarea>
-              </div>
-            </div>
-          </div>
-        </div>
 
         <div class="row my-2">
           <div class="col-md-12">
@@ -215,15 +60,15 @@
               <label class="form-label col-md-2">
                 <!-- For larger screens -->
                 <span class="d-none d-sm-inline text-dark" title="Swift Code"
-                  >Swift Code
+                  >Process Name
                   <!-- <span style="color: red !important; font-size: 1.5em"
                     >*</span> -->
                 </span>
                 <!-- For smaller screens -->
                 <span class="d-inline d-sm-none text-dark" title="Swift Code"
-                  >Swift
+                  >Process
                   <!-- <span style="color: red !important; font-size: 1.5em">*</span> -->
-                  <br />Code</span
+                  <br />Name</span
                 >
               </label>
               <div
@@ -247,29 +92,37 @@
             <div class="row align-items-center">
               <label class="form-label col-md-2">
                 <!-- For larger screens -->
-                <span class="d-none d-sm-inline text-dark" title="Routing No."
-                  >Routing No.
-                  <!-- <span style="color: red !important; font-size: 1.5em"
-                    >*</span> -->
-                </span>
-                <!-- For smaller screens -->
-                <span class="d-inline d-sm-none text-dark" title="Routing No."
-                  >Routing
-                  <!-- <span style="color: red !important; font-size: 1.5em">*</span> -->
-                  <br />No.</span
+                <span class="d-none d-sm-inline text-dark" title="Unit"
+                  >Priority
+                  <span style="color: red !important; font-size: 1.5em"
+                    >*</span
+                  ></span
                 >
+                <!-- For smaller screens -->
+                <!-- <span class="d-inline d-sm-none text-dark" title="Unit"
+                  >Company
+                  <span style="color: red !important; font-size: 1.5em">*</span>
+                  <br />Name</span
+                > -->
               </label>
               <div
                 class="form-control col-md-4 common-border"
-                [class.focused-border]="currentFocus === 'RoutingNoData'"
+                [class.focused-border]="currentFocus === 'CompanyNameData'"
               >
-                <input
-                  #RoutingNoData
-                  type="text"
-                  [(ngModel)]="Model.RoutingNo"
-                  (focus)="setFocus('RoutingNoData')"
+                <ng-select
+                  #unitNoSelect
+                  [(ngModel)]="Model.CompanyName"
+                  (change)="CompanyChangeEvent($event)"
+                  (focus)="setFocus('unitNoSelect')"
                   (blur)="clearFocus()"
-                />
+                  placeholder="Select"
+                >
+                  <ng-option
+                    *ngFor="let item of this.CompanyList"
+                    [value]="item"
+                    >{{ item.label }}
+                  </ng-option>
+                </ng-select>
               </div>
             </div>
           </div>
@@ -349,13 +202,9 @@
               <ng-template pTemplate="header" let-columns>
                 <tr>
                   <th>SL</th>
-                  <th>Company Name</th>
-                  <th>Company Address</th>
-                  <th>Bank Name</th>
-                  <th>Branch Name</th>
-                  <th>Branch Address</th>
-                  <th>Swift Code</th>
-                  <th>Routing No</th>
+                  <th>Unit</th>
+                  <th>Process Name</th>
+                  <th>Priority</th>
                   <th>Active Status</th>
                   <th style="width: 80px">ACTION</th>
                 </tr>
