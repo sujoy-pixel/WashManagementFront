@@ -1,0 +1,58 @@
+<div class="row">
+  <div class="col-md-12">
+    <div class="card custom-card">
+      <div class="card-header border-bottom justify-content-between">
+        <div class="card-title">Company Bank Info</div>
+      </div>
+
+      <div class="card-body">
+        <!-- <form
+          style="width: 100% !important"
+          autocomplete="on"
+          [formGroup]="bankChargeHeadForm"
+          class="form"
+          role="form"
+        > -->
+        <div class="row my-2">
+          <div class="col-md-12">
+            <div class="row align-items-center">
+              <label class="form-label col-md-2">
+                <!-- For larger screens -->
+                <span class="d-none d-sm-inline text-dark" title="Company Name"
+                  >Unit
+                  <span style="color: red !important; font-size: 1.5em"
+                    >*</span
+                  ></span
+                >
+                <!-- For smaller screens -->
+                <span class="d-inline d-sm-none text-dark" title="Company Name"
+                  >Unit
+                  <span style="color: red !important; font-size: 1.5em">*</span>
+                  <br
+                /></span>
+              </label>
+              <div
+                class="form-control col-md-4 common-border"
+                [class.focused-border]="currentFocus === 'CompanyNameData'"
+              >
+                <ng-select
+                  #unitNoSelect
+                  [(ngModel)]="Model.unitId"
+                  (focus)="setFocus('unitNoSelect')"
+                  (blur)="clearFocus()"
+                  placeholder="Select"
+                >
+                  <ng-option
+                    *ngFor="let item of this.UnitList"
+                    [value]="item.value"
+                    >{{ item.label }}
+                  </ng-option>
+                </ng-select>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
