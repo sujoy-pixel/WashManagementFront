@@ -95,6 +95,9 @@ export class ProcessNameEntryComponent {
       (error) => {}
     );
   }
+  onUnitChange(event) {
+    console.log('==', event);
+  }
 
   LoadCompanyBankInfoBankList() {
     this.BankList = [];

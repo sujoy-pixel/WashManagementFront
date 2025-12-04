@@ -2,7 +2,7 @@
   <div class="col-md-12">
     <div class="card custom-card">
       <div class="card-header border-bottom justify-content-between">
-        <div class="card-title">Company Bank Info</div>
+        <div class="card-title">Process Name Entry</div>
       </div>
 
       <div class="card-body">
@@ -18,18 +18,12 @@
             <div class="row align-items-center">
               <label class="form-label col-md-2">
                 <!-- For larger screens -->
-                <span class="d-none d-sm-inline text-dark" title="Company Name"
+                <span class="d-none d-sm-inline text-dark" title="Unit"
                   >Unit
                   <span style="color: red !important; font-size: 1.5em"
                     >*</span
                   ></span
                 >
-                <!-- For smaller screens -->
-                <span class="d-inline d-sm-none text-dark" title="Company Name"
-                  >Unit
-                  <span style="color: red !important; font-size: 1.5em">*</span>
-                  <br
-                /></span>
               </label>
               <div
                 class="form-control col-md-4 common-border"
@@ -38,13 +32,12 @@
                 <ng-select
                   #unitNoSelect
                   [(ngModel)]="Model.unitId"
+                  (change)="onUnitChange($event)"
                   (focus)="setFocus('unitNoSelect')"
                   (blur)="clearFocus()"
                   placeholder="Select"
                 >
-                  <ng-option
-                    *ngFor="let item of this.UnitList"
-                    [value]="item.value"
+                  <ng-option *ngFor="let item of this.UnitList" [value]="item"
                     >{{ item.label }}
                   </ng-option>
                 </ng-select>
@@ -52,8 +45,77 @@
             </div>
           </div>
         </div>
+
         <div class="row my-2">
-          <div class="col-md-12">
+          <!-- <div class="col-md-12">
+            <div class="row align-items-center">
+              <label class="form-label col-md-2">
+                
+                <span class="d-none d-sm-inline text-dark" title="Swift Code"
+                  >Process Name
+                 
+                </span>
+               
+                <span class="d-inline d-sm-none text-dark" title="Swift Code"
+                  >Process
+                 
+                  <br />Name</span
+                >
+              </label>
+              <div
+                class="form-control col-md-4 common-border"
+                [class.focused-border]="currentFocus === 'SwiftCodeData'"
+              >
+                <input
+                  #SwiftCodeData
+                  type="text"
+                  [(ngModel)]="Model.SwiftCode"
+                  (focus)="setFocus('SwiftCodeData')"
+                  (blur)="clearFocus()"
+                />
+              </div>
+            </div>
+          </div> -->
+        </div>
+
+        <div class="row my-2">
+          <!-- <div class="col-md-12">
+            <div class="row align-items-center">
+              <label class="form-label col-md-2">
+               
+                <span class="d-none d-sm-inline text-dark" title="Unit"
+                  >Priority
+                  <span style="color: red !important; font-size: 1.5em"
+                    >*</span
+                  ></span
+                >
+              
+              </label>
+              <div
+                class="form-control col-md-4 common-border"
+                [class.focused-border]="currentFocus === 'CompanyNameData'"
+              >
+                <ng-select
+                  #unitNoSelect
+                  [(ngModel)]="Model.CompanyName"
+                  (change)="CompanyChangeEvent($event)"
+                  (focus)="setFocus('unitNoSelect')"
+                  (blur)="clearFocus()"
+                  placeholder="Select"
+                >
+                  <ng-option
+                    *ngFor="let item of this.CompanyList"
+                    [value]="item"
+                    >{{ item.label }}
+                  </ng-option>
+                </ng-select>
+              </div>
+            </div>
+          </div> -->
+        </div>
+
+        <div class="row my-2">
+          <!-- <div class="col-md-12">
             <div class="row">
               <div class="input-group mb-1">
                 <div class="input-group-prepend paheight col-3">
@@ -64,14 +126,144 @@
                     type="checkbox"
                     [(ngModel)]="Model.activeStatus"
                     class="success"
+                    (change)="onChangeActiveStatus($event)"
                   />
                   <span class="slider round"></span>
                 </label>
               </div>
             </div>
+          </div> -->
+        </div>
+
+        <!-- row 10 -->
+        <div class="text-right mt-3">
+          <button type="button" class="btn btn-primary" (click)="onSubmit()">
+            <i class="fa fa-database" aria-hidden="true"></i>
+            {{ saveButtonTitle }}
+          </button>
+          &nbsp;
+          <button class="btn btn-danger" type="button" (click)="onClear()">
+            <i class="fa fa-refresh" aria-hidden="true"></i> Clear
+          </button>
+          &nbsp; &nbsp;
+        </div>
+        <!-- </form> -->
+      </div>
+    </div>
+    <!-- <div class="col-md-12">
+      <div class="card custom-card">
+        <div class="card-body">
+          <div class="card-header border-bottom justify-content-between">
+            <p-table
+              #dt
+              class="table table-bordered"
+              [value]="getCompanyBankList"
+              [paginator]="true"
+              [rows]="10"
+              [rowsPerPageOptions]="[10, 20, 30, 40, 50]"
+              [showCurrentPageReport]="true"
+              currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+              [globalFilterFields]="getCompanyBankListDataKey"
+              dataKey="id"
+              editMode="row"
+              [autoLayout]="true"
+            >
+              <ng-template pTemplate="caption">
+               
+                <div style="text-align: right">
+                  <i class="pi pi-search" style="margin: 4px 4px 0 0"></i>
+                  <input
+                    type="text"
+                    pInputText
+                    size="50"
+                    placeholder="Global Filter"
+                    (input)="
+                      dt.filterGlobal($any($event.target).value, 'contains')
+                    "
+                    style="width: auto"
+                  />
+                </div>
+              </ng-template>
+
+              <ng-template pTemplate="header" let-columns>
+                <tr>
+                  <th>SL</th>
+                  <th>Unit</th>
+                  <th>Process Name</th>
+                  <th>Priority</th>
+                  <th>Active Status</th>
+                  <th style="width: 80px">ACTION</th>
+                </tr>
+              </ng-template>
+              <ng-template
+                pTemplate="body"
+                let-rowData
+                let-columns="columns"
+                let-i="rowIndex"
+              >
+                <tr>
+                  <td>{{ i + 1 }}</td>
+                  <td>{{ rowData.companyName }}</td>
+                  <td>
+                    {{
+                      rowData.companyAddress === null ||
+                      rowData.companyAddress === undefined ||
+                      rowData.companyAddress === ""
+                        ? ""
+                        : rowData.companyAddress
+                    }}
+                  </td>
+                  <td>{{ rowData.bankName }}</td>
+                  <td>
+                    {{
+                      rowData.branchName === null ||
+                      rowData.branchName === undefined ||
+                      rowData.branchName === ""
+                        ? ""
+                        : rowData.branchName
+                    }}
+                  </td>
+                  <td>{{ rowData.branchAddress }}</td>
+                  <td>
+                    {{
+                      rowData.swiftCode === null ||
+                      rowData.swiftCode === undefined ||
+                      rowData.swiftCode === ""
+                        ? ""
+                        : rowData.swiftCode
+                    }}
+                  </td>
+                  <td>
+                    {{
+                      rowData.routingNo === null ||
+                      rowData.routingNo === undefined ||
+                      rowData.routingNo === ""
+                        ? ""
+                        : rowData.routingNo
+                    }}
+                  </td>
+                  <td>
+                    {{ rowData.isActive === 1 ? "Active" : "Inactive" }}
+                  </td>
+                  <td>
+                    <a
+                      style="cursor: pointer"
+                      class="mr-2"
+                      (click)="editCompanyBankList(rowData)"
+                      ><i class="fa fa-edit"></i
+                    ></a>
+                    <a
+                      style="cursor: pointer; color: red; margin-left: 10px"
+                      (click)="deleteCompanyBankData(rowData)"
+                      ><i class="fa fa-trash"></i
+                    ></a>
+                  </td>
+                </tr>
+              </ng-template>
+            </p-table>
           </div>
         </div>
       </div>
-    </div>
+    </div> -->
   </div>
 </div>
