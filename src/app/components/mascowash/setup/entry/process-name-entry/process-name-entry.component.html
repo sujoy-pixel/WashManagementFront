@@ -45,20 +45,20 @@
             </div>
           </div>
         </div>
-
         <div class="row my-2">
-          <!-- <div class="col-md-12">
+          <div class="col-md-12">
             <div class="row align-items-center">
               <label class="form-label col-md-2">
-                
-                <span class="d-none d-sm-inline text-dark" title="Swift Code"
+                <!-- For larger screens -->
+                <span class="d-none d-sm-inline text-dark" title="Process Name"
                   >Process Name
-                 
+                  <!-- <span style="color: red !important; font-size: 1.5em"
+                    >*</span> -->
                 </span>
-               
-                <span class="d-inline d-sm-none text-dark" title="Swift Code"
+                <!-- For smaller screens -->
+                <span class="d-inline d-sm-none text-dark" title="Process Name"
                   >Process
-                 
+                  <!-- <span style="color: red !important; font-size: 1.5em">*</span> -->
                   <br />Name</span
                 >
               </label>
@@ -69,53 +69,17 @@
                 <input
                   #SwiftCodeData
                   type="text"
-                  [(ngModel)]="Model.SwiftCode"
+                  [(ngModel)]="Model.processName"
                   (focus)="setFocus('SwiftCodeData')"
                   (blur)="clearFocus()"
                 />
               </div>
             </div>
-          </div> -->
+          </div>
         </div>
 
         <div class="row my-2">
-          <!-- <div class="col-md-12">
-            <div class="row align-items-center">
-              <label class="form-label col-md-2">
-               
-                <span class="d-none d-sm-inline text-dark" title="Unit"
-                  >Priority
-                  <span style="color: red !important; font-size: 1.5em"
-                    >*</span
-                  ></span
-                >
-              
-              </label>
-              <div
-                class="form-control col-md-4 common-border"
-                [class.focused-border]="currentFocus === 'CompanyNameData'"
-              >
-                <ng-select
-                  #unitNoSelect
-                  [(ngModel)]="Model.CompanyName"
-                  (change)="CompanyChangeEvent($event)"
-                  (focus)="setFocus('unitNoSelect')"
-                  (blur)="clearFocus()"
-                  placeholder="Select"
-                >
-                  <ng-option
-                    *ngFor="let item of this.CompanyList"
-                    [value]="item"
-                    >{{ item.label }}
-                  </ng-option>
-                </ng-select>
-              </div>
-            </div>
-          </div> -->
-        </div>
-
-        <div class="row my-2">
-          <!-- <div class="col-md-12">
+          <div class="col-md-12">
             <div class="row">
               <div class="input-group mb-1">
                 <div class="input-group-prepend paheight col-3">
@@ -132,7 +96,7 @@
                 </label>
               </div>
             </div>
-          </div> -->
+          </div>
         </div>
 
         <!-- row 10 -->
@@ -150,7 +114,7 @@
         <!-- </form> -->
       </div>
     </div>
-    <!-- <div class="col-md-12">
+    <div class="col-md-12">
       <div class="card custom-card">
         <div class="card-body">
           <div class="card-header border-bottom justify-content-between">
@@ -169,7 +133,6 @@
               [autoLayout]="true"
             >
               <ng-template pTemplate="caption">
-               
                 <div style="text-align: right">
                   <i class="pi pi-search" style="margin: 4px 4px 0 0"></i>
                   <input
@@ -264,6 +227,6 @@
           </div>
         </div>
       </div>
-    </div> -->
+    </div>
   </div>
 </div>

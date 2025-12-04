@@ -50,6 +50,7 @@ export class ProcessNameEntryComponent {
   Model: any = {
     unitId: null,
     activeStatus: true,
+    processName: null,
   };
 
   async ngOnInit() {
@@ -59,23 +60,6 @@ export class ProcessNameEntryComponent {
 
   onChangeActiveStatus(event: any) {
     this.Model.activeStatus = event.target.checked;
-  }
-
-  getCompanyBankListData() {
-    this.getCompanyBankList = [];
-    this.service.GetCompanyBankInfoListDataCommercial().subscribe(
-      (res: any[]) => {
-        console.log('dataget', res);
-        // res = res.filter((resp) => resp.deleteBy === null);
-        //console.log('getRESP ALL DATA', res);
-        this.getCompanyBankList = res;
-        this.getCompanyBankListDataKey = Object.keys(res[0]);
-      },
-      (error) => {
-        this.toastr.error('Failed to load Process Data');
-        this.getCompanyBankList = [];
-      }
-    );
   }
 
   //////////////////////////Load Dropdown Start//////////////////////
@@ -97,22 +81,6 @@ export class ProcessNameEntryComponent {
   }
   onUnitChange(event) {
     console.log('==', event);
-  }
-
-  LoadCompanyBankInfoBankList() {
-    this.BankList = [];
-    this.service.GetCompanyBankInfoBankName().subscribe(
-      (data: any[]) => {
-        this.BankList.push({ label: '--- Select ---', value: null });
-        for (var i = 0; i < data.length; i++) {
-          this.BankList.push({
-            label: data[i].displayName,
-            value: data[i].id,
-          });
-        }
-      },
-      (error) => {}
-    );
   }
 
   LoadBranchNameAndAddressUsingBankNo(BankNo) {
@@ -176,7 +144,6 @@ export class ProcessNameEntryComponent {
     this.Model.CompanyId = event.value;
     this.Model.CompanyName = event.label;
     this.Model.CompanyAddress = event.companyAdd;
-    this.LoadCompanyBankInfoBankList();
   }
 
   BankChangeEvent(event) {
@@ -212,32 +179,22 @@ export class ProcessNameEntryComponent {
     console.log('submit show model', this.Model);
 
     if (
-      this.Model.CompanyId === null ||
-      this.Model.CompanyId === undefined ||
-      this.Model.CompanyId === '' ||
-      this.Model.CompanyId === 0
+      this.Model.unitId === null ||
+      this.Model.unitId === undefined ||
+      this.Model.unitId === '' ||
+      this.Model.unitId === 0
     ) {
-      this.toastr.warning('Please Select  Company Name', 'Warning');
+      this.toastr.warning('Please Select  Unit Name', 'Warning');
       return;
     }
 
     if (
-      this.Model.BankNo === null ||
-      this.Model.BankNo === undefined ||
-      this.Model.BankNo === '' ||
-      this.Model.BankNo === 0
+      this.Model.processName === null ||
+      this.Model.processName === undefined ||
+      this.Model.processName === '' ||
+      this.Model.processName === 0
     ) {
-      this.toastr.warning('Please Select Bank Name', 'Warning');
-      return;
-    }
-
-    if (
-      this.Model.BranchId === null ||
-      this.Model.BranchId === undefined ||
-      this.Model.BranchId === '' ||
-      this.Model.BranchId === 0
-    ) {
-      this.toastr.warning('Please Select Bank Branch', 'Warning');
+      this.toastr.warning('Please Enter Proper Process Name', 'Warning');
       return;
     }
 
@@ -292,7 +249,6 @@ export class ProcessNameEntryComponent {
             this.toastr.success('Submitted Successfully', 'Company Bank Info');
           }
         }
-        this.getCompanyBankListData();
         this.onClear();
         this.saveButtonTitle = 'Save';
       },
@@ -324,17 +280,8 @@ export class ProcessNameEntryComponent {
   }
 
   onClear() {
-    this.Model.CompanyBankId = 0;
-    this.Model.CompanyId = null;
-    this.Model.CompanyName = null;
-    this.Model.CompanyAddress = null;
-    this.Model.BankNo = null;
-    this.Model.BankName = null;
-    this.Model.BranchId = null;
-    this.Model.BranchName = null;
-    this.Model.BranchAddress = null;
-    this.Model.SwiftCode = null;
-    this.Model.RoutingNo = null;
+    this.Model.unitId = 0;
+    this.Model.processName = null;
     this.Model.activeStatus = true;
     this.saveButtonTitle = 'Save';
   }
@@ -417,7 +364,6 @@ export class ProcessNameEntryComponent {
       this.service.saveCompanyBankInfoData(deletePayload).subscribe(
         (res) => {
           console.log(res);
-          this.getCompanyBankListData();
           this.onClear();
           this.toastr.success('Deleted Successfully', 'Company Bank Info');
         },
