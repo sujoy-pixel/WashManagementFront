@@ -78,6 +78,42 @@
           </div>
         </div>
 
+        <!-- Priority Row -->
+        <div class="row my-2">
+          <div class="col-md-12">
+            <div class="row align-items-center">
+              <label class="form-label col-md-2">
+                <span class="d-none d-sm-inline text-dark" title="Priority">
+                  Priority
+                  <span style="color: red !important; font-size: 1.5em">*</span>
+                </span>
+
+                <!-- For smaller screens -->
+                <span class="d-inline d-sm-none text-dark" title="Priority"
+                  >Priority</span
+                >
+              </label>
+
+              <div
+                class="form-control col-md-4 common-border"
+                [class.focused-border]="currentFocus === 'PrioritySelect'"
+              >
+                <ng-select
+                  #PrioritySelect
+                  [(ngModel)]="Model.priority"
+                  (focus)="setFocus('PrioritySelect')"
+                  (blur)="clearFocus()"
+                  placeholder="Select Priority"
+                >
+                  <ng-option *ngFor="let p of priorityList" [value]="p">
+                    {{ p }}
+                  </ng-option>
+                </ng-select>
+              </div>
+            </div>
+          </div>
+        </div>
+
         <div class="row my-2">
           <div class="col-md-12">
             <div class="row">

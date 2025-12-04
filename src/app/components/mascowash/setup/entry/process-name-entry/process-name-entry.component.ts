@@ -30,6 +30,7 @@ export class ProcessNameEntryComponent {
   UnitList: any = [];
   BankList: any = [];
   BranchList: any = [];
+  priorityList: number[] = [];
 
   getCompanyBankList: any;
   getCompanyBankListDataKey: any;
@@ -51,11 +52,14 @@ export class ProcessNameEntryComponent {
     unitId: null,
     activeStatus: true,
     processName: null,
+    priority: null,
+    processId: null,
   };
 
   async ngOnInit() {
     this.LoadUnit();
     this.Model.activeStatus = true;
+    this.priorityList = Array.from({ length: 50 }, (_, i) => i + 1);
   }
 
   onChangeActiveStatus(event: any) {
@@ -146,34 +150,6 @@ export class ProcessNameEntryComponent {
     this.Model.CompanyAddress = event.companyAdd;
   }
 
-  BankChangeEvent(event) {
-    console.log('BankEvent', event);
-
-    ///Clear Data before new Data Load///
-    this.Model.CompanyBankId = 0;
-    this.Model.BranchId = null;
-    this.Model.BranchName = null;
-    this.Model.BranchAddress = null;
-    this.Model.SwiftCode = null;
-    this.Model.RoutingNo = null;
-    this.saveButtonTitle = 'Save';
-    ///Clear Data before new Data Load///
-    this.Model.BankNo = event.value;
-    this.Model.BankName = event.label;
-    this.LoadBranchNameAndAddressUsingBankNo(event.value);
-  }
-
-  BranchChangeEvent(event) {
-    console.log('BranchEvent==', event);
-    this.Model.BranchName = event.label;
-    this.Model.BranchId = event.value;
-    this.Model.BranchAddress = event.branchAddress;
-    this.LoadSaveRoutingandSwiftCode(
-      this.Model.CompanyId,
-      this.Model.BankNo,
-      this.Model.BranchId
-    );
-  }
   ///////////////////////Change Event End/////////////////
   onSubmit() {
     console.log('submit show model', this.Model);
@@ -198,62 +174,53 @@ export class ProcessNameEntryComponent {
       return;
     }
 
+    if (
+      this.Model.priority === null ||
+      this.Model.priority === undefined ||
+      this.Model.priority === '' ||
+      this.Model.priority === 0
+    ) {
+      this.toastr.warning('Please Enter Proper Process Name', 'Warning');
+      return;
+    }
+
     console.log('check Model', this.Model);
     let savePayload = {
-      operation: this.Model.CompanyBankId === 0 ? 'INSERT' : 'UPDATE',
-      companyBankId: this.Model.CompanyBankId,
-      companyId: this.Model.CompanyId,
-      companyName: this.Model.CompanyName,
-      companyAddress:
-        this.Model.CompanyAddress === null ||
-        this.Model.CompanyAddress === undefined ||
-        this.Model.CompanyAddress === ''
-          ? ''
-          : this.Model.CompanyAddress,
-      bankNo: this.Model.BankNo,
-      bankName: this.Model.BankName,
-      branchId: this.Model.BranchId,
-      branchName: this.Model.BranchName,
-      branchAddress:
-        this.Model.BranchAddress === null ||
-        this.Model.BranchAddress === undefined ||
-        this.Model.BranchAddress === ''
-          ? ''
-          : this.Model.BranchAddress,
-      swiftCode:
-        this.Model.SwiftCode === null ||
-        this.Model.SwiftCode === undefined ||
-        this.Model.SwiftCode === ''
-          ? ''
-          : this.Model.SwiftCode,
-      routingNo:
-        this.Model.RoutingNo === null ||
-        this.Model.RoutingNo === undefined ||
-        this.Model.RoutingNo === ''
-          ? ''
-          : this.Model.RoutingNo,
-      isActive: this.Model.activeStatus === true ? 1 : 0,
+      Operation:
+        (this.Model.processId === -1 || this.Model.processId === null
+          ? 0
+          : this.Model.processId) === 0
+          ? 'INSERT'
+          : 'UPDATE',
+      ProcessId:
+        this.Model.processId === -1 || this.Model.processId === null
+          ? 0
+          : this.Model.processId,
+      UnitId: this.Model.unitId.value,
+      ProcessName: this.Model.processName,
+      Priority: this.Model.priority,
+      IsActive: this.Model.activeStatus === true ? 1 : 0,
     };
     console.log('payload', savePayload);
-    this.service.saveCompanyBankInfoData(savePayload).subscribe(
+    this.service.saveProcessNameEntryData(savePayload).subscribe(
       (res) => {
         console.log(res);
         console.log('create Res Data', res);
         let resultCheck: any = (res as { resultCode: number }).resultCode;
         if (resultCheck === '-1') {
-          this.toastr.error('Duplicate Data Found', 'Company Bank Info');
+          this.toastr.error('Duplicate Data Found', 'Process Name Entry');
         } else {
-          if (this.Model.CompanyBankId !== 0) {
-            this.toastr.success('Updated Successfully', 'Company Bank Info');
+          if (this.Model.processId == 0 || this.Model.processId == null) {
+            this.toastr.success('Updated Successfully', 'Process Name Entry');
           } else {
-            this.toastr.success('Submitted Successfully', 'Company Bank Info');
+            this.toastr.success('Submitted Successfully', 'Process Name Entry');
           }
         }
         this.onClear();
         this.saveButtonTitle = 'Save';
       },
       (err) => {
-        this.toastr.success('Submission Error', 'Company Bank Info');
+        this.toastr.success('Submission Error', 'Process Name Entry');
       }
     );
   }
@@ -365,14 +332,14 @@ export class ProcessNameEntryComponent {
         (res) => {
           console.log(res);
           this.onClear();
-          this.toastr.success('Deleted Successfully', 'Company Bank Info');
+          this.toastr.success('Deleted Successfully', 'Process Name Entry');
         },
         (err) => {
-          this.toastr.success('Deleted Failed', 'Company Bank Info');
+          this.toastr.success('Deleted Failed', 'Process Name Entry');
         }
       );
     } else {
-      this.toastr.error('Deleted Failed', 'Company Bank Info');
+      this.toastr.error('Deleted Failed', 'Process Name Entry');
     }
   }
 }
