@@ -744,7 +744,7 @@ export class WashSetupService {
     );
   }
   GetUnitName(): Observable<any> {
-    return this.http.get<any[]>(this.baseUrl_ + 'Common/GetUnitList', {
+    return this.http.get<any[]>(this.baseUrl_ + 'Common/GetUnitName', {
       headers: this.token.headerToken(),
     });
   }
