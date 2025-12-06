@@ -12,11 +12,11 @@ import { CommonServiceService } from '../../../services/common-service';
 import { NgZone } from '@angular/core';
 
 @Component({
-  selector: 'app-process-name-entry',
-  templateUrl: './process-name-entry.component.html',
-  styleUrls: ['./process-name-entry.component.scss'],
+  selector: 'app-operation-name-entry',
+  templateUrl: './operation-name-entry.component.html',
+  styleUrls: ['./operation-name-entry.component.scss'],
 })
-export class ProcessNameEntryComponent {
+export class OperationNameEntryComponent {
   CompanyBankInfoForm: FormGroup | any;
   title: string | any;
   spinnerName = 'createGroup';
@@ -42,135 +42,33 @@ export class ProcessNameEntryComponent {
     private ngZone: NgZone,
     public fb: FormBuilder,
     private cdr: ChangeDetectorRef
-  ) {
-    // this.bsConfig = {
-    //   dateInputFormat: 'YYYY-MM-DD', // Your desired date format
-    // };
-  }
+  ) {}
 
   Model: any = {
-    unitId: null,
     activeStatus: true,
-    processName: null,
+    operationName: null,
     priority: null,
-    processId: null,
+    operationId: null,
   };
 
   async ngOnInit() {
-    this.LoadUnit();
     this.Model.activeStatus = true;
     this.priorityList = Array.from({ length: 50 }, (_, i) => i + 1);
   }
-
   onChangeActiveStatus(event: any) {
     this.Model.activeStatus = event.target.checked;
   }
 
-  //////////////////////////Load Dropdown Start//////////////////////
-  LoadUnit() {
-    this.UnitList = [];
-    this.service.GetUnitName().subscribe(
-      (data: any[]) => {
-        console.log('UnitId;', data);
-        this.UnitList.push({ label: '--- Select ---', value: null });
-        for (var i = 0; i < data.length; i++) {
-          this.UnitList.push({
-            label: data[i].displayName,
-            value: data[i].id,
-          });
-        }
-      },
-      (error) => {}
-    );
-  }
-  onUnitChange(event) {
-    console.log('==', event);
-  }
-
-  LoadBranchNameAndAddressUsingBankNo(BankNo) {
-    this.BranchList = [];
-    this.service.GetCompanyBankBranchAndAddressByBankNo(BankNo).subscribe(
-      (data: any[]) => {
-        this.BranchList.push({ label: '--- Select ---', value: null });
-        for (var i = 0; i < data.length; i++) {
-          this.BranchList.push({
-            label: data[i].displayName,
-            value: data[i].id,
-            branchAddress: data[i].option1,
-          });
-        }
-      },
-      (error) => {}
-    );
-  }
-
-  LoadSaveRoutingandSwiftCode(CompanyId, BankNo, BranchId) {
-    this.service
-      .GetCompanyBankRoutingSwiftCodeByParams(CompanyId, BankNo, BranchId)
-      .subscribe(
-        (data: any[]) => {
-          console.log('data--Swift and Routing', data);
-          this.Model.SwiftCode =
-            data[0].swiftCode === null ||
-            data[0].swiftCode === '' ||
-            data[0].swiftCode === undefined
-              ? ''
-              : data[0].swiftCode;
-          this.Model.RoutingNo =
-            data[0].routingNo === null ||
-            data[0].routingNo === '' ||
-            data[0].routingNo === undefined
-              ? ''
-              : data[0].routingNo;
-        },
-        (error) => {}
-      );
-  }
-
-  //////////////////////////Load Dropdown End//////////////////////
-
-  ///////////////////////Change Event Start/////////////////
-  CompanyChangeEvent(event) {
-    console.log('changeCompanyEvent', event);
-    ////Clear before new Data Insert////
-    this.Model.CompanyBankId = 0;
-    this.Model.CompanyAddress = null;
-    this.Model.BankNo = null;
-    this.Model.BankName = null;
-    this.Model.BranchId = null;
-    this.Model.BranchName = null;
-    this.Model.BranchAddress = null;
-    this.Model.SwiftCode = null;
-    this.Model.RoutingNo = null;
-    this.saveButtonTitle = 'Save';
-    ////Clear before new Data Insert////
-
-    this.Model.CompanyId = event.value;
-    this.Model.CompanyName = event.label;
-    this.Model.CompanyAddress = event.companyAdd;
-  }
-
-  ///////////////////////Change Event End/////////////////
   onSubmit() {
     console.log('submit show model', this.Model);
 
     if (
-      this.Model.unitId === null ||
-      this.Model.unitId === undefined ||
-      this.Model.unitId === '' ||
-      this.Model.unitId === 0
+      this.Model.operationName === null ||
+      this.Model.operationName === undefined ||
+      this.Model.operationName === '' ||
+      this.Model.operationName === 0
     ) {
-      this.toastr.warning('Please Select  Unit Name', 'Warning');
-      return;
-    }
-
-    if (
-      this.Model.processName === null ||
-      this.Model.processName === undefined ||
-      this.Model.processName === '' ||
-      this.Model.processName === 0
-    ) {
-      this.toastr.warning('Please Enter Proper Process Name', 'Warning');
+      this.toastr.warning('Please Enter Proper Operation Name', 'Warning');
       return;
     }
 
@@ -180,47 +78,49 @@ export class ProcessNameEntryComponent {
       this.Model.priority === '' ||
       this.Model.priority === 0
     ) {
-      this.toastr.warning('Please Enter Proper Process Name', 'Warning');
+      this.toastr.warning('Please Enter Proper operation Name', 'Warning');
       return;
     }
 
     console.log('check Model', this.Model);
     let savePayload = {
       Operation:
-        (this.Model.processId === -1 || this.Model.processId === null
+        (this.Model.operationId === -1 || this.Model.operationId === null
           ? 0
-          : this.Model.processId) === 0
+          : this.Model.operationId) === 0
           ? 'INSERT'
           : 'UPDATE',
-      ProcessId:
-        this.Model.processId === -1 || this.Model.processId === null
+      OperationId:
+        this.Model.operationId === -1 || this.Model.operationId === null
           ? 0
-          : this.Model.processId,
-      UnitId: this.Model.unitId.value,
-      ProcessName: this.Model.processName,
+          : this.Model.operationId,
+      OperationName: this.Model.operationName,
       Priority: this.Model.priority,
       IsActive: this.Model.activeStatus === true ? 1 : 0,
     };
     console.log('payload', savePayload);
-    this.service.saveProcessNameEntryData(savePayload).subscribe(
+    this.service.saveOperationNameEntryData(savePayload).subscribe(
       (res) => {
         console.log(res);
         console.log('create Res Data', res);
         let resultCheck: any = (res as { resultCode: number }).resultCode;
         if (resultCheck === '-1') {
-          this.toastr.error('Duplicate Data Found', 'Process Name Entry');
+          this.toastr.error('Duplicate Data Found', 'Operation Name Entry');
         } else {
-          if (this.Model.processId == 0 || this.Model.processId == null) {
-            this.toastr.success('Submitted Successfully', 'Process Name Entry');
+          if (this.Model.operationId == 0 || this.Model.operationId == null) {
+            this.toastr.success(
+              'Submitted Successfully',
+              'Operation Name Entry'
+            );
           } else {
-            this.toastr.success('Updated Successfully', 'Process Name Entry');
+            this.toastr.success('Updated Successfully', 'Operation Name Entry');
           }
         }
         this.onClear();
         this.saveButtonTitle = 'Save';
       },
       (err) => {
-        this.toastr.success('Submission Error', 'Process Name Entry');
+        this.toastr.success('Submission Error', 'Operation Name Entry');
       }
     );
   }
@@ -247,9 +147,9 @@ export class ProcessNameEntryComponent {
   }
 
   onClear() {
-    this.Model.unitId = 0;
-    this.Model.processName = null;
+    this.Model.operationName = null;
     this.Model.activeStatus = true;
+    this.Model.priority = null;
     this.saveButtonTitle = 'Save';
   }
 
@@ -332,14 +232,14 @@ export class ProcessNameEntryComponent {
         (res) => {
           console.log(res);
           this.onClear();
-          this.toastr.success('Deleted Successfully', 'Process Name Entry');
+          this.toastr.success('Deleted Successfully', 'operation Name Entry');
         },
         (err) => {
-          this.toastr.success('Deleted Failed', 'Process Name Entry');
+          this.toastr.success('Deleted Failed', 'operation Name Entry');
         }
       );
     } else {
-      this.toastr.error('Deleted Failed', 'Process Name Entry');
+      this.toastr.error('Deleted Failed', 'operation Name Entry');
     }
   }
 }
