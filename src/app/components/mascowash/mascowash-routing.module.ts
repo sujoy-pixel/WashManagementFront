@@ -4,6 +4,8 @@ import { MascowashComponent } from './mascowash.component';
 
 import { ActualDateEntryComponent } from './setup/entry/actual-date-entry/actual-date-entry.component';
 import { ProcessNameEntryComponent } from './setup/entry/process-name-entry/process-name-entry.component';
+import { InspectionTypeEntryComponent } from './setup/entry/inspection-type-entry/inspection-type-entry.component';
+
 
 const routes: Routes = [
   {
@@ -18,6 +20,11 @@ const routes: Routes = [
       {
         path: 'setup/entry/process-name-entry',
         component: ProcessNameEntryComponent,
+        runGuardsAndResolvers: 'always',
+      },
+      {
+        path: 'setup/entry/type-of-inspection',
+        component: InspectionTypeEntryComponent,
         runGuardsAndResolvers: 'always',
       },
     ],

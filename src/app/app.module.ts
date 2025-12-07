@@ -45,6 +45,7 @@ import '@boldreports/javascript-reporting-controls/Scripts/data-visualization/ej
 import '@boldreports/javascript-reporting-controls/Scripts/data-visualization/ej.chart.min';
 import { MultiSelectModule } from 'primeng/multiselect';
 import { MatCheckboxModule } from '@angular/material/checkbox';
+
 @NgModule({
   declarations: [
     // TypeaheadModule,
@@ -53,6 +54,7 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
     HeaderComponent,
     FooterComponent,
     BannerComponent,
+    // TypeOfInspectionComponent,
   
     //FormsModule
 

@@ -3627,4 +3627,19 @@ export class WashSetupService {
       headers: this.token.headerToken(),
     });
   }
+TypeofInspectionService(obj: any) {
+  return this.http.post(
+    this.baseUrl_ + 'Setup/SaveTypeofInspection',
+    obj,
+    { headers: this.token.headerToken() }
+  );
+}
+
+getAllTypeofInspection() {
+  return this.http.get(
+    this.baseUrl_ + 'Setup/GetTypeofInspectionData',
+    { headers: this.token.headerToken() }
+  );
+}
+
 }
