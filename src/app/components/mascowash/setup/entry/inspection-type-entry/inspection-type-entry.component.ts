@@ -91,9 +91,9 @@ export class InspectionTypeEntryComponent implements OnInit {
   // Edit existing item
   edit(item: any) {
     this.isEdit = true;
-    this.saveButtonTitle = 'Update';
+    this.saveButtonTitle = 'UPDATE';
     this.Model = {
-      TypeofInspectionId: item.TypeofInspectionId,
+      TypeofInspectionId: item.typeofInspectionId,
       TypeName: item.typeName,
       IsActive: item.isActive == 1
     };
@@ -112,14 +112,17 @@ export class InspectionTypeEntryComponent implements OnInit {
       if (result.isConfirmed) {
         const payload = {
           operation: 'DELETE',
-          typeofInspectionId: item.TypeofInspectionId
+          TypeofInspectionId: item.typeofInspectionId,
+          
+          // typeofInspectionId: item.TypeofInspectionId
         };
 
         this.service.TypeofInspectionService(payload).subscribe({
           next: (res: any) => {
-            if (res[0]?.ResultCode === 1) {
+            //console.log('resDelete', res);
+            if (res?.resultCode === "1") {
               this.toastr.success('Deleted successfully', 'Success');
-              this.loadData();
+             this.loadData();
             } else {
               this.toastr.error('Delete failed', 'Error');
             }
@@ -130,6 +133,7 @@ export class InspectionTypeEntryComponent implements OnInit {
         });
       }
     });
+
   }
 
   // Clear form

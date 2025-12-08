@@ -25,7 +25,6 @@ import { NgxChartsModule } from '@swimlane/ngx-charts';
 import { ProcessNameEntryComponent } from './setup/entry/process-name-entry/process-name-entry.component';
 import { InspectionTypeEntryComponent } from './setup/entry/inspection-type-entry/inspection-type-entry.component';
 
-
 //
 
 //
