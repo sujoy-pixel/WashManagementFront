@@ -10,6 +10,7 @@ import { FormBuilder, FormGroup, FormArray, Validators } from '@angular/forms';
 import { WashSetupService } from '../../../services/washsetup.service';
 import { CommonServiceService } from '../../../services/common-service';
 import { NgZone } from '@angular/core';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-process-name-entry',
@@ -31,10 +32,14 @@ export class ProcessNameEntryComponent {
   BankList: any = [];
   BranchList: any = [];
   priorityList: number[] = [];
+  dataList: any[] = [];
+  isEdit = false;
+  isSubmitting = false;
 
   getCompanyBankList: any;
   getCompanyBankListDataKey: any;
-
+  getProcessNameEntryList: any;
+  getProcessNameEntryListDataKey: any;
   constructor(
     private service: WashSetupService,
     public commonService: CommonServiceService,
@@ -58,6 +63,7 @@ export class ProcessNameEntryComponent {
 
   async ngOnInit() {
     this.LoadUnit();
+    this.loadData();
     this.Model.activeStatus = true;
     this.priorityList = Array.from({ length: 50 }, (_, i) => i + 1);
   }
@@ -87,142 +93,85 @@ export class ProcessNameEntryComponent {
     console.log('==', event);
   }
 
-  // LoadBranchNameAndAddressUsingBankNo(BankNo) {
-  //   this.BranchList = [];
-  //   this.service.GetCompanyBankBranchAndAddressByBankNo(BankNo).subscribe(
-  //     (data: any[]) => {
-  //       this.BranchList.push({ label: '--- Select ---', value: null });
-  //       for (var i = 0; i < data.length; i++) {
-  //         this.BranchList.push({
-  //           label: data[i].displayName,
-  //           value: data[i].id,
-  //           branchAddress: data[i].option1,
-  //         });
-  //       }
-  //     },
-  //     (error) => {}
-  //   );
-  // }
-
-  // LoadSaveRoutingandSwiftCode(CompanyId, BankNo, BranchId) {
-  //   this.service
-  //     .GetCompanyBankRoutingSwiftCodeByParams(CompanyId, BankNo, BranchId)
-  //     .subscribe(
-  //       (data: any[]) => {
-  //         console.log('data--Swift and Routing', data);
-  //         this.Model.SwiftCode =
-  //           data[0].swiftCode === null ||
-  //           data[0].swiftCode === '' ||
-  //           data[0].swiftCode === undefined
-  //             ? ''
-  //             : data[0].swiftCode;
-  //         this.Model.RoutingNo =
-  //           data[0].routingNo === null ||
-  //           data[0].routingNo === '' ||
-  //           data[0].routingNo === undefined
-  //             ? ''
-  //             : data[0].routingNo;
-  //       },
-  //       (error) => {}
-  //     );
-  // }
-
-  //////////////////////////Load Dropdown End//////////////////////
-
-  ///////////////////////Change Event Start/////////////////
-  CompanyChangeEvent(event) {
-    console.log('changeCompanyEvent', event);
-    ////Clear before new Data Insert////
-    this.Model.CompanyBankId = 0;
-    this.Model.CompanyAddress = null;
-    this.Model.BankNo = null;
-    this.Model.BankName = null;
-    this.Model.BranchId = null;
-    this.Model.BranchName = null;
-    this.Model.BranchAddress = null;
-    this.Model.SwiftCode = null;
-    this.Model.RoutingNo = null;
-    this.saveButtonTitle = 'Save';
-    ////Clear before new Data Insert////
-
-    this.Model.CompanyId = event.value;
-    this.Model.CompanyName = event.label;
-    this.Model.CompanyAddress = event.companyAdd;
-  }
-
-  ///////////////////////Change Event End/////////////////
+  /////////////////////Change Event End/////////////////
   onSubmit() {
     console.log('submit show model', this.Model);
 
-    if (
-      this.Model.unitId === null ||
-      this.Model.unitId === undefined ||
-      this.Model.unitId === '' ||
-      this.Model.unitId === 0
-    ) {
-      this.toastr.warning('Please Select  Unit Name', 'Warning');
+    // VALIDATIONS (Clean format)
+    if (!this.Model.unitId || !this.Model.unitId.value) {
+      this.toastr.warning('Please Select Unit Name', 'Warning');
       return;
     }
 
-    if (
-      this.Model.processName === null ||
-      this.Model.processName === undefined ||
-      this.Model.processName === '' ||
-      this.Model.processName === 0
-    ) {
+    if (!this.Model.processName?.trim()) {
       this.toastr.warning('Please Enter Proper Process Name', 'Warning');
       return;
     }
 
-    if (
-      this.Model.priority === null ||
-      this.Model.priority === undefined ||
-      this.Model.priority === '' ||
-      this.Model.priority === 0
-    ) {
-      this.toastr.warning('Please Enter Proper Process Name', 'Warning');
+    if (!this.Model.priority || this.Model.priority === 0) {
+      this.toastr.warning('Please Enter Priority', 'Warning');
       return;
     }
 
-    console.log('check Model', this.Model);
-    let savePayload = {
-      Operation:
-        (this.Model.processId === -1 || this.Model.processId === null
-          ? 0
-          : this.Model.processId) === 0
-          ? 'INSERT'
-          : 'UPDATE',
-      ProcessId:
-        this.Model.processId === -1 || this.Model.processId === null
-          ? 0
-          : this.Model.processId,
-      UnitId: this.Model.unitId.value,
-      ProcessName: this.Model.processName,
-      Priority: this.Model.priority,
-      IsActive: this.Model.activeStatus === true ? 1 : 0,
-    };
-    console.log('payload', savePayload);
-    this.service.saveProcessNameEntryData(savePayload).subscribe(
-      (res) => {
-        console.log(res);
-        console.log('create Res Data', res);
-        let resultCheck: any = (res as { resultCode: number }).resultCode;
-        if (resultCheck === '-1') {
-          this.toastr.error('Duplicate Data Found', 'Process Name Entry');
-        } else {
-          if (this.Model.processId == 0 || this.Model.processId == null) {
-            this.toastr.success('Submitted Successfully', 'Process Name Entry');
-          } else {
-            this.toastr.success('Updated Successfully', 'Process Name Entry');
-          }
-        }
-        this.onClear();
-        this.saveButtonTitle = 'Save';
-      },
-      (err) => {
-        this.toastr.success('Submission Error', 'Process Name Entry');
-      }
+    this.isSubmitting = true;
+
+    // INSERT OR UPDATE logic (clean style)
+    this.isEdit = !(
+      this.Model.processId === 0 || this.Model.processId === null
     );
+
+    const payload = {
+      operation: this.isEdit ? 'UPDATE' : 'INSERT',
+      ProcessId: this.Model.processId ?? 0,
+      UnitId: this.Model.unitId.value,
+      ProcessName: this.Model.processName.trim(),
+      Priority: this.Model.priority,
+      IsActive: this.Model.activeStatus ? 1 : 0,
+    };
+
+    console.log('payload', payload);
+
+    this.service.saveProcessNameEntryData(payload).subscribe({
+      next: (res: any) => {
+        console.log('API Response:', res);
+
+        const resultCode = res[0]?.resultCode ?? res?.resultCode;
+
+        if (resultCode === -1 || resultCode === '-1') {
+          this.toastr.warning('Duplicate Data Found', 'Process Name Entry');
+          this.isSubmitting = false;
+          return;
+        }
+
+        this.toastr.success(
+          this.isEdit ? 'Updated Successfully' : 'Submitted Successfully',
+          'Process Name Entry'
+        );
+
+        this.onClear();
+        this.loadData();
+
+        this.isSubmitting = false;
+        this.cdr.detectChanges();
+      },
+
+      error: () => {
+        this.toastr.error('Submission Error', 'Process Name Entry');
+        this.isSubmitting = false;
+      },
+    });
+  }
+
+  loadData() {
+    this.service.GetProcessNameEntryList().subscribe({
+      next: (res: any) => {
+        console.log('dataList:', res);
+        this.dataList = res ?? [];
+      },
+      error: () => {
+        this.toastr.error('Failed to load Type of Inspection data');
+      },
+    });
   }
 
   setFocus(field: string): void {
@@ -247,48 +196,61 @@ export class ProcessNameEntryComponent {
   }
 
   onClear() {
-    this.Model.unitId = 0;
-    this.Model.processName = null;
-    this.Model.activeStatus = true;
+    this.Model = {
+      processId: 0, // reset for new entry
+      unitId: null,
+      processName: '',
+      priority: null,
+      activeStatus: true,
+    };
+
     this.saveButtonTitle = 'Save';
+    this.isEdit = false; // in case edit mode was active
+    this.cdr.detectChanges();
   }
 
-  editCompanyBankList(data) {
-    console.log('termsPayment', data);
-    this.Model.CompanyBankId = data.companyBankId;
-    this.Model.CompanyId = data.companyId;
-    this.Model.CompanyName = data.companyName;
-    this.Model.CompanyAddress =
-      data.companyAddress === null ||
-      data.companyAddress === undefined ||
-      data.companyAddress === ''
-        ? ''
-        : data.companyAddress;
-    this.Model.BankNo = data.bankNo;
-    this.Model.BankName = data.bankName;
-    this.Model.BranchId = data.branchId;
-    this.Model.BranchName = data.branchName;
-    this.Model.BranchAddress =
-      data.branchAddress === null ||
-      data.branchAddress === undefined ||
-      data.branchAddress === ''
-        ? ''
-        : data.branchAddress;
-    this.Model.SwiftCode =
-      data.swiftCode === null ||
-      data.swiftCode === undefined ||
-      data.swiftCode === ''
-        ? ''
-        : data.swiftCode;
-    this.Model.RoutingNo =
-      data.routingNo === null ||
-      data.routingNo === undefined ||
-      data.routingNo === ''
-        ? ''
-        : data.routingNo;
-    this.Model.activeStatus = data.isActive === 1 ? true : false;
-    this.saveButtonTitle = 'Update';
+  edit(item: any) {
+    this.isEdit = true;
+    this.saveButtonTitle = 'UPDATE';
+    this.Model = {
+      TypeofInspectionId: item.typeofInspectionId,
+      TypeName: item.typeName,
+      IsActive: item.isActive == 1,
+    };
+    this.cdr.detectChanges();
   }
 
- 
+  delete(item: any) {
+    Swal.fire({
+      title: 'Are you sure?',
+      text: 'Do you want to delete this item?',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Yes, delete it',
+    }).then((result) => {
+      if (result.isConfirmed) {
+        const payload = {
+          operation: 'DELETE',
+          TypeofInspectionId: item.typeofInspectionId,
+
+          // typeofInspectionId: item.TypeofInspectionId
+        };
+
+        this.service.TypeofInspectionService(payload).subscribe({
+          next: (res: any) => {
+            //console.log('resDelete', res);
+            if (res?.resultCode === '1') {
+              this.toastr.success('Deleted successfully', 'Success');
+              this.loadData();
+            } else {
+              this.toastr.error('Delete failed', 'Error');
+            }
+          },
+          error: () => {
+            this.toastr.error('Delete failed', 'Error');
+          },
+        });
+      }
+    });
+  }
 }

@@ -150,119 +150,53 @@
         <!-- </form> -->
       </div>
     </div>
-    <div class="col-md-12">
-      <div class="card custom-card">
-        <div class="card-body">
-          <div class="card-header border-bottom justify-content-between">
-            <p-table
-              #dt
-              class="table table-bordered"
-              [value]="getCompanyBankList"
-              [paginator]="true"
-              [rows]="10"
-              [rowsPerPageOptions]="[10, 20, 30, 40, 50]"
-              [showCurrentPageReport]="true"
-              currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
-              [globalFilterFields]="getCompanyBankListDataKey"
-              dataKey="id"
-              editMode="row"
-              [autoLayout]="true"
-            >
-              <ng-template pTemplate="caption">
-                <div style="text-align: right">
-                  <i class="pi pi-search" style="margin: 4px 4px 0 0"></i>
-                  <input
-                    type="text"
-                    pInputText
-                    size="50"
-                    placeholder="Global Filter"
-                    (input)="
-                      dt.filterGlobal($any($event.target).value, 'contains')
-                    "
-                    style="width: auto"
-                  />
-                </div>
-              </ng-template>
+    <div class="table-responsive mt-3">
+      <table class="table table-striped table-bordered custom-table">
+        <thead>
+          <tr>
+            <th style="width: 60px; text-align: center">SL</th>
+            <th style="text-align: center">Unit</th>
+            <th style="text-align: center">Process Name</th>
+            <th style="text-align: center">Priority</th>
+            <th style="text-align: center">Active Status</th>
+            <th style="text-align: center; width: 120px">Action</th>
+          </tr>
+        </thead>
 
-              <ng-template pTemplate="header" let-columns>
-                <tr>
-                  <th>SL</th>
-                  <th>Unit</th>
-                  <th>Process Name</th>
-                  <th>Priority</th>
-                  <th>Active Status</th>
-                  <th style="width: 80px">ACTION</th>
-                </tr>
-              </ng-template>
-              <ng-template
-                pTemplate="body"
-                let-rowData
-                let-columns="columns"
-                let-i="rowIndex"
+        <tbody>
+          <tr *ngFor="let item of getProcessNameEntryList; let i = index">
+            <td class="text-center">{{ i + 1 }}</td>
+
+            <td>{{ item.unitName }}</td>
+
+            <td>{{ item.processName }}</td>
+
+            <td class="text-center">{{ item.priority }}</td>
+
+            <td class="text-center">
+              <span
+                class="badge"
+                [ngClass]="item.isActive == 1 ? 'bg-success' : 'bg-danger'"
               >
-                <tr>
-                  <td>{{ i + 1 }}</td>
-                  <td>{{ rowData.companyName }}</td>
-                  <td>
-                    {{
-                      rowData.companyAddress === null ||
-                      rowData.companyAddress === undefined ||
-                      rowData.companyAddress === ""
-                        ? ""
-                        : rowData.companyAddress
-                    }}
-                  </td>
-                  <td>{{ rowData.bankName }}</td>
-                  <td>
-                    {{
-                      rowData.branchName === null ||
-                      rowData.branchName === undefined ||
-                      rowData.branchName === ""
-                        ? ""
-                        : rowData.branchName
-                    }}
-                  </td>
-                  <td>{{ rowData.branchAddress }}</td>
-                  <td>
-                    {{
-                      rowData.swiftCode === null ||
-                      rowData.swiftCode === undefined ||
-                      rowData.swiftCode === ""
-                        ? ""
-                        : rowData.swiftCode
-                    }}
-                  </td>
-                  <td>
-                    {{
-                      rowData.routingNo === null ||
-                      rowData.routingNo === undefined ||
-                      rowData.routingNo === ""
-                        ? ""
-                        : rowData.routingNo
-                    }}
-                  </td>
-                  <td>
-                    {{ rowData.isActive === 1 ? "Active" : "Inactive" }}
-                  </td>
-                  <td>
-                    <a
-                      style="cursor: pointer"
-                      class="mr-2"
-                      (click)="editCompanyBankList(rowData)"
-                      ><i class="fa fa-edit"></i
-                    ></a>
-                    <a
-                      style="cursor: pointer; color: red; margin-left: 10px"
-                     
-                      ><i class="fa fa-trash"></i
-                    ></a>
-                  </td>
-                </tr>
-              </ng-template>
-            </p-table>
-          </div>
-        </div>
-      </div>
+                {{ item.isActive == 1 ? "Active" : "Inactive" }}
+              </span>
+            </td>
+
+            <td class="text-center">
+              <button class="btn btn-sm btn-info me-1" (click)="edit(item)">
+                Edit
+              </button>
+              <button class="btn btn-sm btn-danger" (click)="delete(item)">
+                Delete
+              </button>
+            </td>
+          </tr>
+
+          <tr *ngIf="getProcessNameEntryList?.length === 0">
+            <td colspan="6" class="text-center">No records found</td>
+          </tr>
+        </tbody>
+      </table>
     </div>
   </div>
 </div>
