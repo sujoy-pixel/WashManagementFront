@@ -23,27 +23,21 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
 
 import { NgxChartsModule } from '@swimlane/ngx-charts';
 import { ProcessNameEntryComponent } from './setup/entry/process-name-entry/process-name-entry.component';
-<<<<<<< HEAD
+
 import { InspectionTypeEntryComponent } from './setup/entry/inspection-type-entry/inspection-type-entry.component';
-=======
+
 import { OperationNameEntryComponent } from './setup/entry/operation-name-entry/operation-name-entry.component';
-
->>>>>>> 2be01bce33aa311a3596b1b67a00292bcba03503
-
-//
-
-//
 
 @NgModule({
   declarations: [
     MascowashComponent,
     ActualDateEntryComponent,
     ProcessNameEntryComponent,
-<<<<<<< HEAD
-    InspectionTypeEntryComponent
-=======
+
+    InspectionTypeEntryComponent,
+
     OperationNameEntryComponent
->>>>>>> 2be01bce33aa311a3596b1b67a00292bcba03503
+
   
   ],
   imports: [
