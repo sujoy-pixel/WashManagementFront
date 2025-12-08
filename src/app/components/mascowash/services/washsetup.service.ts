@@ -3014,6 +3014,18 @@ export class WashSetupService {
     });
   }
 
+  saveProcessNameEntryData(obj: any) {
+    return this.http.post(this.baseUrl_ + 'Setup/SaveProcessNameEntry', obj, {
+      headers: this.token.headerToken(),
+    });
+  }
+
+  saveOperationNameEntryData(obj: any) {
+    return this.http.post(this.baseUrl_ + 'Setup/SaveOperationNameEntry', obj, {
+      headers: this.token.headerToken(),
+    });
+  }
+
   GetCompanyBankInfoListDataCommercial(): Observable<any> {
     return this.http.get<any[]>(this.baseUrl_ + 'Setup/GetCompanyBankData', {
       headers: this.token.headerToken(),

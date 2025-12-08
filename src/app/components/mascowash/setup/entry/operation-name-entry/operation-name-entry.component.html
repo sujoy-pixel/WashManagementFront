@@ -2,7 +2,7 @@
   <div class="col-md-12">
     <div class="card custom-card">
       <div class="card-header border-bottom justify-content-between">
-        <div class="card-title">Process Name Entry</div>
+        <div class="card-title">Operation Name Entry</div>
       </div>
 
       <div class="card-body">
@@ -13,52 +13,24 @@
           class="form"
           role="form"
         > -->
+
         <div class="row my-2">
           <div class="col-md-12">
             <div class="row align-items-center">
               <label class="form-label col-md-2">
                 <!-- For larger screens -->
-                <span class="d-none d-sm-inline text-dark" title="Unit"
-                  >Unit
-                  <span style="color: red !important; font-size: 1.5em"
-                    >*</span
-                  ></span
-                >
-              </label>
-              <div
-                class="form-control col-md-4 common-border"
-                [class.focused-border]="currentFocus === 'CompanyNameData'"
-              >
-                <ng-select
-                  #unitNoSelect
-                  [(ngModel)]="Model.unitId"
-                  (change)="onUnitChange($event)"
-                  (focus)="setFocus('unitNoSelect')"
-                  (blur)="clearFocus()"
-                  placeholder="Select"
-                >
-                  <ng-option *ngFor="let item of this.UnitList" [value]="item"
-                    >{{ item.label }}
-                  </ng-option>
-                </ng-select>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="row my-2">
-          <div class="col-md-12">
-            <div class="row align-items-center">
-              <label class="form-label col-md-2">
-                <!-- For larger screens -->
-                <span class="d-none d-sm-inline text-dark" title="Process Name"
-                  >Process Name
-                  <!-- <span style="color: red !important; font-size: 1.5em"
-                    >*</span> -->
+                <span
+                  class="d-none d-sm-inline text-dark"
+                  title="Operation Name"
+                  >Operation Name
+                  <span style="color: red !important; font-size: 1.5em">*</span>
                 </span>
                 <!-- For smaller screens -->
-                <span class="d-inline d-sm-none text-dark" title="Process Name"
-                  >Process
-                  <!-- <span style="color: red !important; font-size: 1.5em">*</span> -->
+                <span
+                  class="d-inline d-sm-none text-dark"
+                  title="Operation Name"
+                  >Operation
+                  <span style="color: red !important; font-size: 1.5em">*</span>
                   <br />Name</span
                 >
               </label>
@@ -69,7 +41,7 @@
                 <input
                   #SwiftCodeData
                   type="text"
-                  [(ngModel)]="Model.processName"
+                  [(ngModel)]="Model.operationName"
                   (focus)="setFocus('SwiftCodeData')"
                   (blur)="clearFocus()"
                 />
@@ -187,8 +159,7 @@
               <ng-template pTemplate="header" let-columns>
                 <tr>
                   <th>SL</th>
-                  <th>Unit</th>
-                  <th>Process Name</th>
+                  <th>Operation Name</th>
                   <th>Priority</th>
                   <th>Active Status</th>
                   <th style="width: 80px">ACTION</th>

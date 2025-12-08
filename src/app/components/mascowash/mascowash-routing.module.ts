@@ -4,8 +4,12 @@ import { MascowashComponent } from './mascowash.component';
 
 import { ActualDateEntryComponent } from './setup/entry/actual-date-entry/actual-date-entry.component';
 import { ProcessNameEntryComponent } from './setup/entry/process-name-entry/process-name-entry.component';
+<<<<<<< HEAD
 import { InspectionTypeEntryComponent } from './setup/entry/inspection-type-entry/inspection-type-entry.component';
 
+=======
+import { OperationNameEntryComponent } from './setup/entry/operation-name-entry/operation-name-entry.component';
+>>>>>>> 2be01bce33aa311a3596b1b67a00292bcba03503
 
 const routes: Routes = [
   {
@@ -23,8 +27,13 @@ const routes: Routes = [
         runGuardsAndResolvers: 'always',
       },
       {
+<<<<<<< HEAD
         path: 'setup/entry/type-of-inspection',
         component: InspectionTypeEntryComponent,
+=======
+        path: 'setup/entry/operation-name-entry',
+        component: OperationNameEntryComponent,
+>>>>>>> 2be01bce33aa311a3596b1b67a00292bcba03503
         runGuardsAndResolvers: 'always',
       },
     ],
