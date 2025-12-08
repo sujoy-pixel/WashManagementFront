@@ -1,0 +1,146 @@
+<div class="row">
+
+  <!-- ======================= FORM CARD ======================= -->
+  <div class="col-md-12">
+    <div class="card custom-card">
+      <div class="card-header border-bottom">
+        <div class="card-title">Inspection Area Entry</div>
+      </div>
+
+      <div class="card-body">
+
+        <!-- === AREA NAME === -->
+        <div class="row my-2">
+          <div class="col-md-12">
+            <div class="row align-items-center">
+              <label class="form-label col-md-2 text-dark">
+                Area Name <span style="color:red">*</span>
+              </label>
+
+              <div class="form-control col-md-4 common-border"
+                   [class.focused-border]="currentFocus === 'AreaName'">
+                <input type="text"
+                       [(ngModel)]="Model.InspectionArea"
+                       (focus)="setFocus('AreaName')"
+                       (blur)="clearFocus()"
+                       placeholder="Enter Area Name" />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- === PRIORITY === -->
+        <div class="row my-2">
+          <div class="col-md-12">
+            <div class="row align-items-center">
+              <label class="form-label col-md-2 text-dark">
+                Priority <span style="color:red">*</span>
+              </label>
+
+              <div class="form-control col-md-4 common-border"
+                   [class.focused-border]="currentFocus === 'Priority'">
+                <ng-select [(ngModel)]="Model.Priority"
+                           (focus)="setFocus('Priority')"
+                           (blur)="clearFocus()"
+                           placeholder="Select Priority">
+                  <ng-option *ngFor="let p of priorityList" [value]="p">{{ p }}</ng-option>
+                </ng-select>
+              </div>
+
+            </div>
+          </div>
+        </div>
+
+        <!-- === ACTIVE STATUS === -->
+        <div class="row my-2">
+          <div class="col-md-12">
+            <div class="row">
+              <div class="input-group mb-1">
+                <div class="input-group-prepend paheight col-3">
+                  <span class="col-12 form-label text-dark">Active Status</span>
+                </div>
+
+                <label class="switch">
+                  <input type="checkbox"
+                         [(ngModel)]="Model.IsActive"
+                         class="success"
+                         name="isactive" />
+                  <span class="slider round"></span>
+                </label>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- === BUTTONS === -->
+        <div class="text-right mt-3">
+          <button type="button" class="btn btn-primary" (click)="onSubmit()">
+            <i class="fa fa-database"></i> {{ saveButtonTitle }}
+          </button>
+
+          <button type="button" class="btn btn-danger ml-2" (click)="onClear()">
+            <i class="fa fa-refresh"></i> Clear
+          </button>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- ======================= TABLE CARD ======================= -->
+  <!-- TABLE DESIGN USING YOUR CUSTOM TABLE STYLE -->
+<!-- TABLE DESIGN USING YOUR CUSTOM TABLE STYLE -->
+<div class="table-responsive mt-3">
+  <table class="table table-striped table-bordered custom-table">
+    <thead>
+      <tr>
+        <th style="width: 80px; text-align: center">#</th>
+        <th style="text-align: center">Area Name</th>
+        <th style="text-align: center">Priority</th>
+        <th style="text-align: center">Active</th>
+        <th style="text-align: center; width:120px;">Action</th>
+      </tr>
+    </thead>
+
+    <tbody>
+      <tr *ngFor="let item of inspectionAreaList; let i = index">
+        <td style="text-align:center;">{{ i + 1 }}</td>
+
+        <td style="text-align:center;">
+          {{ item.InspectionArea }}
+        </td>
+
+        <td style="text-align:center;">
+          {{ item.Priority }}
+        </td>
+
+        <td style="text-align:center">
+          <span class="badge"
+                [ngClass]="(item.IsActive == 1 || item.IsActive === '1') ? 'bg-success' : 'bg-danger'">
+            {{ (item.IsActive == 1 || item.IsActive === '1') ? 'Active' : 'Inactive' }}
+          </span>
+        </td>
+
+        <td style="text-align:center">
+          <button class="btn btn-sm btn-info me-1" (click)="editInspectionArea(item)">
+            Edit
+          </button>
+
+          <button class="btn btn-sm btn-danger" (click)="deleteInspectionArea(item)">
+            Delete
+          </button>
+        </td>
+      </tr>
+
+      <tr *ngIf="inspectionAreaList.length === 0">
+        <td colspan="5" class="text-center">No records found</td>
+      </tr>
+
+    </tbody>
+  </table>
+</div>
+
+
+
+ 
+</div>

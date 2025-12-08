@@ -39,84 +39,84 @@ export class DashboardComponent {
   LoadDashboardData() {
     this.DashboardArrayList = [];
 
-    this.service.GetDashboardData().subscribe(
-      (data: any) => {
-        console.log('Dashboard List', data);
-        if (data._LMasterLC && data._LMasterLC.length > 0) {
-          this.currentYear = (data._LMasterLC[0].currentYear);
-          this._TotalMasterLC = 0;
-          this._TotalB2BLC = 0;
-          this._labelsListMasterLC = [];
-          this._labelsListB2BLC = [];
-          for (var i = 0; i < data._LMasterLC.length; i++)
-          {
-            this._TotalMasterLC += parseInt(data._LMasterLC[i].totalFileNo);
-            this._labelsListMasterLC.push(data._LMasterLC[i].monthName)
-          }
-          for (var i = 0; i < data._LB2BLC.length; i++)
-            {
-            this._TotalB2BLC += parseInt(data._LB2BLC[i].totalFileNo);
-            this._labelsListB2BLC.push(data._LB2BLC[i].monthName);
-          }
+    // this.service.GetDashboardData().subscribe(
+    //   (data: any) => {
+    //     console.log('Dashboard List', data);
+    //     if (data._LMasterLC && data._LMasterLC.length > 0) {
+    //       this.currentYear = (data._LMasterLC[0].currentYear);
+    //       this._TotalMasterLC = 0;
+    //       this._TotalB2BLC = 0;
+    //       this._labelsListMasterLC = [];
+    //       this._labelsListB2BLC = [];
+    //       for (var i = 0; i < data._LMasterLC.length; i++)
+    //       {
+    //         this._TotalMasterLC += parseInt(data._LMasterLC[i].totalFileNo);
+    //         this._labelsListMasterLC.push(data._LMasterLC[i].monthName)
+    //       }
+    //       for (var i = 0; i < data._LB2BLC.length; i++)
+    //         {
+    //         this._TotalB2BLC += parseInt(data._LB2BLC[i].totalFileNo);
+    //         this._labelsListB2BLC.push(data._LB2BLC[i].monthName);
+    //       }
 
-          //=========================Master LC Chart=============
+    //       //=========================Master LC Chart=============
          
-          const labelsMasterLC: string[] = [];
-          const dataSetMasterLC: number[] = [];
+    //       const labelsMasterLC: string[] = [];
+    //       const dataSetMasterLC: number[] = [];
           
          
-          data._LMasterLC.forEach((item: any) => {
+    //       data._LMasterLC.forEach((item: any) => {
 
-            labelsMasterLC.push(item.monthName);
-            dataSetMasterLC.push(item.totalFileNo);
+    //         labelsMasterLC.push(item.monthName);
+    //         dataSetMasterLC.push(item.totalFileNo);
 
-          });
-          const backgroundColors = dataSetMasterLC.map(() =>
-            `hsl(${Math.floor(Math.random() * 360)}, 70%, 60%)`
-          );
-          this.barChartDataMaster= {
-            labels: labelsMasterLC,
-            datasets: [
-              {
-                data: dataSetMasterLC,
-                backgroundColor: backgroundColors,
-                borderRadius: 8,
-              },
-            ],
-          };
-           //=========================B2B LC Chart=============
+    //       });
+    //       const backgroundColors = dataSetMasterLC.map(() =>
+    //         `hsl(${Math.floor(Math.random() * 360)}, 70%, 60%)`
+    //       );
+    //       this.barChartDataMaster= {
+    //         labels: labelsMasterLC,
+    //         datasets: [
+    //           {
+    //             data: dataSetMasterLC,
+    //             backgroundColor: backgroundColors,
+    //             borderRadius: 8,
+    //           },
+    //         ],
+    //       };
+    //        //=========================B2B LC Chart=============
          
-           const labelsB2BLC: string[] = [];
-           const dataSetB2BLC: number[] = [];
+    //        const labelsB2BLC: string[] = [];
+    //        const dataSetB2BLC: number[] = [];
            
           
-           data._LB2BLC.forEach((item: any) => {
+    //        data._LB2BLC.forEach((item: any) => {
  
-            labelsB2BLC.push(item.monthName);
-            dataSetB2BLC.push(item.totalFileNo);
+    //         labelsB2BLC.push(item.monthName);
+    //         dataSetB2BLC.push(item.totalFileNo);
  
-           });
-           const backgroundColorsB2B = dataSetB2BLC.map(() =>
-             `hsl(${Math.floor(Math.random() * 360)}, 70%, 60%)`
-           );
-           this.barChartDataB2B= {
-             labels: labelsB2BLC,
-             datasets: [
-               {
-                 data: dataSetB2BLC,
-                 backgroundColor: backgroundColorsB2B,
-                 borderRadius: 8,
-               },
-             ],
-           };
+    //        });
+    //        const backgroundColorsB2B = dataSetB2BLC.map(() =>
+    //          `hsl(${Math.floor(Math.random() * 360)}, 70%, 60%)`
+    //        );
+    //        this.barChartDataB2B= {
+    //          labels: labelsB2BLC,
+    //          datasets: [
+    //            {
+    //              data: dataSetB2BLC,
+    //              backgroundColor: backgroundColorsB2B,
+    //              borderRadius: 8,
+    //            },
+    //          ],
+    //        };
         
-         // console.log("Label",this.labels);
-        } else {
-          alert('No data found in _LMasterLC');
-        }
-      },
-      (error) => {}
-    );
+    //      // console.log("Label",this.labels);
+    //     } else {
+    //       alert('No data found in _LMasterLC');
+    //     }
+    //   },
+    //   (error) => {}
+    // );
   }
   
 

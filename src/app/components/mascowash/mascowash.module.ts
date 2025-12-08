@@ -14,7 +14,7 @@ import { MascowashComponent } from './mascowash.component';
 
 import { AutoCompleteModule } from 'primeng/autocomplete';
 import { SharedModule } from 'src/app/shared/shared.module';
-import { ActualDateEntryComponent } from './setup/entry/actual-date-entry/actual-date-entry.component';
+// import { ActualDateEntryComponent } from './setup/entry/actual-date-entry/actual-date-entry.component';
 //import { TypeaheadModule } from 'ngx-bootstrap/typeahead';
 
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -27,18 +27,18 @@ import { ProcessNameEntryComponent } from './setup/entry/process-name-entry/proc
 import { InspectionTypeEntryComponent } from './setup/entry/inspection-type-entry/inspection-type-entry.component';
 
 import { OperationNameEntryComponent } from './setup/entry/operation-name-entry/operation-name-entry.component';
+ import { InspectionAreaEntryComponent } from './setup/entry/inspection-area-entry/inspection-area-entry.component';
 
 @NgModule({
   declarations: [
     MascowashComponent,
-    ActualDateEntryComponent,
+    // ActualDateEntryComponent,
     ProcessNameEntryComponent,
 
     InspectionTypeEntryComponent,
 
-    OperationNameEntryComponent
-
-  
+    OperationNameEntryComponent,
+     InspectionAreaEntryComponent,
   ],
   imports: [
     MatTabsModule,

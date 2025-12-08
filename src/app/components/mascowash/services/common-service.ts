@@ -68,108 +68,108 @@ export class CommonServiceService {
     );
   }
 
-  LoadStyleDropDownList(buyerId) {
-    this.StyleSelectedList = [];
-    this.SetupService.GetStyleNameByBuyerId(buyerId).subscribe(
-      (data: any[]) => {
-        if (data.length > 0) {
-          this.StyleSelectedList.push({ label: '--- Select ---', value: null });
-          for (var i = 0; i < data.length; i++) {
-            this.StyleSelectedList.push({
-              label: data[i].displayName,
-              value: data[i].id,
-            });
-          }
-        }
-      },
-      (error) => {}
-    );
-  }
+  // LoadStyleDropDownList(buyerId) {
+  //   this.StyleSelectedList = [];
+  //   this.SetupService.GetStyleNameByBuyerId(buyerId).subscribe(
+  //     (data: any[]) => {
+  //       if (data.length > 0) {
+  //         this.StyleSelectedList.push({ label: '--- Select ---', value: null });
+  //         for (var i = 0; i < data.length; i++) {
+  //           this.StyleSelectedList.push({
+  //             label: data[i].displayName,
+  //             value: data[i].id,
+  //           });
+  //         }
+  //       }
+  //     },
+  //     (error) => {}
+  //   );
+  // }
 
-  LoadJobDropDownList(buyerId) {
-    this.JobSelectedList = [];
-    this.SetupService.GetJobNameByBuyerId(buyerId).subscribe(
-      (data: any[]) => {
-        this.JobSelectedList.push({ label: '--- Select ---', value: null });
-        for (var i = 0; i < data.length; i++) {
-          this.JobSelectedList.push({
-            label: data[i].displayName,
-            value: data[i].id,
-          });
-        }
-      },
-      (error) => {}
-    );
-  }
-  LoadJobByStyleDropDownList(buyerId, styleId) {
-    this.JobSelectedList = [];
-    this.SetupService.GetJobNameByBuyerIdStyle(buyerId, styleId).subscribe(
-      (data: any[]) => {
-        this.JobSelectedList.push({ label: '--- Select ---', value: null });
-        for (var i = 0; i < data.length; i++) {
-          this.JobSelectedList.push({
-            label: data[i].displayName,
-            value: data[i].id,
-          });
-        }
-      },
-      (error) => {}
-    );
-  }
+  // LoadJobDropDownList(buyerId) {
+  //   this.JobSelectedList = [];
+  //   this.SetupService.GetJobNameByBuyerId(buyerId).subscribe(
+  //     (data: any[]) => {
+  //       this.JobSelectedList.push({ label: '--- Select ---', value: null });
+  //       for (var i = 0; i < data.length; i++) {
+  //         this.JobSelectedList.push({
+  //           label: data[i].displayName,
+  //           value: data[i].id,
+  //         });
+  //       }
+  //     },
+  //     (error) => {}
+  //   );
+  // }
+  // LoadJobByStyleDropDownList(buyerId, styleId) {
+  //   this.JobSelectedList = [];
+  //   this.SetupService.GetJobNameByBuyerIdStyle(buyerId, styleId).subscribe(
+  //     (data: any[]) => {
+  //       this.JobSelectedList.push({ label: '--- Select ---', value: null });
+  //       for (var i = 0; i < data.length; i++) {
+  //         this.JobSelectedList.push({
+  //           label: data[i].displayName,
+  //           value: data[i].id,
+  //         });
+  //       }
+  //     },
+  //     (error) => {}
+  //   );
+  // }
 
-  LoadConcernPersonDropDownList() {
-    debugger;
-    this.ConcernPersonSelectedList = [];
-    this.SetupService.GetConcernPersonName().subscribe(
-      (data: any[]) => {
-        this.ConcernPersonSelectedList.push({
-          label: '--- Select ---',
-          value: null,
-        });
-        for (var i = 0; i < data.length; i++) {
-          this.ConcernPersonSelectedList.push({
-            label: data[i].displayName,
-            value: data[i].id,
-            desig: data[i].option1,
-          });
-        }
-      },
-      (error) => {}
-    );
-  }
+  // LoadConcernPersonDropDownList() {
+  //   debugger;
+  //   this.ConcernPersonSelectedList = [];
+  //   this.SetupService.GetConcernPersonName().subscribe(
+  //     (data: any[]) => {
+  //       this.ConcernPersonSelectedList.push({
+  //         label: '--- Select ---',
+  //         value: null,
+  //       });
+  //       for (var i = 0; i < data.length; i++) {
+  //         this.ConcernPersonSelectedList.push({
+  //           label: data[i].displayName,
+  //           value: data[i].id,
+  //           desig: data[i].option1,
+  //         });
+  //       }
+  //     },
+  //     (error) => {}
+  //   );
+  // }
 
-  LoadBankDropDownList() {
-    this.BankSelectedList = [];
-    this.SetupService.GetBankName().subscribe(
-      (data: any[]) => {
-        this.BankSelectedList.push({ label: '--- Select ---', value: null });
-        for (var i = 0; i < data.length; i++) {
-          this.BankSelectedList.push({
-            label: data[i].displayName,
-            value: data[i].id,
-          });
-        }
-      },
-      (error) => {}
-    );
-  }
+  // LoadBankDropDownList() {
+  //   this.BankSelectedList = [];
+  //   this.SetupService.GetBankName().subscribe(
+  //     (data: any[]) => {
+  //       this.BankSelectedList.push({ label: '--- Select ---', value: null });
+  //       for (var i = 0; i < data.length; i++) {
+  //         this.BankSelectedList.push({
+  //           label: data[i].displayName,
+  //           value: data[i].id,
+  //         });
+  //       }
+  //     },
+  //     (error) => {}
+  //   );
+  // }
 
-  LoadBranchDownList(bankId) {
-    this.BranchSelectedList = [];
-    this.SetupService.GetBranchName(bankId).subscribe(
-      (data: any[]) => {
-        this.BranchSelectedList.push({ label: '--- Select ---', value: null });
-        for (var i = 0; i < data.length; i++) {
-          this.BranchSelectedList.push({
-            label: data[i].displayName,
-            value: data[i].id,
-            address: data[i].option1,
-          });
-        }
-      },
-      (error) => {}
-    );
-  }
+  // LoadBranchDownList(bankId) {
+  //   this.BranchSelectedList = [];
+  //   this.SetupService.GetBranchName(bankId).subscribe(
+  //     (data: any[]) => {
+  //       this.BranchSelectedList.push({ label: '--- Select ---', value: null });
+  //       for (var i = 0; i < data.length; i++) {
+  //         this.BranchSelectedList.push({
+  //           label: data[i].displayName,
+  //           value: data[i].id,
+  //           address: data[i].option1,
+  //         });
+  //       }
+  //     },
+  //     (error) => {}
+  //   );
+  // }
 
   createMasterLC(obj: any) {
     //console.log("obj", obj);
@@ -213,214 +213,214 @@ export class CommonServiceService {
     });
   }
 
-  LoadMPOListSCM() {
-    this.MPOSelectedList = [];
-    this.SetupService.GetMPOName().subscribe(
-      (data: any[]) => {
-        this.MPOSelectedList.push({ label: '--- Select ---', value: null });
-        for (var i = 0; i < data.length; i++) {
-          this.MPOSelectedList.push({
-            label: data[i].displayName,
-            value: data[i].id,
-            pino: data[i].option1,
-            pidate: data[i].option2,
-          });
-        }
-      },
-      (error) => {}
-    );
-  }
+  // LoadMPOListSCM() {
+  //   this.MPOSelectedList = [];
+  //   this.SetupService.GetMPOName().subscribe(
+  //     (data: any[]) => {
+  //       this.MPOSelectedList.push({ label: '--- Select ---', value: null });
+  //       for (var i = 0; i < data.length; i++) {
+  //         this.MPOSelectedList.push({
+  //           label: data[i].displayName,
+  //           value: data[i].id,
+  //           pino: data[i].option1,
+  //           pidate: data[i].option2,
+  //         });
+  //       }
+  //     },
+  //     (error) => {}
+  //   );
+  // }
 
-  LoadMPOListByPiNoSCM(PiNo) {
-    this.MPOSelectedList = [];
-    this.SetupService.GetMPONameByPiNo(PiNo).subscribe(
-      (data: any[]) => {
-        this.MPOSelectedList.push({ label: '--- Select ---', value: null });
-        for (var i = 0; i < data.length; i++) {
-          this.MPOSelectedList.push({
-            label: data[i].displayName,
-            value: data[i].id,
-            pino: data[i].option1,
-            pidate: data[i].option2,
-          });
-        }
-      },
-      (error) => {}
-    );
-  }
+  // LoadMPOListByPiNoSCM(PiNo) {
+  //   this.MPOSelectedList = [];
+  //   this.SetupService.GetMPONameByPiNo(PiNo).subscribe(
+  //     (data: any[]) => {
+  //       this.MPOSelectedList.push({ label: '--- Select ---', value: null });
+  //       for (var i = 0; i < data.length; i++) {
+  //         this.MPOSelectedList.push({
+  //           label: data[i].displayName,
+  //           value: data[i].id,
+  //           pino: data[i].option1,
+  //           pidate: data[i].option2,
+  //         });
+  //       }
+  //     },
+  //     (error) => {}
+  //   );
+  // }
 
-  LoadMPOListByMasterLc(LCNo) {
-    this.MPOSelectedList = [];
-    this.SetupService.GetMPONameByMasterLcNo(LCNo).subscribe(
-      (data: any[]) => {
-        this.MPOSelectedList.push({ label: '--- Select ---', value: null });
-        for (var i = 0; i < data.length; i++) {
-          this.MPOSelectedList.push({
-            label: data[i].displayName,
-            value: data[i].id,
-            pino: data[i].option1,
-            pidate: data[i].option2,
-          });
-        }
-      },
-      (error) => {}
-    );
-  }
+  // LoadMPOListByMasterLc(LCNo) {
+  //   this.MPOSelectedList = [];
+  //   this.SetupService.GetMPONameByMasterLcNo(LCNo).subscribe(
+  //     (data: any[]) => {
+  //       this.MPOSelectedList.push({ label: '--- Select ---', value: null });
+  //       for (var i = 0; i < data.length; i++) {
+  //         this.MPOSelectedList.push({
+  //           label: data[i].displayName,
+  //           value: data[i].id,
+  //           pino: data[i].option1,
+  //           pidate: data[i].option2,
+  //         });
+  //       }
+  //     },
+  //     (error) => {}
+  //   );
+  // }
 
-  LoadMPOListBySupplier(supplierid) {
-    this.MPOSelectedList = [];
-    this.SetupService.GetMPONameBySupplier(supplierid).subscribe(
-      (data: any[]) => {
-        this.MPOSelectedList.push({ label: '--- Select ---', value: -1 });
-        for (var i = 0; i < data.length; i++) {
-          this.MPOSelectedList.push({
-            label: data[i].displayName,
-            value: data[i].id,
-            pino: data[i].option1,
-            pidate: data[i].option2,
-          });
-        }
-      },
-      (error) => {}
-    );
-  }
+  // LoadMPOListBySupplier(supplierid) {
+  //   this.MPOSelectedList = [];
+  //   this.SetupService.GetMPONameBySupplier(supplierid).subscribe(
+  //     (data: any[]) => {
+  //       this.MPOSelectedList.push({ label: '--- Select ---', value: -1 });
+  //       for (var i = 0; i < data.length; i++) {
+  //         this.MPOSelectedList.push({
+  //           label: data[i].displayName,
+  //           value: data[i].id,
+  //           pino: data[i].option1,
+  //           pidate: data[i].option2,
+  //         });
+  //       }
+  //     },
+  //     (error) => {}
+  //   );
+  // }
 
-  LoadMPOForwardingListBySupplierandUnitId(supplierId, TypeName) {
-    this.MPOSelectedList = [];
-    this.SetupService.GetMPOForwardingNoBySupplier(
-      supplierId,
-      TypeName
-    ).subscribe(
-      (data: any[]) => {
-        this.MPOSelectedList.push({ label: '--- Select ---', value: -1 });
-        for (var i = 0; i < data.length; i++) {
-          this.MPOSelectedList.push({
-            label: data[i].displayName,
-            value: data[i].displayName,
-            pino: data[i].option1,
-            pidate: data[i].option2,
-            piValue: data[i].option3,
-            fwId: parseInt(data[i].option4),
-          });
-        }
-      },
-      (error) => {
-        console.log('Error of MPO List By Supplier and Unit', error);
-      }
-    );
-  }
+  // LoadMPOForwardingListBySupplierandUnitId(supplierId, TypeName) {
+  //   this.MPOSelectedList = [];
+  //   this.SetupService.GetMPOForwardingNoBySupplier(
+  //     supplierId,
+  //     TypeName
+  //   ).subscribe(
+  //     (data: any[]) => {
+  //       this.MPOSelectedList.push({ label: '--- Select ---', value: -1 });
+  //       for (var i = 0; i < data.length; i++) {
+  //         this.MPOSelectedList.push({
+  //           label: data[i].displayName,
+  //           value: data[i].displayName,
+  //           pino: data[i].option1,
+  //           pidate: data[i].option2,
+  //           piValue: data[i].option3,
+  //           fwId: parseInt(data[i].option4),
+  //         });
+  //       }
+  //     },
+  //     (error) => {
+  //       console.log('Error of MPO List By Supplier and Unit', error);
+  //     }
+  //   );
+  // }
 
-  LoadPiNoListBySupplier(supplierid) {
-    this.PiOrBillSelectedList = [];
-    this.SetupService.GetPiNoNameBySupplier(supplierid).subscribe(
-      (data: any[]) => {
-        this.PiOrBillSelectedList.push({ label: '--- Select ---', value: -1 });
-        for (var i = 0; i < data.length; i++) {
-          this.PiOrBillSelectedList.push({
-            label: data[i].displayName,
-            value: data[i].displayName,
-            pidate: data[i].option1,
-            mpo: data[i].option2,
-          });
-        }
-      },
-      (error) => {}
-    );
-  }
+  // LoadPiNoListBySupplier(supplierid) {
+  //   this.PiOrBillSelectedList = [];
+  //   this.SetupService.GetPiNoNameBySupplier(supplierid).subscribe(
+  //     (data: any[]) => {
+  //       this.PiOrBillSelectedList.push({ label: '--- Select ---', value: -1 });
+  //       for (var i = 0; i < data.length; i++) {
+  //         this.PiOrBillSelectedList.push({
+  //           label: data[i].displayName,
+  //           value: data[i].displayName,
+  //           pidate: data[i].option1,
+  //           mpo: data[i].option2,
+  //         });
+  //       }
+  //     },
+  //     (error) => {}
+  //   );
+  // }
 
-  LoadMPOListByPiNoSCMWithoutSelect(PiNo) {
-    this.MPOSelectedList = [];
-    this.SetupService.GetMPONameByPiNo(PiNo).subscribe(
-      (data: any[]) => {
-        //this.MPOSelectedList.push({ label: "--- Select ---", value: null });
-        for (var i = 0; i < data.length; i++) {
-          this.MPOSelectedList.push({
-            label: data[i].displayName,
-            value: data[i].displayName,
-            //pino:data[i].option1,
-            //pidate:data[i].option2
-          });
-        }
-      },
-      (error) => {}
-    );
-  }
+  // LoadMPOListByPiNoSCMWithoutSelect(PiNo) {
+  //   this.MPOSelectedList = [];
+  //   this.SetupService.GetMPONameByPiNo(PiNo).subscribe(
+  //     (data: any[]) => {
+  //       //this.MPOSelectedList.push({ label: "--- Select ---", value: null });
+  //       for (var i = 0; i < data.length; i++) {
+  //         this.MPOSelectedList.push({
+  //           label: data[i].displayName,
+  //           value: data[i].displayName,
+  //           //pino:data[i].option1,
+  //           //pidate:data[i].option2
+  //         });
+  //       }
+  //     },
+  //     (error) => {}
+  //   );
+  // }
 
-  LoadPiOrBillListSCM() {
-    this.PiOrBillSelectedList = [];
-    this.SetupService.GetPiOrBill().subscribe(
-      (data: any[]) => {
-        this.PiOrBillSelectedList.push({
-          label: '--- Select ---',
-          value: null,
-        });
-        for (var i = 0; i < data.length; i++) {
-          this.PiOrBillSelectedList.push({
-            label: data[i].displayName,
-            option1: data[i].option1,
-            option2: data[i].option2,
-            option3: data[i].option3,
-          });
-        }
-      },
-      (error) => {}
-    );
-  }
-  LoadMasterLcList(unitid) {
-    this.masterLcList = [];
-    this.SetupService.GetMasterLcdata(unitid).subscribe(
-      (data: any[]) => {
-        this.masterLcList = data;
-        console.log('MasterLC', data);
-      },
-      (error) => {}
-    );
-  }
-  LoadMasterLcAmendList(masterlcid) {
-    this.masterLcAmendList = [];
-    this.SetupService.GetMasterLcAmenddata(masterlcid).subscribe(
-      (data: any[]) => {
-        this.masterLcAmendList = data;
-        console.log('MasterAmendLC', data);
-      },
-      (error) => {}
-    );
-  }
+  // LoadPiOrBillListSCM() {
+  //   this.PiOrBillSelectedList = [];
+  //   this.SetupService.GetPiOrBill().subscribe(
+  //     (data: any[]) => {
+  //       this.PiOrBillSelectedList.push({
+  //         label: '--- Select ---',
+  //         value: null,
+  //       });
+  //       for (var i = 0; i < data.length; i++) {
+  //         this.PiOrBillSelectedList.push({
+  //           label: data[i].displayName,
+  //           option1: data[i].option1,
+  //           option2: data[i].option2,
+  //           option3: data[i].option3,
+  //         });
+  //       }
+  //     },
+  //     (error) => {}
+  //   );
+  // }
+  // LoadMasterLcList(unitid) {
+  //   this.masterLcList = [];
+  //   this.SetupService.GetMasterLcdata(unitid).subscribe(
+  //     (data: any[]) => {
+  //       this.masterLcList = data;
+  //       console.log('MasterLC', data);
+  //     },
+  //     (error) => {}
+  //   );
+  // }
+  // LoadMasterLcAmendList(masterlcid) {
+  //   this.masterLcAmendList = [];
+  //   this.SetupService.GetMasterLcAmenddata(masterlcid).subscribe(
+  //     (data: any[]) => {
+  //       this.masterLcAmendList = data;
+  //       console.log('MasterAmendLC', data);
+  //     },
+  //     (error) => {}
+  //   );
+  // }
 
-  DeleteList(id, unitid) {
-    const isConfirmed = confirm('Are you sure you want to delete this data?');
-    if (isConfirmed) {
-      this.masterLcList = [];
-      this.SetupService.deleteMasterList(id).subscribe(
-        (data: any[]) => {
-          this.masterLcList = data;
-          this.toastr.success('Deleted Successfully', 'Master LC');
-          //this.LoadMasterLcList(unitid);
-        },
-        (error) => {}
-      );
-    } else {
-      this.toastr.info('Deletion canceled.', 'Master LC');
-    }
-  }
+  // DeleteList(id, unitid) {
+  //   const isConfirmed = confirm('Are you sure you want to delete this data?');
+  //   if (isConfirmed) {
+  //     this.masterLcList = [];
+  //     this.SetupService.deleteMasterList(id).subscribe(
+  //       (data: any[]) => {
+  //         this.masterLcList = data;
+  //         this.toastr.success('Deleted Successfully', 'Master LC');
+  //         //this.LoadMasterLcList(unitid);
+  //       },
+  //       (error) => {}
+  //     );
+  //   } else {
+  //     this.toastr.info('Deletion canceled.', 'Master LC');
+  //   }
+  // }
 
-  DeleteMasterLcDetailList(masterlcdetailId, ItemDetailList, i) {
-    const isConfirmed = confirm('Are you sure you want to delete this data?');
-    if (isConfirmed) {
-      //this.ItemDetailList = [];
-      this.SetupService.deleteMasterDetailList(masterlcdetailId).subscribe(
-        (data: any[]) => {
-          //this.ItemDetailList = data;
-          this.toastr.success('Deleted Successfully', 'Master  Detail');
-          ItemDetailList.splice(i, 1);
-          //this.LoadMasterLcList(unitid);
-        },
-        (error) => {}
-      );
-    } else {
-      this.toastr.info('Deletion canceled.', 'Master LC');
-    }
-  }
+  // DeleteMasterLcDetailList(masterlcdetailId, ItemDetailList, i) {
+  //   const isConfirmed = confirm('Are you sure you want to delete this data?');
+  //   if (isConfirmed) {
+  //     //this.ItemDetailList = [];
+  //     this.SetupService.deleteMasterDetailList(masterlcdetailId).subscribe(
+  //       (data: any[]) => {
+  //         //this.ItemDetailList = data;
+  //         this.toastr.success('Deleted Successfully', 'Master  Detail');
+  //         ItemDetailList.splice(i, 1);
+  //         //this.LoadMasterLcList(unitid);
+  //       },
+  //       (error) => {}
+  //     );
+  //   } else {
+  //     this.toastr.info('Deletion canceled.', 'Master LC');
+  //   }
+  // }
 
   saveLCTTFTT(obj: any) {
     //console.log("obj", obj);
@@ -454,33 +454,33 @@ export class CommonServiceService {
       headers: this.token.headerToken(),
     });
   }
-  LoadActualDateList() {
-    this.masterLcList = [];
-    this.SetupService.GetActualDatedata().subscribe(
-      (data: any[]) => {
-        this.masterLcList = data;
-        console.log('Actualdata', data);
-      },
-      (error) => {}
-    );
-  }
+  // LoadActualDateList() {
+  //   this.masterLcList = [];
+  //   this.SetupService.GetActualDatedata().subscribe(
+  //     (data: any[]) => {
+  //       this.masterLcList = data;
+  //       console.log('Actualdata', data);
+  //     },
+  //     (error) => {}
+  //   );
+  // }
 
-  DeleteActualDateList(id: number) {
-    const isConfirmed = confirm('Are you sure you want to delete this data?');
-    if (isConfirmed) {
-      this.masterLcList = [];
-      this.SetupService.deleteActualdateList(id).subscribe(
-        (data: any[]) => {
-          //this.masterLcList=data;
-          this.toastr.success('Deleted Successfully', 'Actual Date');
-          this.LoadActualDateList();
-        },
-        (error) => {}
-      );
-    } else {
-      this.toastr.info('Deletion canceled.', 'Actual Date');
-    }
-  }
+  // DeleteActualDateList(id: number) {
+  //   const isConfirmed = confirm('Are you sure you want to delete this data?');
+  //   if (isConfirmed) {
+  //     this.masterLcList = [];
+  //     this.SetupService.deleteActualdateList(id).subscribe(
+  //       (data: any[]) => {
+  //         //this.masterLcList=data;
+  //         this.toastr.success('Deleted Successfully', 'Actual Date');
+  //         this.LoadActualDateList();
+  //       },
+  //       (error) => {}
+  //     );
+  //   } else {
+  //     this.toastr.info('Deletion canceled.', 'Actual Date');
+  //   }
+  // }
 
   // saveImportCosting(obj: any) {
   //   //console.log("obj", obj);
@@ -496,32 +496,32 @@ export class CommonServiceService {
       headers: this.token.headerToken(),
     });
   }
-  LoadImportCostingList() {
-    this.masterLcList = [];
-    this.SetupService.GetImportdata().subscribe(
-      (data: any[]) => {
-        this.masterLcList = data;
-        console.log('MasterLC', data);
-      },
-      (error) => {}
-    );
-  }
-  DeleteImportCostingList(id) {
-    const isConfirmed = confirm('Are you sure you want to delete this data?');
-    if (isConfirmed) {
-      this.masterLcList = [];
-      this.SetupService.deleteImportCostingList(id).subscribe(
-        (data: any[]) => {
-          //this.masterLcList=data;
-          this.toastr.success('Deleted Successfully', 'Import Costing');
-          this.LoadImportCostingList();
-        },
-        (error) => {}
-      );
-    } else {
-      this.toastr.info('Deletion canceled.', 'Import Costing');
-    }
-  }
+  // LoadImportCostingList() {
+  //   this.masterLcList = [];
+  //   this.SetupService.GetImportdata().subscribe(
+  //     (data: any[]) => {
+  //       this.masterLcList = data;
+  //       console.log('MasterLC', data);
+  //     },
+  //     (error) => {}
+  //   );
+  // }
+  // DeleteImportCostingList(id) {
+  //   const isConfirmed = confirm('Are you sure you want to delete this data?');
+  //   if (isConfirmed) {
+  //     this.masterLcList = [];
+  //     this.SetupService.deleteImportCostingList(id).subscribe(
+  //       (data: any[]) => {
+  //         //this.masterLcList=data;
+  //         this.toastr.success('Deleted Successfully', 'Import Costing');
+  //         this.LoadImportCostingList();
+  //       },
+  //       (error) => {}
+  //     );
+  //   } else {
+  //     this.toastr.info('Deletion canceled.', 'Import Costing');
+  //   }
+  // }
   saveCommentsAction(obj: any) {
     //console.log("obj", obj);
 
@@ -536,48 +536,48 @@ export class CommonServiceService {
       headers: this.token.headerToken(),
     });
   }
-  LoadCommentsActionList() {
-    this.masterLcList = [];
-    this.SetupService.GetCommentsActiondata().subscribe(
-      (data: any[]) => {
-        this.masterLcList = data;
-        console.log('MasterLC', data);
-      },
-      (error) => {}
-    );
-  }
+  // LoadCommentsActionList() {
+  //   this.masterLcList = [];
+  //   this.SetupService.GetCommentsActiondata().subscribe(
+  //     (data: any[]) => {
+  //       this.masterLcList = data;
+  //       console.log('MasterLC', data);
+  //     },
+  //     (error) => {}
+  //   );
+  // }
 
-  DeleteCommentsAction(id) {
-    const isConfirmed = confirm('Are you sure you want to delete this data?');
-    if (isConfirmed) {
-      this.masterLcList = [];
-      this.SetupService.deleteCommentsAction(id).subscribe(
-        (data: any[]) => {
-          //this.masterLcList=data;
-          this.toastr.success('Deleted Successfully', 'Comments Action');
-          this.LoadCommentsActionList();
-        },
-        (error) => {}
-      );
-    } else {
-      this.toastr.info('Deletion canceled.', 'Comments Action');
-    }
-  }
-  LoadPaymentStatusUpdateList(b2blcid, supplierId, piNo, mpoNo) {
-    this.PaymentList = [];
-    this.SetupService.GetPaymentStatusdata(
-      b2blcid,
-      supplierId,
-      piNo,
-      mpoNo
-    ).subscribe(
-      (data: any[]) => {
-        this.PaymentList = data;
-        console.log('MasterLC', data);
-      },
-      (error) => {}
-    );
-  }
+  // DeleteCommentsAction(id) {
+  //   const isConfirmed = confirm('Are you sure you want to delete this data?');
+  //   if (isConfirmed) {
+  //     this.masterLcList = [];
+  //     this.SetupService.deleteCommentsAction(id).subscribe(
+  //       (data: any[]) => {
+  //         //this.masterLcList=data;
+  //         this.toastr.success('Deleted Successfully', 'Comments Action');
+  //         this.LoadCommentsActionList();
+  //       },
+  //       (error) => {}
+  //     );
+  //   } else {
+  //     this.toastr.info('Deletion canceled.', 'Comments Action');
+  //   }
+  // }
+  // LoadPaymentStatusUpdateList(b2blcid, supplierId, piNo, mpoNo) {
+  //   this.PaymentList = [];
+  //   this.SetupService.GetPaymentStatusdata(
+  //     b2blcid,
+  //     supplierId,
+  //     piNo,
+  //     mpoNo
+  //   ).subscribe(
+  //     (data: any[]) => {
+  //       this.PaymentList = data;
+  //       console.log('MasterLC', data);
+  //     },
+  //     (error) => {}
+  //   );
+  // }
 
   savePaymentStatus(obj: any) {
     //console.log("obj", obj);
@@ -612,91 +612,91 @@ export class CommonServiceService {
     });
   }
 
-  LoadRequestLetterList() {
-    this.masterLcList = [];
-    this.SetupService.GetRequestLetterdata().subscribe(
-      (data: any[]) => {
-        this.masterLcList = data;
-        console.log('MasterLC', data);
-      },
-      (error) => {}
-    );
-  }
-  LoadTenorList() {
-    this.masterLcList = [];
-    this.SetupService.GetTenordata().subscribe(
-      (data: any[]) => {
-        this.masterLcList = data;
-        console.log('MasterLC', data);
-      },
-      (error) => {}
-    );
-  }
+  // LoadRequestLetterList() {
+  //   this.masterLcList = [];
+  //   this.SetupService.GetRequestLetterdata().subscribe(
+  //     (data: any[]) => {
+  //       this.masterLcList = data;
+  //       console.log('MasterLC', data);
+  //     },
+  //     (error) => {}
+  //   );
+  // }
+  // LoadTenorList() {
+  //   this.masterLcList = [];
+  //   this.SetupService.GetTenordata().subscribe(
+  //     (data: any[]) => {
+  //       this.masterLcList = data;
+  //       console.log('MasterLC', data);
+  //     },
+  //     (error) => {}
+  //   );
+  // }
 
-  LoadTenorDropdown() {
-    this.TenorList = [];
-    this.SetupService.GetTenorDropdown().subscribe(
-      (data: any[]) => {
-        this.TenorList.push({ label: '--- Select ---', value: null });
-        for (var i = 0; i < data.length; i++) {
-          this.TenorList.push({
-            id: data[i].id,
-            label: data[i].displayName,
-          });
-        }
-      },
-      (error) => {}
-    );
-  }
-  LoadUomDropdown() {
-    this.UomList = [];
-    this.SetupService.GetUomDropdown().subscribe(
-      (data: any[]) => {
-        this.UomList.push({ label: '--- Select ---', value: null });
-        for (var i = 0; i < data.length; i++) {
-          this.UomList.push({
-            value: data[i].id,
-            label: data[i].displayName,
-          });
-        }
-      },
-      (error) => {}
-    );
-  }
+  // LoadTenorDropdown() {
+  //   this.TenorList = [];
+  //   this.SetupService.GetTenorDropdown().subscribe(
+  //     (data: any[]) => {
+  //       this.TenorList.push({ label: '--- Select ---', value: null });
+  //       for (var i = 0; i < data.length; i++) {
+  //         this.TenorList.push({
+  //           id: data[i].id,
+  //           label: data[i].displayName,
+  //         });
+  //       }
+  //     },
+  //     (error) => {}
+  //   );
+  // }
+  // LoadUomDropdown() {
+  //   this.UomList = [];
+  //   this.SetupService.GetUomDropdown().subscribe(
+  //     (data: any[]) => {
+  //       this.UomList.push({ label: '--- Select ---', value: null });
+  //       for (var i = 0; i < data.length; i++) {
+  //         this.UomList.push({
+  //           value: data[i].id,
+  //           label: data[i].displayName,
+  //         });
+  //       }
+  //     },
+  //     (error) => {}
+  //   );
+  // }
 
-  LoadItemDropdown() {
-    this.ItemList = [];
-    this.SetupService.GetItemDropdown().subscribe(
-      (data: any[]) => {
-        console.log('itemList', data);
-        this.ItemList.push({ label: '--- Select ---', value: null });
-        for (var i = 0; i < data.length; i++) {
-          this.ItemList.push({
-            value: data[i].id,
-            label: data[i].displayName,
-          });
-        }
-      },
-      (error) => {}
-    );
-  }
+  // LoadItemDropdown() {
+  //   this.ItemList = [];
+  //   this.SetupService.GetItemDropdown().subscribe(
+  //     (data: any[]) => {
+  //       console.log('itemList', data);
+  //       this.ItemList.push({ label: '--- Select ---', value: null });
+  //       for (var i = 0; i < data.length; i++) {
+  //         this.ItemList.push({
+  //           value: data[i].id,
+  //           label: data[i].displayName,
+  //         });
+  //       }
+  //     },
+  //     (error) => {}
+  //   );
+  // }
 
-  DeleteRequestLetter(id) {
-    const isConfirmed = confirm('Are you sure you want to delete this data?');
-    if (isConfirmed) {
-      this.masterLcList = [];
-      this.SetupService.deleteRequestLetter(id).subscribe(
-        (data: any[]) => {
-          //this.masterLcList=data;
-          this.toastr.success('Deleted Successfully', 'Request Letter');
-          this.LoadRequestLetterList();
-        },
-        (error) => {}
-      );
-    } else {
-      this.toastr.info('Deletion canceled.', 'Request Letter');
-    }
-  }
+  // DeleteRequestLetter(id) {
+  //   const isConfirmed = confirm('Are you sure you want to delete this data?');
+  //   if (isConfirmed) {
+  //     this.masterLcList = [];
+  //     this.SetupService.deleteRequestLetter(id).subscribe(
+  //       (data: any[]) => {
+  //         //this.masterLcList=data;
+  //         this.toastr.success('Deleted Successfully', 'Request Letter');
+  //         this.LoadRequestLetterList();
+  //       },
+  //       (error) => {}
+  //     );
+  //   } else {
+  //     this.toastr.info('Deletion canceled.', 'Request Letter');
+  //   }
+  // }
   // DeleteTenor(id) {
 
   //   this.masterLcList = [];
@@ -711,32 +711,32 @@ export class CommonServiceService {
   //     }
   //   );
   // }
-  DeleteTenor(id: number) {
-    // Show confirmation dialog
-    const isConfirmed = confirm('Are you sure you want to delete this tenor?');
+  // DeleteTenor(id: number) {
+  //   // Show confirmation dialog
+  //   const isConfirmed = confirm('Are you sure you want to delete this tenor?');
 
-    if (isConfirmed) {
-      this.masterLcList = [];
-      this.SetupService.deleteTenor(id).subscribe(
-        (data: any[]) => {
-          // Notify the user of successful deletion
-          this.toastr.success('Deleted Successfully', 'Tenor');
-          // Reload the list after deletion
-          this.LoadTenorList();
-        },
-        (error) => {
-          // Handle the error here if needed
-          this.toastr.error(
-            'An error occurred while deleting the tenor.',
-            'Error'
-          );
-        }
-      );
-    } else {
-      // If the user cancels the deletion, you can handle it here (optional)
-      this.toastr.info('Deletion canceled.', 'Tenor');
-    }
-  }
+  //   if (isConfirmed) {
+  //     this.masterLcList = [];
+  //     this.SetupService.deleteTenor(id).subscribe(
+  //       (data: any[]) => {
+  //         // Notify the user of successful deletion
+  //         this.toastr.success('Deleted Successfully', 'Tenor');
+  //         // Reload the list after deletion
+  //         this.LoadTenorList();
+  //       },
+  //       (error) => {
+  //         // Handle the error here if needed
+  //         this.toastr.error(
+  //           'An error occurred while deleting the tenor.',
+  //           'Error'
+  //         );
+  //       }
+  //     );
+  //   } else {
+  //     // If the user cancels the deletion, you can handle it here (optional)
+  //     this.toastr.info('Deletion canceled.', 'Tenor');
+  //   }
+  // }
 
   saveB2BLatest(obj: any) {
     //console.log("obj", obj);

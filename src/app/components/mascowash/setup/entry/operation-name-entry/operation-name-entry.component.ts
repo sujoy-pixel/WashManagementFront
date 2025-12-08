@@ -190,56 +190,5 @@ export class OperationNameEntryComponent {
     this.saveButtonTitle = 'Update';
   }
 
-  deleteCompanyBankData(data) {
-    let result = confirm('Are you sure you want to delete this data?');
-    let deletePayload = {
-      operation: 'DELETE',
-      companyBankId: data.companyBankId,
-      companyId: data.companyId,
-      companyName: data.companyName,
-      companyAddress:
-        data.companyAddress === null ||
-        data.companyAddress === undefined ||
-        data.companyAddress === ''
-          ? ''
-          : data.companyAddress,
-      bankNo: data.bankNo,
-      bankName: data.bankName,
-      branchId: data.branchId,
-      branchName: data.branchName,
-      branchAddress:
-        data.branchAddress === null ||
-        data.branchAddress === undefined ||
-        data.branchAddress === ''
-          ? ''
-          : data.branchAddress,
-      swiftCode:
-        data.swiftCode === null ||
-        data.swiftCode === undefined ||
-        data.swiftCode === ''
-          ? ''
-          : data.swiftCode,
-      routingNo:
-        data.routingNo === null ||
-        data.routingNo === undefined ||
-        data.routingNo === ''
-          ? ''
-          : data.routingNo,
-      isActive: data.isActive === true ? 1 : 0,
-    };
-    if (result) {
-      this.service.saveCompanyBankInfoData(deletePayload).subscribe(
-        (res) => {
-          console.log(res);
-          this.onClear();
-          this.toastr.success('Deleted Successfully', 'operation Name Entry');
-        },
-        (err) => {
-          this.toastr.success('Deleted Failed', 'operation Name Entry');
-        }
-      );
-    } else {
-      this.toastr.error('Deleted Failed', 'operation Name Entry');
-    }
-  }
+
 }
