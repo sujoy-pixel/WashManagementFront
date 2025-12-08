@@ -56,11 +56,6 @@ export class WashSetupService {
     });
   }
 
-  saveOperationNameEntryData(obj: any) {
-    return this.http.post(this.baseUrl_ + 'Setup/SaveOperationNameEntry', obj, {
-      headers: this.token.headerToken(),
-    });
-  }
   GetUnitName(): Observable<any> {
     return this.http.get<any[]>(this.baseUrl_ + 'Common/GetUnitName', {
       headers: this.token.headerToken(),
@@ -76,6 +71,26 @@ export class WashSetupService {
   }
   deleteProcessNameEntry(obj: any) {
     return this.http.post(this.baseUrl_ + 'Setup/SaveProcessNameEntry', obj, {
+      headers: this.token.headerToken(),
+    });
+  }
+
+  GetOperationNameEntryList(): Observable<any> {
+    return this.http.get<any[]>(
+      this.baseUrl_ + 'Setup/GetOperationNameEntryData',
+      {
+        headers: this.token.headerToken(),
+      }
+    );
+  }
+  saveOperationNameEntryData(obj: any) {
+    return this.http.post(this.baseUrl_ + 'Setup/SaveOperationNameEntry', obj, {
+      headers: this.token.headerToken(),
+    });
+  }
+
+  deleteOperationNameEntry(obj: any) {
+    return this.http.post(this.baseUrl_ + 'Setup/SaveOperationNameEntry', obj, {
       headers: this.token.headerToken(),
     });
   }
