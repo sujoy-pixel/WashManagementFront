@@ -74,4 +74,9 @@ export class WashSetupService {
       }
     );
   }
+  deleteProcessNameEntry(obj: any) {
+    return this.http.post(this.baseUrl_ + 'Setup/SaveProcessNameEntry', obj, {
+      headers: this.token.headerToken(),
+    });
+  }
 }

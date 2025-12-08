@@ -212,11 +212,15 @@ export class ProcessNameEntryComponent {
   edit(item: any) {
     this.isEdit = true;
     this.saveButtonTitle = 'UPDATE';
+
     this.Model = {
-      TypeofInspectionId: item.typeofInspectionId,
-      TypeName: item.typeName,
-      IsActive: item.isActive == 1,
+      processId: item.processId,
+      unitId: this.UnitList.find((u) => u.value === item.unitId),
+      processName: item.processName,
+      priority: item.priority,
+      activeStatus: item.isActive == 1,
     };
+
     this.cdr.detectChanges();
   }
 
@@ -231,23 +235,20 @@ export class ProcessNameEntryComponent {
       if (result.isConfirmed) {
         const payload = {
           operation: 'DELETE',
-          TypeofInspectionId: item.typeofInspectionId,
-
-          // typeofInspectionId: item.TypeofInspectionId
+          ProcessId: item.processId,
         };
 
-        this.service.TypeofInspectionService(payload).subscribe({
+        this.service.deleteProcessNameEntry(payload).subscribe({
           next: (res: any) => {
-            //console.log('resDelete', res);
             if (res?.resultCode === '1') {
-              this.toastr.success('Deleted successfully', 'Success');
+              this.toastr.success('Deleted successfully');
               this.loadData();
             } else {
-              this.toastr.error('Delete failed', 'Error');
+              this.toastr.error('Delete failed');
             }
           },
           error: () => {
-            this.toastr.error('Delete failed', 'Error');
+            this.toastr.error('Delete failed');
           },
         });
       }

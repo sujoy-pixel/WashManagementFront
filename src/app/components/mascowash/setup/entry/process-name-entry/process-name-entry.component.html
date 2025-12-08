@@ -164,7 +164,7 @@
         </thead>
 
         <tbody>
-          <tr *ngFor="let item of getProcessNameEntryList; let i = index">
+          <tr *ngFor="let item of dataList; let i = index">
             <td class="text-center">{{ i + 1 }}</td>
 
             <td>{{ item.unitName }}</td>
@@ -192,7 +192,7 @@
             </td>
           </tr>
 
-          <tr *ngIf="getProcessNameEntryList?.length === 0">
+          <tr *ngIf="dataList?.length === 0">
             <td colspan="6" class="text-center">No records found</td>
           </tr>
         </tbody>
