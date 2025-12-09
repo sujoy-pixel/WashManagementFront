@@ -10,7 +10,7 @@ import { InspectionTypeEntryComponent } from './setup/entry/inspection-type-entr
  import { InspectionAreaEntryComponent } from './setup/entry/inspection-area-entry/inspection-area-entry.component';
 import { OperationNameEntryComponent } from './setup/entry/operation-name-entry/operation-name-entry.component';
 
-
+import { FaultNameLayoutComponent } from './setup/entry/fault-name-layout/fault-name-layout.component';
 
 
 
@@ -43,6 +43,11 @@ const routes: Routes = [
       {
         path: 'setup/entry/area-of-inspection',
         component: InspectionAreaEntryComponent,
+        runGuardsAndResolvers: 'always',
+      },
+      {
+        path: 'setup/entry/fault-name-layout',
+        component: FaultNameLayoutComponent,
         runGuardsAndResolvers: 'always',
       },
     ],

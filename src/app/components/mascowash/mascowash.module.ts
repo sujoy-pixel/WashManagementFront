@@ -28,6 +28,8 @@ import { InspectionTypeEntryComponent } from './setup/entry/inspection-type-entr
 
 import { OperationNameEntryComponent } from './setup/entry/operation-name-entry/operation-name-entry.component';
  import { InspectionAreaEntryComponent } from './setup/entry/inspection-area-entry/inspection-area-entry.component';
+import { MachineNameEntryComponent } from './setup/entry/machine-name-entry/machine-name-entry.component';
+import { FaultNameLayoutComponent } from './setup/entry/fault-name-layout/fault-name-layout.component';
 
 @NgModule({
   declarations: [
@@ -39,6 +41,8 @@ import { OperationNameEntryComponent } from './setup/entry/operation-name-entry/
 
     OperationNameEntryComponent,
      InspectionAreaEntryComponent,
+     MachineNameEntryComponent,
+     FaultNameLayoutComponent,
   ],
   imports: [
     MatTabsModule,

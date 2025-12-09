@@ -2,29 +2,96 @@
   <div class="col-md-12">
     <div class="card custom-card">
       <div class="card-header border-bottom justify-content-between">
-        <div class="card-title">Inspection Area Entry</div>
+        <div class="card-title">Fault Name Layout</div>
       </div>
 
       <div class="card-body">
 
-        <!-- AREA NAME -->
+        <!-- FAULT HEAD -->
         <div class="row my-2">
           <div class="col-md-12">
             <div class="row align-items-center">
 
               <label class="form-label col-md-2 text-dark">
-                Area Name <span style="color:red">*</span>
+                Fault Head <span style="color:red">*</span>
               </label>
 
               <div class="form-control col-md-4 common-border"
-                   [class.focused-border]="currentFocus === 'AreaName'">
+                   [class.focused-border]="currentFocus === 'FaultHead'">
+<ng-select [(ngModel)]="Model.FaultHeadId"
+           (focus)="setFocus('FaultHead')"
+           (blur)="clearFocus()"
+           placeholder="Select Fault Head">
+
+  <ng-option *ngFor="let f of faultHeadList" 
+             [value]="f.ID">
+      {{ f.DisplayName }}
+  </ng-option>
+
+</ng-select>
+
+                <!-- <ng-select [(ngModel)]="Model.FaultHeadId"
+                           (focus)="setFocus('FaultHead')"
+                           (blur)="clearFocus()"
+                           placeholder="Select Fault Head">
+                  <ng-option *ngFor="let f of faultHeadList" [value]="f.id">{{ f.name }}</ng-option>
+                </ng-select> -->
+
+              </div>
+
+            </div>
+          </div>
+        </div>
+
+        <!-- FAULT NAME -->
+        <div class="row my-2">
+          <div class="col-md-12">
+            <div class="row align-items-center">
+
+              <label class="form-label col-md-2 text-dark">
+                Fault Name <span style="color:red">*</span>
+              </label>
+
+              <div class="form-control col-md-4 common-border"
+                   [class.focused-border]="currentFocus === 'FaultName'">
 
                 <input type="text"
-                       [(ngModel)]="Model.InspectionArea"
-                       (focus)="setFocus('AreaName')"
+                       [(ngModel)]="Model.FaultName"
+                       (focus)="setFocus('FaultName')"
                        (blur)="clearFocus()"
                        class="form-control-input"/>
+
               </div>
+
+            </div>
+          </div>
+        </div>
+
+        <!-- CODE NO -->
+        <div class="row my-2">
+          <div class="col-md-12">
+            <div class="row align-items-center">
+
+              <label class="form-label col-md-2 text-dark">
+                Code No
+              </label>
+
+              <div class="form-control col-md-4 common-border"
+                   [class.focused-border]="currentFocus === 'CodeNo'">
+
+                <!-- <input type="text"
+                       [(ngModel)]="Model.CodeNo"
+                       (focus)="setFocus('CodeNo')"
+                       (blur)="clearFocus()"
+                       class="form-control-input"/>
+
+              </div> -->
+<input type="number"
+       [(ngModel)]="Model.CodeNo"
+       class="form-control-input"
+       (focus)="setFocus('CodeNo')"
+       (blur)="clearFocus()"
+/>
 
             </div>
           </div>
@@ -95,9 +162,11 @@
         <thead>
           <tr>
             <th style="width:60px" class="text-center">SL</th>
-            <th class="text-center">Area Name</th>
+            <th class="text-center">Fault Head</th>
+            <th class="text-center">Fault Name</th>
+            <th class="text-center">Code No</th>
             <th class="text-center">Priority</th>
-            <th class="text-center">Active</th>
+            <th class="text-center">Status</th>
             <th class="text-center" style="width:120px">Action</th>
           </tr>
         </thead>
@@ -106,7 +175,9 @@
 
           <tr *ngFor="let item of dataList; let i=index">
             <td class="text-center">{{ i + 1 }}</td>
-            <td>{{ item.inspectionArea }}</td>
+            <td>{{ item.faultHeadName }}</td>
+            <td>{{ item.faultName }}</td>
+            <td>{{ item.codeNo }}</td>
             <td class="text-center">{{ item.priority }}</td>
 
             <td class="text-center">
@@ -123,13 +194,13 @@
           </tr>
 
           <tr *ngIf="dataList?.length === 0">
-            <td colspan="5" class="text-center">No Records Found</td>
+            <td colspan="7" class="text-center">No Records Found</td>
           </tr>
 
         </tbody>
 
       </table>
     </div>
-
   </div>
+
 </div>

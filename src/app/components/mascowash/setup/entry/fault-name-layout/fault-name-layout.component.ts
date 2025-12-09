@@ -4,13 +4,14 @@ import Swal from 'sweetalert2';
 import { WashSetupService } from '../../../services/washsetup.service';
 
 @Component({
-  selector: 'app-inspection-area-entry',
-  templateUrl: './inspection-area-entry.component.html',
-  styleUrls: ['./inspection-area-entry.component.scss']
+  selector: 'app-fault-name-layout',
+  templateUrl: './fault-name-layout.component.html',
+  styleUrls: ['./fault-name-layout.component.scss']
 })
-export class InspectionAreaEntryComponent {
+export class FaultNameLayoutComponent {
 
   priorityList: number[] = [];
+  faultHeadList: any[] = [];
   dataList: any[] = [];
 
   saveButtonTitle = "Save";
@@ -18,8 +19,10 @@ export class InspectionAreaEntryComponent {
   currentFocus: string | null = null;
 
   Model: any = {
-    InspectionAreaId: 0,
-    InspectionArea: "",
+    FaultNameId: 0,
+    FaultHeadId: null,
+    FaultName: "",
+    CodeNo: 0,     // INT VALUE
     Priority: null,
     IsActive: true
   };
@@ -32,13 +35,31 @@ export class InspectionAreaEntryComponent {
 
   ngOnInit() {
     this.priorityList = Array.from({ length: 50 }, (_, i) => i + 1);
+    this.loadFaultHeads();
     this.loadData();
+  }
+
+  // LOAD Fault Head LIST
+  loadFaultHeads() {
+    this.service.getFaultHeadList().subscribe({
+      next: (res: any) => {
+        this.faultHeadList = res.map((x: any) => ({
+          ID: x.id ?? x.ID,
+          DisplayName: x.displayName ?? x.DisplayName
+        }));
+      },
+      error: () => this.toastr.error("Failed to load Fault Head list")
+    });
   }
 
   // SUBMIT FORM
   onSubmit() {
-    if (!this.Model.InspectionArea?.trim()) {
-      this.toastr.warning("Enter Area Name");
+    if (!this.Model.FaultHeadId) {
+      this.toastr.warning("Select Fault Head");
+      return;
+    }
+    if (!this.Model.FaultName?.trim()) {
+      this.toastr.warning("Enter Fault Name");
       return;
     }
     if (!this.Model.Priority) {
@@ -47,19 +68,24 @@ export class InspectionAreaEntryComponent {
     }
 
     const payload = {
-      operation: this.isEdit ? "UPDATE" : "INSERT",
-      inspectionAreaId: this.Model.InspectionAreaId,
-      inspectionArea: this.Model.InspectionArea,
-      priority: this.Model.Priority,
-      isActive: this.Model.IsActive ? 1 : 0
+      Operation: this.isEdit ? "UPDATE" : "INSERT",
+      FaultNameId: this.Model.FaultNameId,
+      FaultHeadId: this.Model.FaultHeadId,
+      FaultName: this.Model.FaultName.trim(),
+
+      // IMPORTANT FIX: INTEGER VALUE
+      CodeNo: Number(this.Model.CodeNo) || 0,
+
+      Priority: this.Model.Priority,
+      IsActive: this.Model.IsActive ? 1 : 0
     };
 
-    this.service.saveInspectionAreaEntry(payload).subscribe({
+    this.service.saveFaultName(payload).subscribe({
       next: (res: any) => {
         const resultCode = res[0]?.resultCode ?? res.resultCode;
 
         if (resultCode == -1) {
-          this.toastr.warning("Duplicate Area Name!");
+          this.toastr.warning("Duplicate Fault Name found!");
           return;
         }
 
@@ -72,13 +98,19 @@ export class InspectionAreaEntryComponent {
     });
   }
 
-  // LOAD LIST  
+  // LOAD GRID LIST
   loadData() {
-    this.service.getInspectionAreaLists().subscribe({
+    this.service.getFaultNameList().subscribe({
       next: (res: any) => {
         this.dataList = res.map((x: any) => ({
-          inspectionAreaId: x.inspectionAreaId,
-          inspectionArea: x.inspectionArea,
+          FaultNameId: x.faultNameId,
+          faultHeadId: x.faultHeadId,
+          faultHeadName: x.faultHeadName,
+          faultName: x.faultName,
+
+          // FIXED: CodeNo is INT & JSON key = codeNo
+          codeNo: Number(x.codeNo) || 0,
+
           priority: x.priority,
           isActive: x.isActive
         }));
@@ -87,14 +119,19 @@ export class InspectionAreaEntryComponent {
     });
   }
 
-  // EDIT RECORD
+  // EDIT FUNCTION
   edit(item: any) {
     this.isEdit = true;
     this.saveButtonTitle = "Update";
 
     this.Model = {
-      InspectionAreaId: item.inspectionAreaId,
-      InspectionArea: item.inspectionArea,
+      FaultNameId: item.FaultNameId,
+      FaultHeadId: item.faultHeadId,
+      FaultName: item.faultName,
+
+      // INT VALUE
+      CodeNo: Number(item.codeNo),
+
       Priority: item.priority,
       IsActive: item.isActive
     };
@@ -111,29 +148,29 @@ export class InspectionAreaEntryComponent {
       showCancelButton: true
     }).then((result) => {
       if (result.isConfirmed) {
-
         const payload = {
-          operation: "DELETE",
-          inspectionAreaId: item.inspectionAreaId
+          Operation: "DELETE",
+          FaultNameId: item.FaultNameId
         };
 
-        this.service.deleteInspectionArea(payload).subscribe({
+        this.service.deleteFaultName(payload).subscribe({
           next: () => {
             this.toastr.success("Deleted Successfully");
             this.loadData();
           },
           error: () => this.toastr.error("Delete failed")
         });
-
       }
     });
   }
 
-  // RESET FORM
+  // CLEAR FORM
   onClear() {
     this.Model = {
-      InspectionAreaId: 0,
-      InspectionArea: "",
+      FaultNameId: 0,
+      FaultHeadId: null,
+      FaultName: "",
+      CodeNo: 0,   // reset as INT
       Priority: null,
       IsActive: true
     };
@@ -145,5 +182,4 @@ export class InspectionAreaEntryComponent {
   // FOCUS BORDER
   setFocus(f: string) { this.currentFocus = f; }
   clearFocus() { this.currentFocus = null; }
-
 }
