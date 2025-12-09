@@ -1,5 +1,6 @@
-import { Component, ChangeDetectorRef, NgZone } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { ToastrService } from 'ngx-toastr';
+import Swal from 'sweetalert2';
 import { WashSetupService } from '../../../services/washsetup.service';
 import { CommonServiceService } from '../../../services/common-service';
 
@@ -8,57 +9,67 @@ import { CommonServiceService } from '../../../services/common-service';
   templateUrl: './inspection-area-entry.component.html',
   styleUrls: ['./inspection-area-entry.component.scss']
 })
-export class InspectionAreaEntryComponent {
+export class InspectionAreaEntryComponent implements OnInit {
 
-  saveButtonTitle = 'Save';
-  priorityList: number[] = [];
-  currentFocus: string | null = null;
-
-  inspectionAreaList: any[] = [];
-
+  // ================= MODEL =================
   Model: any = {
-    InspectionAreaId: null,
-    InspectionArea: null,
+    InspectionAreaId: 0,
+    InspectionArea: '',
     Priority: null,
     IsActive: true
   };
+
+  dataList: any[] = [];
+  priorityList: number[] = [];
+  isEdit = false;
+  saveButtonTitle: string = 'Save';
+  isSubmitting = false;
+
+  // ================= FOCUS HANDLER =================
+  currentFocus: string | null = null;
 
   constructor(
     private service: WashSetupService,
     public commonService: CommonServiceService,
     private toastr: ToastrService,
-    private ngZone: NgZone,
     private cdr: ChangeDetectorRef
   ) {}
 
   ngOnInit(): void {
+    // Generate priority list 1-50
     this.priorityList = Array.from({ length: 50 }, (_, i) => i + 1);
     this.loadData();
   }
 
   // ================= LOAD DATA =================
   loadData() {
-    this.service.getInspectionAreaList().subscribe({
-      next: (res: any) => this.inspectionAreaList = res ?? [],
-      error: () => this.toastr.error('Failed to load Inspection Areas', 'Error')
+    this.service.getInspectionAreaLists().subscribe({
+      next: (res: any) => {
+        this.dataList = res ?? [];
+      },
+      error: () => {
+        this.toastr.error('Failed to load Inspection Area data', 'Error');
+      }
     });
   }
 
-  // ================= SAVE / UPDATE =================
+  // ================= SUBMIT (INSERT / UPDATE) =================
   onSubmit() {
-    if (!this.Model.InspectionArea || this.Model.InspectionArea.trim() === '') {
-      this.toastr.warning('Please enter Area Name');
+    if (!this.Model.InspectionArea?.trim()) {
+      this.toastr.warning('Area Name is required', 'Warning');
       return;
     }
 
     if (!this.Model.Priority) {
-      this.toastr.warning('Please select Priority');
+      this.toastr.warning('Priority is required', 'Warning');
       return;
     }
 
+    this.isSubmitting = true;
+
     const payload = {
-      Operation: this.Model.InspectionAreaId ? 'UPDATE' : 'INSERT',
-      InspectionAreaId: this.Model.InspectionAreaId ?? 0,
+      Operation: this.isEdit ? 'UPDATE' : 'INSERT',
+      InspectionAreaId: this.Model.InspectionAreaId,
       InspectionArea: this.Model.InspectionArea.trim(),
       Priority: this.Model.Priority,
       IsActive: this.Model.IsActive ? 1 : 0,
@@ -67,83 +78,107 @@ export class InspectionAreaEntryComponent {
 
     this.service.saveInspectionAreaEntry(payload).subscribe({
       next: (res: any) => {
-        const resultCode = res?.ResultCode;
+        const resultCode = res[0]?.ResultCode;
 
-        if (resultCode === "-1") {
-          this.toastr.error('Duplicate Area Name!', 'Error');
+        if (resultCode === -1) {
+          this.toastr.warning('Area Name already exists', 'Duplicate');
+          this.isSubmitting = false;
           return;
         }
 
-        if (!this.Model.InspectionAreaId)
-          this.toastr.success('Saved Successfully');
-        else
-          this.toastr.success('Updated Successfully');
+        this.toastr.success(
+          this.isEdit ? 'Updated successfully' : 'Saved successfully',
+          'Success'
+        );
 
-        this.onClear();
+        this.resetForm();
         this.loadData();
+        this.isSubmitting = false;
+        this.cdr.detectChanges();
       },
-      error: () => this.toastr.error('Submission failed', 'Error')
+      error: () => {
+        this.toastr.error('Submission failed', 'Error');
+        this.isSubmitting = false;
+      }
     });
   }
 
   // ================= EDIT =================
-  editInspectionArea(row: any) {
+  edit(item: any) {
+    this.isEdit = true;
+    this.saveButtonTitle = 'UPDATE';
+
     this.Model = {
-      InspectionAreaId: row.InspectionAreaId,
-      InspectionArea: row.InspectionArea,
-      Priority: row.Priority,
-      IsActive: row.IsActive === 1
+      InspectionAreaId: item.inspectionAreaId,
+      InspectionArea: item.inspectionArea,
+      Priority: item.priority,
+      IsActive: item.isActive === 1
     };
 
-    this.saveButtonTitle = 'Update';
-
+    this.cdr.detectChanges();
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
-  // ================= DELETE (FIXED) =================
-  deleteInspectionArea(row: any) {
+  // ================= DELETE =================
+  delete(item: any) {
+    Swal.fire({
+      title: 'Are you sure?',
+      text: 'Do you want to delete this area?',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Yes, delete it'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        const payload = {
+          Operation: 'DELETE',
+          InspectionAreaId: item.inspectionAreaId,
+          CreatedBy: 'Admin'
+        };
 
-    if (!confirm('Are you sure you want to delete this area?')) return;
-
-    const payload = {
-      Operation: 'DELETE',
-      InspectionAreaId: row.InspectionAreaId,
-      InspectionArea: row.InspectionArea,
-      Priority: row.Priority,
-      IsActive: row.IsActive,
-      CreatedBy: 'Admin'
-    };
-
-    this.service.saveInspectionAreaEntry(payload).subscribe({
-      next: () => {
-        this.toastr.success('Deleted Successfully');
-        this.loadData();
-      },
-      error: () => this.toastr.error('Delete failed', 'Error')
+        this.service.saveInspectionAreaEntry(payload).subscribe({
+          next: (res: any) => {
+            if (res[0]?.ResultCode === 1) {
+              this.toastr.success('Deleted successfully', 'Success');
+              this.loadData();
+            } else {
+              this.toastr.error('Delete failed', 'Error');
+            }
+          },
+          error: () => {
+            this.toastr.error('Delete failed', 'Error');
+          }
+        });
+      }
     });
   }
 
-  // ================= CLEAR FORM =================
-  onClear() {
+  // ================= RESET FORM =================
+  resetForm() {
+    this.isEdit = false;
+    this.saveButtonTitle = 'Save';
+
     this.Model = {
-      InspectionAreaId: null,
-      InspectionArea: null,
+      InspectionAreaId: 0,
+      InspectionArea: '',
       Priority: null,
       IsActive: true
     };
 
-    this.saveButtonTitle = 'Save';
+    this.cdr.detectChanges();
   }
 
-  // ================= FOCUS HANDLER =================
+  onClear() {
+    this.resetForm();
+  }
+
+  // ================= FOCUS METHODS =================
   setFocus(field: string): void {
-    setTimeout(() => {
-      this.currentFocus = field;
-      this.cdr.detectChanges();
-    });
+    this.currentFocus = field;
+    this.cdr.detectChanges();
   }
 
   clearFocus(): void {
     this.currentFocus = null;
+    this.cdr.detectChanges();
   }
 }

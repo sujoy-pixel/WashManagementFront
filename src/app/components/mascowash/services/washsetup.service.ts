@@ -28,11 +28,6 @@ export class WashSetupService {
     );
   }
 
-  
-
-
-
-
 TypeofInspectionService(obj: any) {
   return this.http.post(
     this.baseUrl_ + 'Setup/SaveTypeofInspection',
@@ -48,17 +43,36 @@ getAllTypeofInspection() {
   );
 }
 
-getInspectionAreaList() {
-  return this.http.get('Setup/GetInspectionArea');
-}
 
-saveInspectionAreaEntry(payload: any) {
-  return this.http.post('Setup/SaveInspectionArea', payload);
-}
+// saveInspectionAreaEntry(obj: any) {
+//   //return this.http.post('Setup/SaveInspectionArea', payload);
 
-deleteInspectionArea(payload: any) {
-  return this.http.post('Setup/DeleteInspectionArea', payload);
-}
+//   return this.http.post(
+//     this.baseUrl_ + 'Setup/SaveInspectionArea', obj,
+//     { headers: this.token.headerToken() }
+//   );
+// }
+
+ saveInspectionAreaEntry(obj: any) {
+    return this.http.post(
+      this.baseUrl_ + 'Setup/SaveInspectionArea',
+      obj,
+      { headers: this.token.headerToken() }
+    );
+  }
+
+  getInspectionAreaLists() {
+    return this.http.get(
+      this.baseUrl_ + 'Setup/GetInspectionAreaData',
+      { headers: this.token.headerToken() }
+    );
+  }
+
+
+
+// deleteInspectionArea(payload: any) {
+//   return this.http.post('Setup/DeleteInspectionArea', payload);
+// }
   saveProcessNameEntryData(obj: any) {
     return this.http.post(this.baseUrl_ + 'Setup/SaveProcessNameEntry', obj, {
       headers: this.token.headerToken(),
