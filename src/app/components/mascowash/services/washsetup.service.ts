@@ -18,7 +18,6 @@ export class WashSetupService {
 
   constructor(private http: HttpClient, private token: TokenService) {}
 
-
   GetBuyerName(Id: number): Observable<any> {
     return this.http.get<any[]>(
       this.baseUrl_ + 'Common/GetBuyerList?Id=' + Id,
@@ -27,6 +26,7 @@ export class WashSetupService {
       }
     );
   }
+
 
 TypeofInspectionService(obj: any) {
   return this.http.post(
@@ -73,19 +73,72 @@ getAllTypeofInspection() {
 // deleteInspectionArea(payload: any) {
 //   return this.http.post('Setup/DeleteInspectionArea', payload);
 // }
+
+  // TypeofInspectionService(obj: any) {
+  //   return this.http.post(this.baseUrl_ + 'Setup/SaveTypeofInspection', obj, {
+  //     headers: this.token.headerToken(),
+  //   });
+  // }
+
+  // getAllTypeofInspection() {
+  //   return this.http.get(this.baseUrl_ + 'Setup/GetTypeofInspectionData', {
+  //     headers: this.token.headerToken(),
+  //   });
+  // }
+
+  getInspectionAreaList() {
+    return this.http.get('Setup/GetInspectionArea');
+  }
+
+  // saveInspectionAreaEntry(payload: any) {
+  //   return this.http.post('Setup/SaveInspectionArea', payload);
+  // }
+
+  deleteInspectionArea(payload: any) {
+    return this.http.post('Setup/DeleteInspectionArea', payload);
+  }
+
   saveProcessNameEntryData(obj: any) {
     return this.http.post(this.baseUrl_ + 'Setup/SaveProcessNameEntry', obj, {
       headers: this.token.headerToken(),
     });
   }
 
+  GetUnitName(): Observable<any> {
+    return this.http.get<any[]>(this.baseUrl_ + 'Common/GetUnitName', {
+      headers: this.token.headerToken(),
+    });
+  }
+  GetProcessNameEntryList(): Observable<any> {
+    return this.http.get<any[]>(
+      this.baseUrl_ + 'Setup/GetProcessNameEntryData',
+      {
+        headers: this.token.headerToken(),
+      }
+    );
+  }
+  deleteProcessNameEntry(obj: any) {
+    return this.http.post(this.baseUrl_ + 'Setup/SaveProcessNameEntry', obj, {
+      headers: this.token.headerToken(),
+    });
+  }
+
+  GetOperationNameEntryList(): Observable<any> {
+    return this.http.get<any[]>(
+      this.baseUrl_ + 'Setup/GetOperationNameEntryData',
+      {
+        headers: this.token.headerToken(),
+      }
+    );
+  }
   saveOperationNameEntryData(obj: any) {
     return this.http.post(this.baseUrl_ + 'Setup/SaveOperationNameEntry', obj, {
       headers: this.token.headerToken(),
     });
   }
- GetUnitName(): Observable<any> {
-    return this.http.get<any[]>(this.baseUrl_ + 'Common/GetUnitName', {
+
+  deleteOperationNameEntry(obj: any) {
+    return this.http.post(this.baseUrl_ + 'Setup/SaveOperationNameEntry', obj, {
       headers: this.token.headerToken(),
     });
   }
