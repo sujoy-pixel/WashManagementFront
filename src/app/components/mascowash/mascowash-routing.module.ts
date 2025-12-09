@@ -7,12 +7,9 @@ import { ProcessNameEntryComponent } from './setup/entry/process-name-entry/proc
 
 import { InspectionTypeEntryComponent } from './setup/entry/inspection-type-entry/inspection-type-entry.component';
 
- import { InspectionAreaEntryComponent } from './setup/entry/inspection-area-entry/inspection-area-entry.component';
+import { InspectionAreaEntryComponent } from './setup/entry/inspection-area-entry/inspection-area-entry.component';
 import { OperationNameEntryComponent } from './setup/entry/operation-name-entry/operation-name-entry.component';
-
-
-
-
+import { InspectionHeadLayoutEntryComponent } from './setup/entry/inspection-head-layout-entry/inspection-head-layout-entry.component';
 
 const routes: Routes = [
   {
@@ -30,10 +27,9 @@ const routes: Routes = [
         runGuardsAndResolvers: 'always',
       },
       {
-
         path: 'setup/entry/type-of-inspection',
         component: InspectionTypeEntryComponent,
-         runGuardsAndResolvers: 'always',
+        runGuardsAndResolvers: 'always',
       },
       {
         path: 'setup/entry/operation-name-entry',
@@ -43,6 +39,11 @@ const routes: Routes = [
       {
         path: 'setup/entry/area-of-inspection',
         component: InspectionAreaEntryComponent,
+        runGuardsAndResolvers: 'always',
+      },
+      {
+        path: 'setup/entry/inspection-head-layout',
+        component: InspectionHeadLayoutEntryComponent,
         runGuardsAndResolvers: 'always',
       },
     ],

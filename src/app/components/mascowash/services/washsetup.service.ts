@@ -27,52 +27,42 @@ export class WashSetupService {
     );
   }
 
+  TypeofInspectionService(obj: any) {
+    return this.http.post(this.baseUrl_ + 'Setup/SaveTypeofInspection', obj, {
+      headers: this.token.headerToken(),
+    });
+  }
 
-TypeofInspectionService(obj: any) {
-  return this.http.post(
-    this.baseUrl_ + 'Setup/SaveTypeofInspection',
-    obj,
-    { headers: this.token.headerToken() }
-  );
-}
+  getAllTypeofInspection() {
+    return this.http.get(this.baseUrl_ + 'Setup/GetTypeofInspectionData', {
+      headers: this.token.headerToken(),
+    });
+  }
 
-getAllTypeofInspection() {
-  return this.http.get(
-    this.baseUrl_ + 'Setup/GetTypeofInspectionData',
-    { headers: this.token.headerToken() }
-  );
-}
+  // saveInspectionAreaEntry(obj: any) {
+  //   //return this.http.post('Setup/SaveInspectionArea', payload);
 
+  //   return this.http.post(
+  //     this.baseUrl_ + 'Setup/SaveInspectionArea', obj,
+  //     { headers: this.token.headerToken() }
+  //   );
+  // }
 
-// saveInspectionAreaEntry(obj: any) {
-//   //return this.http.post('Setup/SaveInspectionArea', payload);
-
-//   return this.http.post(
-//     this.baseUrl_ + 'Setup/SaveInspectionArea', obj,
-//     { headers: this.token.headerToken() }
-//   );
-// }
-
- saveInspectionAreaEntry(obj: any) {
-    return this.http.post(
-      this.baseUrl_ + 'Setup/SaveInspectionArea',
-      obj,
-      { headers: this.token.headerToken() }
-    );
+  saveInspectionAreaEntry(obj: any) {
+    return this.http.post(this.baseUrl_ + 'Setup/SaveInspectionArea', obj, {
+      headers: this.token.headerToken(),
+    });
   }
 
   getInspectionAreaLists() {
-    return this.http.get(
-      this.baseUrl_ + 'Setup/GetInspectionAreaData',
-      { headers: this.token.headerToken() }
-    );
+    return this.http.get(this.baseUrl_ + 'Setup/GetInspectionAreaData', {
+      headers: this.token.headerToken(),
+    });
   }
 
-
-
-// deleteInspectionArea(payload: any) {
-//   return this.http.post('Setup/DeleteInspectionArea', payload);
-// }
+  // deleteInspectionArea(payload: any) {
+  //   return this.http.post('Setup/DeleteInspectionArea', payload);
+  // }
 
   // TypeofInspectionService(obj: any) {
   //   return this.http.post(this.baseUrl_ + 'Setup/SaveTypeofInspection', obj, {
@@ -139,6 +129,23 @@ getAllTypeofInspection() {
 
   deleteOperationNameEntry(obj: any) {
     return this.http.post(this.baseUrl_ + 'Setup/SaveOperationNameEntry', obj, {
+      headers: this.token.headerToken(),
+    });
+  }
+
+  saveInspectionHeadEntryData(obj: any) {
+    return this.http.post(this.baseUrl_ + 'Setup/SaveInspectionHead', obj, {
+      headers: this.token.headerToken(),
+    });
+  }
+  GetInspectionHeadList(): Observable<any> {
+    return this.http.get<any[]>(this.baseUrl_ + 'Setup/GetInspectionHeadData', {
+      headers: this.token.headerToken(),
+    });
+  }
+
+  deleteInspectionHeadEntryData(obj: any) {
+    return this.http.post(this.baseUrl_ + 'Setup/SaveInspectionHead', obj, {
       headers: this.token.headerToken(),
     });
   }

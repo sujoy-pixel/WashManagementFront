@@ -27,7 +27,8 @@ import { ProcessNameEntryComponent } from './setup/entry/process-name-entry/proc
 import { InspectionTypeEntryComponent } from './setup/entry/inspection-type-entry/inspection-type-entry.component';
 
 import { OperationNameEntryComponent } from './setup/entry/operation-name-entry/operation-name-entry.component';
- import { InspectionAreaEntryComponent } from './setup/entry/inspection-area-entry/inspection-area-entry.component';
+import { InspectionAreaEntryComponent } from './setup/entry/inspection-area-entry/inspection-area-entry.component';
+import { InspectionHeadLayoutEntryComponent } from './setup/entry/inspection-head-layout-entry/inspection-head-layout-entry.component';
 
 @NgModule({
   declarations: [
@@ -38,7 +39,8 @@ import { OperationNameEntryComponent } from './setup/entry/operation-name-entry/
     InspectionTypeEntryComponent,
 
     OperationNameEntryComponent,
-     InspectionAreaEntryComponent,
+    InspectionAreaEntryComponent,
+    InspectionHeadLayoutEntryComponent,
   ],
   imports: [
     MatTabsModule,
