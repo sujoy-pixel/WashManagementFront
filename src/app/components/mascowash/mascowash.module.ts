@@ -30,6 +30,7 @@ import { OperationNameEntryComponent } from './setup/entry/operation-name-entry/
 import { InspectionAreaEntryComponent } from './setup/entry/inspection-area-entry/inspection-area-entry.component';
 import { InspectionHeadLayoutEntryComponent } from './setup/entry/inspection-head-layout-entry/inspection-head-layout-entry.component';
 import { FaultWiseValueTagEntryComponent } from './setup/entry/fault-wise-value-tag-entry/fault-wise-value-tag-entry.component';
+import { FaultHeadNameEntryComponent } from './setup/entry/fault-head-name-entry/fault-head-name-entry.component';
 
 @NgModule({
   declarations: [
@@ -43,6 +44,7 @@ import { FaultWiseValueTagEntryComponent } from './setup/entry/fault-wise-value-
     InspectionAreaEntryComponent,
     InspectionHeadLayoutEntryComponent,
     FaultWiseValueTagEntryComponent,
+    FaultHeadNameEntryComponent,
   ],
   imports: [
     MatTabsModule,

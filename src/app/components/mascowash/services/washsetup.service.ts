@@ -149,4 +149,21 @@ export class WashSetupService {
       headers: this.token.headerToken(),
     });
   }
+
+  saveFaultHeadEntryData(obj: any) {
+    return this.http.post(this.baseUrl_ + 'Setup/SaveFaultHead', obj, {
+      headers: this.token.headerToken(),
+    });
+  }
+  GetFaultHeadList(): Observable<any> {
+    return this.http.get<any[]>(this.baseUrl_ + 'Setup/GetFaultHeadData', {
+      headers: this.token.headerToken(),
+    });
+  }
+
+  deleteFaultHeadEntryData(obj: any) {
+    return this.http.post(this.baseUrl_ + 'Setup/SaveFaultHead', obj, {
+      headers: this.token.headerToken(),
+    });
+  }
 }
