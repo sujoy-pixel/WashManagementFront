@@ -54,7 +54,7 @@ export class InspectionHeadLayoutEntryComponent {
 
     // VALIDATIONS (Clean format)
 
-    if (!this.Model.inspectionHeadName?.trim()) {
+    if (!this.Model.headName?.trim()) {
       this.toastr.warning(
         'Please Enter Proper Inspection Head Name',
         'Warning'
@@ -167,7 +167,7 @@ export class InspectionHeadLayoutEntryComponent {
 
     this.Model = {
       inspectionHeadId: item.inspectionHeadId,
-      headName: item.HeadName,
+      headName: item.headName,
       priority: item.priority,
       activeStatus: item.isActive == 1,
     };
