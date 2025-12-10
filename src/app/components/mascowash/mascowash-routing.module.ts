@@ -11,8 +11,9 @@ import { InspectionAreaEntryComponent } from './setup/entry/inspection-area-entr
 import { OperationNameEntryComponent } from './setup/entry/operation-name-entry/operation-name-entry.component';
 
 import { FaultNameLayoutComponent } from './setup/entry/fault-name-layout/fault-name-layout.component';
-
-
+import { InspectionHeadLayoutEntryComponent } from './setup/entry/inspection-head-layout-entry/inspection-head-layout-entry.component';
+import { FaultHeadNameEntryComponent } from './setup/entry/fault-head-name-entry/fault-head-name-entry.component';
+import { FaultWiseValueTagEntryComponent } from './setup/entry/fault-wise-value-tag-entry/fault-wise-value-tag-entry.component';
 
 const routes: Routes = [
   {
@@ -30,13 +31,13 @@ const routes: Routes = [
         runGuardsAndResolvers: 'always',
       },
       {
-        path: 'setup/entry/type-of-inspection',
-        component: InspectionTypeEntryComponent,
+        path: 'setup/entry/operation-name-entry',
+        component: OperationNameEntryComponent,
         runGuardsAndResolvers: 'always',
       },
       {
-        path: 'setup/entry/operation-name-entry',
-        component: OperationNameEntryComponent,
+        path: 'setup/entry/type-of-inspection',
+        component: InspectionTypeEntryComponent,
         runGuardsAndResolvers: 'always',
       },
       {
@@ -45,8 +46,24 @@ const routes: Routes = [
         runGuardsAndResolvers: 'always',
       },
       {
+        path: 'setup/entry/fault-head-name-entry',
+        component: FaultHeadNameEntryComponent,
+        runGuardsAndResolvers: 'always',
+      },
+      {
         path: 'setup/entry/fault-name-layout',
         component: FaultNameLayoutComponent,
+        runGuardsAndResolvers: 'always',
+      },
+
+      {
+        path: 'setup/entry/inspection-head-layout',
+        component: InspectionHeadLayoutEntryComponent,
+        runGuardsAndResolvers: 'always',
+      },
+      {
+        path: 'setup/entry/fault-wise-value-tag',
+        component: FaultWiseValueTagEntryComponent,
         runGuardsAndResolvers: 'always',
       },
     ],

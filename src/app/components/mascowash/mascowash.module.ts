@@ -27,9 +27,12 @@ import { ProcessNameEntryComponent } from './setup/entry/process-name-entry/proc
 import { InspectionTypeEntryComponent } from './setup/entry/inspection-type-entry/inspection-type-entry.component';
 
 import { OperationNameEntryComponent } from './setup/entry/operation-name-entry/operation-name-entry.component';
- import { InspectionAreaEntryComponent } from './setup/entry/inspection-area-entry/inspection-area-entry.component';
+import { InspectionAreaEntryComponent } from './setup/entry/inspection-area-entry/inspection-area-entry.component';
 import { MachineNameEntryComponent } from './setup/entry/machine-name-entry/machine-name-entry.component';
 import { FaultNameLayoutComponent } from './setup/entry/fault-name-layout/fault-name-layout.component';
+import { InspectionHeadLayoutEntryComponent } from './setup/entry/inspection-head-layout-entry/inspection-head-layout-entry.component';
+import { FaultWiseValueTagEntryComponent } from './setup/entry/fault-wise-value-tag-entry/fault-wise-value-tag-entry.component';
+import { FaultHeadNameEntryComponent } from './setup/entry/fault-head-name-entry/fault-head-name-entry.component';
 
 @NgModule({
   declarations: [
@@ -40,9 +43,12 @@ import { FaultNameLayoutComponent } from './setup/entry/fault-name-layout/fault-
     InspectionTypeEntryComponent,
 
     OperationNameEntryComponent,
-     InspectionAreaEntryComponent,
-     MachineNameEntryComponent,
-     FaultNameLayoutComponent,
+    InspectionAreaEntryComponent,
+    MachineNameEntryComponent,
+    FaultNameLayoutComponent,
+    InspectionHeadLayoutEntryComponent,
+    FaultWiseValueTagEntryComponent,
+    FaultHeadNameEntryComponent,
   ],
   imports: [
     MatTabsModule,
