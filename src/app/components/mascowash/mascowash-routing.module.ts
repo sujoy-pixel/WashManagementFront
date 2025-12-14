@@ -12,7 +12,7 @@ import { OperationNameEntryComponent } from './setup/entry/operation-name-entry/
 
 import { FaultNameLayoutComponent } from './setup/entry/fault-name-layout/fault-name-layout.component';
 
-
+import { MachineNameEntryComponent } from './setup/entry/machine-name-entry/machine-name-entry.component';
 
 const routes: Routes = [
   {
@@ -49,6 +49,11 @@ const routes: Routes = [
         component: FaultNameLayoutComponent,
         runGuardsAndResolvers: 'always',
       },
+      {
+        path: 'setup/entry/machine-name-entry',
+        component: MachineNameEntryComponent,
+        runGuardsAndResolvers: 'always',
+      },
     ],
   },
 ];
@@ -59,3 +64,4 @@ const routes: Routes = [
   exports: [RouterModule],
 })
 export class MascowashRoutingModule {}
+
