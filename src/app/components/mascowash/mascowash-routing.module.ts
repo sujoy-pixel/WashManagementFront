@@ -13,6 +13,9 @@ import { OperationNameEntryComponent } from './setup/entry/operation-name-entry/
 import { FaultNameLayoutComponent } from './setup/entry/fault-name-layout/fault-name-layout.component';
 
 import { MachineNameEntryComponent } from './setup/entry/machine-name-entry/machine-name-entry.component';
+import { InspectionHeadLayoutEntryComponent } from './setup/entry/inspection-head-layout-entry/inspection-head-layout-entry.component';
+import { FaultHeadNameEntryComponent } from './setup/entry/fault-head-name-entry/fault-head-name-entry.component';
+import { FaultWiseValueTagEntryComponent } from './setup/entry/fault-wise-value-tag-entry/fault-wise-value-tag-entry.component';
 
 const routes: Routes = [
   {
@@ -30,18 +33,23 @@ const routes: Routes = [
         runGuardsAndResolvers: 'always',
       },
       {
-        path: 'setup/entry/type-of-inspection',
-        component: InspectionTypeEntryComponent,
-        runGuardsAndResolvers: 'always',
-      },
-      {
         path: 'setup/entry/operation-name-entry',
         component: OperationNameEntryComponent,
         runGuardsAndResolvers: 'always',
       },
       {
+        path: 'setup/entry/type-of-inspection',
+        component: InspectionTypeEntryComponent,
+        runGuardsAndResolvers: 'always',
+      },
+      {
         path: 'setup/entry/area-of-inspection',
         component: InspectionAreaEntryComponent,
+        runGuardsAndResolvers: 'always',
+      },
+      {
+        path: 'setup/entry/fault-head-name-entry',
+        component: FaultHeadNameEntryComponent,
         runGuardsAndResolvers: 'always',
       },
       {
@@ -52,6 +60,15 @@ const routes: Routes = [
       {
         path: 'setup/entry/machine-name-entry',
         component: MachineNameEntryComponent,
+      },
+      {
+        path: 'setup/entry/inspection-head-layout',
+        component: InspectionHeadLayoutEntryComponent,
+        runGuardsAndResolvers: 'always',
+      },
+      {
+        path: 'setup/entry/fault-wise-value-tag',
+        component: FaultWiseValueTagEntryComponent,
         runGuardsAndResolvers: 'always',
       },
     ],
