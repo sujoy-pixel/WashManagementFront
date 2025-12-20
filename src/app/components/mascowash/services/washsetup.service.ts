@@ -48,14 +48,10 @@ export class WashSetupService {
   //   );
   // }
 
-
-
- saveInspectionAreaEntry(obj: any) {
-    return this.http.post(
-      this.baseUrl_ + 'Setup/SaveInspectionArea',
-      obj,
-      { headers: this.token.headerToken() }
-    );
+  saveInspectionAreaEntry(obj: any) {
+    return this.http.post(this.baseUrl_ + 'Setup/SaveInspectionArea', obj, {
+      headers: this.token.headerToken(),
+    });
   }
 
   getInspectionAreaLists() {
@@ -64,38 +60,28 @@ export class WashSetupService {
     });
   }
 
-
-
- deleteInspectionArea(obj: any) {
+  deleteInspectionArea(obj: any) {
     return this.http.post(this.baseUrl_ + 'Setup/SaveInspectionArea', obj, {
       headers: this.token.headerToken(),
     });
 
-  // deleteInspectionArea(payload: any) {
-  //   return this.http.post('Setup/DeleteInspectionArea', payload);
-  // }
+    // deleteInspectionArea(payload: any) {
+    //   return this.http.post('Setup/DeleteInspectionArea', payload);
+    // }
 
-  // TypeofInspectionService(obj: any) {
-  //   return this.http.post(this.baseUrl_ + 'Setup/SaveTypeofInspection', obj, {
-  //     headers: this.token.headerToken(),
-  //   });
-  // }
+    // TypeofInspectionService(obj: any) {
+    //   return this.http.post(this.baseUrl_ + 'Setup/SaveTypeofInspection', obj, {
+    //     headers: this.token.headerToken(),
+    //   });
+    // }
 
-  // getAllTypeofInspection() {
-  //   return this.http.get(this.baseUrl_ + 'Setup/GetTypeofInspectionData', {
-  //     headers: this.token.headerToken(),
-  //   });
-  // }
-
-
-
+    // getAllTypeofInspection() {
+    //   return this.http.get(this.baseUrl_ + 'Setup/GetTypeofInspectionData', {
+    //     headers: this.token.headerToken(),
+    //   });
+    // }
   }
 
-
-
-  
- 
-  
   saveProcessNameEntryData(obj: any) {
     return this.http.post(this.baseUrl_ + 'Setup/SaveProcessNameEntry', obj, {
       headers: this.token.headerToken(),
@@ -141,42 +127,33 @@ export class WashSetupService {
     });
   }
 
+  // SAVE FAULT NAME
+  saveFaultName(obj: any) {
+    return this.http.post(this.baseUrl_ + 'Setup/SaveFaultName', obj, {
+      headers: this.token.headerToken(),
+    });
+  }
 
-// SAVE FAULT NAME
-saveFaultName(obj: any) {
-  return this.http.post(
-    this.baseUrl_ + 'Setup/SaveFaultName',
-    obj,
-    { headers: this.token.headerToken() }
-  );
-}
+  // GET FAULT NAME LIST
+  getFaultNameList() {
+    return this.http.get(this.baseUrl_ + 'Setup/GetFaultNameData', {
+      headers: this.token.headerToken(),
+    });
+  }
 
-// GET FAULT NAME LIST
-getFaultNameList() {
-  return this.http.get(
-    this.baseUrl_ + 'Setup/GetFaultNameData',
-    { headers: this.token.headerToken() }
-  );
-}
+  // DELETE FAULT NAME
+  deleteFaultName(obj: any) {
+    return this.http.post(this.baseUrl_ + 'Setup/SaveFaultName', obj, {
+      headers: this.token.headerToken(),
+    });
+  }
 
-// DELETE FAULT NAME
-deleteFaultName(obj: any) {
-  return this.http.post(
-    this.baseUrl_ + 'Setup/SaveFaultName',
-    obj,
-    { headers: this.token.headerToken() }
-  );
-}
-
-// GET FAULT HEAD DROPDOWN
-getFaultHeadList() {
-  return this.http.get(
-    this.baseUrl_ + 'Common/GetFaultHead',
-    { headers: this.token.headerToken() }
-  );
-}
-
-
+  // GET FAULT HEAD DROPDOWN
+  getFaultHeadList() {
+    return this.http.get(this.baseUrl_ + 'Common/GetFaultHead', {
+      headers: this.token.headerToken(),
+    });
+  }
 
   saveInspectionHeadEntryData(obj: any) {
     return this.http.post(this.baseUrl_ + 'Setup/SaveInspectionHead', obj, {
@@ -212,4 +189,23 @@ getFaultHeadList() {
     });
   }
 
+  saveFaultWiseValueTagData(obj: any) {
+    return this.http.post(this.baseUrl_ + 'Setup/SaveFaultWiseValueTag', obj, {
+      headers: this.token.headerToken(),
+    });
+  }
+  GetFaultWiseValueTagList(): Observable<any> {
+    return this.http.get<any[]>(
+      this.baseUrl_ + 'Setup/GetFaultWiseValueTagData',
+      {
+        headers: this.token.headerToken(),
+      }
+    );
+  }
+
+  deleteFaultWiseValueTagData(obj: any) {
+    return this.http.post(this.baseUrl_ + 'Setup/SaveFaultWiseValueTag', obj, {
+      headers: this.token.headerToken(),
+    });
+  }
 }
