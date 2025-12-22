@@ -33,7 +33,9 @@ import { FaultNameLayoutComponent } from './setup/entry/fault-name-layout/fault-
 import { InspectionHeadLayoutEntryComponent } from './setup/entry/inspection-head-layout-entry/inspection-head-layout-entry.component';
 import { FaultWiseValueTagEntryComponent } from './setup/entry/fault-wise-value-tag-entry/fault-wise-value-tag-entry.component';
 import { FaultHeadNameEntryComponent } from './setup/entry/fault-head-name-entry/fault-head-name-entry.component';
-
+ //import { WashReceiveOperationComponent } from './setup/wash-receive-operation/wash-receive-operation.component';
+ import { ReceiveOperationComponent } from './setup/entry/receive-operation/receive-operation.component';
+ //import WashRec
 @NgModule({
   declarations: [
     MascowashComponent,
@@ -41,6 +43,7 @@ import { FaultHeadNameEntryComponent } from './setup/entry/fault-head-name-entry
     ProcessNameEntryComponent,
 
     InspectionTypeEntryComponent,
+    ReceiveOperationComponent,
 
     OperationNameEntryComponent,
     InspectionAreaEntryComponent,
@@ -49,6 +52,7 @@ import { FaultHeadNameEntryComponent } from './setup/entry/fault-head-name-entry
     InspectionHeadLayoutEntryComponent,
     FaultWiseValueTagEntryComponent,
     FaultHeadNameEntryComponent,
+   
   ],
   imports: [
     MatTabsModule,

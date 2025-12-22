@@ -45,7 +45,8 @@ import '@boldreports/javascript-reporting-controls/Scripts/data-visualization/ej
 import '@boldreports/javascript-reporting-controls/Scripts/data-visualization/ej.chart.min';
 import { MultiSelectModule } from 'primeng/multiselect';
 import { MatCheckboxModule } from '@angular/material/checkbox';
-
+//import { ReceiveOperationComponent } from './components/Operation/receive-operation/receive-operation.component';
+//import { ReceiveOperationComponent } from '../../../WashManagementFront/src/app/components/Operation/receive-operation/receive-operation.component';
 @NgModule({
   declarations: [
     // TypeaheadModule,
@@ -54,6 +55,7 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
     HeaderComponent,
     FooterComponent,
     BannerComponent,
+    //ReceiveOperationComponent,
     // TypeOfInspectionComponent,
   
     //FormsModule
