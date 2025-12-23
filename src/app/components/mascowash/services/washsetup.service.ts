@@ -214,4 +214,46 @@ export class WashSetupService {
     });
   }
 
+  GetOperationNameDDLs() {
+    return this.http.get<any[]>(
+      this.baseUrl_ + 'Common/GetOperationNameDDL',
+      { headers: this.token.headerToken() }
+    );
+  }
+
+  // ===== check single machine exists =====
+  checkMachineExists(obj: {
+    unitId: number;
+    operationId: number;
+    machineName: string;
+  }) {
+    return this.http.post(
+      this.baseUrl_ + 'Setup/CheckMachineExists',
+      obj,
+      { headers: this.token.headerToken() }
+    );
+  }
+
+  // ===== save master + details =====
+  saveMachineMasterDetail(obj: any) {
+    return this.http.post(
+      this.baseUrl_ + 'Setup/SaveMachineName',
+      obj,
+      { headers: this.token.headerToken() }
+    );
+  }
+
+  // ===== final grid =====
+  // getMachineMasterList() {
+  //   return this.http.get(
+  //     this.baseUrl_ + 'Setup/GetMachineMasterList',
+  //     { headers: this.token.headerToken() }
+  //   );
+  // }
+  getMachineMasterList(): Observable<any[]> {
+    return this.http.get<any[]>(this.baseUrl_ + 'Setup/GetMachineMasterList', {
+      headers: this.token.headerToken()
+    });
+  }
+
 }
