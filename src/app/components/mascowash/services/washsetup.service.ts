@@ -215,10 +215,9 @@ export class WashSetupService {
   }
 
   GetOperationNameDDLs() {
-    return this.http.get<any[]>(
-      this.baseUrl_ + 'Common/GetOperationNameDDL',
-      { headers: this.token.headerToken() }
-    );
+    return this.http.get<any[]>(this.baseUrl_ + 'Common/GetOperationNameDDL', {
+      headers: this.token.headerToken(),
+    });
   }
 
   // ===== check single machine exists =====
@@ -227,20 +226,16 @@ export class WashSetupService {
     operationId: number;
     machineName: string;
   }) {
-    return this.http.post(
-      this.baseUrl_ + 'Setup/CheckMachineExists',
-      obj,
-      { headers: this.token.headerToken() }
-    );
+    return this.http.post(this.baseUrl_ + 'Setup/CheckMachineExists', obj, {
+      headers: this.token.headerToken(),
+    });
   }
 
   // ===== save master + details =====
   saveMachineMasterDetail(obj: any) {
-    return this.http.post(
-      this.baseUrl_ + 'Setup/SaveMachineName',
-      obj,
-      { headers: this.token.headerToken() }
-    );
+    return this.http.post(this.baseUrl_ + 'Setup/SaveMachineName', obj, {
+      headers: this.token.headerToken(),
+    });
   }
 
   // ===== final grid =====
@@ -252,8 +247,25 @@ export class WashSetupService {
   // }
   getMachineMasterList(): Observable<any[]> {
     return this.http.get<any[]>(this.baseUrl_ + 'Setup/GetMachineMasterList', {
-      headers: this.token.headerToken()
+      headers: this.token.headerToken(),
     });
   }
-
+  GetInspectionTypeDdl(): Observable<any> {
+    return this.http.get<any[]>(
+      this.baseUrl_ + 'Common/GetTypeOfInspectionDDL',
+      {
+        headers: this.token.headerToken(),
+      }
+    );
+  }
+  GetInspectionHeadDdl(): Observable<any> {
+    return this.http.get<any[]>(this.baseUrl_ + 'Common/GetInspectionHeadDDL', {
+      headers: this.token.headerToken(),
+    });
+  }
+  GetFaultHeadDdl(): Observable<any> {
+    return this.http.get<any[]>(this.baseUrl_ + 'Common/GetFaultHeadDDL', {
+      headers: this.token.headerToken(),
+    });
+  }
 }
