@@ -6,25 +6,24 @@ import { WashSetupService } from '../../../services/washsetup.service';
 @Component({
   selector: 'app-fault-name-layout',
   templateUrl: './fault-name-layout.component.html',
-  styleUrls: ['./fault-name-layout.component.scss']
+  styleUrls: ['./fault-name-layout.component.scss'],
 })
 export class FaultNameLayoutComponent {
-
   priorityList: number[] = [];
   faultHeadList: any[] = [];
   dataList: any[] = [];
 
-  saveButtonTitle = "Save";
+  saveButtonTitle = 'Save';
   isEdit = false;
   currentFocus: string | null = null;
 
   Model: any = {
     FaultNameId: 0,
     FaultHeadId: null,
-    FaultName: "",
-    CodeNo: 0,     // INT VALUE
+    FaultName: '',
+    CodeNo: 0, // INT VALUE
     Priority: null,
-    IsActive: true
+    IsActive: true,
   };
 
   constructor(
@@ -41,34 +40,34 @@ export class FaultNameLayoutComponent {
 
   // LOAD Fault Head LIST
   loadFaultHeads() {
-    this.service.getFaultHeadList().subscribe({
+    this.service.GetFaultHeadList().subscribe({
       next: (res: any) => {
         this.faultHeadList = res.map((x: any) => ({
           ID: x.id ?? x.ID,
-          DisplayName: x.displayName ?? x.DisplayName
+          DisplayName: x.displayName ?? x.DisplayName,
         }));
       },
-      error: () => this.toastr.error("Failed to load Fault Head list")
+      error: () => this.toastr.error('Failed to load Fault Head list'),
     });
   }
 
   // SUBMIT FORM
   onSubmit() {
     if (!this.Model.FaultHeadId) {
-      this.toastr.warning("Select Fault Head");
+      this.toastr.warning('Select Fault Head');
       return;
     }
     if (!this.Model.FaultName?.trim()) {
-      this.toastr.warning("Enter Fault Name");
+      this.toastr.warning('Enter Fault Name');
       return;
     }
     if (!this.Model.Priority) {
-      this.toastr.warning("Select Priority");
+      this.toastr.warning('Select Priority');
       return;
     }
 
     const payload = {
-      Operation: this.isEdit ? "UPDATE" : "INSERT",
+      Operation: this.isEdit ? 'UPDATE' : 'INSERT',
       FaultNameId: this.Model.FaultNameId,
       FaultHeadId: this.Model.FaultHeadId,
       FaultName: this.Model.FaultName.trim(),
@@ -77,7 +76,7 @@ export class FaultNameLayoutComponent {
       CodeNo: Number(this.Model.CodeNo) || 0,
 
       Priority: this.Model.Priority,
-      IsActive: this.Model.IsActive ? 1 : 0
+      IsActive: this.Model.IsActive ? 1 : 0,
     };
 
     this.service.saveFaultName(payload).subscribe({
@@ -85,16 +84,18 @@ export class FaultNameLayoutComponent {
         const resultCode = res[0]?.resultCode ?? res.resultCode;
 
         if (resultCode == -1) {
-          this.toastr.warning("Duplicate Fault Name found!");
+          this.toastr.warning('Duplicate Fault Name found!');
           return;
         }
 
-        this.toastr.success(this.isEdit ? "Updated Successfully" : "Saved Successfully");
+        this.toastr.success(
+          this.isEdit ? 'Updated Successfully' : 'Saved Successfully'
+        );
 
         this.onClear();
         this.loadData();
       },
-      error: () => this.toastr.error("Error saving data")
+      error: () => this.toastr.error('Error saving data'),
     });
   }
 
@@ -112,17 +113,17 @@ export class FaultNameLayoutComponent {
           codeNo: Number(x.codeNo) || 0,
 
           priority: x.priority,
-          isActive: x.isActive
+          isActive: x.isActive,
         }));
       },
-      error: () => this.toastr.error("Failed to load list")
+      error: () => this.toastr.error('Failed to load list'),
     });
   }
 
   // EDIT FUNCTION
   edit(item: any) {
     this.isEdit = true;
-    this.saveButtonTitle = "Update";
+    this.saveButtonTitle = 'Update';
 
     this.Model = {
       FaultNameId: item.FaultNameId,
@@ -133,7 +134,7 @@ export class FaultNameLayoutComponent {
       CodeNo: Number(item.codeNo),
 
       Priority: item.priority,
-      IsActive: item.isActive
+      IsActive: item.isActive,
     };
 
     this.cdr.detectChanges();
@@ -142,23 +143,23 @@ export class FaultNameLayoutComponent {
   // DELETE RECORD
   delete(item: any) {
     Swal.fire({
-      title: "Delete?",
-      text: "Are you sure to delete?",
-      icon: "warning",
-      showCancelButton: true
+      title: 'Delete?',
+      text: 'Are you sure to delete?',
+      icon: 'warning',
+      showCancelButton: true,
     }).then((result) => {
       if (result.isConfirmed) {
         const payload = {
-          Operation: "DELETE",
-          FaultNameId: item.FaultNameId
+          Operation: 'DELETE',
+          FaultNameId: item.FaultNameId,
         };
 
         this.service.deleteFaultName(payload).subscribe({
           next: () => {
-            this.toastr.success("Deleted Successfully");
+            this.toastr.success('Deleted Successfully');
             this.loadData();
           },
-          error: () => this.toastr.error("Delete failed")
+          error: () => this.toastr.error('Delete failed'),
         });
       }
     });
@@ -169,17 +170,21 @@ export class FaultNameLayoutComponent {
     this.Model = {
       FaultNameId: 0,
       FaultHeadId: null,
-      FaultName: "",
-      CodeNo: 0,   // reset as INT
+      FaultName: '',
+      CodeNo: 0, // reset as INT
       Priority: null,
-      IsActive: true
+      IsActive: true,
     };
 
-    this.saveButtonTitle = "Save";
+    this.saveButtonTitle = 'Save';
     this.isEdit = false;
   }
 
   // FOCUS BORDER
-  setFocus(f: string) { this.currentFocus = f; }
-  clearFocus() { this.currentFocus = null; }
+  setFocus(f: string) {
+    this.currentFocus = f;
+  }
+  clearFocus() {
+    this.currentFocus = null;
+  }
 }
