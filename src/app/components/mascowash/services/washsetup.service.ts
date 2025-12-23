@@ -87,14 +87,9 @@ export class WashSetupService {
   //   });
   // }
 
-
-
   }
 
 
-
-  
- 
   
   saveProcessNameEntryData(obj: any) {
     return this.http.post(this.baseUrl_ + 'Setup/SaveProcessNameEntry', obj, {
@@ -268,6 +263,73 @@ getMachineMasterList(): Observable<any[]> {
     headers: this.token.headerToken() 
   });
 }
+
+GetTrackingNoAuto() {
+  return this.http.get<any[]>(
+    this.baseUrl_ + 'Common/GetTrackingNo',
+    { headers: this.token.headerToken() }
+  );
+}
+
+GetBuyerNameDDL() {
+  return this.http.get<any[]>(
+    this.baseUrl_ + 'Common/GetBuyerDDL',
+    { headers: this.token.headerToken() }
+  );
+}
+
+GetJobNoDDL() {
+  return this.http.get<any[]>(
+    this.baseUrl_ + 'Common/GetJobDDL',
+    { headers: this.token.headerToken() }
+  );
+}
+
+GetStyleNoDDL() {
+  return this.http.get<any[]>(
+    this.baseUrl_ + 'Common/GetStyleDDL',
+    { headers: this.token.headerToken() }
+  );
+}
+GetOrderNoDDL() {
+  return this.http.get<any[]>(
+    this.baseUrl_ + 'Common/GetOrderDDL',
+    { headers: this.token.headerToken() }
+  );
+}
+GetFabricationDDL() {
+  return this.http.get<any[]>(
+    this.baseUrl_ + 'Common/GetFabricationDDL',
+    { headers: this.token.headerToken() }
+  );
+}
+
+
+GetGSMDDL() {
+  return this.http.get<any[]>(
+    this.baseUrl_ + 'Common/GetGSMDDL',
+    { headers: this.token.headerToken() }
+  );
+}
+GetDressPartDDL() {
+  return this.http.get<any[]>(
+    this.baseUrl_ + 'Common/GetDressPart',
+    { headers: this.token.headerToken() }
+  );
+}
+
+GetUOMDDL() {
+  return this.http.get<any[]>(
+    this.baseUrl_ + 'Common/GetUOM',
+    { headers: this.token.headerToken() }
+  );
+}
+getReceiveByTrackingNo(trackingNo: string): Observable<any[]> {
+    return this.http.get<any[]>(
+     this.baseUrl_ +  `Setup/GetReceiveByTrackingNo?trackingNo=${trackingNo}`,
+      { headers: this.token.headerToken() }
+    );
+  }
 
 
 }

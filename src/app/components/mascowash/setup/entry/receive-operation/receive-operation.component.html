@@ -1,117 +1,78 @@
+<!-- ================= PAGE HEADER ================= -->
 <div class="page-header d-flex justify-content-between align-items-center mb-3">
-    <!-- <div class="card custom-card mb-3"> -->
-  <!-- <h4 class="card-title">Wash Order Receive Operation</h4> -->
+  <div class="card-header border-bottom">
+    <h5 class="card-title mb-0">Wash Order Receive Operation</h5>
+  </div>
 
- <div class="card-header border-bottom justify-content-between">
-        <div class="card-title">Wash Order Receive Operationt</div>
-      </div>
   <div>
     <button class="btn btn-primary me-2" (click)="onNew()">
       <i class="fa fa-plus"></i> New
     </button>
-
     <button class="btn btn-info" (click)="onReview()">
       <i class="fa fa-search"></i> Review / Check
     </button>
   </div>
 </div>
+
+<!-- ================= REVIEW SEARCH ================= -->
 <div class="card custom-card mb-3" *ngIf="isReviewMode">
   <div class="card-body">
-
-    <div class="row my-2">
-      <div class="col-md-4">
-        <div class="row align-items-center">
-          <label class="form-label col-md-4">Unit <span style="color:red">*</span></label>
-          <div class="form-control col-md-8 common-border">
-            <ng-select [(ngModel)]="review.unitId" placeholder="Select Unit">
-              <ng-option *ngFor="let u of unitList" [value]="u.value">
-                {{ u.label }}
-              </ng-option>
-            </ng-select>
-          </div>
-        </div>
-      </div>
-
-      <div class="col-md-4">
-        <div class="row align-items-center">
-          <label class="form-label col-md-4">From Date</label>
-          <div class="form-control col-md-8 common-border">
-            <input type="text" bsDatepicker [(ngModel)]="review.fromDate" />
-          </div>
-        </div>
-      </div>
-
-      <div class="col-md-4">
-        <div class="row align-items-center">
-          <label class="form-label col-md-4">To Date</label>
-          <div class="form-control col-md-8 common-border">
-            <input type="text" bsDatepicker [(ngModel)]="review.toDate" />
-          </div>
-        </div>
-      </div>
-
-    </div>
-
-  </div>
-</div>
-<div class="card custom-card mb-3">
-  <div class="card-body">
-
-    <!-- UNIT -->
-    <!-- <div class="row my-2">
-      <div class="col-md-4">
-        <div class="row align-items-center">
-          <label class="form-label col-md-4">
-            Unit <span style="color:red">*</span>
-          </label>
-          <div class="form-control col-md-8 common-border">
-            <ng-select [(ngModel)]="Model.unitId" placeholder="Select Unit">
-              <ng-option *ngFor="let u of unitList" [value]="u.value">
-                {{ u.label }}
-              </ng-option>
-            </ng-select>
-          </div>
-        </div>
-      </div>
-    </div> -->
-
-<!-- UNIT (HIDDEN IN REVIEW MODE) -->
-<div class="row my-2" *ngIf="!isReviewMode">
-  <div class="col-md-4">
-    <div class="row align-items-center">
-      <label class="form-label col-md-4">
-        Unit <span style="color:red">*</span>
-      </label>
-
-      <div class="form-control col-md-8 common-border">
-        <ng-select
-          [(ngModel)]="Model.unitId"
-          placeholder="Select Unit">
-          <ng-option
-            *ngFor="let u of unitList"
-            [value]="u.value">
-            {{ u.label }}
-          </ng-option>
-        </ng-select>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- OPERATION MODE INPUTS -->
-<div class="card custom-card mb-3">
-  <div class="card-body">
-
     <div class="row g-3 align-items-center">
 
-      <!-- TRACKING NO -->
       <div class="col-md-4">
-        <div class="d-flex align-items-center justify-content-between mb-1">
-          <label class="form-label mb-0">Tracking No</label>
+        <label class="form-label">Unit <span class="text-danger">*</span></label>
+        <ng-select
+          [(ngModel)]="review.unitId"
+          [items]="unitList"
+          bindLabel="label"
+          bindValue="value"
+          placeholder="Select Unit">
+        </ng-select>
+      </div>
 
+      <div class="col-md-4">
+        <label class="form-label">From Date</label>
+        <input type="text" class="form-control" bsDatepicker [(ngModel)]="review.fromDate">
+      </div>
+
+      <div class="col-md-4">
+        <label class="form-label">To Date</label>
+        <input type="text" class="form-control" bsDatepicker [(ngModel)]="review.toDate">
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- ================= UNIT (NEW MODE) ================= -->
+<div class="card custom-card mb-3" *ngIf="!isReviewMode">
+  <div class="card-body">
+    <div class="col-md-4">
+      <label class="form-label">Unit <span class="text-danger">*</span></label>
+      <ng-select
+        [(ngModel)]="Model.unitId"
+        [items]="unitList"
+        bindLabel="label"
+        bindValue="value"
+        placeholder="Select Unit">
+      </ng-select>
+    </div>
+  </div>
+</div>
+
+<!-- ================= INPUT MODE ================= -->
+<div class="card custom-card mb-3">
+  <div class="card-body">
+    <div class="row g-3">
+
+      <!-- TRACKING -->
+      <div class="col-md-4">
+        <div class="d-flex justify-content-between mb-1">
+          <label class="form-label mb-0">Tracking No</label>
           <label class="switch">
             <input type="checkbox"
-                   [(ngModel)]="Model.isTrackingActive" class="success" />
+                   [(ngModel)]="Model.isTrackingActive" class="success"
+                   (change)="Model.isDyeingActive=false;Model.isManualActive=false">
             <span class="slider round"></span>
           </label>
         </div>
@@ -120,131 +81,64 @@
                class="form-control"
                placeholder="Scan / Enter Tracking No"
                [(ngModel)]="Model.trackingNo"
-               [disabled]="!Model.isTrackingActive"
-               
-                />
+               (keyup.enter)="onTrackingEnter()"
+               [disabled]="!Model.isTrackingActive">
       </div>
 
-      <!-- DYEING BATCH -->
+      <!-- DYEING -->
       <div class="col-md-4">
-        <div class="d-flex align-items-center justify-content-between mb-1">
+        <div class="d-flex justify-content-between mb-1">
           <label class="form-label mb-0">Dyeing Batch</label>
-
           <label class="switch">
             <input type="checkbox"
-                   [(ngModel)]="Model.isDyeingActive" class="success"/>
+                   [(ngModel)]="Model.isDyeingActive"
+                   (change)="Model.isTrackingActive=false;Model.isManualActive=true" class="success">
             <span class="slider round"></span>
           </label>
         </div>
 
         <input type="text"
                class="form-control"
-               placeholder="Scan /Enter Dyeing Batch No"
+               placeholder="Scan / Enter Dyeing Batch"
                [(ngModel)]="Model.dyeingBatchNo"
-               [disabled]="!Model.isDyeingActive" />
+               [disabled]="!Model.isDyeingActive">
       </div>
 
       <!-- MANUAL -->
       <div class="col-md-4">
-        <div class="d-flex align-items-center justify-content-between mb-1">
+        <div class="d-flex justify-content-between mb-1">
           <label class="form-label mb-0">Manual</label>
-
           <label class="switch">
             <input type="checkbox"
-                   [(ngModel)]="Model.isManualActive" class="success"  />
+                   [(ngModel)]="Model.isManualActive"
+                   (change)="Model.isTrackingActive=false;Model.isDyeingActive=true" class="success">
             <span class="slider round"></span>
           </label>
         </div>
 
         <input type="text"
-       class="form-control"
-       placeholder="Scan / Enter Manual Reference"
-       [(ngModel)]="Model.manualNo"
-       disabled>
-
+               class="form-control"
+               placeholder="Manual Reference"
+               [(ngModel)]="Model.manualNo"
+               [disabled]="!Model.isManualActive">
+      </div>
 
     </div>
-
   </div>
 </div>
 
-
-    <!-- TOGGLE -->
-    <!-- <div class="row my-2">
-      <div class="col-md-12">
-        <div class="input-group">
-          <div class="input-group-prepend col-3">
-            <span class="form-label text-dark">Tracking Mode</span>
-          </div>
-
-          <label class="switch">
-            <input type="checkbox"
-                   [(ngModel)]="isTrackingMode"
-                   (change)="onTrackingModeChange()" />
-            <span class="slider round"></span>
-          </label>
-
-          <span class="ms-2 mt-1 fw-bold">
-            {{ isTrackingMode ? 'Tracking No' : 'Manual / Dyeing' }}
-          </span>
-        </div>
-      </div>
-    </div> -->
-
-    <!-- INPUTS -->
-    <!-- <div class="row my-2"> -->
-
-      <!-- TRACKING NO -->
-      <!-- <div class="col-md-4">
-        <div class="row align-items-center">
-          <label class="form-label col-md-4">Tracking No</label>
-          <div class="form-control col-md-8 common-border">
-            <input type="text"
-                   [(ngModel)]="Model.trackingNo"
-                   [disabled]="!isTrackingMode"
-                   placeholder="Scan / Enter" />
-          </div>
-        </div>
-      </div> -->
-
-      <!-- DYEING BATCH -->
-      <!-- <div class="col-md-4">
-        <div class="row align-items-center">
-          <label class="form-label col-md-4">Dyeing Batch</label>
-          <div class="form-control col-md-8 common-border">
-            <input type="text"
-                   [(ngModel)]="Model.dyeingBatchNo"
-                   [disabled]="isTrackingMode" />
-          </div>
-        </div>
-      </div> -->
-
-      <!-- MANUAL -->
-      <!-- <div class="col-md-4">
-        <div class="row align-items-center">
-          <label class="form-label col-md-4">Manual</label>
-          <div class="form-control col-md-8 common-border">
-            <input type="text"
-                   [(ngModel)]="Model.manualNo"
-                   [disabled]="isTrackingMode" />
-          </div>
-        </div>
-      </div>
-
-    </div>
-
-  </div>
-</div> -->
+<!-- ================= GRID ================= -->
 <div class="table-responsive">
-  <table class="table table-bordered table-sm align-middle custom-table">
+  <table class="table table-bordered table-sm align-middle">
     <thead class="table-light text-center">
       <tr>
-        <th>Tracking / Batch</th>
+        <th>Tracking</th>
         <th>From Unit</th>
         <th>Receive Date</th>
         <th>Buyer</th>
         <th>Job</th>
         <th>Style</th>
+        <th>Order</th>
         <th>Type</th>
         <th>Fabrication</th>
         <th>Composition</th>
@@ -253,10 +147,10 @@
         <th>Dress Part</th>
         <th>Operation Types</th>
         <th>UOM</th>
-        <th>Total Qty</th>
         <th>Size</th>
+        <th>Total Qty</th>
         <th>Probable Delivery</th>
-        <th>Shipment Date</th>
+        <th>Shipment</th>
       </tr>
     </thead>
 
@@ -266,30 +160,56 @@
         <td>{{ row.trackingNo }}</td>
 
         <td>
-          <ng-select [(ngModel)]="row.fromUnitId"></ng-select>
+          <ng-select [(ngModel)]="row.fromUnitId" [items]="fromUnitList"
+                     bindLabel="label" bindValue="value"></ng-select>
         </td>
 
         <td>
-          <input type="text" bsDatepicker [(ngModel)]="row.receiveDate" />
+          <input class="form-control form-control-sm"
+                 bsDatepicker [(ngModel)]="row.receiveDate">
         </td>
 
-        <td><input class="form-control form-control-sm" [(ngModel)]="row.buyer"></td>
-        <td><input class="form-control form-control-sm" [(ngModel)]="row.job"></td>
-        <td><input class="form-control form-control-sm" [(ngModel)]="row.style"></td>
+        <td>
+          <ng-select [(ngModel)]="row.buyerNo"
+                     [items]="buyerList"
+                     bindLabel="BuyerName"
+                     bindValue="BuyerNo"></ng-select>
+        </td>
 
         <td>
-          <ng-select [(ngModel)]="row.typeName">
+          <ng-select [(ngModel)]="row.jobId"
+                     [items]="jobList"
+                     bindLabel="JobInfo"
+                     bindValue="JobId"></ng-select>
+        </td>
+
+        <td>
+          <ng-select [(ngModel)]="row.styleNo"
+                     [items]="styleList"
+                     bindLabel="StyleName"
+                     bindValue="StyleNo"></ng-select>
+        </td>
+
+        <td>
+          <ng-select [(ngModel)]="row.orderId"
+                     [items]="orderList"
+                     bindLabel="OrderNo"
+                     bindValue="OrderId"></ng-select>
+        </td>
+
+        <td>
+          <ng-select [(ngModel)]="row.type">
             <ng-option value="Fabric">Fabric</ng-option>
             <ng-option value="GMT">GMT</ng-option>
             <ng-option value="Cutting">Cutting Parts</ng-option>
           </ng-select>
         </td>
 
-        <td><ng-select [(ngModel)]="row.fabricationId"></ng-select></td>
+        <td><ng-select [(ngModel)]="row.fabricationId" [items]="fabricationList"></ng-select></td>
         <td><input class="form-control form-control-sm" [(ngModel)]="row.composition"></td>
-        <td><ng-select [(ngModel)]="row.gsmId"></ng-select></td>
-        <td><ng-select [(ngModel)]="row.colorId"></ng-select></td>
-        <td><ng-select [(ngModel)]="row.dressPartId"></ng-select></td>
+        <td><ng-select [(ngModel)]="row.gsmId" [items]="gsmList"></ng-select></td>
+        <td><ng-select [(ngModel)]="row.colorId" [items]="colorList"></ng-select></td>
+        <td><ng-select [(ngModel)]="row.dressPartId" [items]="dressPartList"></ng-select></td>
 
         <td>
           <input class="form-control form-control-sm"
@@ -297,9 +217,7 @@
                  [(ngModel)]="row.operationTypes">
         </td>
 
-        <td><ng-select [(ngModel)]="row.uomId"></ng-select></td>
-
-        <td class="text-end fw-bold">{{ row.totalQty }}</td>
+        <td><ng-select [(ngModel)]="row.uomId" [items]="uomList"></ng-select></td>
 
         <td class="text-center">
           <button class="btn btn-sm btn-outline-primary"
@@ -308,12 +226,16 @@
           </button>
         </td>
 
+        <td class="text-end fw-bold">{{ row.totalQty }}</td>
+
         <td>
-          <input type="text" bsDatepicker [(ngModel)]="row.probableDeliveryDate">
+          <input class="form-control form-control-sm"
+                 bsDatepicker [(ngModel)]="row.probableDeliveryDate">
         </td>
 
         <td>
-          <input type="text" bsDatepicker [disabled]="true"
+          <input class="form-control form-control-sm"
+                 bsDatepicker disabled
                  [(ngModel)]="row.shipmentDate">
         </td>
 
@@ -321,16 +243,47 @@
     </tbody>
   </table>
 </div>
-<div class="text-right mt-3">
+
+<!-- ================= ACTION BUTTONS ================= -->
+<!-- <div class="text-end mt-3">
   <button class="btn btn-primary" (click)="onSave()">
     <i class="fa fa-save"></i> Save
   </button>
+  <button class="btn btn-warning ms-2" (click)="onReturn()">Return</button>
+  <button class="btn btn-danger ms-2" (click)="onClose()">Close</button>
+</div> -->
 
-  <button class="btn btn-warning ms-2" (click)="onReturn()">
-    Return
-  </button>
+<!-- ================= SIZE POPUP ================= -->
+<!-- <div class="modal fade show d-block" *ngIf="sizePopupVisible">
+  <div class="modal-dialog modal-md">
+    <div class="modal-content">
 
-  <button class="btn btn-danger ms-2" (click)="onClose()">
-    Close
-  </button>
-</div>
+      <div class="modal-header">
+        <h6 class="modal-title">Size Wise Quantity</h6>
+        <button class="btn-close" (click)="sizePopupVisible=false"></button>
+      </div>
+
+      <div class="modal-body">
+        <table class="table table-sm">
+          <tr *ngFor="let s of sizeList">
+            <td>{{ s.size }}</td>
+            <td>
+              <input type="number" class="form-control form-control-sm"
+                     [(ngModel)]="s.qty"
+                     (input)="onSizeQtyChange()">
+            </td>
+          </tr>
+        </table>
+
+        <div class="text-end fw-bold">
+          Total: {{ totalSizeQty }}
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button class="btn btn-primary btn-sm" (click)="confirmSizeQty()">OK</button>
+      </div>
+
+    </div>
+  </div>
+</div> -->
