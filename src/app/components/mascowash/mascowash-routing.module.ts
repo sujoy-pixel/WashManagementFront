@@ -16,6 +16,10 @@ import { MachineNameEntryComponent } from './setup/entry/machine-name-entry/mach
 import { InspectionHeadLayoutEntryComponent } from './setup/entry/inspection-head-layout-entry/inspection-head-layout-entry.component';
 import { FaultHeadNameEntryComponent } from './setup/entry/fault-head-name-entry/fault-head-name-entry.component';
 import { FaultWiseValueTagEntryComponent } from './setup/entry/fault-wise-value-tag-entry/fault-wise-value-tag-entry.component';
+import { ReceiveOperationComponent } from './setup/entry/receive-operation/receive-operation.component';
+//import { ReceiveOperationComponent } from './Operation/receive-operation/receive-operation.component';
+
+ //import{ ReceiveOperationComponent } from '../../components/Operation/receive-operation/receive-operation.component';  
 
 const routes: Routes = [
   {
@@ -27,6 +31,11 @@ const routes: Routes = [
       //   component: ActualDateEntryComponent,
       //   runGuardsAndResolvers: 'always',
       // },
+    {
+        path: 'setup/entry/receive-operation',
+        component: ReceiveOperationComponent,
+        runGuardsAndResolvers: 'always',
+      },
       {
         path: 'setup/entry/process-name-entry',
         component: ProcessNameEntryComponent,
