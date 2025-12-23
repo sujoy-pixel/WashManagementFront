@@ -330,6 +330,23 @@ getReceiveByTrackingNo(trackingNo: string): Observable<any[]> {
       { headers: this.token.headerToken() }
     );
   }
-
+GetInspectionTypeDdl(): Observable<any> {
+    return this.http.get<any[]>(
+      this.baseUrl_ + 'Common/GetTypeOfInspectionDDL',
+      {
+        headers: this.token.headerToken(),
+      }
+    );
+  }
+  GetInspectionHeadDdl(): Observable<any> {
+    return this.http.get<any[]>(this.baseUrl_ + 'Common/GetInspectionHeadDDL', {
+      headers: this.token.headerToken(),
+    });
+  }
+  GetFaultHeadDdl(): Observable<any> {
+    return this.http.get<any[]>(this.baseUrl_ + 'Common/GetFaultHeadDDL', {
+      headers: this.token.headerToken(),
+    });
+  }
 
 }
