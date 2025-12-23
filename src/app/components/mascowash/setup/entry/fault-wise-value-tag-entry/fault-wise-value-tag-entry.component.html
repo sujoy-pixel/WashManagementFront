@@ -1,1 +1,150 @@
-<p>fault-wise-value-tag-entry works!</p>
+<div class="row">
+  <div class="col-md-12">
+    <div class="card custom-card">
+      <div class="card-header border-bottom justify-content-between">
+        <div class="card-title">Fault Wise Value Tag</div>
+      </div>
+
+      <div class="card-body">
+        <div class="row my-2">
+          <div class="col-md-12">
+            <div class="row align-items-center">
+              <label class="form-label col-md-2">
+                <!-- For larger screens -->
+                <span class="d-none d-sm-inline text-dark" title="Type"
+                  >Inspection Type
+                  <span style="color: red !important; font-size: 1.5em">*</span>
+                </span>
+              </label>
+              <div class="form-control col-md-4 common-border">
+                <ng-select
+                  #inspectionTypeSelect
+                  [(ngModel)]="Model.InspectionType"
+                  placeholder="Select"
+                >
+                  <ng-option
+                    *ngFor="let item of this.InspectionTypeList"
+                    [value]="item"
+                    >{{ item.label }}
+                  </ng-option>
+                </ng-select>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="row my-2">
+          <div class="col-md-12">
+            <div class="row align-items-center">
+              <label class="form-label col-md-2">
+                <!-- For larger screens -->
+                <span
+                  class="d-none d-sm-inline text-dark"
+                  title="Inspection Head"
+                  >Inspection Head
+                  <span style="color: red !important; font-size: 1.5em"
+                    >*</span
+                  ></span
+                >
+              </label>
+              <div class="form-control col-md-4 common-border">
+                <ng-select
+                  #unitNoSelect
+                  [(ngModel)]="Model.unitId"
+                  placeholder="Select"
+                >
+                  <ng-option
+                    *ngFor="let item of this.InspectionHeadList"
+                    [value]="item"
+                    >{{ item.label }}
+                  </ng-option>
+                </ng-select>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="row my-2">
+          <div class="col-md-12">
+            <div class="row align-items-center">
+              <label class="form-label col-md-2">
+                <!-- For larger screens -->
+                <span class="d-none d-sm-inline text-dark" title="Fault Head"
+                  >Fault Head
+                  <span style="color: red !important; font-size: 1.5em"
+                    >*</span
+                  ></span
+                >
+              </label>
+              <div class="form-control col-md-4 common-border">
+                <ng-select
+                  #unitNoSelect
+                  [(ngModel)]="Model.FaultHead"
+                  placeholder="Select"
+                >
+                  <ng-option
+                    *ngFor="let item of this.FaultHeadList"
+                    [value]="item"
+                    >{{ item.label }}
+                  </ng-option>
+                </ng-select>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- row 10 -->
+        <div class="text-end">
+          <button class="btn btn-primary me-2" (click)="onSaveMaster()">
+            Save
+          </button>
+          <button class="btn btn-danger" (click)="onClearAll()">Clear</button>
+        </div>
+        <!-- </form> -->
+      </div>
+    </div>
+    <div class="card mt-3">
+      <div class="card-header">
+        <h5 class="card-title">Fault Wise value Tag List</h5>
+      </div>
+      <div class="card-body table-responsive">
+        <table class="table table-bordered table-striped">
+          <thead>
+            <tr>
+              <th class="text-center" style="width: 60px">SL</th>
+              <th>Inspection Type</th>
+              <th>Inspection Head</th>
+              <th>Fault Head</th>
+              <th class="text-center" style="width: 120px">Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let m of displayMasterGrid; let i = index">
+              <td class="text-center">{{ i + 1 }}</td>
+              <td>{{ m.UnitName }}</td>
+              <td>{{ m.OperationName }}</td>
+              <td>{{ m.MachineNames }}</td>
+              <td class="text-center">
+                <button
+                  class="btn btn-sm btn-info me-1"
+                  (click)="editMasterDetail(m)"
+                >
+                  Edit
+                </button>
+                <button
+                  class="btn btn-sm btn-danger"
+                  (click)="deleteMasterDetail(m)"
+                >
+                  Delete
+                </button>
+              </td>
+            </tr>
+            <tr *ngIf="displayMasterGrid.length === 0">
+              <td colspan="5" class="text-center">No master records found</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>

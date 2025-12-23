@@ -6,10 +6,9 @@ import { WashSetupService } from '../../../services/washsetup.service';
 @Component({
   selector: 'app-machine-name-entry',
   templateUrl: './machine-name-entry.component.html',
-  styleUrls: ['./machine-name-entry.component.scss']
+  styleUrls: ['./machine-name-entry.component.scss'],
 })
 export class MachineNameEntryComponent implements OnInit {
-
   UnitList: any[] = [];
   OperationList: any[] = [];
 
@@ -25,7 +24,7 @@ export class MachineNameEntryComponent implements OnInit {
   Model: any = {
     UnitId: null,
     OperationId: null,
-    MasterId: 0
+    MasterId: 0,
   };
 
   constructor(
@@ -43,12 +42,12 @@ export class MachineNameEntryComponent implements OnInit {
   // ================= Load dropdowns =================
   loadUnits() {
     this.UnitList = [];
-    this.service.GetUnitName().subscribe(res => {
+    this.service.GetUnitName().subscribe((res) => {
       this.UnitList.push({ label: '-- Select --', value: null });
-      res.forEach(x => {
+      res.forEach((x) => {
         this.UnitList.push({
           label: x.DisplayName ?? x.displayName,
-          value: x.ID ?? x.id
+          value: x.ID ?? x.id,
         });
       });
     });
@@ -56,12 +55,12 @@ export class MachineNameEntryComponent implements OnInit {
 
   loadOperations() {
     this.OperationList = [];
-    this.service.GetOperationNameDDLs().subscribe(res => {
+    this.service.GetOperationNameDDLs().subscribe((res) => {
       this.OperationList.push({ label: '-- Select --', value: null });
-      res.forEach(x => {
+      res.forEach((x) => {
         this.OperationList.push({
           label: x.DisplayName ?? x.displayName,
-          value: x.ID ?? x.id
+          value: x.ID ?? x.id,
         });
       });
     });
@@ -70,143 +69,151 @@ export class MachineNameEntryComponent implements OnInit {
   // ================= Add Machine =================
   // Add or Edit Machine
   // Add Machine
-// Add Machine
-onAddMachine() {
-  const name = this.currentMachineName.trim();
+  // Add Machine
+  onAddMachine() {
+    const name = this.currentMachineName.trim();
 
-  if (!this.Model.UnitId || !this.Model.OperationId) {
-    this.toastr.warning('Select Unit and Operation');
-    return;
-  }
-
-  if (!name) {
-    this.toastr.warning('Enter machine name');
-    return;
-  }
-
-  // Edit mode
-  if (this.editIndex !== null) {
-    this.detailList[this.editIndex].machineName = name;
-    this.editIndex = null;
-    this.currentMachineName = '';
-    return;
-  }
-
-  // Local duplicate check
-  if (this.detailList.some(x => x.machineName.toLowerCase() === name.toLowerCase())) {
-    this.toastr.warning('Machine already added');
-    return;
-  }
-
-  // DB duplicate check
-  this.service.checkMachineExists({
-    unitId: this.Model.UnitId,
-    operationId: this.Model.OperationId,
-    machineName: name
-  }).subscribe((res: any) => {
-    const exists = res?.ExistsFlag === 1 || res === 1;
-    if (exists) {
-      this.toastr.warning('Machine already exists in database');
+    if (!this.Model.UnitId || !this.Model.OperationId) {
+      this.toastr.warning('Select Unit and Operation');
       return;
     }
 
-    // Add machine with default isActive true
-    this.detailList.push({ machineName: name, isActive: true });
-    this.currentMachineName = '';
-    this.cdr.detectChanges();
-  });
-}
+    if (!name) {
+      this.toastr.warning('Enter machine name');
+      return;
+    }
 
-// Edit machine
-editDetail(index: number) {
-  this.editIndex = index;
-  this.currentMachineName = this.detailList[index].machineName;
-}
+    // Edit mode
+    if (this.editIndex !== null) {
+      this.detailList[this.editIndex].machineName = name;
+      this.editIndex = null;
+      this.currentMachineName = '';
+      return;
+    }
 
-// Remove machine
-removeDetail(index: number) {
-  this.detailList.splice(index, 1);
-}
+    // Local duplicate check
+    if (
+      this.detailList.some(
+        (x) => x.machineName.toLowerCase() === name.toLowerCase()
+      )
+    ) {
+      this.toastr.warning('Machine already added');
+      return;
+    }
 
+    // DB duplicate check
+    this.service
+      .checkMachineExists({
+        unitId: this.Model.UnitId,
+        operationId: this.Model.OperationId,
+        machineName: name,
+      })
+      .subscribe((res: any) => {
+        const exists = res?.ExistsFlag === 1 || res === 1;
+        if (exists) {
+          this.toastr.warning('Machine already exists in database');
+          return;
+        }
+
+        // Add machine with default isActive true
+        this.detailList.push({ machineName: name, isActive: true });
+        this.currentMachineName = '';
+        this.cdr.detectChanges();
+      });
+  }
+
+  // Edit machine
+  editDetail(index: number) {
+    this.editIndex = index;
+    this.currentMachineName = this.detailList[index].machineName;
+  }
+
+  // Remove machine
+  removeDetail(index: number) {
+    this.detailList.splice(index, 1);
+  }
 
   // ================= Save Master =================
 
-onSaveMaster() {
-  if (!this.Model.UnitId || !this.Model.OperationId) {
-    this.toastr.warning('Select Unit and Operation');
-    return;
+  onSaveMaster() {
+    if (!this.Model.UnitId || !this.Model.OperationId) {
+      this.toastr.warning('Select Unit and Operation');
+      return;
+    }
+
+    if (!this.detailList.length) {
+      this.toastr.warning('Add at least one machine');
+      return;
+    }
+
+    const payload = {
+      Operation: this.Model.MasterId ? 'UPDATE' : 'INSERT',
+      UnitId: this.Model.UnitId,
+      OperationId: this.Model.OperationId,
+      CreatedBy: 'Admin',
+      MasterId: this.Model.MasterId ?? 0,
+      _listData: this.detailList.map((x) => ({
+        MachineDetailId: 0,
+        MachineName: x.machineName,
+        IsActive: x.isActive, // ✅ Preserve active/inactive
+      })),
+    };
+    // console.log("payload",payload)
+    this.service.saveMachineMasterDetail(payload).subscribe(
+      () => {
+        this.toastr.success('Saved successfully');
+        this.onClearAll();
+        this.loadMachineMasterList();
+      },
+      () => this.toastr.error('Save failed')
+    );
   }
 
-  if (!this.detailList.length) {
-    this.toastr.warning('Add at least one machine');
-    return;
-  }
+  // ================= Load Master Grid =================
+  loadMachineMasterList() {
+    this.service.getMachineMasterList().subscribe(
+      (res: any) => {
+        const masterRecords = Array.isArray(res) ? res : res.data ?? [];
+        this.machineMasterGrid = masterRecords;
 
-  const payload = {
-    Operation: this.Model.MasterId ? 'UPDATE' : 'INSERT',
-    UnitId: this.Model.UnitId,
-    OperationId: this.Model.OperationId,
-    CreatedBy: 'Admin',
-    MasterId: this.Model.MasterId ?? 0,
-    _listData: this.detailList.map(x => ({
-      MachineDetailId: 0,
-      MachineName: x.machineName,
-      IsActive: x.isActive // ✅ Preserve active/inactive
-    }))
-  };
-// console.log("payload",payload)
-  this.service.saveMachineMasterDetail(payload).subscribe(
-    () => {
-      this.toastr.success('Saved successfully');
-      this.onClearAll();
-      this.loadMachineMasterList();
-    },
-    () => this.toastr.error('Save failed')
-  );
-}
+        // Prepare display grid with concatenated machine names
+        const map = new Map<number, any>();
 
-// ================= Load Master Grid =================
-loadMachineMasterList() {
-  this.service.getMachineMasterList().subscribe((res: any) => {
-    const masterRecords = Array.isArray(res) ? res : res.data ?? [];
-    this.machineMasterGrid = masterRecords;
+        masterRecords.forEach((r) => {
+          const masterId = r.MachineNameMasterId ?? r.machineNameMasterId;
+          const unitId = r.UnitId ?? r.unitId;
+          const unitName = r.UnitName ?? r.unitName ?? 'N/A';
+          const operationId = r.OperationId ?? r.operationId;
+          const operationName = r.OperationName ?? r.operationName ?? 'N/A';
+          const machineName = r.MachineName ?? r.machineName ?? '';
 
-    // Prepare display grid with concatenated machine names
-    const map = new Map<number, any>();
-
-    masterRecords.forEach(r => {
-      const masterId = r.MachineNameMasterId ?? r.machineNameMasterId;
-      const unitId = r.UnitId ?? r.unitId;
-      const unitName = r.UnitName ?? r.unitName ?? 'N/A';
-      const operationId = r.OperationId ?? r.operationId;
-      const operationName = r.OperationName ?? r.operationName ?? 'N/A';
-      const machineName = r.MachineName ?? r.machineName ?? '';
-
-      if (!map.has(masterId)) {
-        map.set(masterId, {
-          MasterId: masterId,
-          UnitId: unitId,
-          UnitName: unitName,
-          OperationId: operationId,
-          OperationName: operationName,
-          MachineNames: machineName,
-          Machines: [r]
+          if (!map.has(masterId)) {
+            map.set(masterId, {
+              MasterId: masterId,
+              UnitId: unitId,
+              UnitName: unitName,
+              OperationId: operationId,
+              OperationName: operationName,
+              MachineNames: machineName,
+              Machines: [r],
+            });
+          } else {
+            const obj = map.get(masterId);
+            obj.MachineNames += ', ' + machineName;
+            obj.Machines.push(r);
+          }
         });
-      } else {
-        const obj = map.get(masterId);
-        obj.MachineNames += ', ' + machineName;
-        obj.Machines.push(r);
-      }
-    });
 
-    this.displayMasterGrid = Array.from(map.values());
-  }, () => {
-    this.toastr.error('Failed to load master list');
-  });
-}
+        this.displayMasterGrid = Array.from(map.values());
+      },
+      () => {
+        this.toastr.error('Failed to load master list');
+      }
+    );
+  }
 
   // ================= Edit/Delete from Master Grid =================
-  
+
   // editMasterDetail(record: any) {
   //   const master = this.machineMasterGrid.find(x => x.MachineNameMasterId === record.MachineNameMasterId) || record;
   //   this.Model.UnitId = master.UnitId;
@@ -219,37 +226,40 @@ loadMachineMasterList() {
 
   //   this.cdr.detectChanges();
   // }
-editMasterDetail(record: any) {
-  console.log("editMasterDetail",record)
-  // Set master-level info
-  this.Model.UnitId = record.UnitId;
-  this.Model.OperationId = record.OperationId;
-  this.Model.MasterId = record.MasterId;
+  editMasterDetail(record: any) {
+    console.log('editMasterDetail', record);
+    // Set master-level info
+    this.Model.UnitId = record.UnitId;
+    this.Model.OperationId = record.OperationId;
+    this.Model.MasterId = record.MasterId;
 
-  let dtaTable = record.Machines;
-  this.detailList=[];
-  let arr:any[]=[];
-  for(let i=0 ; i< dtaTable.length; i++){
-    let a = { machineName: dtaTable[i].machineName, isActive: dtaTable[i].isActive}
-    arr.push(a);
+    let dtaTable = record.Machines;
+    this.detailList = [];
+    let arr: any[] = [];
+    for (let i = 0; i < dtaTable.length; i++) {
+      let a = {
+        machineName: dtaTable[i].machineName,
+        isActive: dtaTable[i].isActive,
+      };
+      arr.push(a);
+    }
+    this.detailList = arr;
+
+    // Populate detail list including active/inactive machines
+    // this.detailList = this.machineMasterGrid
+    //   .filter(x => x.MachineNameMasterId === record.MachineNameMasterId)
+    //   .map(x => ({
+    //     machineName: x.MachineName,
+    //     isActive: x.IsActive // preserve true/false
+    //   }));
+
+    // Reset edit index and input
+    this.editIndex = null;
+    this.currentMachineName = '';
+
+    // Force Angular to detect changes
+    this.cdr.detectChanges();
   }
-  this.detailList= arr;
-
-  // Populate detail list including active/inactive machines
-  // this.detailList = this.machineMasterGrid
-  //   .filter(x => x.MachineNameMasterId === record.MachineNameMasterId)
-  //   .map(x => ({
-  //     machineName: x.MachineName,
-  //     isActive: x.IsActive // preserve true/false
-  //   }));
-
-  // Reset edit index and input
-  this.editIndex = null;
-  this.currentMachineName = '';
-
-  // Force Angular to detect changes
-  this.cdr.detectChanges();
-}
 
   deleteMasterDetail(record: any) {
     Swal.fire({
@@ -257,8 +267,8 @@ editMasterDetail(record: any) {
       text: `Delete machine(s) "${record.MachineNames}"?`,
       icon: 'warning',
       showCancelButton: true,
-      confirmButtonText: 'Yes, delete it!'
-    }).then(result => {
+      confirmButtonText: 'Yes, delete it!',
+    }).then((result) => {
       if (result.isConfirmed) {
         const payload = {
           Operation: 'DELETE',
@@ -266,7 +276,7 @@ editMasterDetail(record: any) {
           OperationId: record.OperationId,
           MasterId: record.MasterId,
           CreatedBy: 'Admin',
-          _listData: []
+          _listData: [],
         };
 
         this.service.saveMachineMasterDetail(payload).subscribe(() => {
