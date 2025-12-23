@@ -149,6 +149,11 @@ export class WashSetupService {
   }
 
   // GET FAULT HEAD DROPDOWN
+  // getFaultHeadList() {
+  //   return this.http.get(this.baseUrl_ + 'Common/GetFaultHead', {
+  //     headers: this.token.headerToken(),
+  //   });
+  // }
   getFaultHeadList() {
     return this.http.get(this.baseUrl_ + 'Common/GetFaultHead', {
       headers: this.token.headerToken(),
@@ -208,4 +213,5 @@ export class WashSetupService {
       headers: this.token.headerToken(),
     });
   }
+
 }

@@ -11,6 +11,8 @@ import { InspectionAreaEntryComponent } from './setup/entry/inspection-area-entr
 import { OperationNameEntryComponent } from './setup/entry/operation-name-entry/operation-name-entry.component';
 
 import { FaultNameLayoutComponent } from './setup/entry/fault-name-layout/fault-name-layout.component';
+
+import { MachineNameEntryComponent } from './setup/entry/machine-name-entry/machine-name-entry.component';
 import { InspectionHeadLayoutEntryComponent } from './setup/entry/inspection-head-layout-entry/inspection-head-layout-entry.component';
 import { FaultHeadNameEntryComponent } from './setup/entry/fault-head-name-entry/fault-head-name-entry.component';
 import { FaultWiseValueTagEntryComponent } from './setup/entry/fault-wise-value-tag-entry/fault-wise-value-tag-entry.component';
@@ -55,7 +57,10 @@ const routes: Routes = [
         component: FaultNameLayoutComponent,
         runGuardsAndResolvers: 'always',
       },
-
+      {
+        path: 'setup/entry/machine-name-entry',
+        component: MachineNameEntryComponent,
+      },
       {
         path: 'setup/entry/inspection-head-layout',
         component: InspectionHeadLayoutEntryComponent,
@@ -76,3 +81,4 @@ const routes: Routes = [
   exports: [RouterModule],
 })
 export class MascowashRoutingModule {}
+

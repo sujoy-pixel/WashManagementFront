@@ -1,1 +1,199 @@
-<p>machine-name-entry works!</p>
+<div class="card custom-card">
+  <div class="card-header">
+    <h5 class="card-title">Machine Name Entry</h5>
+  </div>
+
+  <div class="card-body">
+
+    <!-- Unit -->
+    <div class="row my-2">
+      <label class="col-md-2 form-label text-dark">Unit <span class="text-danger">*</span></label>
+      <div class="col-md-4">
+        <ng-select [(ngModel)]="Model.UnitId" placeholder="Select Unit">
+          <ng-option *ngFor="let u of UnitList" [value]="u.value">{{ u.label }}</ng-option>
+        </ng-select>
+      </div>
+    </div>
+
+    <!-- Operation -->
+    <div class="row my-2">
+      <label class="col-md-2 form-label text-dark">Operation <span class="text-danger">*</span></label>
+      <div class="col-md-4">
+        <ng-select [(ngModel)]="Model.OperationId" placeholder="Select Operation">
+          <ng-option *ngFor="let op of OperationList" [value]="op.value">{{ op.label }}</ng-option>
+        </ng-select>
+      </div>
+    </div>
+
+    <hr />
+
+    <!-- Machine input -->
+    <!-- <div class="row my-2 align-items-center">
+      <label class="col-md-2 form-label text-dark">Machine Name</label>
+      <div class="col-md-4">
+        <input type="text" class="form-control" [(ngModel)]="currentMachineName" placeholder="Enter machine name" />
+      </div>
+      <div class="col-md-2">
+        <button class="btn btn-secondary" (click)="onAddMachine()">Add</button>
+      </div>
+    </div> -->
+
+    <!-- Temp grid -->
+    <!-- <div class="table-responsive mt-3">
+      <table class="table table-bordered table-striped">
+        <thead>
+          <tr>
+            <th class="text-center" style="width:60px">SL</th>
+            <th>Machine Name</th>
+            <th class="text-center" style="width:120px">Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let m of detailList; let i=index">
+            <td class="text-center">{{ i + 1 }}</td>
+            <td>{{ m.machineName }}</td>
+            <td class="text-center">
+              <button class="btn btn-sm btn-info me-1" (click)="editDetail(i)">Edit</button>
+              <button class="btn btn-sm btn-danger" (click)="removeDetail(i)">Delete</button>
+            </td>
+          </tr>
+          <tr *ngIf="detailList.length === 0">
+            <td colspan="3" class="text-center">No machines added</td>
+          </tr>
+        </tbody>
+      </table>
+    </div> -->
+<!-- Machine input -->
+<div class="row my-2 align-items-center">
+  <label class="col-md-2 form-label text-dark">Machine Name</label>
+  <div class="col-md-4">
+    <input
+      type="text"
+      class="form-control"
+      [(ngModel)]="currentMachineName"
+      placeholder="Enter machine name"
+    />
+  </div>
+  <div class="col-md-2">
+    <button class="btn btn-secondary" (click)="onAddMachine()">Add</button>
+  </div>
+</div>
+
+<!-- Temp grid with Active Status -->
+ <!-- Temp grid -->
+
+
+ <!-- <div class="table-responsive mt-3"> 
+  <table class="table table-bordered table-striped">
+    <thead>
+      <tr>
+        <th class="text-center" style="width:60px">SL</th>
+        <th>Machine Name</th>
+        <th class="text-center" style="width:120px">Active</th>
+        <th class="text-center" style="width:120px">Action</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let m of detailList; let i = index">
+        <td class="text-center">{{ i + 1 }}</td>
+        <td>{{ m.machineName }}</td>
+        <td class="text-center">
+          <label class="switch">
+            <input
+              type="checkbox"
+              [(ngModel)]="m.isActive"
+              class="success"
+              (change)="onChangeActiveStatus(i)"
+            />
+            <span class="slider round"></span>
+          </label>
+        </td>
+        <td class="text-center">
+          <button class="btn btn-sm btn-info me-1" (click)="editDetail(i)">Edit</button>
+          <button class="btn btn-sm btn-danger" (click)="removeDetail(i)">Delete</button>
+        </td>
+      </tr>
+      <tr *ngIf="detailList.length === 0">
+        <td colspan="4" class="text-center">No machines added</td>
+      </tr>
+    </tbody>
+  </table>
+</div> -->
+<!-- Temp grid -->
+<div class="table-responsive mt-3">
+  <table class="table table-bordered table-striped">
+    <thead>
+      <tr>
+        <th class="text-center" style="width:60px">SL</th>
+        <th>Machine Name</th>
+        <th class="text-center" style="width:120px">Active</th>
+        <th class="text-center" style="width:120px">Action</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let m of detailList; let i=index">
+        <td class="text-center">{{ i + 1 }}</td>
+        <td>{{ m.machineName }}</td>
+        <td class="text-center">
+          <label class="switch">
+            <input type="checkbox" [(ngModel)]="detailList[i].isActive" class="success" />
+            <span class="slider round"></span>
+          </label>
+        </td>
+        <td class="text-center">
+          <button class="btn btn-sm btn-info me-1" (click)="editDetail(i)">Edit</button>
+          <button class="btn btn-sm btn-danger" (click)="removeDetail(i)">Delete</button>
+        </td>
+      </tr>
+      <tr *ngIf="detailList.length === 0">
+        <td colspan="4" class="text-center">No machines added</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+    <hr />
+
+    <!-- Buttons -->
+    <div class="text-end">
+      <button class="btn btn-primary me-2" (click)="onSaveMaster()">Save Master & Details</button>
+      <button class="btn btn-danger" (click)="onClearAll()">Clear</button>
+    </div>
+
+    <!-- Master Grid -->
+    <div class="card mt-3">
+      <div class="card-header">
+        <h5 class="card-title">Machine Master List</h5>
+      </div>
+      <div class="card-body table-responsive">
+        <table class="table table-bordered table-striped">
+          <thead>
+            <tr>
+              <th class="text-center" style="width:60px">SL</th>
+              <th>Unit</th>
+              <th>Operation</th>
+              <th>Machine Name</th>
+              <th class="text-center" style="width:120px">Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let m of displayMasterGrid; let i=index">
+              <td class="text-center">{{ i + 1 }}</td>
+              <td>{{ m.UnitName }}</td>
+              <td>{{ m.OperationName }}</td>
+              <td>{{ m.MachineNames }}</td>
+              <td class="text-center">
+                <button class="btn btn-sm btn-info me-1" (click)="editMasterDetail(m)">Edit</button>
+                <button class="btn btn-sm btn-danger" (click)="deleteMasterDetail(m)">Delete</button>
+              </td>
+            </tr>
+            <tr *ngIf="displayMasterGrid.length === 0">
+              <td colspan="5" class="text-center">No master records found</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </div>
+</div>
