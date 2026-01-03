@@ -348,5 +348,12 @@ GetInspectionTypeDdl(): Observable<any> {
       headers: this.token.headerToken(),
     });
   }
+saveReceiveOperation(data: any) {
+  return this.http.post(
+    this.baseUrl_ + 'Setup/SaveTrackingNoReceive',
+    data,
+    { headers: this.token.headerToken() }
+  );
+}
 
 }

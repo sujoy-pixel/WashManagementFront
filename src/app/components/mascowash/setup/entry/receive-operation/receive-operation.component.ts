@@ -1,6 +1,5 @@
-import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { ToastrService } from 'ngx-toastr';
-import Swal from 'sweetalert2';
 import { WashSetupService } from '../../../services/washsetup.service';
 
 @Component({
@@ -10,10 +9,11 @@ import { WashSetupService } from '../../../services/washsetup.service';
 })
 export class ReceiveOperationComponent implements OnInit {
 
-
+  // ================= FLAGS =================
   isReviewMode = false;
-
-  Model = {
+  saveButtonTitle = 'Save';
+  // ================= MASTER =================
+  Model: any = {
     UnitId: null,
     trackingNo: '',
     dyeingBatchNo: '',
@@ -23,14 +23,17 @@ export class ReceiveOperationComponent implements OnInit {
     isManualActive: false
   };
 
-  review = {
+  review: any = {
     UnitId: null,
     fromDate: null,
     toDate: null
   };
 
+
+  // ================= GRID =================
   detailList: any[] = [];
 
+  // ================= DROPDOWNS =================
   UnitList: any[] = [];
   fromUnitList: any[] = [];
   buyerList: any[] = [];
@@ -43,272 +46,178 @@ export class ReceiveOperationComponent implements OnInit {
   dressPartList: any[] = [];
   uomList: any[] = [];
 
+  // ================= SIZE POPUP =================
   sizePopupVisible = false;
   selectedRow: any;
   sizeList: any[] = [];
   totalSizeQty = 0;
+  master: any;
+  details: any[] = [];
 
   constructor(
     private service: WashSetupService,
-    private toastr: ToastrService,
-    private cdr: ChangeDetectorRef
+    private toastr: ToastrService
   ) {}
-isNewMode = false;
-
-
-onNew() {
-  this.isNewMode = true;
-  this.isReviewMode = false;
-}
-
-onReview() {
-  this.isReviewMode = true;
-  this.isNewMode = false;
-}
-
 
   ngOnInit(): void {
     this.loadDropdowns();
-
   }
- loadDropdowns() {
-    this.UnitList = [];
-    this.service.GetUnitName().subscribe((res) => {
-      this.UnitList.push({ label: '-- Select --', value: null });
-      res.forEach((x) => {
-        this.UnitList.push({
-          label: x.DisplayName ?? x.displayName,
-          value: x.ID ?? x.id,
-        });
-        this.fromUnitList = [...this.UnitList];
-      });
+
+  // ================= HEADER =================
+  onNew() {
+    this.isReviewMode = false;
+    this.clearAll();
+  }
+
+  onReview() {
+    this.isReviewMode = !this.isReviewMode;
+  }
+
+  // ================= LOAD MASTER DROPDOWNS =================
+  loadDropdowns() {
+
+    this.service.GetUnitName().subscribe(res => {
+      this.UnitList = res.map((x: any) => ({
+        label: x.DisplayName ?? x.displayName,
+        value: x.ID ?? x.id
+      }));
+      this.fromUnitList = [...this.UnitList];
     });
-  
 
+    this.service.GetBuyerNameDDL().subscribe(res => {
+      this.buyerList = res.map((x: any) => ({
+        label: x.DisplayName ?? x.displayName ?? x.BuyerName,
+        value: x.ID ?? x.id ?? x.BuyerNo
+      }));
+    });
+  }
 
-  this.service.GetBuyerNameDDL().subscribe(res => {
-    this.buyerList = res.map(x => ({
-      label: x.DisplayName ?? x.displayName,
-          value: x.ID ?? x.id,
-      // label: x.BuyerName,
-      // value: Number(x.BuyerNo)
-    }));
-  });
-this.service.GetJobNoDDL().subscribe(res => {
-  this.jobList = res.map(x => ({
-    label: x.JobInfo,
-    value: x.JobId.toString()
-  }));
-});
-  // this.service.GetJobNoDDL().subscribe(res => {
-  //   this.jobList = res.map(x => ({
-  //     label: x.DisplayName ?? x.displayName,
-  //         value: x.ID ?? x.id,
-  //     // label: x.JobInfo,
-  //     // value: Number(x.JobId)
-  //   }));
-  //   console.log("Job List", this.jobList);
-  // });
+  // ================= TRACKING SEARCH =================
+  onTrackingEnter() {
+    if (!this.Model.trackingNo) {
+      this.toastr.warning('Tracking No required');
+      return;
+    }
 
-  this.service.GetStyleNoDDL().subscribe(res => {
-    this.styleList = res.map(x => ({
-      label: x.DisplayName ?? x.displayName,
-          value: x.ID ?? x.id,
-      // label: x.StyleName,
-      // value: Number(x.StyleNo)
-    }));
-  });
+    this.service.getReceiveByTrackingNo(this.Model.trackingNo)
+      .subscribe(res => {
+        if (!res || !res.length) {
+          this.toastr.info('No data found');
+          this.detailList = [];
+          return;
+        }
+        this.bindDetailRows(res);
+      });
+  }
 
-  this.service.GetOrderNoDDL().subscribe(res => {
-    this.orderList = res.map(x => ({
-      label: x.DisplayName ?? x.displayName,
-          value: x.ID ?? x.id,
-      // label: x.OrderNo,
-      // value: Number(x.OrderId)
-    }));
-  });
+  // ================= GRID BINDING (GROUPING LOGIC) =================
+  bindDetailRows(rows: any[]) {
 
-  this.service.GetFabricationDDL().subscribe(res => {
-    this.fabricationList = res.map(x => ({
-       label: x.DisplayName ?? x.displayName,
-          value: x.ID ?? x.id,
-      // label: x.FabricationName,
-      // value: Number(x.Fabrication)
-    }));
-  });
+    const map = new Map<string, any>();
 
-  this.service.GetGSMDDL().subscribe(res => {
-    this.gsmList = res.map(x => ({
-     label: x.DisplayName ?? x.displayName,
-          value: x.ID ?? x.id,
-      // label: x.GSM,
-      // value: Number(x.ISZID)
-    }));
-  });
+    rows.forEach(r => {
 
-  this.service.GetDressPartDDL().subscribe(res => {
-    this.dressPartList = res.map(x => ({
-     label: x.DisplayName ?? x.displayName,
-          value: x.ID ?? x.id,
-      // label: x.DressPart,
-      // value: Number(x.DressPartId)
-    }));
-  });
+      const key = [
+        r.fromUnitId,
+        r.buyerNo,
+        r.jobId,
+        r.styleNo,
+        r.orderId,
+        r.icleid,
+        r.dressPartId
+      ].join('|');
 
-  this.service.GetUOMDDL().subscribe(res => {
-    this.uomList = res.map(x => ({
-     label: x.DisplayName ?? x.displayName,
-          value: x.ID ?? x.id,
-      // label: x.UOM,
-      // value: Number(x.UOMDetailsId)
-    }));
-  });
-}
+      if (!map.has(key)) {
+        map.set(key, {
+          trackingNo: r.trackingNo,
+          fromUnitId: r.fromUnitId,
+          receiveDate: r.receiveDate ? new Date(r.receiveDate) : null,
 
-onTrackingEnter() {
-  this.service.getReceiveByTrackingNo(this.Model.trackingNo)
-    .subscribe(res => this.bindDetailRows(res));
-}
+          buyerNo: r.buyerNo,
+          buyerName: r.buyerName,
 
-bindDetailRows(rows: any[]) {
-  this.detailList = rows.map(r => ({
-    trackingNo: r.trackingNo,
-    fromUnitId: Number(r.fromUnitId),
-    receiveDate: new Date(r.receiveDate),
-    buyerNo: Number(r.buyerNo),
-     jobId: r.JobId?.toString(),
-    styleNo: Number(r.styleNo),
-    orderId: Number(r.orderId),
-    type: r.type,
-    fabricationId: Number(r.fabrication),
-    composition: r.composition,
-    gsmId: Number(r.iszid),
-    colorId: Number(r.icleid),
-    dressPartId: Number(r.dressPartId),
-    uomId: Number(r.uomDetailsId),
-    totalQty: r.qty,
-    probableDeliveryDate: new Date(r.probableDeliveryDate),
-    shipmentDate: new Date(r.shipmentDate),
-    operationTypes: '',
-    sizeDetails: []
-  }));
-}
+          jobId: r.jobId,
+          jobInfo: r.jobInfo,
 
+          styleNo: r.styleNo,
+          styleName: r.styleName,
 
-  // loadDropdowns() {
-  //   this.UnitList = [];
-  //   this.service.GetUnitName().subscribe((res) => {
-  //     this.UnitList.push({ label: '-- Select --', value: null });
-  //     res.forEach((x) => {
-  //       this.UnitList.push({
-  //         label: x.DisplayName ?? x.displayName,
-  //         value: x.ID ?? x.id,
-  //       });
-  //       this.fromUnitList = [...this.UnitList];
-  //     });
-  //   });
-  
+          orderId: r.orderId,
+          orderNo: r.orderNo,
 
-  //   this.service.GetBuyerNameDDL().subscribe(res =>
-  //     this.buyerList = res.map(x => ({
-  //       label: x.BuyerName,
-  //       value: x.BuyerNo
-  //     }))
-  //   );
+          type: r.type,
 
+          fabricationId: r.fabrication,
+          fabricationName: r.fabricationName,
+          composition: r.composition,
 
+          gsmId: r.iszid,
+          gsmName: r.gsm,
 
+          colorId: r.icleid,
+          colorName: r.color,
 
-  //   this.service.GetJobNoDDL().subscribe(res =>
-  //     this.jobList = res.map(x => ({
-  //       label: x.JobInfo,
-  //       value: x.JobId
-  //     }))
-  //   );
+          dressPartId: r.dressPartId,
+          dressPartName: r.dressPart,
 
-  //   this.service.GetStyleNoDDL().subscribe(res =>
-  //     this.styleList = res.map(x => ({
-  //       label: x.StyleName,
-  //       value: x.StyleNo
-  //     }))
-  //   );
+          operationTypes: r.operationType,
 
-  //   this.service.GetOrderNoDDL().subscribe(res =>
-  //     this.orderList = res.map(x => ({
-  //       label: x.OrderNo,
-  //       value: x.OrderId
-  //     }))
-  //   );
+          uomId: r.uomDetailsId,
+          uomName: r.uom,
 
-  //   this.service.GetFabricationDDL().subscribe(res =>
-  //     this.fabricationList = res.map(x => ({
-  //       label: x.FabricationName,
-  //       value: x.Fabrication
-  //     }))
-  //   );
+          probableDeliveryDate: r.probableDeliveryDate
+            ? new Date(r.probableDeliveryDate)
+            : null,
 
-  //   this.service.GetGSMDDL().subscribe(res =>
-  //     this.gsmList = res.map(x => ({
-  //       label: x.GSM,
-  //       value: x.ISZID
-  //     }))
-  //   );
+          shipmentDate: r.shipmentDate
+            ? new Date(r.shipmentDate)
+            : null,
 
-  //   this.service.GetDressPartDDL().subscribe(res =>
-  //     this.dressPartList = res.map(x => ({
-  //       label: x.DressPart,
-  //       value: x.DressPartId
-  //     }))
-  //   );
+          sizeDetails: [],
+          totalQty: 0
+        });
+      }
 
-  //   this.service.GetUOMDDL().subscribe(res =>
-  //     this.uomList = res.map(x => ({
-  //       label: x.UOM,
-  //       value: x.UOMDetailsId
-  //     }))
-  //   );
-  // }
+      const row = map.get(key);
 
-  // onTrackingEnter() {
-  //   this.service.getReceiveByTrackingNo(this.Model.trackingNo)
-  //     .subscribe(res => this.bindDetailRows(res));
-  // }
+      row.sizeDetails.push({
+        size: r.size,
+        qty: r.qty
+      });
 
-  // bindDetailRows(rows: any[]) {
-  //   this.detailList = rows.map(r => ({
-  //     trackingNo: r.trackingNo,
-  //     fromUnitId: r.fromUnitId,
-  //     receiveDate: new Date(r.receiveDate),
-  //     buyerNo: r.buyerNo,
-  //     jobId: r.jobId,
-  //     styleNo: r.styleNo,
-  //     orderId: r.orderId,
-  //     type: r.type,
-  //     fabricationId: r.fabrication,
-  //     composition: r.composition,
-  //     gsmId: r.iszid,
-  //     colorId: r.icleid,
-  //     dressPartId: r.dressPartId,
-  //     uomId: r.uomDetailsId,
-  //     totalQty: r.qty,
-  //     probableDeliveryDate: new Date(r.probableDeliveryDate),
-  //     shipmentDate: new Date(r.shipmentDate),
-  //     sizeDetails: []
-  //   }));
-  //   this.cdr.detectChanges();
-  // }
+      row.totalQty += r.qty;
+    });
 
+    this.detailList = Array.from(map.values());
+
+    // ===== Populate dependent dropdowns (unique) =====
+    this.jobList = this.unique(this.detailList, 'jobId', 'jobInfo');
+    this.buyerList = this.unique(this.detailList, 'buyerNo', 'buyerName');
+    this.styleList = this.unique(this.detailList, 'styleNo', 'styleName');
+    this.orderList = this.unique(this.detailList, 'orderId', 'orderNo');
+    this.fabricationList = this.unique(this.detailList, 'fabricationId', 'fabricationName');
+    this.gsmList = this.unique(this.detailList, 'gsmId', 'gsmName');
+    this.colorList = this.unique(this.detailList, 'colorId', 'colorName');
+    this.dressPartList = this.unique(this.detailList, 'dressPartId', 'dressPartName');
+    this.uomList = this.unique(this.detailList, 'uomId', 'uomName');
+  }
+
+  unique(arr: any[], val: string, label: string) {
+    const m = new Map();
+    arr.forEach(x => m.set(x[val], { value: x[val], label: x[label] }));
+    return Array.from(m.values());
+  }
+
+  // ================= SIZE POPUP =================
   openSizePopup(row: any) {
     this.selectedRow = row;
-    this.sizeList = row.sizeDetails.length
-      ? [...row.sizeDetails]
-      : [{ size: 'Default', qty: row.totalQty }];
-    this.calculateSizeTotal();
+    this.sizeList = JSON.parse(JSON.stringify(row.sizeDetails));
+    this.calculateTotal();
     this.sizePopupVisible = true;
   }
 
-  calculateSizeTotal() {
-    this.totalSizeQty = this.sizeList.reduce((a, b) => a + (+b.qty || 0), 0);
+  calculateTotal() {
+    this.totalSizeQty = this.sizeList.reduce((s, x) => s + (+x.qty || 0), 0);
   }
 
   confirmSizeQty() {
@@ -316,6 +225,78 @@ bindDetailRows(rows: any[]) {
     this.selectedRow.totalQty = this.totalSizeQty;
     this.sizePopupVisible = false;
   }
+
+  // ================= CLEAR =================
+  clearAll() {
+    this.Model.trackingNo = '';
+    this.detailList = [];
+  }
+
+   onSubmit() {
+
+  if (!this.Model.UnitId) {
+    this.toastr.warning('Please Select Unit');
+    return;
+  }
+
+  if (!this.detailList.length) {
+    this.toastr.warning('No data to save');
+    return;
+  }
+
+  const payload = this.buildSavePayload();
+  console.log('SAVE PAYLOAD', payload);
+
+  this.service.saveReceiveOperation(payload)
+
+  
+    .subscribe({
+      next: () => {
+        this.toastr.success('Saved Successfully');
+        this.clearAll();
+      },
+      error: () => {
+        this.toastr.error('Save Failed');
+      }
+    });
 }
 
 
+  buildSavePayload(): any {
+console.log('DETAIL LIST', this.detailList);
+  const master = {
+    Operation: 'INSERT',
+    unitId: this.Model.UnitId,
+    TrackingNo: this.Model.trackingNo,
+    createdBy: 'SYSTEM'
+  };
+
+  const details = this.detailList.map(d => ({
+    trackingBatchNo: d.trackingNo,
+    fromUnitId: d.fromUnitId,
+    receiveDate: d.receiveDate,
+    typeName: d.type,
+
+    fabricationId: d.fabricationId,
+    composition: d.composition,
+    iszId: d.gsmId,
+    colorId: d.colorId,
+    dressPartId: d.dressPartId,
+
+    operationType: d.operationTypes,
+    uomId: d.uomId,
+    totalQty: d.totalQty,
+
+    probableDeliveryDate: d.probableDeliveryDate,
+    shipmentDate: d.shipmentDate,
+
+    sizeDetails: d.sizeDetails.map((s: any) => ({
+      size: s.size,
+      qty: s.qty
+    }))
+  }));
+
+  return { master, details };
+}
+
+}

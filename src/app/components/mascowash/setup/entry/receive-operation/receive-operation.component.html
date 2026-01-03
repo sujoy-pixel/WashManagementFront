@@ -1,26 +1,62 @@
 <!-- ================= PAGE HEADER ================= -->
+<!-- <div class="row">
+  <div class="col-md-12">
+    <div class="card custom-card">
+      <div class="card-header border-bottom justify-content-between">
+        <div class="card-title">Wash Order Receive Operation</div>
+      </div>
+    </div>
+  </div> -->
+
+<!-- 
 <div class="page-header d-flex justify-content-between align-items-center mb-3">
   <div class="card-header border-bottom">
-    <h5 class="card-title mb-0">Wash Order Receive Operation</h5>
-  </div>
+    <h5 class="card-title">Wash Order Receive Operation</h5>
+  </div> -->
 
-  <div>
+  <!-- <div class="">
     <button class="btn btn-primary me-2" (click)="onNew()">
       <i class="fa fa-plus"></i> New
     </button>
     <button class="btn btn-info" (click)="onReview()">
       <i class="fa fa-search"></i> Review / Check
     </button>
+  </div> 
+</div> -->
+<div class="row">
+  <div class="col-md-12">
+    <div class="card custom-card">
+      <div
+        class="card-header border-bottom d-flex justify-content-between align-items-center"
+      >
+        <!-- LEFT : Title -->
+        <div class="card-title mb-0">
+          Wash Order Receive Operation
+        </div>
+
+        <!-- RIGHT : Buttons -->
+        <div class="header-action-buttons">
+          <button class="btn btn-primary me-2" (click)="onNew()">
+            <i class="fa fa-plus"></i> New
+          </button>
+
+          <button class="btn btn-info" (click)="onReview()">
+            <i class="fa fa-search"></i> Review / Check
+          </button>
+        </div>
+      </div>
+    </div>
   </div>
 </div>
+
 
 <!-- ================= REVIEW SEARCH ================= -->
 <div class="card custom-card mb-3" *ngIf="isReviewMode">
   <div class="card-body">
     <div class="row g-3 align-items-center">
 
-      <div class="col-md-4">
-        <label class="form-label">Unit <span class="text-danger">*</span></label>
+      <!-- <div class="col-md-4">
+        <label class="form-label col-md-2">Unit <span class="text-danger">*</span></label>
         <ng-select
           [(ngModel)]="review.UnitId"
           [items]="UnitList"
@@ -28,8 +64,37 @@
           bindValue="value"
           placeholder="Select Unit">
         </ng-select>
-      </div>
+      </div> -->
 
+
+
+       <div class="row my-2">
+          <div class="col-md-12">
+            <div class="row align-items-center">
+              <label class="form-label col-md-2">
+                <!-- For larger screens -->
+                <span class="d-none d-sm-inline text-dark" title="Unit"
+                  >Unit
+                  <span style="color: red !important; font-size: 1.5em"
+                    >*</span
+                  ></span
+                >
+              </label>
+              <div
+                class="form-control col-md-4 common-border"
+               
+              >
+                <ng-select
+          [(ngModel)]="review.UnitId"
+          [items]="UnitList"
+          bindLabel="label"
+          bindValue="value"
+          placeholder="Select Unit">
+        </ng-select>                      
+              </div>
+            </div>
+          </div>
+        </div>
       <div class="col-md-4">
         <label class="form-label">From Date</label>
         <input type="text" class="form-control" bsDatepicker [(ngModel)]="review.fromDate">
@@ -45,32 +110,20 @@
 </div>
 
 <!-- ================= UNIT (NEW MODE) ================= -->
-<!-- <div class="card custom-card mb-3" *ngIf="!isReviewMode">
+
+<div class="card custom-card mb-3" *ngIf="!isReviewMode">
   <div class="card-body">
     <div class="col-md-4">
-      <label class="form-label">Unit <span class="text-danger">*</span></label>
-      <ng-select
-        [(ngModel)]="Model.UnitId"
-        [items]="UnitList"
-        bindLabel="label"
-        bindValue="value"
-        placeholder="Select Unit">
-      </ng-select>
-    </div>
-  </div>
-</div> -->
- <div class="card custom-card mb-3" *ngIf="!isReviewMode">
-  <div class="card-body">
-    <div class="col-md-4">
-      <label class="form-label">Unit <span class="text-danger">*</span></label>   
+      <label class="d-none d-sm-inline text-dark">Unit <span class="text-danger">*</span></label>   
         <ng-select [(ngModel)]="Model.UnitId" placeholder="Select Unit">
           <ng-option *ngFor="let u of UnitList" [value]="u.value">{{ u.label }}</ng-option>
         </ng-select>
       </div>
     </div>
 </div>
- 
 
+  
+      
 <!-- ================= INPUT MODE ================= -->
  
 <div class="card custom-card mb-3">
@@ -137,23 +190,18 @@
        [(ngModel)]="Model.manualNo"
        [disabled]="true">
 
-        <!-- <input type="text"
-               class="form-control"
-               placeholder="Manual Reference"
-               [(ngModel)]="Model.manualNo"
-               [disabled]="!Model.isManualActive"> -->
+       
       </div>
 
     </div>
   </div>
 </div>
-
 <!-- ================= GRID ================= -->
- <div class="table-responsive">
-  <table class="table table-bordered table-sm align-middle">
-    <thead class="table-light text-center">
-      <tr>
-        <th>Tracking</th>
+<div class="table-responsive">
+<table class="table table-bordered table-sm">
+<thead class="table-light text-center">
+<tr>
+  <th>Tracking</th>
         <th>From Unit</th>
         <th>Receive Date</th>
         <th>Buyer</th>
@@ -172,8 +220,8 @@
         <th>Total Qty</th>
         <th>Probable Delivery</th>
         <th>Shipment Date</th>
-      </tr>
-    </thead>
+</tr>
+</thead>
 
     <tbody>
       <tr *ngFor="let row of detailList; let i = index">
@@ -206,13 +254,7 @@
         </td>
 
         <td>
-          <!-- <ng-select
-            [(ngModel)]="row.jobId"
-            [items]="jobList"
-            bindLabel="label"
-            bindValue="value"
-            appendTo="body">
-          </ng-select> -->
+        
           <ng-select
   [(ngModel)]="row.jobId"
   [items]="jobList"
@@ -298,7 +340,10 @@
 
         <td>
           <input class="form-control form-control-sm"
-                 [(ngModel)]="row.operationTypes">
+                 [(ngModel)]="row.operationTypes"
+                 disabled
+                 >
+                 
         </td>
 
         <td>
@@ -336,164 +381,90 @@
     </tbody>
   </table>
 </div>
-
-<!-- <div class="table-responsive">
-  <table class="table table-bordered table-sm align-middle">
-    <thead class="table-light text-center">
-      <tr>
-        <th>Tracking</th>
-        <th>From Unit</th>
-        <th>Receive Date</th>
-        <th>Buyer</th>
-        <th>Job</th>
-        <th>Style</th>
-        <th>Order</th>
-        <th>Type</th>
-        <th>Fabrication</th>
-        <th>Composition</th>
-        <th>GSM</th>
-        <th>Color</th>
-        <th>Dress Part</th>
-        <th>Operation Types</th>
-        <th>UOM</th>
-        <th>Size</th>
-        <th>Total Qty</th>
-        <th>Probable Delivery</th>
-        <th>Shipment Date</th>
-      </tr>
-    </thead>
-
-    <tbody>
-       <tr *ngFor="let row of detailList">
-
-        <td>{{ row.trackingNo }}</td>
-
-        <td>
-          <ng-select [(ngModel)]="row.fromUnitId" [items]="fromUnitList"
-                     bindLabel="label" bindValue="value"></ng-select>
-        </td>
-
-        <td>
-          <input class="form-control form-control-sm"
-                 bsDatepicker [(ngModel)]="row.receiveDate">
-        </td>
-
-        <td>
-          <ng-select [(ngModel)]="row.buyerNo"
-                     [items]="buyerList"
-                     bindLabel="BuyerName"
-                     bindValue="BuyerNo"></ng-select>
-        </td>
-
-
-        <td>
-          <ng-select [(ngModel)]="row.jobId"
-                     [items]="jobList"
-                     bindLabel="JobInfo"
-                     bindValue="JobId"></ng-select>
-        </td>
-
-        <td>
-          <ng-select [(ngModel)]="row.styleNo"
-                     [items]="styleList"
-                     bindLabel="StyleName"
-                     bindValue="StyleNo"></ng-select>
-        </td>
-
-        <td>
-          <ng-select [(ngModel)]="row.orderId"
-                     [items]="orderList"
-                     bindLabel="OrderNo"
-                     bindValue="OrderId"></ng-select>
-        </td>
-
-        <td>
-          <ng-select [(ngModel)]="row.type">
-            <ng-option value="Fabric">Fabric</ng-option>
-            <ng-option value="GMT">GMT</ng-option>
-            <ng-option value="Cutting">Cutting Parts</ng-option>
-          </ng-select>
-        </td>
-
-        <td><ng-select [(ngModel)]="row.fabricationId" [items]="fabricationList"></ng-select></td>
-        <td><input class="form-control form-control-sm" [(ngModel)]="row.composition"></td>
-        <td><ng-select [(ngModel)]="row.gsmId" [items]="gsmList"></ng-select></td>
-        <td><ng-select [(ngModel)]="row.colorId" [items]="colorList"></ng-select></td>
-        <td><ng-select [(ngModel)]="row.dressPartId" [items]="dressPartList"></ng-select></td>
-
-        <td>
-          <input class="form-control form-control-sm"
-                 placeholder="Wash, Dry, Finish"
-                 [(ngModel)]="row.operationTypes">
-        </td>
-
-        <td><ng-select [(ngModel)]="row.uomId" [items]="uomList"></ng-select></td>
-
-        <td class="text-center">
-          <button class="btn btn-sm btn-outline-primary"
-                  (click)="openSizePopup(row)">
-            Size
+ <div class="text-right mt-3">
+          <button type="button" class="btn btn-primary" (click)="onSubmit()">
+            <i class="fa fa-database" aria-hidden="true"></i>
+            {{ saveButtonTitle }}
           </button>
-        </td>
+          &nbsp;
+          <button class="btn btn-danger" type="button" (click)="clearAll()">
+            <i class="fa fa-refresh" aria-hidden="true"></i> Clear
+          </button>
+          &nbsp; &nbsp;
+        </div>
+ <!-- ================= SIZE POPUP ================= -->
+<div class="modal-backdrop fade show" *ngIf="sizePopupVisible"></div>
 
-        <td class="text-end fw-bold">{{ row.totalQty }}</td>
+<div class="modal fade show d-block" *ngIf="sizePopupVisible" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered modal-md">
+    <div class="modal-content shadow-lg border-0 rounded-3">
 
-        <td>
-          <input class="form-control form-control-sm"
-                 bsDatepicker [(ngModel)]="row.probableDeliveryDate">
-        </td>
-
-        <td>
-          <input class="form-control form-control-sm"
-                 bsDatepicker disabled
-                 [(ngModel)]="row.shipmentDate">
-        </td>
-
-      </tr>
-    </tbody>
-  </table>
-</div> -->
-
-<!-- ================= ACTION BUTTONS ================= -->
-<!-- <div class="text-end mt-3">
-  <button class="btn btn-primary" (click)="onSave()">
-    <i class="fa fa-save"></i> Save
-  </button>
-  <button class="btn btn-warning ms-2" (click)="onReturn()">Return</button>
-  <button class="btn btn-danger ms-2" (click)="onClose()">Close</button>
-</div> -->
-
-<!-- ================= SIZE POPUP ================= -->
-<!-- <div class="modal fade show d-block" *ngIf="sizePopupVisible">
-  <div class="modal-dialog modal-md">
-    <div class="modal-content">
-
-      <div class="modal-header">
-        <h6 class="modal-title">Size Wise Quantity</h6>
-        <button class="btn-close" (click)="sizePopupVisible=false"></button>
+      <!-- ===== HEADER ===== -->
+      <div class="modal-header bg-primary text-white py-2">
+        <h6 class="mb-0 fw-semibold">
+          <i class="fa fa-ruler-combined me-6"></i>
+          Size Wise Quantity
+        </h6>
+        <button type="button"
+                class="btn-close btn-close-white"
+                (click)="sizePopupVisible=false">
+        </button>
       </div>
 
-      <div class="modal-body">
-        <table class="table table-sm">
-          <tr *ngFor="let s of sizeList">
-            <td>{{ s.size }}</td>
-            <td>
-              <input type="number" class="form-control form-control-sm"
-                     [(ngModel)]="s.qty"
-                     (input)="onSizeQtyChange()">
-            </td>
-          </tr>
+      <!-- ===== BODY ===== -->
+      <div class="modal-body px-4 py-3">
+
+        <table class="table table-sm table-bordered align-middle text-center mb-3">
+          <thead class="table-light">
+            <tr>
+              <th style="width: 50%">Size</th>
+              <th style="width: 50%">Quantity</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            <tr *ngFor="let s of sizeList; let i = index">
+              <td class="fw-semibold">
+                {{ s.size }}
+              </td>
+
+              <td>
+                <input type="number"
+                       class="form-control form-control-sm text-end fw-semibold"
+                       [(ngModel)]="s.qty"
+                       (input)="calculateTotal()"
+                       min="0"
+                       autofocus>
+              </td>
+            </tr>
+          </tbody>
         </table>
 
-        <div class="text-end fw-bold">
-          Total: {{ totalSizeQty }}
+        <!-- ===== TOTAL ===== -->
+        <div class="d-flex justify-content-between align-items-center
+                    bg-light rounded px-3 py-2">
+          <span class="fw-semibold text-muted">Total Quantity</span>
+          <span class="fw-bold fs-5 text-primary">
+            {{ totalSizeQty }}
+          </span>
         </div>
+
       </div>
 
-      <div class="modal-footer">
-        <button class="btn btn-primary btn-sm" (click)="confirmSizeQty()">OK</button>
+      <!-- ===== FOOTER ===== -->
+      <div class="modal-footer py-2">
+        <button class="btn btn-sm btn-outline-secondary"
+                (click)="sizePopupVisible=false">
+          Cancel
+        </button>
+
+        <button class="btn btn-sm btn-primary px-4"
+                (click)="confirmSizeQty()">
+          <i class="fa fa-check me-1"></i>
+          Confirm
+        </button>
       </div>
 
     </div>
   </div>
-</div> -->
+</div>
