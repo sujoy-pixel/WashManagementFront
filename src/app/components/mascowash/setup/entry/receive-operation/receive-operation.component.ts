@@ -110,6 +110,24 @@ export class ReceiveOperationComponent implements OnInit {
       });
   }
 
+  // ================= Batch SEARCH =================
+  onBatchNoEnter() {
+    if (!this.Model.batchNo) {
+      this.toastr.warning('Batch No required');
+      return;
+    }
+
+    this.service.getReceiveByBatchNo(this.Model.batchNo)
+      .subscribe(res => {
+        if (!res || !res.length) {
+          this.toastr.info('No data found');
+          this.detailList = [];
+          return;
+        }
+        this.bindDetailRows(res);
+      });
+  }
+
   // ================= GRID BINDING (GROUPING LOGIC) =================
   bindDetailRows(rows: any[]) {
 

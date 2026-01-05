@@ -330,6 +330,12 @@ getReceiveByTrackingNo(trackingNo: string): Observable<any[]> {
       { headers: this.token.headerToken() }
     );
   }
+  getReceiveByBatchNo(BatchNo: string): Observable<any[]> {
+    return this.http.get<any[]>(
+     this.baseUrl_ +  `Setup/GetReceiveByBatchNo?BatchNo=${BatchNo}`,
+      { headers: this.token.headerToken() }
+    );
+  }
 GetInspectionTypeDdl(): Observable<any> {
     return this.http.get<any[]>(
       this.baseUrl_ + 'Common/GetTypeOfInspectionDDL',

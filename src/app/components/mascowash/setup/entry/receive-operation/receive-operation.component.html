@@ -167,8 +167,8 @@
         <input type="text"
                class="form-control"
                placeholder="Scan / Enter Dyeing Batch"
-               [(ngModel)]="Model.dyeingBatchNo"
-               
+               [(ngModel)]="Model.batchNo"
+               (keyup.enter)="onBatchNoEnter()"
                [disabled]="!Model.isDyeingActive">
       </div>
 
@@ -201,7 +201,7 @@
 <table class="table table-bordered table-sm">
 <thead class="table-light text-center">
 <tr>
-  <th>Tracking</th>
+  <th>Tracking/BatchNo</th>
         <th>From Unit</th>
         <th>Receive Date</th>
         <th>Buyer</th>
