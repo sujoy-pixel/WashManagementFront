@@ -1,7 +1,10 @@
-import { HttpClient } from '@angular/common/http';
+//import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
+
 import { Injectable } from '@angular/core';
 import { TokenService } from 'src/app/shared/services/token.service';
 import { environment } from 'src/environments/environment';
+
 //import { CreateSchoolComponent } from "../schoolnames/create-school/create-school.component";
 import { Observable } from 'rxjs';
 import { User } from '../../forms/form-validation/user.module';
@@ -355,11 +358,41 @@ GetInspectionTypeDdl(): Observable<any> {
     });
   }
 saveReceiveOperation(data: any) {
+  debugger;
   return this.http.post(
     this.baseUrl_ + 'Setup/SaveTrackingNoReceive',
     data,
     { headers: this.token.headerToken() }
   );
 }
+  getSearchData(
+    unitId: number,
+    receiveNo?: string,
+    fromDate?: string,
+    toDate?: string
+  ): Observable<any[]> {
 
+    let params = new HttpParams()
+      .set('unitId', unitId.toString());
+
+    if (receiveNo) {
+      params = params.set('receiveNo', receiveNo);
+    }
+
+    if (fromDate) {
+      params = params.set('fromDate', fromDate);
+    }
+
+    if (toDate) {
+      params = params.set('toDate', toDate);
+    }
+
+    return this.http.get<any[]>(
+      this.baseUrl_ + 'Setup/getSearchDataByReceiveNoOrDate',
+      {
+        headers: this.token.headerToken(),
+        params: params
+      }
+    );
+  }
 }

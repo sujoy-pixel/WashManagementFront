@@ -1,12 +1,26 @@
 import { Component, OnInit } from '@angular/core';
 import { ToastrService } from 'ngx-toastr';
 import { WashSetupService } from '../../../services/washsetup.service';
+import { subscribe } from 'diagnostics_channel';
+interface SearchModel {
+  UnitId?: number;
+  fromDate?: string;
+  toDate?: string;
+  receiveNo?: string;
+}
 
+// Define the shape of one record in the table
+interface ReceiveRecord {
+  receiveNo: string;
+  receivedBy: string;
+  receiveDate: string; // ISO string or Date
+}
 @Component({
   selector: 'app-receive-operation',
   templateUrl: './receive-operation.component.html',
   styleUrls: ['./receive-operation.component.scss']
 })
+
 export class ReceiveOperationComponent implements OnInit {
 
   // ================= FLAGS =================
@@ -53,6 +67,8 @@ export class ReceiveOperationComponent implements OnInit {
   totalSizeQty = 0;
   master: any;
   details: any[] = [];
+  // ✅ Initialize searchList as an empty array of ReceiveRecord
+  searchList: ReceiveRecord[] = [];
 
   constructor(
     private service: WashSetupService,
@@ -69,8 +85,262 @@ export class ReceiveOperationComponent implements OnInit {
     this.clearAll();
   }
 
+  onSearch() {
+    if (!this.review.UnitId) {
+      this.toastr.warning('Please Select Unit');
+      return;
+    }
+
+    if (!this.review.fromDate && !this.review.toDate && !this.review.receiveNo) {
+      this.toastr.warning('Please select From Date or To Date or enter Receive No');
+      return;
+    }
+
+    if ((this.review.fromDate && !this.review.toDate) || (!this.review.fromDate && this.review.toDate)) {
+      this.toastr.warning('Please select both From Date and To Date');
+      return;
+    }
+
+    this.getSearchData();
+  }
+
+  // getSearchData() {
+  //   this.service.getSearchData(
+  //     this.review.UnitId!,
+  //     this.review.receiveNo,
+  //     this.review.fromDate,
+  //     this.review.toDate
+  //   ).subscribe({
+  //     next: (res: ReceiveRecord[]) => {
+  //       // ✅ Ensure response is typed correctly
+  //       this.searchList = res || [];
+  //     },
+  //     error: (err) => {
+  //       this.toastr.error('Failed to load data');
+  //       console.error(err);
+  //     }
+  //   });
+  // }
+getSearchData() {
+  this.service.getSearchData(
+    this.review.UnitId!,
+    this.review.receiveNo,
+    this.review.fromDate,
+    this.review.toDate
+  ).subscribe({
+    next: (res: ReceiveRecord[]) => {
+      //this.searchList = res || [];
+      this.buildSearchList(res || []);
+    },
+    error: (err) => {
+      this.toastr.error('Failed to load data');
+      console.error(err);
+    }
+  });
+}
+// buildSearchList(rows: any[]) {
+
+//   const map = new Map<string, any>();
+
+//   rows.forEach(r => {
+// debugger;
+//     const key = `${r.receiveNo}| ${r.buyerNo}|${r.styleNo}|${r.jobId}|${r.orderId}`;
+
+//     if (!map.has(key)) {
+//       map.set(key, {
+//         masterId : r.masterId,
+//        // operation: r.operation,
+//         DetaisId : r.detailsId,
+//         receiveNo: r.receiveNo,
+//         receivedBy: r.receivedBy,
+//         //trackingNo: r.trackingNo,
+
+//        // fromUnitId: r.fromUnitId,
+//        // fromUnitName: r.fromUnitName,
+
+//         //buyerNo: r.buyerNo,
+//        // buyerName: r.buyerName,
+
+//         //jobId: r.jobId,
+//         //jobInfo: r.jobInfo,
+
+//         //styleNo: r.styleNo,
+//         //styleName: r.styleName,
+
+//         //orderId: r.orderId,
+//         //orderNo: r.orderNo,
+
+//         //fabricationId: r.fabrication,
+//        // fabricationName: r.fabricationName,
+
+//         //colorId: r.icleid,
+//         //colorName: r.color,
+
+//         //dressPartId: r.dressPartId,
+//        // dressPartName: r.dressPart,
+
+//         //totalQty: 0,
+//         receiveDate: r.receiveDate ? new Date(r.receiveDate) : null
+//       });
+//     }
+
+//     map.get(key).totalQty += r.qty;
+//   });
+
+//   this.searchList = Array.from(map.values());
+
+//   console.log('SEARCH GRID (UNIQUE)', this.searchList);
+// }
+buildSearchList(rows: any[]) {
+
+  const map = new Map<string, any>();
+
+  rows.forEach(r => {
+
+    const key =
+      `${r.receiveNo}`;
+
+    if (!map.has(key)) {
+      map.set(key, {
+        masterId: r.masterId,
+        detailsId: r.detailsId,
+
+        receiveNo: r.receiveNo,
+        receivedBy: r.receivedBy,
+
+        buyerNo: r.buyerNo,
+        buyerName: r.buyerName,
+
+        styleNo: r.styleNo,
+        styleName: r.styleName,
+
+        jobId: r.jobId,
+        jobInfo: r.jobInfo,
+
+        orderId: r.orderId,
+        orderNo: r.orderNo,
+
+        receiveDate: r.receiveDate ? new Date(r.receiveDate) : null,
+
+        totalQty: 0   // ✅ MUST EXIST
+      });
+    }
+
+    // ✅ SAFE SUM
+    map.get(key).totalQty += Number(r.qty || 0);
+  });
+
+  this.searchList = Array.from(map.values());
+this.detailList=this.searchList;
+  console.log('SEARCH GRID (UNIQUE)', this.searchList);
+
+}
+
+ onEdit(record: any) {
+  this.service.getSearchData(
+    this.review.UnitId!,
+    this.review.receiveNo,
+    this.review.fromDate,
+    this.review.toDate
+  )
+   .subscribe(res => {
+        if (!res || !res.length) {
+          this.toastr.info('No data found');
+          this.detailList = [];
+          return;
+        }
+        this.bindDetailRows(res);
+      });
+  }
+
+
+
+
+  // onEdit(row: ReceiveRecord) {
+  //   debugger;
+  //   next: (res: any[]) => {
+  //   this.bindDetailRows(res || []);
+  //   console.log('Edit clicked for:', row);
+  //   }
+  // }
+bindDetailNoRows(rows: any[]) {
+
+  this.detailList = rows.map(r => ({
+    trackingNo: r.trackingNo,
+
+    fromUnitId: r.fromUnitId,
+    fromUnitName: r.fromUnitName,
+
+    receiveDate: r.receiveDate ? new Date(r.receiveDate) : null,
+
+    buyerNo: r.buyerNo,
+    buyerName: r.buyerName,
+
+    jobId: r.jobId,
+    jobInfo: r.jobInfo,
+
+    styleNo: r.styleNo,
+    styleName: r.styleName,
+
+    orderId: r.orderId,
+    orderNo: r.orderNo,
+
+    type: r.type,
+
+    fabricationId: r.fabrication,
+    fabricationName: r.fabricationName,
+    composition: r.composition,
+
+    gsmId: r.iszid,
+    gsmName: r.gsm,
+
+    colorId: r.icleid,
+    colorName: r.color,
+
+    dressPartId: r.dressPartId,
+    dressPartName: r.dressPart,
+
+    operationTypes: r.operationType,
+
+    uomId: r.uomDetailsId,
+    uomName: r.uom,
+
+    size: r.size,
+    qty: r.qty,
+
+    probableDeliveryDate: r.probableDeliveryDate
+      ? new Date(r.probableDeliveryDate)
+      : null,
+
+    shipmentDate: r.shipmentDate
+      ? new Date(r.shipmentDate)
+      : null
+  }));
+
+  console.log('EDIT GRID (FULL RAW DATA)', this.detailList);
+
+  // Dropdowns — derived but NOT unique-filtering grid
+  this.jobList = this.unique(this.detailList, 'jobId', 'jobInfo');
+  this.buyerList = this.unique(this.detailList, 'buyerNo', 'buyerName');
+  this.styleList = this.unique(this.detailList, 'styleNo', 'styleName');
+  this.orderList = this.unique(this.detailList, 'orderId', 'orderNo');
+  this.fabricationList = this.unique(this.detailList, 'fabricationId', 'fabricationName');
+  this.gsmList = this.unique(this.detailList, 'gsmId', 'gsmName');
+  this.colorList = this.unique(this.detailList, 'colorId', 'colorName');
+  this.dressPartList = this.unique(this.detailList, 'dressPartId', 'dressPartName');
+  this.uomList = this.unique(this.detailList, 'uomId', 'uomName');
+}
+
+  onDelete(row: ReceiveRecord, index: number) {
+    if (confirm(`Are you sure you want to delete Receive No ${row.receiveNo}?`)) {
+      this.searchList.splice(index, 1);
+      this.toastr.success('Record deleted successfully');
+    }
+  }
+
   onReview() {
     this.isReviewMode = !this.isReviewMode;
+
   }
 
   // ================= LOAD MASTER DROPDOWNS =================
@@ -124,11 +394,11 @@ export class ReceiveOperationComponent implements OnInit {
           this.detailList = [];
           return;
         }
-        this.bindDetailRows(res);
+        this.bindDetailBatchNoRows(res);
       });
   }
 
-  // ================= GRID BINDING (GROUPING LOGIC) =================
+  // ================= GRID BINDING For Tracking (GROUPING LOGIC) =================
   bindDetailRows(rows: any[]) {
 
     const map = new Map<string, any>();
@@ -250,42 +520,104 @@ export class ReceiveOperationComponent implements OnInit {
     this.detailList = [];
   }
 
-   onSubmit() {
+//    onSubmit() {
 
+//   if (!this.Model.UnitId) {
+//     this.toastr.warning('Please Select Unit');
+//     return;
+//   }
+//  if (this.Model.isDyeingActive) {
+
+//     if (!this.bindDetailBatchNoRows?.length) {
+//       this.toastr.warning('No batch details to save');
+//       return;
+//     }
+
+//   } else {
+
+//     if (!this.detailList?.length) {
+//       this.toastr.warning('No data to save');
+//       return;
+//     }
+
+//   }
+
+
+//   const payload = this.buildSavePayload();
+//   console.log('SAVE PAYLOAD', payload);
+
+//   this.service.saveReceiveOperation(payload)
+
+  
+//     .subscribe({
+//       next: () => {
+//         this.toastr.success('Saved Successfully');
+//         this.clearAll();
+//       },
+//       error: () => {
+//         this.toastr.error('Save Failed');
+//       }
+//     });
+// }
+
+onSubmit() {
+debugger;
   if (!this.Model.UnitId) {
     this.toastr.warning('Please Select Unit');
     return;
   }
 
-  if (!this.detailList.length) {
-    this.toastr.warning('No data to save');
+  let payload: any;
+
+  // Dyeing validation
+  if (this.Model.isDyeingActive) {
+
+    if (!this.detailList?.length) {
+      this.toastr.warning('No data to save');
+      return;
+    }
+
+    payload = this.buildSavePayForBatchload();
+  }
+  // Tracking validation
+  else if (this.Model.isTrackingActive) {
+
+    if (!this.detailList?.length) {
+      this.toastr.warning('No data to save');
+      return;
+    }
+
+    payload = this.buildSavePayload();
+
+  }
+  else {
+    this.toastr.warning('No valid operation selected');
     return;
   }
 
-  const payload = this.buildSavePayload();
   console.log('SAVE PAYLOAD', payload);
-
+debugger;
   this.service.saveReceiveOperation(payload)
-
-  
     .subscribe({
       next: () => {
         this.toastr.success('Saved Successfully');
         this.clearAll();
       },
-      error: () => {
+      error: (error) => {
+        console.log(error);
         this.toastr.error('Save Failed');
       }
     });
 }
 
-
   buildSavePayload(): any {
+    debugger;
 console.log('DETAIL LIST', this.detailList);
   const master = {
-    Operation: 'INSERT',
+    Operation: 'TrackingNo',
     unitId: this.Model.UnitId,
-    TrackingNo: this.Model.trackingNo,
+    MasterId: 0,
+    TrackingNo: this.Model.trackingNo && this.Model.trackingNo !== 0 ? `${this.Model.trackingNo}` : `${this.Model.batchNo}`,
     createdBy: 'SYSTEM'
   };
 
@@ -293,8 +625,11 @@ console.log('DETAIL LIST', this.detailList);
     trackingBatchNo: d.trackingNo,
     fromUnitId: d.fromUnitId,
     receiveDate: d.receiveDate,
+       BuyerId: d.buyerNo,
+			JobId: d.jobId,
+			StyleId: d.styleNo,
+			OrderId: d.orderId,
     typeName: d.type,
-
     fabricationId: d.fabricationId,
     composition: d.composition,
     iszId: d.gsmId,
@@ -313,6 +648,141 @@ console.log('DETAIL LIST', this.detailList);
       qty: s.qty
     }))
   }));
+
+  return { master, details };
+}
+ // =================  Buind for Batch No Grid  =================
+bindDetailBatchNoRows(rows: any[]) {
+
+  const map = new Map<string, any>();
+  // ===== GRID + DROPDOWN SOURCE (RAW DB DATA) =====
+  this.detailList = rows.map(r => ({
+    // ================= BASIC =================
+    trackingNo: r.trackingNo,
+
+    fromUnitId: r.fromUnitId,
+    fromUnitName: r.fromUnitName,
+
+    receiveDate: r.receiveDate ? new Date(r.receiveDate) : null,
+
+    // ================= BUYER / JOB =================
+    buyerNo: r.buyerNo,
+    buyerName: r.buyerName,
+
+    jobId: r.jobId,
+    jobInfo: r.jobInfo,
+
+    styleNo: r.styleNo,
+    styleName: r.styleName,
+
+    orderId: r.orderId,
+    orderNo: r.orderNo,
+
+    // ================= TYPE =================
+    type: r.type,
+
+    // ================= FABRIC =================
+   fabricationId: r.fabrication,
+   fabricationName: r.fabricationName,
+    composition: r.composition,
+
+    gsmId: r.iszid,
+    gsmName: r.gsm,
+
+    colorId: r.icleid,
+    colorName: r.color,
+
+    dressPartId: r.dressPartId,
+    dressPartName: r.dressPart,
+
+    operationTypes: r.operationType,
+
+    uomId: r.uomDetailsId,
+    uomName: r.uom,
+    //qty: r.qty,
+    totalQty: r.qty,
+    // ================= SIZE & QTY =================
+    //size: r.size,
+    //qty: r.qty,
+
+    // ================= DATE =================
+    probableDeliveryDate: r.probableDeliveryDate
+      ? new Date(r.probableDeliveryDate)
+      : null,
+
+    shipmentDate: r.shipmentDate
+      ? new Date(r.shipmentDate)
+      : null
+  }));
+
+  console.log('GRID + DROPDOWN DATA (AS IS FROM DB)', this.detailList);
+
+  // ===== DROPDOWNS USE SAME LIST (NO UNIQUE) =====
+  this.jobList = this.unique(this.detailList, 'jobId', 'jobInfo');
+  this.buyerList = this.unique(this.detailList, 'buyerNo', 'buyerName');
+   this.styleList = this.unique(this.detailList, 'styleNo', 'styleName');
+  this.orderList = this.unique(this.detailList, 'orderId', 'orderNo');
+  this.fabricationList = this.unique(this.detailList, 'fabricationId', 'fabricationName');
+  this.gsmList = this.unique(this.detailList, 'gsmId', 'gsmName');
+  this.colorList = this.unique(this.detailList, 'colorId', 'colorName');
+  this.dressPartList = this.unique(this.detailList, 'dressPartId', 'dressPartName');
+  this.uomList = this.unique(this.detailList, 'uomId', 'uomName');
+}
+
+
+
+  buildSavePayForBatchload(): any {
+    debugger;
+console.log('DETAIL LIST', this.detailList);
+
+  console.log('DETAIL LIST', this.detailList);
+  const master = {
+    operation: 'BatchNo',
+    unitId: this.Model.UnitId,
+    MasterId: 0,
+    trackingNo: this.Model.trackingNo && this.Model.trackingNo !== 0 ? `${this.Model.trackingNo}` : `${this.Model.batchNo}`,
+    createdBy: 'SYSTEM'
+  };
+
+  const details = this.detailList.map(d => ({
+    trackingBatchNo: this.Model.batchNo,
+    fromUnitId: d.fromUnitId,
+    //receiveDate: d.receiveDate,
+    receiveDate: new Date(d.receiveDate).getFullYear() < 1900
+    ? new Date().toISOString()
+    : new Date(d.receiveDate).toISOString(),
+
+     BuyerId: d.buyerNo,
+			JobId: d.jobId,
+			StyleId: d.styleNo,
+			OrderId: d.orderId,
+
+    typeName: d.type,
+
+    fabricationId: d.fabricationId,
+    composition: d.composition,
+    iszId: d.gsmId,
+    colorId: d.colorId,
+    dressPartId: d.dressPartId,
+
+    operationType: d.operationTypes,
+    uomId: d.uomId,
+    totalQty: d.totalQty,
+
+    //probableDeliveryDate: d.probableDeliveryDate,
+    probableDeliveryDate: new Date(d.probableDeliveryDate).getFullYear() < 1900
+    ? new Date().toISOString()
+    : new Date(d.probableDeliveryDate).toISOString(),
+  
+
+    shipmentDate: new Date(d.shipmentDate).getFullYear() < 1900
+    ? new Date().toISOString()
+    : new Date(d.shipmentDate).toISOString(),
+    sizeDetails: [{
+    size: d.sizeDetails?.[0]?.size ?? '',
+    qty: 0
+}]  
+ }));
 
   return { master, details };
 }

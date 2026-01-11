@@ -1,28 +1,4 @@
-<!-- ================= PAGE HEADER ================= -->
-<!-- <div class="row">
-  <div class="col-md-12">
-    <div class="card custom-card">
-      <div class="card-header border-bottom justify-content-between">
-        <div class="card-title">Wash Order Receive Operation</div>
-      </div>
-    </div>
-  </div> -->
 
-<!-- 
-<div class="page-header d-flex justify-content-between align-items-center mb-3">
-  <div class="card-header border-bottom">
-    <h5 class="card-title">Wash Order Receive Operation</h5>
-  </div> -->
-
-  <!-- <div class="">
-    <button class="btn btn-primary me-2" (click)="onNew()">
-      <i class="fa fa-plus"></i> New
-    </button>
-    <button class="btn btn-info" (click)="onReview()">
-      <i class="fa fa-search"></i> Review / Check
-    </button>
-  </div> 
-</div> -->
 <div class="row">
   <div class="col-md-12">
     <div class="card custom-card">
@@ -53,10 +29,15 @@
 <!-- ================= REVIEW SEARCH ================= -->
 <div class="card custom-card mb-3" *ngIf="isReviewMode">
   <div class="card-body">
-    <div class="row g-3 align-items-center">
 
-      <!-- <div class="col-md-4">
-        <label class="form-label col-md-2">Unit <span class="text-danger">*</span></label>
+    <!-- ===================== FILTER ROW ===================== -->
+    <div class="row g-3 align-items-end">
+
+      <!-- Unit -->
+      <div class="col-md-3">
+        <label class="form-label">
+          Unit <span class="text-danger">*</span>
+        </label>
         <ng-select
           [(ngModel)]="review.UnitId"
           [items]="UnitList"
@@ -64,50 +45,86 @@
           bindValue="value"
           placeholder="Select Unit">
         </ng-select>
-      </div> -->
-
-
-
-       <div class="row my-2">
-          <div class="col-md-12">
-            <div class="row align-items-center">
-              <label class="form-label col-md-2">
-                <!-- For larger screens -->
-                <span class="d-none d-sm-inline text-dark" title="Unit"
-                  >Unit
-                  <span style="color: red !important; font-size: 1.5em"
-                    >*</span
-                  ></span
-                >
-              </label>
-              <div
-                class="form-control col-md-4 common-border"
-               
-              >
-                <ng-select
-          [(ngModel)]="review.UnitId"
-          [items]="UnitList"
-          bindLabel="label"
-          bindValue="value"
-          placeholder="Select Unit">
-        </ng-select>                      
-              </div>
-            </div>
-          </div>
-        </div>
-      <div class="col-md-4">
-        <label class="form-label">From Date</label>
-        <input type="text" class="form-control" bsDatepicker [(ngModel)]="review.fromDate">
       </div>
 
-      <div class="col-md-4">
+      <!-- From Date -->
+      <div class="col-md-3">
+        <label class="form-label">From Date</label>
+        <input
+          type="text"
+          class="form-control"
+          bsDatepicker
+          [(ngModel)]="review.fromDate">
+      </div>
+
+      <!-- To Date -->
+      <div class="col-md-3">
         <label class="form-label">To Date</label>
-        <input type="text" class="form-control" bsDatepicker [(ngModel)]="review.toDate">
+        <input
+          type="text"
+          class="form-control"
+          bsDatepicker
+          [(ngModel)]="review.toDate">
+      </div>
+
+      <!-- Receive No -->
+      <div class="col-md-3">
+        <label class="form-label">Receive No</label>
+        <input
+          type="text"
+          class="form-control"
+          [(ngModel)]="review.receiveNo"
+          placeholder="Enter Receive No">
       </div>
 
     </div>
+
+    <!-- ===================== ACTION BUTTONS ===================== -->
+    <div class="row mt-4">
+      <div class="col-md-12 text-end">
+        <button
+          type="button"
+          class="btn btn-info px-4"
+          (click)="onSearch()">
+          <i class="fa fa-search me-1"></i>
+          Search
+        </button>
+      </div>
+    </div>
+
   </div>
+  <table class="table table-bordered table-sm">
+  <thead class="table-light text-center">
+    <tr>
+      <th>SL</th>
+      <th>Receive No</th>
+      <th>Received By</th>
+      <th>Receive Date</th>
+      <th>Action</th>
+    </tr>
+  </thead>
+  <tbody>
+    <!-- <tr *ngFor="let row of searchList; let i = index" class="text-center"> -->
+    <tr *ngFor="let row of searchList; let i = index" class="text-center">
+
+      <td>{{ i + 1 }}</td>
+      <td>{{ row.receiveNo }}</td>
+      <td>{{ row.receivedBy }}</td>
+      <td>{{ row.receiveDate | date:'dd-MM-yyyy' }}</td>
+      <td>
+        <button class="btn btn-sm btn-outline-primary me-1" (click)="onEdit(row)">
+          Edit
+        </button>
+        <button class="btn btn-sm btn-outline-danger" (click)="onDelete(row, i)">
+          Delete
+        </button>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
 </div>
+
 
 <!-- ================= UNIT (NEW MODE) ================= -->
 
@@ -126,7 +143,7 @@
       
 <!-- ================= INPUT MODE ================= -->
  
-<div class="card custom-card mb-3">
+<div class="card custom-card mb-3" *ngIf="!isReviewMode">
   <div class="card-body">
     <div class="row g-3">
 
@@ -157,8 +174,7 @@
           <label class="switch">
             <input type="checkbox"
                    [(ngModel)]="Model.isDyeingActive"
-                   (change)="Model.isTrackingActive=false;
-                   
+                   (change)="Model.isTrackingActive=false;                  
                    Model.isManualActive=false" class="success">
             <span class="slider round"></span>
           </label>
@@ -358,7 +374,8 @@
 
         <td class="text-center">
           <button class="btn btn-sm btn-outline-primary"
-                  (click)="openSizePopup(row)">
+                  (click)="openSizePopup(row)"
+                   [disabled]="Model.isDyeingActive">
             Size
           </button>
         </td>
