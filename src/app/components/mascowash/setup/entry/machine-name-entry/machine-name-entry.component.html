@@ -6,19 +6,36 @@
   <div class="card-body">
 
     <!-- Unit -->
-    <div class="row my-2">
+    <!-- <div class="row my-2">
       <label class="col-md-2 form-label text-dark">Unit <span class="text-danger">*</span></label>
       <div class="col-md-4">
         <ng-select [(ngModel)]="Model.UnitId" placeholder="Select Unit">
           <ng-option *ngFor="let u of UnitList" [value]="u.value">{{ u.label }}</ng-option>
         </ng-select>
       </div>
-    </div>
-
+    </div> -->
+ <div class="row align-items-center">
+              <label class="form-label col-md-2">
+                <!-- For larger screens -->
+                <span class="d-none d-sm-inline text-dark" title="Unit"
+                  >Unit
+                  <span style="color: red !important; font-size: 1.5em"
+                    >*</span
+                  ></span
+                >
+              </label>
+              <div
+                class="form-control col-md-4 common-border"              
+              >
+                <ng-select [(ngModel)]="Model.UnitId" placeholder="Select Unit">
+          <ng-option *ngFor="let u of UnitList" [value]="u.value">{{ u.label }}</ng-option>
+        </ng-select>
+              </div>
+            </div>
     <!-- Operation -->
     <div class="row my-2">
       <label class="col-md-2 form-label text-dark">Operation <span class="text-danger">*</span></label>
-      <div class="col-md-4">
+      <div class="form-control col-md-4 common-border">
         <ng-select [(ngModel)]="Model.OperationId" placeholder="Select Operation">
           <ng-option *ngFor="let op of OperationList" [value]="op.value">{{ op.label }}</ng-option>
         </ng-select>

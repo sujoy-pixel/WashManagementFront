@@ -35,6 +35,8 @@ import { FaultWiseValueTagEntryComponent } from './setup/entry/fault-wise-value-
 import { FaultHeadNameEntryComponent } from './setup/entry/fault-head-name-entry/fault-head-name-entry.component';
  //import { WashReceiveOperationComponent } from './setup/wash-receive-operation/wash-receive-operation.component';
  import { ReceiveOperationComponent } from './setup/entry/receive-operation/receive-operation.component';
+ import { WashBatchPrepareOperationComponent } from './setup/entry/wash-batchprepare-operation/wash-batchprepare-operation.component';
+import { WashPrepareActionComponent } from './setup/entry/wash-prepare-action/wash-prepare-action.component';
  //import WashRec
 @NgModule({
   declarations: [
@@ -44,7 +46,7 @@ import { FaultHeadNameEntryComponent } from './setup/entry/fault-head-name-entry
 
     InspectionTypeEntryComponent,
     ReceiveOperationComponent,
-
+    WashBatchPrepareOperationComponent,
     OperationNameEntryComponent,
     InspectionAreaEntryComponent,
     MachineNameEntryComponent,
@@ -52,6 +54,8 @@ import { FaultHeadNameEntryComponent } from './setup/entry/fault-head-name-entry
     InspectionHeadLayoutEntryComponent,
     FaultWiseValueTagEntryComponent,
     FaultHeadNameEntryComponent,
+    WashPrepareActionComponent
+    
    
   ],
   imports: [

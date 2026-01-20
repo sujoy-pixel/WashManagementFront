@@ -19,7 +19,7 @@ export class WashSetupService {
   baseUrl = environment.apiUrl;
   baseUrl_ = this.baseUrl.replace(/[?&]$/, '');
 
-  constructor(private http: HttpClient, private token: TokenService) {}
+  constructor(private http: HttpClient, private token: TokenService) { }
 
   GetBuyerName(Id: number): Observable<any> {
     return this.http.get<any[]>(
@@ -42,18 +42,10 @@ export class WashSetupService {
     });
   }
 
-  // saveInspectionAreaEntry(obj: any) {
-  //   //return this.http.post('Setup/SaveInspectionArea', payload);
-
-  //   return this.http.post(
-  //     this.baseUrl_ + 'Setup/SaveInspectionArea', obj,
-  //     { headers: this.token.headerToken() }
-  //   );
-  // }
 
 
 
- saveInspectionAreaEntry(obj: any) {
+  saveInspectionAreaEntry(obj: any) {
     return this.http.post(
       this.baseUrl_ + 'Setup/SaveInspectionArea',
       obj,
@@ -69,31 +61,16 @@ export class WashSetupService {
 
 
 
- deleteInspectionArea(obj: any) {
+  deleteInspectionArea(obj: any) {
     return this.http.post(this.baseUrl_ + 'Setup/SaveInspectionArea', obj, {
       headers: this.token.headerToken(),
     });
 
-  // deleteInspectionArea(payload: any) {
-  //   return this.http.post('Setup/DeleteInspectionArea', payload);
-  // }
-
-  // TypeofInspectionService(obj: any) {
-  //   return this.http.post(this.baseUrl_ + 'Setup/SaveTypeofInspection', obj, {
-  //     headers: this.token.headerToken(),
-  //   });
-  // }
-
-  // getAllTypeofInspection() {
-  //   return this.http.get(this.baseUrl_ + 'Setup/GetTypeofInspectionData', {
-  //     headers: this.token.headerToken(),
-  //   });
-  // }
 
   }
 
 
-  
+
   saveProcessNameEntryData(obj: any) {
     return this.http.post(this.baseUrl_ + 'Setup/SaveProcessNameEntry', obj, {
       headers: this.token.headerToken(),
@@ -140,39 +117,39 @@ export class WashSetupService {
   }
 
 
-// SAVE FAULT NAME
-saveFaultName(obj: any) {
-  return this.http.post(
-    this.baseUrl_ + 'Setup/SaveFaultName',
-    obj,
-    { headers: this.token.headerToken() }
-  );
-}
+  // SAVE FAULT NAME
+  saveFaultName(obj: any) {
+    return this.http.post(
+      this.baseUrl_ + 'Setup/SaveFaultName',
+      obj,
+      { headers: this.token.headerToken() }
+    );
+  }
 
-// GET FAULT NAME LIST
-getFaultNameList() {
-  return this.http.get(
-    this.baseUrl_ + 'Setup/GetFaultNameData',
-    { headers: this.token.headerToken() }
-  );
-}
+  // GET FAULT NAME LIST
+  getFaultNameList() {
+    return this.http.get(
+      this.baseUrl_ + 'Setup/GetFaultNameData',
+      { headers: this.token.headerToken() }
+    );
+  }
 
-// DELETE FAULT NAME
-deleteFaultName(obj: any) {
-  return this.http.post(
-    this.baseUrl_ + 'Setup/SaveFaultName',
-    obj,
-    { headers: this.token.headerToken() }
-  );
-}
+  // DELETE FAULT NAME
+  deleteFaultName(obj: any) {
+    return this.http.post(
+      this.baseUrl_ + 'Setup/SaveFaultName',
+      obj,
+      { headers: this.token.headerToken() }
+    );
+  }
 
-// GET FAULT HEAD DROPDOWN
-getFaultHeadList() {
-  return this.http.get(
-    this.baseUrl_ + 'Common/GetFaultHead',
-    { headers: this.token.headerToken() }
-  );
-}
+  // GET FAULT HEAD DROPDOWN
+  getFaultHeadList() {
+    return this.http.get(
+      this.baseUrl_ + 'Common/GetFaultHead',
+      { headers: this.token.headerToken() }
+    );
+  }
 
 
 
@@ -210,29 +187,15 @@ getFaultHeadList() {
     });
   }
 
-//   // check single machine exists
-// checkMachineExists(obj: { unitId: number; operationId: number; machineName: string }) {
-//   return this.http.post(this.baseUrl_ + 'Setup/CheckMachineExists', obj, { headers: this.token.headerToken() });
-// }
+  // load DDL For Operation
+  GetOperationNameDDLs() {
+    return this.http.get<any[]>(
+      this.baseUrl_ + 'Common/GetOperationNameDDL',
+      { headers: this.token.headerToken() }
+    );
+  }
 
-// // save master + details
-// saveMachineMasterDetail(obj: any) {
-//   return this.http.post(this.baseUrl_ + 'Setup/SaveMachineName', obj, { headers: this.token.headerToken() });
-// }
-
-// // load master list (optional)
-// getMachineMasterList() {
-//   return this.http.get(this.baseUrl_ + 'Setup/GetMachineMasterList', { headers: this.token.headerToken() });
-// }
-// load DDL For Operation
-GetOperationNameDDLs() {
-  return this.http.get<any[]>(
-    this.baseUrl_ + 'Common/GetOperationNameDDL',
-    { headers: this.token.headerToken() }
-  );
-}
-
- // ===== check single machine exists =====
+  // ===== check single machine exists =====
   checkMachineExists(obj: {
     unitId: number;
     operationId: number;
@@ -261,85 +224,85 @@ GetOperationNameDDLs() {
   //     { headers: this.token.headerToken() }
   //   );
   // }
-getMachineMasterList(): Observable<any[]> {
-  return this.http.get<any[]>(this.baseUrl_ + 'Setup/GetMachineMasterList', { 
-    headers: this.token.headerToken() 
-  });
-}
+  getMachineMasterList(): Observable<any[]> {
+    return this.http.get<any[]>(this.baseUrl_ + 'Setup/GetMachineMasterList', {
+      headers: this.token.headerToken()
+    });
+  }
 
-GetTrackingNoAuto() {
-  return this.http.get<any[]>(
-    this.baseUrl_ + 'Common/GetTrackingNo',
-    { headers: this.token.headerToken() }
-  );
-}
-
-GetBuyerNameDDL() {
-  return this.http.get<any[]>(
-    this.baseUrl_ + 'Common/GetBuyerDDL',
-    { headers: this.token.headerToken() }
-  );
-}
-
-GetJobNoDDL() {
-  return this.http.get<any[]>(
-    this.baseUrl_ + 'Common/GetJobDDL',
-    { headers: this.token.headerToken() }
-  );
-}
-
-GetStyleNoDDL() {
-  return this.http.get<any[]>(
-    this.baseUrl_ + 'Common/GetStyleDDL',
-    { headers: this.token.headerToken() }
-  );
-}
-GetOrderNoDDL() {
-  return this.http.get<any[]>(
-    this.baseUrl_ + 'Common/GetOrderDDL',
-    { headers: this.token.headerToken() }
-  );
-}
-GetFabricationDDL() {
-  return this.http.get<any[]>(
-    this.baseUrl_ + 'Common/GetFabricationDDL',
-    { headers: this.token.headerToken() }
-  );
-}
-
-
-GetGSMDDL() {
-  return this.http.get<any[]>(
-    this.baseUrl_ + 'Common/GetGSMDDL',
-    { headers: this.token.headerToken() }
-  );
-}
-GetDressPartDDL() {
-  return this.http.get<any[]>(
-    this.baseUrl_ + 'Common/GetDressPart',
-    { headers: this.token.headerToken() }
-  );
-}
-
-GetUOMDDL() {
-  return this.http.get<any[]>(
-    this.baseUrl_ + 'Common/GetUOM',
-    { headers: this.token.headerToken() }
-  );
-}
-getReceiveByTrackingNo(trackingNo: string): Observable<any[]> {
+  GetTrackingNoAuto() {
     return this.http.get<any[]>(
-     this.baseUrl_ +  `Setup/GetReceiveByTrackingNo?trackingNo=${trackingNo}`,
+      this.baseUrl_ + 'Common/GetTrackingNo',
+      { headers: this.token.headerToken() }
+    );
+  }
+
+  GetBuyerNameDDL() {
+    return this.http.get<any[]>(
+      this.baseUrl_ + 'Common/GetBuyerDDL',
+      { headers: this.token.headerToken() }
+    );
+  }
+
+  GetJobNoDDL() {
+    return this.http.get<any[]>(
+      this.baseUrl_ + 'Common/GetJobDDL',
+      { headers: this.token.headerToken() }
+    );
+  }
+
+  GetStyleNoDDL() {
+    return this.http.get<any[]>(
+      this.baseUrl_ + 'Common/GetStyleDDL',
+      { headers: this.token.headerToken() }
+    );
+  }
+  GetOrderNoDDL() {
+    return this.http.get<any[]>(
+      this.baseUrl_ + 'Common/GetOrderDDL',
+      { headers: this.token.headerToken() }
+    );
+  }
+  GetFabricationDDL() {
+    return this.http.get<any[]>(
+      this.baseUrl_ + 'Common/GetFabricationDDL',
+      { headers: this.token.headerToken() }
+    );
+  }
+
+
+  GetGSMDDL() {
+    return this.http.get<any[]>(
+      this.baseUrl_ + 'Common/GetGSMDDL',
+      { headers: this.token.headerToken() }
+    );
+  }
+  GetDressPartDDL() {
+    return this.http.get<any[]>(
+      this.baseUrl_ + 'Common/GetDressPart',
+      { headers: this.token.headerToken() }
+    );
+  }
+
+  GetUOMDDL() {
+    return this.http.get<any[]>(
+      this.baseUrl_ + 'Common/GetUOM',
+      { headers: this.token.headerToken() }
+    );
+  }
+  getReceiveByTrackingNo(trackingNo: string): Observable<any[]> {
+    return this.http.get<any[]>(
+      this.baseUrl_ + `Setup/GetReceiveByTrackingNo?trackingNo=${trackingNo}`,
       { headers: this.token.headerToken() }
     );
   }
   getReceiveByBatchNo(BatchNo: string): Observable<any[]> {
     return this.http.get<any[]>(
-     this.baseUrl_ +  `Setup/GetReceiveByBatchNo?BatchNo=${BatchNo}`,
+      this.baseUrl_ + `Setup/GetReceiveByBatchNo?BatchNo=${BatchNo}`,
       { headers: this.token.headerToken() }
     );
   }
-GetInspectionTypeDdl(): Observable<any> {
+  GetInspectionTypeDdl(): Observable<any> {
     return this.http.get<any[]>(
       this.baseUrl_ + 'Common/GetTypeOfInspectionDDL',
       {
@@ -357,35 +320,40 @@ GetInspectionTypeDdl(): Observable<any> {
       headers: this.token.headerToken(),
     });
   }
-saveReceiveOperation(data: any) {
-  debugger;
-  return this.http.post(
-    this.baseUrl_ + 'Setup/SaveTrackingNoReceive',
-    data,
-    { headers: this.token.headerToken() }
-  );
-}
+  saveReceiveOperation(data: any) {
+    debugger;
+    return this.http.post(
+      this.baseUrl_ + 'Setup/SaveTrackingNoReceive',
+      data,
+      { headers: this.token.headerToken() }
+    );
+  }
   getSearchData(
+
     unitId: number,
     receiveNo?: string,
     fromDate?: string,
     toDate?: string
   ): Observable<any[]> {
+    debugger;
+    // let params = new HttpParams()
+    //   .set('unitId', unitId.toString());
+    const params = new HttpParams()
+      .set('unitId', unitId.toString())
+      .set('receiveNo', receiveNo ?? '')
+      .set('fromDate', fromDate ?? '')
+      .set('toDate', toDate ?? '');
+    // if (receiveNo) {
+    //   params = params.set('receiveNo', receiveNo);
+    // }
 
-    let params = new HttpParams()
-      .set('unitId', unitId.toString());
+    // if (fromDate) {
+    //   params = params.set('fromDate', fromDate);
+    // }
 
-    if (receiveNo) {
-      params = params.set('receiveNo', receiveNo);
-    }
-
-    if (fromDate) {
-      params = params.set('fromDate', fromDate);
-    }
-
-    if (toDate) {
-      params = params.set('toDate', toDate);
-    }
+    // if (toDate) {
+    //   params = params.set('toDate', toDate);
+    // }
 
     return this.http.get<any[]>(
       this.baseUrl_ + 'Setup/getSearchDataByReceiveNoOrDate',
@@ -394,5 +362,81 @@ saveReceiveOperation(data: any) {
         params: params
       }
     );
+
   }
+  GetJobNoWithParameterDDL(data: any) {
+    const params = new HttpParams()
+      .set('unitId', data.unitId)
+      .set('buyerId', data.buyerId);
+
+    return this.http.get<any[]>(
+      this.baseUrl_ + 'Common/GetJobByUnitAndBuyerDDL',
+      { headers: this.token.headerToken(), params }
+    );
+  }
+  GetStyleNoWithParameterDDL(data: any) {
+    debugger
+    const params = new HttpParams()
+      .set('unitId', data.unitId)
+      .set('buyerId', data.buyerId)
+      .set('jobId', data.jobId);
+
+    return this.http.get<any[]>(
+      this.baseUrl_ + 'Common/GetStyleByUnitBuyerAndJobDDL',
+      { headers: this.token.headerToken(), params }
+    );
+  }
+
+  GetOrderNoWithParameterDDL(data: any) {
+    const params = new HttpParams()
+      .set('unitId', data.unitId)
+      .set('buyerId', data.buyerId)
+      .set('jobId', data.jobId)
+      .set('styleId', data.styleId);
+
+    return this.http.get<any[]>(
+      this.baseUrl_ + 'Common/GetOrderByUnitBuyerJobAndStyleDDL',
+      { headers: this.token.headerToken(), params }
+    );
+  }
+  getWashBatchPrepareGrid(data: any) {
+
+    const params = new HttpParams()
+      .set('unitId', data.unitId)
+      .set('buyerId', data.buyerId)
+      .set('jobId', data.jobId)
+      .set('styleId', data.styleId)
+      .set('orderId', data.orderId);
+
+    return this.http.get<any[]>(
+      this.baseUrl_ + 'Setup/GetWashBatchPrepareGrid',
+      {
+        headers: this.token.headerToken(),
+        params
+      }
+    );
+  }
+    GetMachineNoDDL() {
+      debugger;
+    return this.http.get<any[]>(
+      this.baseUrl_ + 'Common/GetMachineNoDDL',
+      { headers: this.token.headerToken() }
+    );
+  }
+
+  GetProcessNameDDL() {
+    debugger;
+    return this.http.get<any[]>(
+      this.baseUrl_ + 'Common/GetProcessNameDDL',
+      { headers: this.token.headerToken() }
+    );
+  }
+  SaveWashPrepare(model: any) {
+  return this.http.post(
+    this.baseUrl_ + 'Setup/SaveWashBatchPrepare',
+    model,
+    { headers: this.token.headerToken() }
+  );
+}
+
 }

@@ -19,7 +19,8 @@ import { FaultWiseValueTagEntryComponent } from './setup/entry/fault-wise-value-
 import { ReceiveOperationComponent } from './setup/entry/receive-operation/receive-operation.component';
 //import { ReceiveOperationComponent } from './Operation/receive-operation/receive-operation.component';
 
- //import{ ReceiveOperationComponent } from '../../components/Operation/receive-operation/receive-operation.component';  
+ import{ WashBatchPrepareOperationComponent } from './setup/entry/wash-batchprepare-operation/wash-batchprepare-operation.component';  
+import { WashPrepareActionComponent } from './setup/entry/wash-prepare-action/wash-prepare-action.component';
 
 const routes: Routes = [
   {
@@ -31,6 +32,11 @@ const routes: Routes = [
       //   component: ActualDateEntryComponent,
       //   runGuardsAndResolvers: 'always',
       // },
+        {
+        path: 'setup/entry/wash-batchprepare-operation',
+        component: WashBatchPrepareOperationComponent,
+        runGuardsAndResolvers: 'always',
+      },
     {
         path: 'setup/entry/receive-operation',
         component: ReceiveOperationComponent,
@@ -80,6 +86,12 @@ const routes: Routes = [
         component: FaultWiseValueTagEntryComponent,
         runGuardsAndResolvers: 'always',
       },
+      {
+        path: 'setup/entry/wash-prepare-action',
+        component: WashPrepareActionComponent,
+        runGuardsAndResolvers: 'always',
+      },
+      
     ],
   },
 ];
