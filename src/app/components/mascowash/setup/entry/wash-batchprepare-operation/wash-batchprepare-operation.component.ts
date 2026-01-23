@@ -11,6 +11,7 @@ interface DropdownItem {
   value: number | string;
 }
 interface SizeDetail {
+  sizeId?: number | null;
   size: string;
   qty: number;
 }
@@ -54,6 +55,8 @@ interface WashBatchRow {
   totalQty: number;
 iszid:number;
 gsm:string;
+
+gsmId:number;
   sizeDetails: SizeDetail[];
 }
 @Component({
@@ -314,12 +317,13 @@ this.Model.BuyerId = Number(this.buyerList[0].value);
           sizeDetails: [],
           totalQty: 0,
           iszid: r.iszid,
-          gsm: r.gsm
+          gsm: r.gsm,
+          gsmId:r.gsmId
         });
       }
       const row = map.get(key)!;
 
-      row.sizeDetails.push({ size: r.size, qty: r.qty });
+      row.sizeDetails.push({ sizeId: r.iszid, size: r.size, qty: r.qty });
       row.totalQty += r.qty;
     });
 
@@ -362,81 +366,7 @@ this.Model.BuyerId = Number(this.buyerList[0].value);
   }
 
   /* ===================== ACTIONS ===================== */
-/* ===================== ACTIONS ===================== */
-// openPrepareTab(row: WashBatchRow): void {
-// debugger;
-//   if (!row || !row.orderId) {
-//     return; // safety guard
-//   }
 
-//   const navState = {
-//     orderId: row.orderId,
-
-//     buyer: row.buyerName ?? '',
-//     jobNo: row.jobInfo ?? '',
-//     styleNo: row.styleName ?? '',
-//     orderNo: row.orderNo ?? '',
-//     process: row.type ?? '',
-
-//     fabrication: row.fabricationName ?? '',
-//     color: row.colorName ?? '',
-
-//     sizeDetails: row.sizeDetails ? [...row.sizeDetails] : [],
-//     totalQty: row.totalQty ?? 0
-//   };
-
-//   // store navigation state
-//   sessionStorage.setItem(
-//     'WASH_PREPARE_NAV_STATE',
-//     JSON.stringify(navState)
-//   );
-// console.log("FUCK",navState);
-//   // generate angular-safe URL
-//   const url = this.router.serializeUrl(
-//     this.router.createUrlTree(['mascowash/setup/entry/wash-prepare-action'])
-//   );
-
-//   // open in new tab
-//   window.open(url, '_blank', 'noopener');
-// }
-
-// openPrepareTab(row: WashBatchRow): void {
-
-//   if (!row?.orderId) {
-//     return;
-//   }
-
-//   const navState = {
-//     orderId: row.orderId,
-
-//     buyer: row.buyerName ?? '',
-//     jobNo: row.jobInfo ?? '',
-//     styleNo: row.styleName ?? '',
-//     orderNo: row.orderNo ?? '',
-//     documentNo: row.receiveNo, 
- 
-//     date: new Date().toISOString().split('T')[0], 
-//    fabrication: row.fabricationName ?? '',
-//    composition: row.composition ?? '',
-//     color: row.colorName ?? '',
-
-//     sizeDetails: Array.isArray(row.sizeDetails) ? row.sizeDetails : [],
-//     totalQty: row.totalQty ?? 0
-//   };
-
-//   localStorage.setItem(
-//     'WASH_PREPARE_NAV_STATE',
-//     JSON.stringify(navState)
-//   );
-
-//   const url = this.router.serializeUrl(
-//     this.router.createUrlTree([
-//       '/mascowash/setup/entry/wash-prepare-action'
-//     ])
-//   );
-
-//   window.open(url, '_blank', 'noopener');
-// }
 openPrepareTab(row: WashBatchRow): void {
 
   if (!row?.orderId) return;

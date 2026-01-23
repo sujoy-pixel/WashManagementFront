@@ -1,10 +1,7 @@
-
 <div class="row">
   <div class="col-md-12">
     <div class="card custom-card">
-      <div
-        class="card-header border-bottom d-flex justify-content-between align-items-center"
-      >
+      <div class="card-header border-bottom d-flex justify-content-between align-items-center">
         <!-- LEFT : Title -->
         <div class="card-title mb-0">
           Wash Order Receive Operation
@@ -38,48 +35,30 @@
         <label class="form-label">
           Unit <span class="text-danger">*</span>
         </label>
-        <div
-           class="form-control col-md-8 common-border"     
-        >
-         <ng-select
-          [(ngModel)]="review.UnitId"
-          [items]="UnitList"
-          bindLabel="label"
-          bindValue="value"
-          placeholder="Select Unit">
-        </ng-select>
+        <div class="form-control col-md-8 common-border">
+          <ng-select [(ngModel)]="review.UnitId" [items]="UnitList" bindLabel="label" bindValue="value"
+            placeholder="Select Unit">
+          </ng-select>
         </div>
-        
+
       </div>
 
       <!-- From Date -->
       <div class="col-md-3">
         <label class="form-label">From Date</label>
-        <input
-          type="text"
-          class="form-control"
-          bsDatepicker
-          [(ngModel)]="review.fromDate">
+        <input type="text" class="form-control" bsDatepicker [(ngModel)]="review.fromDate">
       </div>
 
       <!-- To Date -->
       <div class="col-md-3">
         <label class="form-label">To Date</label>
-        <input
-          type="text"
-          class="form-control"
-          bsDatepicker
-          [(ngModel)]="review.toDate">
+        <input type="text" class="form-control" bsDatepicker [(ngModel)]="review.toDate">
       </div>
 
       <!-- Receive No -->
       <div class="col-md-3">
         <label class="form-label">Receive No</label>
-        <input
-          type="text"
-          class="form-control"
-          [(ngModel)]="review.receiveNo"
-          placeholder="Enter Receive No">
+        <input type="text" class="form-control" [(ngModel)]="review.receiveNo" placeholder="Enter Receive No">
       </div>
 
     </div>
@@ -87,10 +66,7 @@
     <!-- ===================== ACTION BUTTONS ===================== -->
     <div class="row mt-4">
       <div class="col-md-12 text-end">
-        <button
-          type="button"
-          class="btn btn-info px-4"
-          (click)="onSearch()">
+        <button type="button" class="btn btn-info px-4" (click)="onSearch()">
           <i class="fa fa-search me-1"></i>
           Search
         </button>
@@ -99,36 +75,36 @@
 
   </div>
   <table class="table table-bordered table-sm">
-  <thead class="table-light text-center">
-    <tr>
-      <th>SL</th>
-      <th>Master ID</th>
-      <th>Receive No</th>
-      <th>Received By</th>
-      <th>Receive Date</th>
-      <th>Action</th>
-    </tr>
-  </thead>
-  <tbody>
-    <!-- <tr *ngFor="let row of searchList; let i = index" class="text-center"> -->
-    <tr *ngFor="let row of searchList; let i = index" class="text-center">
+    <thead class="table-light text-center">
+      <tr>
+        <th>SL</th>
+        <th>Master ID</th>
+        <th>Receive No</th>
+        <th>Received By</th>
+        <th>Receive Date</th>
+        <th>Action</th>
+      </tr>
+    </thead>
+    <tbody>
+      <!-- <tr *ngFor="let row of searchList; let i = index" class="text-center"> -->
+      <tr *ngFor="let row of searchList; let i = index" class="text-center">
 
-      <td>{{ i + 1 }}</td>
-      <td>{{ row.masterId }}</td>
-      <td>{{ row.receiveNo }}</td>
-      <td>{{ row.receivedBy }}</td>
-      <td>{{ row.receiveDate | date:'dd-MM-yyyy' }}</td>
-      <td>
-        <button class="btn btn-sm btn-outline-primary me-1" (click)="onEdit(row)">
-          Edit
-        </button>
-        <button class="btn btn-sm btn-outline-danger" (click)="onDelete(row, i)">
-          Delete
-        </button>
-      </td>
-    </tr>
-  </tbody>
-</table>
+        <td>{{ i + 1 }}</td>
+        <td>{{ row.masterId }}</td>
+        <td>{{ row.receiveNo }}</td>
+        <td>{{ row.receivedBy }}</td>
+        <td>{{ row.receiveDate | date:'dd-MM-yyyy' }}</td>
+        <td>
+          <button class="btn btn-sm btn-outline-primary me-1" (click)="onEdit(row)">
+            Edit
+          </button>
+          <button class="btn btn-sm btn-outline-danger" (click)="onDelete(row, i)">
+            Delete
+          </button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
 
 </div>
 
@@ -138,88 +114,70 @@
 <div class="card custom-card mb-3" *ngIf="!isReviewMode">
   <div class="card-body">
     <div class="col-md-4">
-      <label class="d-none d-sm-inline text-dark">Unit <span class="text-danger">*</span></label> 
-        <div
-         class="form-control col-md-8 common-border" 
-        >
+      <label class="d-none d-sm-inline text-dark">Unit <span class="text-danger">*</span></label>
+      <div class="form-control col-md-8 common-border">
 
-           <ng-select [(ngModel)]="Model.UnitId" placeholder="Select Unit">
+        <ng-select [(ngModel)]="Model.UnitId" placeholder="Select Unit">
           <ng-option *ngFor="let u of UnitList" [value]="u.value">{{ u.label }}</ng-option>
         </ng-select>
-        </div>
-       
       </div>
+
     </div>
+  </div>
 </div>
 
-  
-      
+
+
 <!-- ================= INPUT MODE ================= -->
- 
+
 <div class="card custom-card mb-3" *ngIf="!isReviewMode">
   <div class="card-body">
     <div class="row g-3">
 
-   
+
       <div class="col-md-4">
         <div class="d-flex justify-content-between mb-1">
           <label class="form-label mb-0">Tracking No</label>
           <label class="switch">
-            <input type="checkbox"
-                   [(ngModel)]="Model.isTrackingActive" class="success"
-                   (change)="Model.isDyeingActive=false;Model.isManualActive=false">
+            <input type="checkbox" [(ngModel)]="Model.isTrackingActive" class="success"
+              (change)="Model.isDyeingActive=false;Model.isManualActive=false">
             <span class="slider round"></span>
           </label>
         </div>
 
-        <input type="text"
-               class="form-control"
-               placeholder="Scan / Enter Tracking No"
-               [(ngModel)]="Model.trackingNo"
-               (keyup.enter)="onTrackingEnter()"
-               [disabled]="!Model.isTrackingActive">
+        <input type="text" class="form-control" placeholder="Scan / Enter Tracking No" [(ngModel)]="Model.trackingNo"
+          (keyup.enter)="onTrackingEnter()" [disabled]="!Model.isTrackingActive">
       </div>
 
-      
+
       <div class="col-md-4">
         <div class="d-flex justify-content-between mb-1">
           <label class="form-label mb-0">Dyeing Batch</label>
           <label class="switch">
-            <input type="checkbox"
-                   [(ngModel)]="Model.isDyeingActive"
-                   (change)="Model.isTrackingActive=false;                  
+            <input type="checkbox" [(ngModel)]="Model.isDyeingActive" (change)="Model.isTrackingActive=false;                  
                    Model.isManualActive=false" class="success">
             <span class="slider round"></span>
           </label>
         </div>
 
-        <input type="text"
-               class="form-control"
-               placeholder="Scan / Enter Dyeing Batch"
-               [(ngModel)]="Model.batchNo"
-               (keyup.enter)="onBatchNoEnter()"
-               [disabled]="!Model.isDyeingActive">
+        <input type="text" class="form-control" placeholder="Scan / Enter Dyeing Batch" [(ngModel)]="Model.batchNo"
+          (keyup.enter)="onBatchNoEnter()" [disabled]="!Model.isDyeingActive">
       </div>
 
-   
+
       <div class="col-md-4">
         <div class="d-flex justify-content-between mb-1">
           <label class="form-label mb-0">Manual</label>
           <label class="switch">
-            <input type="checkbox"
-                   [(ngModel)]="Model.isManualActive"
-                   (change)="Model.isTrackingActive=false;
+            <input type="checkbox" [(ngModel)]="Model.isManualActive" (change)="Model.isTrackingActive=false;
                    Model.isDyeingActive=true" class="success">
             <span class="slider round"></span>
           </label>
         </div>
-<input type="text"
-       class="form-control"
-       placeholder="Manual Reference"
-       [(ngModel)]="Model.manualNo"
-       [disabled]="true">
+        <input type="text" class="form-control" placeholder="Manual Reference" [(ngModel)]="Model.manualNo"
+          [disabled]="true">
 
-       
+
       </div>
 
     </div>
@@ -227,10 +185,10 @@
 </div>
 <!-- ================= GRID ================= -->
 <div class="table-responsive">
-<table class="table table-bordered table-sm">
-<thead class="table-light text-center">
-<tr>
-  <th>Tracking/BatchNo</th>
+  <table class="table table-bordered table-sm">
+    <thead class="table-light text-center">
+      <tr>
+        <th>Tracking/BatchNo</th>
         <th>From Unit</th>
         <th>Receive Date</th>
         <th>Buyer</th>
@@ -249,68 +207,42 @@
         <th>Total Qty</th>
         <th>Probable Delivery</th>
         <th>Shipment Date</th>
-</tr>
-</thead>
+      </tr>
+    </thead>
 
     <tbody>
       <tr *ngFor="let row of detailList; let i = index">
         <td>{{ row.trackingNo }}</td>
 
         <td>
-          <ng-select
-            [(ngModel)]="row.fromUnitId"
-            [items]="fromUnitList"
-            bindLabel="label"
-            bindValue="value"
+          <ng-select [(ngModel)]="row.fromUnitId" [items]="fromUnitList" bindLabel="label" bindValue="value"
             appendTo="body">
           </ng-select>
         </td>
 
         <td>
-          <input class="form-control form-control-sm"
-                 bsDatepicker
-                 [(ngModel)]="row.receiveDate">
+          <input class="form-control form-control-sm" bsDatepicker [(ngModel)]="row.receiveDate">
         </td>
 
         <td>
-          <ng-select
-            [(ngModel)]="row.buyerNo"
-            [items]="buyerList"
-            bindLabel="label"
-            bindValue="value"
-            appendTo="body">
+          <ng-select [(ngModel)]="row.buyerNo" [items]="buyerList" bindLabel="label" bindValue="value" appendTo="body">
           </ng-select>
         </td>
 
         <td>
-        
-          <ng-select
-  [(ngModel)]="row.jobId"
-  [items]="jobList"
-  bindLabel="label"
-  bindValue="value"
-  appendTo="body">
-</ng-select>
+
+          <ng-select [(ngModel)]="row.jobId" [items]="jobList" bindLabel="label" bindValue="value" appendTo="body">
+          </ng-select>
         </td>
 
 
         <td>
-          <ng-select
-            [(ngModel)]="row.styleNo"
-            [items]="styleList"
-            bindLabel="label"
-            bindValue="value"
-            appendTo="body">
+          <ng-select [(ngModel)]="row.styleNo" [items]="styleList" bindLabel="label" bindValue="value" appendTo="body">
           </ng-select>
         </td>
 
         <td>
-          <ng-select
-            [(ngModel)]="row.orderId"
-            [items]="orderList"
-            bindLabel="label"
-            bindValue="value"
-            appendTo="body">
+          <ng-select [(ngModel)]="row.orderId" [items]="orderList" bindLabel="label" bindValue="value" appendTo="body">
           </ng-select>
         </td>
 
@@ -323,72 +255,43 @@
         </td>
 
         <td>
-          <ng-select
-            [(ngModel)]="row.fabricationId"
-            [items]="fabricationList"
-            bindLabel="label"
-            bindValue="value"
+          <ng-select [(ngModel)]="row.fabricationId" [items]="fabricationList" bindLabel="label" bindValue="value"
             appendTo="body">
           </ng-select>
         </td>
 
         <td>
-          <input class="form-control form-control-sm"
-                 [(ngModel)]="row.composition">
+          <input class="form-control form-control-sm" [(ngModel)]="row.composition">
         </td>
 
         <td>
-          <ng-select
-            [(ngModel)]="row.gsmId"
-            [items]="gsmList"
-            bindLabel="label"
-            bindValue="value"
+          <ng-select [(ngModel)]="row.gsmId" [items]="gsmList" bindLabel="label" bindValue="value" appendTo="body">
+          </ng-select>
+        </td>
+
+        <td>
+          <ng-select [(ngModel)]="row.colorId" [items]="colorList" bindLabel="label" bindValue="value" appendTo="body">
+          </ng-select>
+        </td>
+
+        <td>
+          <ng-select [(ngModel)]="row.dressPartId" [items]="dressPartList" bindLabel="label" bindValue="value"
             appendTo="body">
           </ng-select>
         </td>
 
         <td>
-          <ng-select
-            [(ngModel)]="row.colorId"
-            [items]="colorList"
-            bindLabel="label"
-            bindValue="value"
-            appendTo="body">
-          </ng-select>
+          <input class="form-control form-control-sm" [(ngModel)]="row.operationTypes" disabled>
+
         </td>
 
         <td>
-          <ng-select
-            [(ngModel)]="row.dressPartId"
-            [items]="dressPartList"
-            bindLabel="label"
-            bindValue="value"
-            appendTo="body">
-          </ng-select>
-        </td>
-
-        <td>
-          <input class="form-control form-control-sm"
-                 [(ngModel)]="row.operationTypes"
-                 disabled
-                 >
-                 
-        </td>
-
-        <td>
-          <ng-select
-            [(ngModel)]="row.uomId"
-            [items]="uomList"
-            bindLabel="label"
-            bindValue="value"
-            appendTo="body">
+          <ng-select [(ngModel)]="row.uomId" [items]="uomList" bindLabel="label" bindValue="value" appendTo="body">
           </ng-select>
         </td>
 
         <td class="text-center">
-          <button class="btn btn-sm btn-outline-primary"
-                  (click)="openSizePopup(row)"
-                   [disabled]="Model.isDyeingActive">
+          <button class="btn btn-sm btn-outline-primary" (click)="openSizePopup(row)" [disabled]="Model.isDyeingActive">
             Size
           </button>
         </td>
@@ -396,33 +299,28 @@
         <td class="text-end fw-bold">{{ row.totalQty }}</td>
 
         <td>
-          <input class="form-control form-control-sm"
-                 bsDatepicker
-                 [(ngModel)]="row.probableDeliveryDate">
+          <input class="form-control form-control-sm" bsDatepicker [(ngModel)]="row.probableDeliveryDate">
         </td>
 
         <td>
-          <input class="form-control form-control-sm"
-                 bsDatepicker
-                 disabled
-                 [(ngModel)]="row.shipmentDate">
+          <input class="form-control form-control-sm" bsDatepicker disabled [(ngModel)]="row.shipmentDate">
         </td>
       </tr>
     </tbody>
   </table>
 </div>
- <div class="text-right mt-3">
-          <button type="button" class="btn btn-primary" (click)="onSubmit()">
-            <i class="fa fa-database" aria-hidden="true"></i>
-            {{ saveButtonTitle }}
-          </button>
-          &nbsp;
-          <button class="btn btn-danger" type="button" (click)="clearAll()">
-            <i class="fa fa-refresh" aria-hidden="true"></i> Clear
-          </button>
-          &nbsp; &nbsp;
-        </div>
- <!-- ================= SIZE POPUP ================= -->
+<div class="text-right mt-3">
+  <button type="button" class="btn btn-primary" (click)="onSubmit()">
+    <i class="fa fa-database" aria-hidden="true"></i>
+    {{ saveButtonTitle }}
+  </button>
+  &nbsp;
+  <button class="btn btn-danger" type="button" (click)="clearAll()">
+    <i class="fa fa-refresh" aria-hidden="true"></i> Clear
+  </button>
+  &nbsp; &nbsp;
+</div>
+<!-- ================= SIZE POPUP ================= -->
 <div class="modal-backdrop fade show" *ngIf="sizePopupVisible"></div>
 
 <div class="modal fade show d-block" *ngIf="sizePopupVisible" tabindex="-1">
@@ -435,9 +333,7 @@
           <i class="fa fa-ruler-combined me-6"></i>
           Size Wise Quantity
         </h6>
-        <button type="button"
-                class="btn-close btn-close-white"
-                (click)="sizePopupVisible=false">
+        <button type="button" class="btn-close btn-close-white" (click)="sizePopupVisible=false">
         </button>
       </div>
 
@@ -447,26 +343,37 @@
         <table class="table table-sm table-bordered align-middle text-center mb-3">
           <thead class="table-light">
             <tr>
-              <th style="width: 50%">Size</th>
-              <th style="width: 50%">Quantity</th>
+              <th style="width: 30%">SizeId</th>
+              <th style="width: 30%">Size</th>
+              <th style="width: 40%">Quantity</th>
             </tr>
           </thead>
 
           <tbody>
             <tr *ngFor="let s of sizeList; let i = index">
+              <td class="fw-semibold text-muted">
+                {{ s.sizeId }}
+              </td>
+
               <td class="fw-semibold">
                 {{ s.size }}
               </td>
 
               <td>
-                <input type="number"
-                       class="form-control form-control-sm text-end fw-semibold"
-                       [(ngModel)]="s.qty"
-                       (input)="calculateTotal()"
-                       min="0"
-                       autofocus>
+                <input type="number" class="form-control form-control-sm text-end fw-semibold" [(ngModel)]="s.qty"
+                  (input)="calculateTotal()" min="0">
               </td>
             </tr>
+            <!-- <tr *ngFor="let s of sizeList; let i = index">
+              <td class="fw-semibold">
+                {{ s.size }}
+              </td>
+
+              <td>
+                <input type="number" class="form-control form-control-sm text-end fw-semibold" [(ngModel)]="s.qty"
+                  (input)="calculateTotal()" min="0" autofocus>
+              </td>
+            </tr> -->
           </tbody>
         </table>
 
@@ -483,13 +390,11 @@
 
       <!-- ===== FOOTER ===== -->
       <div class="modal-footer py-2">
-        <button class="btn btn-sm btn-outline-secondary"
-                (click)="sizePopupVisible=false">
+        <button class="btn btn-sm btn-outline-secondary" (click)="sizePopupVisible=false">
           Cancel
         </button>
 
-        <button class="btn btn-sm btn-primary px-4"
-                (click)="confirmSizeQty()">
+        <button class="btn btn-sm btn-primary px-4" (click)="confirmSizeQty()">
           <i class="fa fa-check me-1"></i>
           Confirm
         </button>

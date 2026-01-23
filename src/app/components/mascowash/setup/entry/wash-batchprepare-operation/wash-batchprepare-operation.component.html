@@ -309,6 +309,7 @@
         <table class="table table-sm table-bordered align-middle text-center mb-3">
           <thead class="table-light">
             <tr>
+              <th style="width: 30%">SizeId</th>
               <th style="width: 50%">Size</th>
               <th style="width: 50%">Quantity</th>
             </tr>
@@ -316,6 +317,20 @@
 
           <tbody>
             <tr *ngFor="let s of sizeList; let i = index">
+              <td class="fw-semibold text-muted">
+                {{ s.sizeId }}
+              </td>
+
+              <td class="fw-semibold">
+                {{ s.size }}
+              </td>
+
+              <td>
+                <input type="number" class="form-control form-control-sm text-end fw-semibold" [(ngModel)]="s.qty"
+                  (input)="calculateTotal()" min="0">
+              </td>
+            </tr>
+            <!-- <tr *ngFor="let s of sizeList; let i = index">
               <td class="fw-semibold">
                 {{ s.size }}
               </td>
@@ -328,7 +343,7 @@
                        min="0"
                        autofocus>
               </td>
-            </tr>
+            </tr> -->
           </tbody>
         </table>
 

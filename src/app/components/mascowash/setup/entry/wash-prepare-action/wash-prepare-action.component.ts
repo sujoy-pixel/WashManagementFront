@@ -179,9 +179,10 @@ export class WashPrepareActionComponent implements OnInit {
           });
         }
       });
-
+console.log('✅ Merged Size Map:', sizeMap);
       this.sizeQty = Array.from(sizeMap.values());
       this.calculateTotals();
+      
     }
   }
 

@@ -75,7 +75,7 @@ export class ReceiveOperationComponent implements OnInit {
   constructor(
     private service: WashSetupService,
     private toastr: ToastrService
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.loadDropdowns();
@@ -107,79 +107,79 @@ export class ReceiveOperationComponent implements OnInit {
   }
 
 
-getSearchData() {
-  debugger;
-  this.service.getSearchData(
-    this.review.UnitId!,
-    this.review.receiveNo==null ? '' : this.review.receiveNo,
-    this.review.fromDate==null  ? '' : this.review.fromDate,
-    this.review.toDate==null  ? '' : this.review.toDate,
-  ).subscribe({
-    next: (res: ReceiveRecord[]) => {
-      //this.searchList = res || [];
-      this.buildSearchList(res || []);
-    },
-    error: (err) => {
-      this.toastr.error('Failed to load data');
-      console.error(err);
-    }
-  });
-}
+  getSearchData() {
+    debugger;
+    this.service.getSearchData(
+      this.review.UnitId!,
+      this.review.receiveNo == null ? '' : this.review.receiveNo,
+      this.review.fromDate == null ? '' : this.review.fromDate,
+      this.review.toDate == null ? '' : this.review.toDate,
+    ).subscribe({
+      next: (res: ReceiveRecord[]) => {
+        //this.searchList = res || [];
+        this.buildSearchList(res || []);
+      },
+      error: (err) => {
+        this.toastr.error('Failed to load data');
+        console.error(err);
+      }
+    });
+  }
 
-buildSearchList(rows: any[]) {
+  buildSearchList(rows: any[]) {
 
-  const map = new Map<string, any>();
+    const map = new Map<string, any>();
 
-  rows.forEach(r => {
+    rows.forEach(r => {
 
-    const key =
-      `${r.receiveNo}`;
+      const key =
+        `${r.receiveNo}`;
 
-    if (!map.has(key)) {
-      map.set(key, {
-        masterId: r.masterId,
-        detailsId: r.detailsId,
-        trackingNo: r.trackingNo,
-        receiveNo: r.receiveNo,
-        receivedBy: r.receivedBy,
+      if (!map.has(key)) {
+        map.set(key, {
+          masterId: r.masterId,
+          detailsId: r.detailsId,
+          trackingNo: r.trackingNo,
+          receiveNo: r.receiveNo,
+          receivedBy: r.receivedBy,
 
-        buyerNo: r.buyerNo,
-        buyerName: r.buyerName,
+          buyerNo: r.buyerNo,
+          buyerName: r.buyerName,
 
-        styleNo: r.styleNo,
-        styleName: r.styleName,
+          styleNo: r.styleNo,
+          styleName: r.styleName,
 
-        jobId: r.jobId,
-        jobInfo: r.jobInfo,
+          jobId: r.jobId,
+          jobInfo: r.jobInfo,
 
-        orderId: r.orderId,
-        orderNo: r.orderNo,
+          orderId: r.orderId,
+          orderNo: r.orderNo,
 
-        receiveDate: r.receiveDate ? new Date(r.receiveDate) : null,
+          receiveDate: r.receiveDate ? new Date(r.receiveDate) : null,
 
-        totalQty: 0   // ✅ MUST EXIST
-      });
-    }
+          totalQty: 0   // ✅ MUST EXIST
+        });
+      }
 
-    // ✅ SAFE SUM
-    map.get(key).totalQty += Number(r.qty || 0);
-  });
+      // ✅ SAFE SUM
+      map.get(key).totalQty += Number(r.qty || 0);
+    });
 
-  this.searchList = Array.from(map.values());
-this.detailList=this.searchList;
-  console.log('SEARCH GRID (UNIQUE)', this.searchList);
+    this.searchList = Array.from(map.values());
+    this.detailList = this.searchList;
+    console.log('SEARCH GRID (UNIQUE)', this.searchList);
 
-}
+  }
 
- onEdit(record: any) {
-  debugger;
-  this.service.getSearchData(
-    this.review.UnitId!,
-    this.review.receiveNo,
-    this.review.fromDate,
-    this.review.toDate
-  )
-   .subscribe(res => {
+  onEdit(record: any) {
+    debugger;
+    this.service.getSearchData(
+      this.review.UnitId!,
+      this.review.receiveNo,
+      this.review.fromDate,
+      this.review.toDate
+    )
+      .subscribe(res => {
         if (!res || !res.length) {
           this.toastr.info('No data found');
           this.detailList = [];
@@ -234,8 +234,10 @@ this.detailList=this.searchList;
           this.detailList = [];
           return;
         }
+        console.log('DATA FROM TRACKING NO SEARCH', res);
         this.bindDetailRows(res);
       });
+
   }
 
   // ================= Batch SEARCH =================
@@ -298,7 +300,7 @@ this.detailList=this.searchList;
           fabricationName: r.fabricationName,
           composition: r.composition,
 
-          gsmId: r.iszid,
+          gsmId: r.gsmId,
           gsmName: r.gsm,
 
           colorId: r.icleid,
@@ -326,11 +328,17 @@ this.detailList=this.searchList;
       }
 
       const row = map.get(key);
-
       row.sizeDetails.push({
+        sizeId: r.iszid,
         size: r.size,
         qty: r.qty
       });
+
+      // row.sizeDetails.push({
+      //   sizeId: r.sizeId,
+      //   size: r.size,
+      //   qty: r.qty
+      // });
 
       row.totalQty += r.qty;
     });
@@ -356,12 +364,18 @@ this.detailList=this.searchList;
   }
 
   // ================= SIZE POPUP =================
-  openSizePopup(row: any) {
-    this.selectedRow = row;
-    this.sizeList = JSON.parse(JSON.stringify(row.sizeDetails));
-    this.calculateTotal();
-    this.sizePopupVisible = true;
-  }
+  // openSizePopup(row: any) {
+  //   this.selectedRow = row;
+  //   this.sizeList = JSON.parse(JSON.stringify(row.sizeDetails));
+  //   this.calculateTotal();
+  //   this.sizePopupVisible = true;
+  // }
+openSizePopup(row: any) {
+  this.selectedRow = row;
+  this.sizeList = JSON.parse(JSON.stringify(row.sizeDetails));
+  this.calculateTotal();
+  this.sizePopupVisible = true;
+}
 
   calculateTotal() {
     this.totalSizeQty = this.sizeList.reduce((s, x) => s + (+x.qty || 0), 0);
@@ -379,278 +393,284 @@ this.detailList=this.searchList;
     this.detailList = [];
   }
 
-onSubmit() {
-debugger;
+  onSubmit() {
+    debugger;
 
 
-  let payload: any;
+    let payload: any;
 
-  // Dyeing validation
-  if (this.Model.isDyeingActive) {
+    // Dyeing validation
+    if (this.Model.isDyeingActive) {
 
-    if (!this.detailList?.length) {
-      this.toastr.warning('No data to save');
-      return;
-    }
-
-    payload = this.buildSavePayForBatchload();
-  }
-else if (this.searchList?.length) {
-if (!this.detailList?.length) {
-      this.toastr.warning('No data to save');
-      return;
-    }
-    payload = this.buildUpdatePayload();
-   }
-  // Tracking validation
-  else if (this.Model.isTrackingActive) {
-
-    if (!this.detailList?.length) {
-      this.toastr.warning('No data to save');
-      return;
-    }
-
-    payload = this.buildSavePayload();
-
-  }
-   
-
-    
- 
-
-  console.log('SAVE PAYLOAD', payload);
-debugger;
-  this.service.saveReceiveOperation(payload)
-    .subscribe({
-      next: () => {
-        this.toastr.success('Saved Successfully');
-        this.clearAll();
-      },
-      error: (error) => {
-        console.log(error);
-        this.toastr.error('Save Failed');
+      if (!this.detailList?.length) {
+        this.toastr.warning('No data to save');
+        return;
       }
-    });
-}
+
+      payload = this.buildSavePayForBatchload();
+    }
+    else if (this.searchList?.length) {
+      if (!this.detailList?.length) {
+        this.toastr.warning('No data to save');
+        return;
+      }
+      payload = this.buildUpdatePayload();
+    }
+    // Tracking validation
+    else if (this.Model.isTrackingActive) {
+
+      if (!this.detailList?.length) {
+        this.toastr.warning('No data to save');
+        return;
+      }
+
+      payload = this.buildSavePayload();
+
+    }
+
+
+
+
+
+    console.log('SAVE PAYLOAD', payload);
+    debugger;
+    this.service.saveReceiveOperation(payload)
+      .subscribe({
+        next: () => {
+          this.toastr.success('Saved Successfully');
+          this.clearAll();
+        },
+        error: (error) => {
+          console.log(error);
+          this.toastr.error('Save Failed');
+        }
+      });
+  }
 
   buildSavePayload(): any {
     debugger;
-console.log('DETAIL LIST', this.detailList);
-  const master = {
-    Operation: 'TrackingNo',
-    unitId: this.Model.UnitId,
-    MasterId: 0,
-    TrackingNo: this.Model.trackingNo && this.Model.trackingNo !== 0 ? `${this.Model.trackingNo}` : `${this.Model.batchNo}`,
-    createdBy: 'SYSTEM'
-  };
+    console.log('DETAIL LIST', this.detailList);
+    const master = {
+      Operation: 'TrackingNo',
+      unitId: this.Model.UnitId,
+      MasterId: 0,
+      TrackingNo: this.Model.trackingNo && this.Model.trackingNo !== 0 ? `${this.Model.trackingNo}` : `${this.Model.batchNo}`,
+      createdBy: 'SYSTEM'
+    };
 
-  const details = this.detailList.map(d => ({
-    trackingBatchNo: d.trackingNo,
-    fromUnitId: d.fromUnitId,
-    receiveDate: d.receiveDate,
-       BuyerId: d.buyerNo,
-			JobId: d.jobId,
-			StyleId: d.styleNo,
-			OrderId: d.orderId,
-    typeName: d.type,
-    fabricationId: d.fabricationId,
-    composition: d.composition,
-    iszId: d.gsmId,
-    colorId: d.colorId,
-    dressPartId: d.dressPartId,
+    const details = this.detailList.map(d => ({
+      trackingBatchNo: d.trackingNo,
+      fromUnitId: d.fromUnitId,
+      receiveDate: d.receiveDate,
+      BuyerId: d.buyerNo,
+      JobId: d.jobId,
+      StyleId: d.styleNo,
+      OrderId: d.orderId,
+      typeName: d.type,
+      fabricationId: d.fabricationId,
+      composition: d.composition,
+      sizeId: d.iszId,
+      gsmId: d.gsmId,
+      colorId: d.colorId,
+      dressPartId: d.dressPartId,
 
-    operationType: d.operationTypes,
-    uomId: d.uomId,
-    totalQty: d.totalQty,
+      operationType: d.operationTypes,
+      uomId: d.uomId,
+      totalQty: d.totalQty,
 
-    probableDeliveryDate: d.probableDeliveryDate,
-    shipmentDate: d.shipmentDate,
+      probableDeliveryDate: d.probableDeliveryDate,
+      shipmentDate: d.shipmentDate,
 
-    sizeDetails: d.sizeDetails.map((s: any) => ({
-      size: s.size,
-      qty: s.qty
-    }))
-  }));
+      sizeDetails: d.sizeDetails.map((s: any) => ({
+        sizeId: s.sizeId,
+        size: s.size,
+        qty: s.qty
+      }))
+    }));
 
-  return { master, details };
-}
- // =================  Buind for Batch No Grid  =================
-bindDetailBatchNoRows(rows: any[]) {
+    return { master, details };
+  }
+  // =================  Buind for Batch No Grid  =================
+  bindDetailBatchNoRows(rows: any[]) {
 
-  const map = new Map<string, any>();
-  // ===== GRID + DROPDOWN SOURCE (RAW DB DATA) =====
-  this.detailList = rows.map(r => ({
-    // ================= BASIC =================
-    trackingNo: r.trackingNo,
+    const map = new Map<string, any>();
+    // ===== GRID + DROPDOWN SOURCE (RAW DB DATA) =====
+    this.detailList = rows.map(r => ({
+      // ================= BASIC =================
+      trackingNo: r.trackingNo,
 
-    fromUnitId: r.fromUnitId,
-    fromUnitName: r.fromUnitName,
+      fromUnitId: r.fromUnitId,
+      fromUnitName: r.fromUnitName,
 
-    receiveDate: r.receiveDate ? new Date(r.receiveDate) : null,
+      receiveDate: r.receiveDate ? new Date(r.receiveDate) : null,
 
-    // ================= BUYER / JOB =================
-    buyerNo: r.buyerNo,
-    buyerName: r.buyerName,
+      // ================= BUYER / JOB =================
+      buyerNo: r.buyerNo,
+      buyerName: r.buyerName,
 
-    jobId: r.jobId,
-    jobInfo: r.jobInfo,
+      jobId: r.jobId,
+      jobInfo: r.jobInfo,
 
-    styleNo: r.styleNo,
-    styleName: r.styleName,
+      styleNo: r.styleNo,
+      styleName: r.styleName,
 
-    orderId: r.orderId,
-    orderNo: r.orderNo,
+      orderId: r.orderId,
+      orderNo: r.orderNo,
 
-    // ================= TYPE =================
-    type: r.type,
+      // ================= TYPE =================
+      type: r.type,
 
-    // ================= FABRIC =================
-   fabricationId: r.fabrication,
-   fabricationName: r.fabricationName,
-    composition: r.composition,
+      // ================= FABRIC =================
+      fabricationId: r.fabrication,
+      fabricationName: r.fabricationName,
+      composition: r.composition,
 
-    gsmId: r.iszid,
-    gsmName: r.gsm,
+      gsmId: r.gsmId,
+      gsmName: r.gsm,
+      sizeId: r.iszId,
+      colorId: r.icleid,
+      colorName: r.color,
 
-    colorId: r.icleid,
-    colorName: r.color,
+      dressPartId: r.dressPartId,
+      dressPartName: r.dressPart,
 
-    dressPartId: r.dressPartId,
-    dressPartName: r.dressPart,
+      operationTypes: r.operationType,
 
-    operationTypes: r.operationType,
+      uomId: r.uomDetailsId,
+      uomName: r.uom,
+      //qty: r.qty,
+      totalQty: r.qty,
+      // ================= SIZE & QTY =================
+      //size: r.size,
+      //qty: r.qty,
 
-    uomId: r.uomDetailsId,
-    uomName: r.uom,
-    //qty: r.qty,
-    totalQty: r.qty,
-    // ================= SIZE & QTY =================
-    //size: r.size,
-    //qty: r.qty,
+      // ================= DATE =================
+      probableDeliveryDate: r.probableDeliveryDate
+        ? new Date(r.probableDeliveryDate)
+        : null,
 
-    // ================= DATE =================
-    probableDeliveryDate: r.probableDeliveryDate
-      ? new Date(r.probableDeliveryDate)
-      : null,
+      shipmentDate: r.shipmentDate
+        ? new Date(r.shipmentDate)
+        : null
+    }));
 
-    shipmentDate: r.shipmentDate
-      ? new Date(r.shipmentDate)
-      : null
-  }));
+    console.log('GRID + DROPDOWN DATA (AS IS FROM DB)', this.detailList);
 
-  console.log('GRID + DROPDOWN DATA (AS IS FROM DB)', this.detailList);
-
-  // ===== DROPDOWNS USE SAME LIST (NO UNIQUE) =====
-  this.jobList = this.unique(this.detailList, 'jobId', 'jobInfo');
-  this.buyerList = this.unique(this.detailList, 'buyerNo', 'buyerName');
-   this.styleList = this.unique(this.detailList, 'styleNo', 'styleName');
-  this.orderList = this.unique(this.detailList, 'orderId', 'orderNo');
-  this.fabricationList = this.unique(this.detailList, 'fabricationId', 'fabricationName');
-  this.gsmList = this.unique(this.detailList, 'gsmId', 'gsmName');
-  this.colorList = this.unique(this.detailList, 'colorId', 'colorName');
-  this.dressPartList = this.unique(this.detailList, 'dressPartId', 'dressPartName');
-  this.uomList = this.unique(this.detailList, 'uomId', 'uomName');
-}
+    // ===== DROPDOWNS USE SAME LIST (NO UNIQUE) =====
+    this.jobList = this.unique(this.detailList, 'jobId', 'jobInfo');
+    this.buyerList = this.unique(this.detailList, 'buyerNo', 'buyerName');
+    this.styleList = this.unique(this.detailList, 'styleNo', 'styleName');
+    this.orderList = this.unique(this.detailList, 'orderId', 'orderNo');
+    this.fabricationList = this.unique(this.detailList, 'fabricationId', 'fabricationName');
+    this.gsmList = this.unique(this.detailList, 'gsmId', 'gsmName');
+    this.colorList = this.unique(this.detailList, 'colorId', 'colorName');
+    this.dressPartList = this.unique(this.detailList, 'dressPartId', 'dressPartName');
+    this.uomList = this.unique(this.detailList, 'uomId', 'uomName');
+  }
 
 
 
   buildSavePayForBatchload(): any {
     debugger;
-console.log('DETAIL LIST', this.detailList);
+    console.log('DETAIL LIST', this.detailList);
 
-  console.log('DETAIL LIST', this.detailList);
-  const master = {
-    operation: 'BatchNo',
-    unitId: this.Model.UnitId,
-    MasterId: 0,
-    trackingNo: this.Model.trackingNo && this.Model.trackingNo !== 0 ? `${this.Model.trackingNo}` : `${this.Model.batchNo}`,
-    createdBy: 'SYSTEM'
-  };
+    console.log('DETAIL LIST', this.detailList);
+    const master = {
+      operation: 'BatchNo',
+      unitId: this.Model.UnitId,
+      MasterId: 0,
+      trackingNo: this.Model.trackingNo && this.Model.trackingNo !== 0 ? `${this.Model.trackingNo}` : `${this.Model.batchNo}`,
+      createdBy: 'SYSTEM'
+    };
 
-  const details = this.detailList.map(d => ({
-    trackingBatchNo: this.Model.batchNo,
-    fromUnitId: d.fromUnitId,
-    //receiveDate: d.receiveDate,
-    receiveDate: new Date(d.receiveDate).getFullYear() < 1900
-    ? new Date().toISOString()
-    : new Date(d.receiveDate).toISOString(),
+    const details = this.detailList.map(d => ({
+      trackingBatchNo: this.Model.batchNo,
+      fromUnitId: d.fromUnitId,
+      //receiveDate: d.receiveDate,
+      receiveDate: new Date(d.receiveDate).getFullYear() < 1900
+        ? new Date().toISOString()
+        : new Date(d.receiveDate).toISOString(),
 
-     BuyerId: d.buyerNo,
-			JobId: d.jobId,
-			StyleId: d.styleNo,
-			OrderId: d.orderId,
-
-    typeName: d.type,
-
-    fabricationId: d.fabricationId,
-    composition: d.composition,
-    iszId: d.gsmId,
-    colorId: d.colorId,
-    dressPartId: d.dressPartId,
-
-    operationType: d.operationTypes,
-    uomId: d.uomId,
-    totalQty: d.totalQty,
-
-    //probableDeliveryDate: d.probableDeliveryDate,
-    probableDeliveryDate: new Date(d.probableDeliveryDate).getFullYear() < 1900
-    ? new Date().toISOString()
-    : new Date(d.probableDeliveryDate).toISOString(),
-  
-
-    shipmentDate: new Date(d.shipmentDate).getFullYear() < 1900
-    ? new Date().toISOString()
-    : new Date(d.shipmentDate).toISOString(),
-    sizeDetails: [{
-    size: d.sizeDetails?.[0]?.size ?? '',
-    qty: 0
-}]  
- }));
-
-  return { master, details };
-}
-
-buildUpdatePayload(): any {
-    debugger;
-console.log('DETAIL LIST', this.detailList);
-  const master = {
-    Operation: 'Update',
-    unitId: this.review.UnitId,
-     MasterId: this.searchList[0].masterId,
-    TrackingNo: this.Model.trackingNo && this.Model.trackingNo !== 0 ? `${this.Model.trackingNo}` : `${this.Model.batchNo}`,
-    createdBy: 'SYSTEM'
-  };
-
-  const details = this.detailList.map(d => ({
-  
-    trackingBatchNo: d.trackingNo,
-    fromUnitId: d.fromUnitId,
-    receiveDate: d.receiveDate,
       BuyerId: d.buyerNo,
-			JobId: d.jobId,
-			StyleId: d.styleNo,
-			OrderId: d.orderId,
-    typeName: d.type,
-    fabricationId: d.fabricationId,
-    composition: d.composition,
-    iszId: d.gsmId,
-    colorId: d.colorId,
-    dressPartId: d.dressPartId,
+      JobId: d.jobId,
+      StyleId: d.styleNo,
+      OrderId: d.orderId,
 
-    operationType: d.operationTypes,
-    uomId: d.uomId,
-    totalQty: d.totalQty,
+      typeName: d.type,
 
-    probableDeliveryDate: d.probableDeliveryDate,
-    shipmentDate: d.shipmentDate,
+      fabricationId: d.fabricationId,
+      composition: d.composition,
+      gsmId: d.gsmId,
+      sizeId: d.iszId,
+      colorId: d.colorId,
+      dressPartId: d.dressPartId,
 
-    sizeDetails: d.sizeDetails.map((s: any) => ({
-      size: s.size,
-      qty: s.qty
-    }))
-  }));
+      operationType: d.operationTypes,
+      uomId: d.uomId,
+      totalQty: d.totalQty,
 
-  return { master, details };
-}
+      //probableDeliveryDate: d.probableDeliveryDate,
+      probableDeliveryDate: new Date(d.probableDeliveryDate).getFullYear() < 1900
+        ? new Date().toISOString()
+        : new Date(d.probableDeliveryDate).toISOString(),
+
+
+      shipmentDate: new Date(d.shipmentDate).getFullYear() < 1900
+        ? new Date().toISOString()
+        : new Date(d.shipmentDate).toISOString(),
+      sizeDetails: [{
+        sizeId: d.sizeDetails?.[0]?.sizeId ?? '',
+        size: d.sizeDetails?.[0]?.size ?? '',
+        qty: 0
+      }]
+    }));
+
+    return { master, details };
+  }
+
+  buildUpdatePayload(): any {
+    debugger;
+    console.log('DETAIL LIST', this.detailList);
+    const master = {
+      Operation: 'Update',
+      unitId: this.review.UnitId,
+      MasterId: this.searchList[0].masterId,
+      TrackingNo: this.Model.trackingNo && this.Model.trackingNo !== 0 ? `${this.Model.trackingNo}` : `${this.Model.batchNo}`,
+      createdBy: 'SYSTEM'
+    };
+
+    const details = this.detailList.map(d => ({
+
+      trackingBatchNo: d.trackingNo,
+      fromUnitId: d.fromUnitId,
+      receiveDate: d.receiveDate,
+      BuyerId: d.buyerNo,
+      JobId: d.jobId,
+      StyleId: d.styleNo,
+      OrderId: d.orderId,
+      typeName: d.type,
+      fabricationId: d.fabricationId,
+      composition: d.composition,
+      sizeId: d.iszId,
+      gsmId: d.gsmId,
+      colorId: d.colorId,
+      dressPartId: d.dressPartId,
+
+      operationType: d.operationTypes,
+      uomId: d.uomId,
+      totalQty: d.totalQty,
+
+      probableDeliveryDate: d.probableDeliveryDate,
+      shipmentDate: d.shipmentDate,
+
+      sizeDetails: d.sizeDetails.map((s: any) => ({
+        sizeId: s.sizeId,
+        size: s.size,
+        qty: s.qty
+      }))
+    }));
+
+    return { master, details };
+  }
 
 }
