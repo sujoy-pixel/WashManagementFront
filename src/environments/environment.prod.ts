@@ -3,11 +3,11 @@ export const environment = {
 
   //LIVE
   //apiUrl: "https://mis-dining.mascoknit.com/api/",
-  apiUrl:"https://mis-documentation.mascoknit.com/api/",
-  fileUrl: "https://mis-dining.mascoknit.com/",
+  //apiUrl:"https://mis-documentation.mascoknit.com/api/",
+  //fileUrl: "https://mis-dining.mascoknit.com/",
 
   //Test 
-  //apiUrl: "http://192.168.50.60:86/api/",
+  apiUrl: "http://192.168.50.60:1214/api/",
   //fileUrl: "http://192.168.50.60:85/",
  
   firebase:{

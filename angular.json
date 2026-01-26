@@ -54,6 +54,9 @@
           },
           "configurations": {
             "production": {
+              "optimization": {
+              "styles": false
+              },
               "budgets": [
                 {
                   "type": "initial",
@@ -91,6 +94,7 @@
             "production": {
               "browserTarget": "preview:build:production"
             },
+            
             "development": {
               "browserTarget": "preview:build:development"
             }
