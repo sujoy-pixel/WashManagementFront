@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ToastrService } from 'ngx-toastr';
 import { WashSetupService } from '../../../services/washsetup.service';
-import { de } from 'date-fns/locale';
+import { de, tr } from 'date-fns/locale';
 import { Router } from '@angular/router';
 
 
@@ -51,10 +51,11 @@ interface WashBatchRow {
   probableDeliveryDate: Date | null;
 
   alreadyPreparedQty: number;
-    remainingQty: number;
+  remainingQty: number;
   totalQty: number;
 iszid:number;
 gsm:string;
+trackingNo:string;
 
 gsmId:number;
   sizeDetails: SizeDetail[];
@@ -318,7 +319,8 @@ this.Model.BuyerId = Number(this.buyerList[0].value);
           totalQty: 0,
           iszid: r.iszid,
           gsm: r.gsm,
-          gsmId:r.gsmId
+          gsmId:r.gsmId,
+          trackingNo:r.trackingNo
         });
       }
       const row = map.get(key)!;
@@ -396,7 +398,8 @@ openPrepareTab(row: WashBatchRow): void {
     color: row.colorName ?? '',
     gsm:row.gsm,
     date: new Date().toISOString().split('T')[0],
-
+    trackingNo: row.trackingNo ?? '',
+    type:row.type ?? '',
     // ===== CHILD =====
     sizeDetails: row.sizeDetails ?? [],
     totalQty: row.totalQty ?? 0

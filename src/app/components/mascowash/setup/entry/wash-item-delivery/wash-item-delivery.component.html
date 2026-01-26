@@ -1,0 +1,222 @@
+<!-- ================= CARD ================= -->
+<div class="card custom-card shadow-sm rounded-4 mb-4">
+  <div class="card-header">
+    <h5 class="card-title mb-0 fw-semibold">
+      <i class="card-title"></i>
+      Wash Items Delivery
+    </h5>
+  </div>
+
+  <div class="card-body px-4 py-4">
+
+    <!-- ================= FILTER ROW ================= -->
+    <div class="row align-items-center g-3">
+
+      <!-- Unit -->
+<div class="col-md-3">
+  <label class="form-label fw-semibold">
+    Unit <span class="text-danger">*</span>
+  </label>
+
+  <ng-select
+    class="common-border"
+    [(ngModel)]="model.unitId"
+    [items]="UnitList"
+    bindLabel="label"
+    bindValue="value"
+    placeholder="Select Unit">
+  </ng-select>
+</div>
+
+
+     <!-- From Date -->
+      <div class="col-md-3">
+        <label class="form-label">From Date</label>
+        <input type="text" class="form-control" bsDatepicker [(ngModel)]="model.fromDate">
+      </div>
+
+      <!-- To Date -->
+      <div class="col-md-3">
+        <label class="form-label">To Date</label>
+        <input type="text" class="form-control" bsDatepicker [(ngModel)]="model.toDate">
+      </div>
+      <!-- Tracking / Batch -->
+      <div class="col-md-3">
+        <label class="form-label fw-semibold">
+          Tracking / Batch No <span class="text-danger">*</span>
+        </label>
+        <input type="text"
+               class="form-control"
+               placeholder="Enter Batch No"
+               [(ngModel)]="model.trackingBatchNo">
+      </div>
+
+    </div>
+
+    <!-- ================= SEARCH BUTTON ================= -->
+     <!-- Search Button -->
+    <div class="row mt-4">
+      <div class="col text-end">
+        <button class="btn btn-gradient px-4 py-2" (click)="onSearch()">
+          <i class="fa fa-search me-2"></i> Search
+        </button>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ================= GRID ================= -->
+<div class="table-responsive mt-4">
+  <table class="table table-bordered table-sm align-middle">
+    <thead class="table-light text-center">
+      <tr>
+        <th>Receive Unit</th>
+        <th>Buyer</th>
+        <th>Job</th>
+        <th>Style</th>
+        <th>Order</th>
+        <th>Type</th>
+        <th>Fabrication</th>
+        <th>Composition</th>
+        <th>Color</th>
+        <th>Dress Part</th>
+        <th>UOM</th>
+        <th>Size</th>
+        <th>Total Qty</th>
+      </tr>
+    </thead>
+<tbody>
+  <tr *ngFor="let row of gridList">
+
+    <td>{{ row.unitName }}</td>
+    <td>{{ row.buyerName }}</td>
+    <td>{{ row.jobInfo }}</td>
+    <td>{{ row.styleName }}</td>
+    <td>{{ row.orderNo }}</td>
+    <td>{{ row.type }}</td>
+    <td>{{ row.fabricationName }}</td>
+    <td>{{ row.composition }}</td>
+    <td>{{ row.colorName }}</td>
+    <td>{{ row.dressPartName }}</td>
+    <td>{{ row.uomName }}</td>
+
+    <!-- SIZE -->
+    <td class="text-center">
+      <button class="btn btn-sm btn-outline-primary"
+              (click)="openSizePopup(row)">
+        Size
+      </button>
+    </td>
+
+    <!-- TOTAL -->
+    <td class="text-end fw-bold">
+      {{ row.totalQty }}
+    </td>
+
+  </tr>
+</tbody>
+
+    <!-- <tbody>
+      <tr *ngFor="let row of gridList">
+
+        <td>{{ row.receiveUnit }}</td>
+        <td>{{ row.buyer }}</td>
+        <td>{{ row.job }}</td>
+        <td>{{ row.style }}</td>
+        <td>{{ row.orderNo }}</td>
+        <td>{{ row.type }}</td>
+        <td>{{ row.fabrication }}</td>
+        <td>{{ row.composition }}</td>
+        <td>{{ row.color }}</td>
+        <td>{{ row.dressPart }}</td>
+        <td>{{ row.uom }}</td>
+
+
+        <td class="text-center">
+          <button class="btn btn-sm btn-outline-primary"
+                  (click)="openSizePopup(row)">
+            Size
+          </button>
+        </td>
+
+      
+        <td class="text-end fw-bold">
+          {{ row.totalQty }}
+        </td>
+
+      </tr>
+    </tbody> -->
+  </table>
+</div>
+
+<!-- ================= SIZE POPUP ================= -->
+<div class="modal-backdrop fade show" *ngIf="sizePopupVisible"></div>
+
+<div class="modal fade show d-block" *ngIf="sizePopupVisible">
+  <div class="modal-dialog modal-dialog-centered modal-md">
+    <div class="modal-content shadow border-0 rounded-3">
+
+      <!-- HEADER -->
+      <div class="modal-header bg-primary text-white py-2">
+        <h6 class="mb-0 fw-semibold">
+          <i class="fa fa-ruler me-2"></i>
+          Size Wise Quantity
+        </h6>
+        <button class="btn-close btn-close-white"
+                (click)="closeSizePopup()"></button>
+      </div>
+
+      <!-- BODY -->
+      <div class="modal-body px-4 py-3">
+
+        <table class="table table-sm table-bordered text-center">
+          <thead class="table-light">
+            <tr>
+              <th>Size Id</th>
+              <th>Size</th>
+              <th>Quantity</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            <tr *ngFor="let s of sizeList">
+              <td>{{ s.sizeId }}</td>
+              <td class="fw-semibold">{{ s.size }}</td>
+              <td>
+                <input type="number"
+                       class="form-control form-control-sm text-end fw-semibold"
+                       [(ngModel)]="s.qty"
+                       (input)="calculateTotal()"
+                       min="0">
+              </td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div class="d-flex justify-content-between bg-light rounded px-3 py-2">
+          <span class="fw-semibold">Total Quantity</span>
+          <span class="fw-bold text-primary fs-5">
+            {{ totalSizeQty }}
+          </span>
+        </div>
+
+      </div>
+
+      <!-- FOOTER -->
+      <div class="modal-footer py-2">
+        <button class="btn btn-sm btn-outline-secondary"
+                (click)="closeSizePopup()">
+          Cancel
+        </button>
+
+        <button class="btn btn-sm btn-primary px-4"
+                (click)="confirmSizeQty()">
+          <i class="fa fa-check me-1"></i>
+          Confirm
+        </button>
+      </div>
+
+    </div>
+  </div>
+</div>

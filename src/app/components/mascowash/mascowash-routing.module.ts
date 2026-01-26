@@ -21,6 +21,7 @@ import { ReceiveOperationComponent } from './setup/entry/receive-operation/recei
 
  import{ WashBatchPrepareOperationComponent } from './setup/entry/wash-batchprepare-operation/wash-batchprepare-operation.component';  
 import { WashPrepareActionComponent } from './setup/entry/wash-prepare-action/wash-prepare-action.component';
+import { WashItemDeliveryComponent } from './setup/entry/wash-item-delivery/wash-item-delivery.component';
 
 const routes: Routes = [
   {
@@ -91,7 +92,11 @@ const routes: Routes = [
         component: WashPrepareActionComponent,
         runGuardsAndResolvers: 'always',
       },
-      
+      {
+        path: 'setup/entry/wash-item-delivery',
+        component: WashItemDeliveryComponent,
+        runGuardsAndResolvers: 'always',
+      },
     ],
   },
 ];

@@ -1,0 +1,13 @@
+.btn-gradient {
+  background: linear-gradient(135deg, #0dcaf0, #0d6efd);
+  color: #fff;
+  border: none;
+  border-radius: 0.75rem;
+  box-shadow: 0 8px 20px rgba(13, 110, 253, 0.25);
+  transition: all 0.3s ease;
+}
+
+.btn-gradient:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 28px rgba(13, 110, 253, 0.35);
+}

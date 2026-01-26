@@ -3,6 +3,7 @@ import { ToastrService } from 'ngx-toastr';
 import { WashSetupService } from '../../../services/washsetup.service';
 import { Router } from '@angular/router';
 import { is } from 'date-fns/locale';
+import { T } from '@angular/cdk/keycodes';
 
 @Component({
   selector: 'app-wash-prepare-action',
@@ -39,7 +40,9 @@ export class WashPrepareActionComponent implements OnInit {
     fabrication: '',
     composition: '',
     gsm: '',
-    color: ''
+    color: '',
+    type: '',
+    trackingNo: ''
   };
 
   // ======= ID STORAGE FOR SAVE =========
@@ -160,6 +163,8 @@ export class WashPrepareActionComponent implements OnInit {
     this.batch.composition = data.composition ?? '';
     this.batch.color = data.color ?? '';
     this.batch.gsm = data.gsm ?? '';
+    this.batch.type = data.type ?? '';
+    this.batch.trackingNo = data.trackingNo ?? '';
     /* ================= SIZE DETAILS (MERGE + ID) ================= */
     if (Array.isArray(data.sizeDetails)) {
 
@@ -196,7 +201,7 @@ console.log('✅ Merged Size Map:', sizeMap);
   }
 
   onSubmit(): void {
-
+debugger;
     /* ================= VALIDATION ================= */
     if (!this.Model.processList?.length) {
       this.toastr.warning('Please select process');
@@ -210,12 +215,14 @@ console.log('✅ Merged Size Map:', sizeMap);
 
     /* ================= BUILD PAYLOAD ================= */
     const payload = {
+      
       master: {
+        
         operation: "INSERT",
         createdBy: "SYSTEM",
         masterId: 0,
         unitId: this.batchIds.fromUnitId,
-        trackingNo: this.batch.batchNo,
+        trackingNo: this.batch.trackingNo ?? '',
 
         // Your master display fields
         batchNo: this.batch.batchNo,
@@ -225,6 +232,7 @@ console.log('✅ Merged Size Map:', sizeMap);
         revisionNo: this.batch.revisionNo,
         date: this.batch.date,
         composition: this.batch.composition,
+        Type: this.batch.type,
         // Master IDs
         buyerId: this.batchIds.buyerId,
         jobId: this.batchIds.jobId,
@@ -235,7 +243,7 @@ console.log('✅ Merged Size Map:', sizeMap);
         dressPartId: this.batchIds.dressPartId,
         uomId: this.batchIds.uomId,
         iszId: this.batchIds.iszid,
-
+        
         // MULTI SELECT CSV
         processIds: this.Model.processList.map((x: any) => x.value).join(','),
         machineIds: this.Model.machineList.map((x: any) => x.value).join(','),

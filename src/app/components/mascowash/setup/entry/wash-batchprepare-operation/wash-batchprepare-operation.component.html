@@ -116,6 +116,7 @@
         <th>Shipment Date</th>
         <th>Probable Delivery</th>
         <th>Receive form</th>
+        <th>TrackingBatchNo</th>
         
 </tr>
 </thead>
@@ -277,7 +278,9 @@
     <td class="text-center">
       {{ row.fromUnitName }}
     </td>
-
+    <td class="text-center">
+      {{ row.trackingNo}}
+    </td>
   </tr>
 </tbody>
 

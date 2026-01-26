@@ -37,6 +37,7 @@ import { FaultHeadNameEntryComponent } from './setup/entry/fault-head-name-entry
  import { ReceiveOperationComponent } from './setup/entry/receive-operation/receive-operation.component';
  import { WashBatchPrepareOperationComponent } from './setup/entry/wash-batchprepare-operation/wash-batchprepare-operation.component';
 import { WashPrepareActionComponent } from './setup/entry/wash-prepare-action/wash-prepare-action.component';
+import { WashItemDeliveryComponent } from './setup/entry/wash-item-delivery/wash-item-delivery.component';
  //import WashRec
 @NgModule({
   declarations: [
@@ -54,7 +55,8 @@ import { WashPrepareActionComponent } from './setup/entry/wash-prepare-action/wa
     InspectionHeadLayoutEntryComponent,
     FaultWiseValueTagEntryComponent,
     FaultHeadNameEntryComponent,
-    WashPrepareActionComponent
+    WashPrepareActionComponent,
+    WashItemDeliveryComponent
     
    
   ],

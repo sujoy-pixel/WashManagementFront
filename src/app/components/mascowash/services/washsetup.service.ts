@@ -416,8 +416,8 @@ export class WashSetupService {
       }
     );
   }
-    GetMachineNoDDL() {
-      debugger;
+  GetMachineNoDDL() {
+    debugger;
     return this.http.get<any[]>(
       this.baseUrl_ + 'Common/GetMachineNoDDL',
       { headers: this.token.headerToken() }
@@ -432,11 +432,29 @@ export class WashSetupService {
     );
   }
   SaveWashPrepare(model: any) {
-  return this.http.post(
-    this.baseUrl_ + 'Setup/SaveWashBatchPrepare',
-    model,
-    { headers: this.token.headerToken() }
-  );
-}
+    return this.http.post(
+      this.baseUrl_ + 'Setup/SaveWashBatchPrepare',
+      model,
+      { headers: this.token.headerToken() }
+    );
+  }
+
+
+ GetWashItemDeliveryList(data: any) {
+
+    const params = new HttpParams()
+      .set('unitId', data.unitId)
+      .set('fromDate', data.fromDate)
+      .set('toDate', data.toDate)
+      .set('trackingBatchNo', data.trackingBatchNo);
+
+    return this.http.get<any[]>(
+      this.baseUrl_ + 'Setup/GetWashItemDeliveryList',
+      {
+        headers: this.token.headerToken(),
+        params
+      }
+    );
+  }
 
 }
