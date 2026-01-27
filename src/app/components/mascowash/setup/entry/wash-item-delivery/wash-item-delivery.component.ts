@@ -97,7 +97,7 @@ export class WashItemDeliveryComponent implements OnInit {
   ngOnInit(): void {
     this.loadDropdowns();
   }
-
+saveButtonTitle = 'Save';
   /* ===================== SEARCH ===================== */
   onSearch(): void {
     const params = {
@@ -257,4 +257,80 @@ export class WashItemDeliveryComponent implements OnInit {
       }));
     });
   }
+
+
+
+   clearAll(): void {
+    // this.detailList = [];
+  }
+
+onSubmit(): void {
+
+  /* ================= VALIDATION ================= */
+  if (!this.gridList?.length) {
+    this.toastr.warning('No data found in grid');
+    return;
+  }
+
+  /* ================= BUILD PAYLOAD ================= */
+
+  // Use the first row to set master info
+  const firstRow = this.gridList[0];
+
+  const payload: any = {
+    master: {
+      operation: "INSERT",
+      createdBy: "SYSTEM",
+      masterId: 0,
+
+      unitId: this.model.unitId ?? 0,
+      trackingNo: this.model.trackingBatchNo ?? '',
+
+      // Master display fields
+      buyerId: firstRow?.buyerNo ?? null,
+      jobId: firstRow?.jobId ?? null,
+      styleId: firstRow?.styleNo ?? null,
+      orderId: firstRow?.orderId ?? null,
+      fabricationId: firstRow?.fabricationId ?? null,
+      colorId: firstRow?.colorId ?? null,
+      dressPartId: firstRow?.dressPartId ?? null,
+      uomId: firstRow?.uomId ?? null,
+      gsmId: firstRow?.gsmId ?? null,
+      type: firstRow?.type ?? '',
+
+      totalQty: 0
+    },
+
+    sizeDetails: []
+  };
+
+  // Combine all size details from all grid rows
+  this.gridList.forEach((row: WashBatchRow) => {
+    payload.master.totalQty += row.totalQty;
+
+    row.sizeDetails.forEach(s => {
+      payload.sizeDetails.push({
+        sizeId: s.sizeId ?? null,
+        size: s.size,
+        qty: Number(s.qty) || 0
+      });
+    });
+  });
+
+  console.log('✅ SAVE PAYLOAD:', payload);
+
+  /* ================= API CALL ================= */
+  this.service.SaveWashItemDelivery(payload).subscribe({
+    next: (res: any) => {
+      this.toastr.success('Saved successfully');
+      this.clearAll();
+    },
+    error: (err: any) => {
+      console.error('❌ Save Error:', err);
+      this.toastr.error('Save failed');
+    }
+  });
+}
+
+
 }

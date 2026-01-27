@@ -149,8 +149,17 @@
     </tbody> -->
   </table>
 </div>
-
-<!-- ================= SIZE POPUP ================= -->
+<div class="text-right mt-3">
+          <button type="button" class="btn btn-primary" (click)="onSubmit()">
+            <i class="fa fa-database" aria-hidden="true"></i>
+            {{ saveButtonTitle }}
+          </button>
+          &nbsp;
+          <button class="btn btn-danger" type="button" (click)="clearAll()">
+            <i class="fa fa-refresh" aria-hidden="true"></i> Clear
+          </button>
+          &nbsp; &nbsp;
+        </div><!-- ================= SIZE POPUP ================= -->
 <div class="modal-backdrop fade show" *ngIf="sizePopupVisible"></div>
 
 <div class="modal fade show d-block" *ngIf="sizePopupVisible">

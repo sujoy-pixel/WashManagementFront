@@ -457,4 +457,12 @@ export class WashSetupService {
     );
   }
 
+   SaveWashItemDelivery(model: any) {
+    return this.http.post(
+      this.baseUrl_ + 'Setup/SaveWashItemDelivery',
+      model,
+      { headers: this.token.headerToken() }
+    );
+  }
+
 }
