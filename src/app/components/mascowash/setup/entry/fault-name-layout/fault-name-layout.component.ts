@@ -30,7 +30,7 @@ export class FaultNameLayoutComponent {
     private service: WashSetupService,
     private toastr: ToastrService,
     private cdr: ChangeDetectorRef
-  ) {}
+  ) { }
 
   ngOnInit() {
     this.priorityList = Array.from({ length: 50 }, (_, i) => i + 1);
@@ -40,12 +40,21 @@ export class FaultNameLayoutComponent {
 
   // LOAD Fault Head LIST
   loadFaultHeads() {
-    this.service.GetFaultHeadList().subscribe({
+    this.service.GetFaultHeadDdl().subscribe({
+
       next: (res: any) => {
+       console.log('fuck',res);
+        // this.faultHeadList = res.map((x: any) => ({
+
+        // label: x.DisplayName ?? x.displayName,
+        // value: x.ID ?? x.id
+
+        // }));
         this.faultHeadList = res.map((x: any) => ({
-          ID: x.id ?? x.ID,
-          DisplayName: x.displayName ?? x.DisplayName,
+          label: x.displayName,
+          value: x.id
         }));
+
       },
       error: () => this.toastr.error('Failed to load Fault Head list'),
     });
