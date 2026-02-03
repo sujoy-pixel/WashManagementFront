@@ -440,7 +440,7 @@ export class WashSetupService {
   }
 
 
- GetWashItemDeliveryList(data: any) {
+  GetWashItemDeliveryList(data: any) {
 
     const params = new HttpParams()
       .set('unitId', data.unitId)
@@ -457,12 +457,38 @@ export class WashSetupService {
     );
   }
 
-   SaveWashItemDelivery(model: any) {
+  SaveWashItemDelivery(model: any) {
     return this.http.post(
       this.baseUrl_ + 'Setup/SaveWashItemDelivery',
       model,
       { headers: this.token.headerToken() }
     );
   }
+
+
+  getFaultWiseList(data: any) {
+debugger;
+  const params = new HttpParams()
+    .set('inspectionTypeId', parseInt(data.inspectionTypeId))
+    .set('inspectionHeadId', parseInt(data.inspectionHeadId))
+    .set('faultHeadId', parseInt(data.faultHeadId));
+
+  return this.http.get<any[]>(
+    this.baseUrl_ + 'Setup/getFaultWiseList',
+    {
+      headers: this.token.headerToken(),
+      params
+    }
+  );
+}
+
+ saveFaultWiseValue(model: any) {
+    return this.http.post(
+      this.baseUrl_ + 'Setup/SaveFaultWiseValue',
+      model,
+      { headers: this.token.headerToken() }
+    );
+  }
+
 
 }

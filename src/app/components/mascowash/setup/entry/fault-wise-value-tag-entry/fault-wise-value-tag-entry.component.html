@@ -1,150 +1,140 @@
 <div class="row">
   <div class="col-md-12">
+
+    <!-- ================= MASTER SECTION ================= -->
     <div class="card custom-card">
-      <div class="card-header border-bottom justify-content-between">
+      <div class="card-header border-bottom">
         <div class="card-title">Fault Wise Value Tag</div>
       </div>
 
       <div class="card-body">
-        <div class="row my-2">
-          <div class="col-md-12">
-            <div class="row align-items-center">
-              <label class="form-label col-md-2">
-                <!-- For larger screens -->
-                <span class="d-none d-sm-inline text-dark" title="Type"
-                  >Inspection Type
-                  <span style="color: red !important; font-size: 1.5em">*</span>
-                </span>
-              </label>
-              <div class="form-control col-md-4 common-border">
-                <ng-select
-                  #inspectionTypeSelect
-                  [(ngModel)]="Model.InspectionType"
-                  placeholder="Select"
-                >
-                  <ng-option
-                    *ngFor="let item of this.InspectionTypeList"
-                    [value]="item"
-                    >{{ item.label }}
-                  </ng-option>
-                </ng-select>
-              </div>
-            </div>
+
+        <!-- Inspection Type -->
+        <div class="row my-2 align-items-center">
+          <label class="form-label col-md-2 text-dark">
+            Inspection Type <span class="text-danger">*</span>
+          </label>
+
+          <div class="col-md-4">
+            <ng-select
+              [items]="InspectionTypeList"
+              bindLabel="label"
+              bindValue="value"
+              [(ngModel)]="Model.InspectionType"
+              (change)="onFilterChanged()"
+              placeholder="Select">
+            </ng-select>
           </div>
         </div>
 
-        <div class="row my-2">
-          <div class="col-md-12">
-            <div class="row align-items-center">
-              <label class="form-label col-md-2">
-                <!-- For larger screens -->
-                <span
-                  class="d-none d-sm-inline text-dark"
-                  title="Inspection Head"
-                  >Inspection Head
-                  <span style="color: red !important; font-size: 1.5em"
-                    >*</span
-                  ></span
-                >
-              </label>
-              <div class="form-control col-md-4 common-border">
-                <ng-select
-                  #unitNoSelect
-                  [(ngModel)]="Model.unitId"
-                  placeholder="Select"
-                >
-                  <ng-option
-                    *ngFor="let item of this.InspectionHeadList"
-                    [value]="item"
-                    >{{ item.label }}
-                  </ng-option>
-                </ng-select>
-              </div>
-            </div>
+
+        <!-- Inspection Head -->
+        <div class="row my-2 align-items-center">
+          <label class="form-label col-md-2 text-dark">
+            Inspection Head <span class="text-danger">*</span>
+          </label>
+
+          <div class="col-md-4">
+            <ng-select
+              [items]="InspectionHeadList"
+              bindLabel="label"
+              bindValue="value"
+              [(ngModel)]="Model.InspectionHead"
+              (change)="onFilterChanged()"
+              placeholder="Select">
+            </ng-select>
           </div>
         </div>
 
-        <div class="row my-2">
-          <div class="col-md-12">
-            <div class="row align-items-center">
-              <label class="form-label col-md-2">
-                <!-- For larger screens -->
-                <span class="d-none d-sm-inline text-dark" title="Fault Head"
-                  >Fault Head
-                  <span style="color: red !important; font-size: 1.5em"
-                    >*</span
-                  ></span
-                >
-              </label>
-              <div class="form-control col-md-4 common-border">
-                <ng-select
-                  #unitNoSelect
-                  [(ngModel)]="Model.FaultHead"
-                  placeholder="Select"
-                >
-                  <ng-option
-                    *ngFor="let item of this.FaultHeadList"
-                    [value]="item"
-                    >{{ item.label }}
-                  </ng-option>
-                </ng-select>
-              </div>
-            </div>
+
+        <!-- Fault Head -->
+        <div class="row my-2 align-items-center">
+          <label class="form-label col-md-2 text-dark">
+            Fault Head <span class="text-danger">*</span>
+          </label>
+
+          <div class="col-md-4">
+            <ng-select
+              [items]="FaultHeadList"
+              bindLabel="label"
+              bindValue="value"
+              [(ngModel)]="Model.FaultHead"
+              (change)="onFilterChanged()"
+              [disabled]="!Model.InspectionType || !Model.InspectionHead"
+              placeholder="Select">
+            </ng-select>
           </div>
         </div>
 
-        <!-- row 10 -->
-        <div class="text-end">
-          <button class="btn btn-primary me-2" (click)="onSaveMaster()">
-            Save
-          </button>
-          <button class="btn btn-danger" (click)="onClearAll()">Clear</button>
-        </div>
-        <!-- </form> -->
       </div>
     </div>
+
+
+    <!-- ================= TABLE ================= -->
     <div class="card mt-3">
-      <div class="card-header">
-        <h5 class="card-title">Fault Wise value Tag List</h5>
+      <div class="card-header border-bottom">
+        <h5 class="card-title mb-0">Fault Wise Value Tag List</h5>
       </div>
-      <div class="card-body table-responsive">
-        <table class="table table-bordered table-striped">
-          <thead>
-            <tr>
-              <th class="text-center" style="width: 60px">SL</th>
-              <th>Inspection Type</th>
-              <th>Inspection Head</th>
-              <th>Fault Head</th>
-              <th class="text-center" style="width: 120px">Action</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr *ngFor="let m of displayMasterGrid; let i = index">
-              <td class="text-center">{{ i + 1 }}</td>
-              <td>{{ m.UnitName }}</td>
-              <td>{{ m.OperationName }}</td>
-              <td>{{ m.MachineNames }}</td>
-              <td class="text-center">
-                <button
-                  class="btn btn-sm btn-info me-1"
-                  (click)="editMasterDetail(m)"
-                >
-                  Edit
-                </button>
-                <button
-                  class="btn btn-sm btn-danger"
-                  (click)="deleteMasterDetail(m)"
-                >
-                  Delete
-                </button>
-              </td>
-            </tr>
-            <tr *ngIf="displayMasterGrid.length === 0">
-              <td colspan="5" class="text-center">No master records found</td>
-            </tr>
-          </tbody>
-        </table>
+
+      <div class="card-body p-0">
+
+        <div class="table-responsive">
+          <table class="table table-bordered table-hover align-middle mb-0">
+
+            <thead class="table-light text-center">
+              <tr>
+                <th style="width:70px">
+                  <input
+                    type="checkbox"
+                    [(ngModel)]="selectAll"
+                    (change)="toggleAllRows()" />
+                </th>
+                <th class="text-start">Fault Name</th>
+                <th style="width:200px">Value</th>
+              </tr>
+            </thead>
+
+            <tbody>
+
+              <tr *ngFor="let row of FaultWiseList">
+                <td class="text-center">
+                  <input
+                    type="checkbox"
+                    [(ngModel)]="row.isSelected"
+                    (change)="updateSelectAll()" />
+                </td>
+
+                <td>{{ row.faultName }}</td>
+
+                <td>
+                  <input
+                    type="number"
+                    class="form-control form-control-sm text-end"
+                    [(ngModel)]="row.value"
+                    [disabled]="!row.isSelected"
+                    min="0" />
+                </td>
+              </tr>
+
+              <tr *ngIf="FaultWiseList.length === 0">
+                <td colspan="3" class="text-center text-muted py-3">
+                  Select all 3 filters to load data
+                </td>
+              </tr>
+
+            </tbody>
+          </table>
+        </div>
+
       </div>
     </div>
+
+
+    <!-- BUTTONS -->
+    <div class="text-end mt-3">
+      <button class="btn btn-primary me-2" (click)="onSubmit()">Save</button>
+      <button class="btn btn-danger" (click)="onClear()">Clear</button>
+    </div>
+
   </div>
 </div>

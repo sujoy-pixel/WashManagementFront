@@ -449,7 +449,7 @@ openSizePopup(row: any) {
 
   buildSavePayload(): any {
     debugger;
-    console.log('DETAIL LIST', this.detailList);
+    console.log('Tracking Wise', this.detailList);
     const master = {
       Operation: 'TrackingNo',
       unitId: this.Model.UnitId,
