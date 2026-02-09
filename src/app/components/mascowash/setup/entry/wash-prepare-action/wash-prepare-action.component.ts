@@ -4,6 +4,7 @@ import { WashSetupService } from '../../../services/washsetup.service';
 import { Router } from '@angular/router';
 import { is } from 'date-fns/locale';
 import { T } from '@angular/cdk/keycodes';
+import { FormControl } from '@angular/forms';
 
 @Component({
   selector: 'app-wash-prepare-action',
@@ -11,6 +12,9 @@ import { T } from '@angular/cdk/keycodes';
   styleUrls: ['./wash-prepare-action.component.scss']
 })
 export class WashPrepareActionComponent implements OnInit {
+
+  //  toppings = new FormControl('');
+  // toppingList: string[] = ['Extra cheese', 'Mushroom', 'Onion', 'Pepperoni', 'Sausage', 'Tomato'];
 
   Model: any = {
     processList: [],
@@ -201,7 +205,7 @@ console.log('✅ Merged Size Map:', sizeMap);
   }
 
   onSubmit(): void {
-debugger;
+//debugger;
     /* ================= VALIDATION ================= */
     if (!this.Model.processList?.length) {
       this.toastr.warning('Please select process');
