@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ToastrService } from 'ngx-toastr';
 import { WashSetupService } from '../../../services/washsetup.service';
-import { subscribe } from 'diagnostics_channel';
+//import { subscribe } from 'diagnostics_channel';
 interface SearchModel {
   UnitId?: number;
   fromDate?: string;
@@ -103,28 +103,28 @@ export class ReceiveOperationComponent implements OnInit {
       return;
     }
 
-    this.getSearchData();
+  //  this.getSearchData();
   }
 
 
-  getSearchData() {
-    debugger;
-    this.service.getSearchData(
-      this.review.UnitId!,
-      this.review.receiveNo == null ? '' : this.review.receiveNo,
-      this.review.fromDate == null ? '' : this.review.fromDate,
-      this.review.toDate == null ? '' : this.review.toDate,
-    ).subscribe({
-      next: (res: ReceiveRecord[]) => {
-        //this.searchList = res || [];
-        this.buildSearchList(res || []);
-      },
-      error: (err) => {
-        this.toastr.error('Failed to load data');
-        console.error(err);
-      }
-    });
-  }
+  // getSearchData() {
+  //   debugger;
+  //   this.service.getSearchData(
+  //     this.review.UnitId!,
+  //     this.review.receiveNo == null ? '' : this.review.receiveNo,
+  //     this.review.fromDate == null ? '' : this.review.fromDate,
+  //     this.review.toDate == null ? '' : this.review.toDate,
+  //   ).subscribe({
+  //     next: (res: ReceiveRecord[]) => {
+  //       //this.searchList = res || [];
+  //       this.buildSearchList(res || []);
+  //     },
+  //     error: (err) => {
+  //       this.toastr.error('Failed to load data');
+  //       console.error(err);
+  //     }
+  //   });
+  // }
 
   buildSearchList(rows: any[]) {
 

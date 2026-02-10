@@ -116,16 +116,18 @@
                         <tr *ngFor="let taskList of TaskList$ | async">
                           <th scope="row">{{ taskList.id }}</th>
 
-                          <td class="text-muted fs-15 fw-semibold"><a href="javascript:void(0)" class="text-dark"
-                              data-bs-target="#Vertically" data-bs-toggle="modal"><ngb-highlight [result]="taskList.task" [term]="service.searchTermTaskList">
-                              </ngb-highlight></a></td>
                           <td class="text-muted fs-15 fw-semibold">
-                            <ngb-highlight [result]="taskList.project">
-                            </ngb-highlight>
+                            <!-- <a href="javascript:void(0)" class="text-dark"
+                              data-bs-target="#Vertically" data-bs-toggle="modal"><ngb-highlight [result]="taskList.task" [term]="service.searchTermTaskList">
+                              </ngb-highlight></a> -->
+                            </td>
+                          <td class="text-muted fs-15 fw-semibold">
+                            <!-- <ngb-highlight [result]="taskList.project">
+                            </ngb-highlight> -->
                           </td>
                           <td class="text-danger fs-15 fw-semibold">
-                            <ngb-highlight [result]="taskList.dueDate" [term]="service.searchTermTaskList">
-                            </ngb-highlight>
+                            <!-- <ngb-highlight [result]="taskList.dueDate" [term]="service.searchTermTaskList">
+                            </ngb-highlight> -->
                           </td>
                           <td>
                             <div class="d-flex align-items-center">
@@ -135,12 +137,12 @@
                               </div>
                               <div>
                                 <h6 class="mb-0">
-                                  <ngb-highlight [result]="taskList.name" [term]="service.searchTermTaskList">
-                                  </ngb-highlight>
+                                  <!-- <ngb-highlight [result]="taskList.name" [term]="service.searchTermTaskList">
+                                  </ngb-highlight> -->
                                 </h6>
                                 <span class="text-muted fs-12">
-                                  <ngb-highlight [result]="taskList.email " [term]="service.searchTermTaskList">
-                                  </ngb-highlight>
+                                  <!-- <ngb-highlight [result]="taskList.email " [term]="service.searchTermTaskList">
+                                  </ngb-highlight> -->
                                 </span>
                               </div>
                             </div>

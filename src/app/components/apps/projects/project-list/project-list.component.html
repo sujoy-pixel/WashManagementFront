@@ -61,16 +61,16 @@
                 <tr *ngFor="let projectList of projectList$ | async">
                   <td class="text-muted fs-15 fw-semibold text-center" scope="row">{{ projectList.id }}</td>
                   <td>
-                    <ngb-highlight class="mb-0 fs-14 fw-semibold" [result]="projectList.title"
-                      [term]="service.searchTerm"></ngb-highlight>
+                    <!-- <ngb-highlight class="mb-0 fs-14 fw-semibold" [result]="projectList.title"
+                      [term]="service.searchTerm"></ngb-highlight> -->
                   </td>
                   <td>
-                    <ngb-highlight class="text-muted fs-15 fw-semibold" [result]="projectList.task"
-                      [term]="service.searchTerm"></ngb-highlight>
+                    <!-- <ngb-highlight class="text-muted fs-15 fw-semibold" [result]="projectList.task"
+                      [term]="service.searchTerm"></ngb-highlight> -->
                   </td>
                   <td>
-                    <ngb-highlight class="text-muted fs-15 fw-semibold" [result]="projectList.date"
-                      [term]="service.searchTerm"></ngb-highlight>
+                    <!-- <ngb-highlight class="text-muted fs-15 fw-semibold" [result]="projectList.date"
+                      [term]="service.searchTerm"></ngb-highlight> -->
                   </td>
                   <td class="avatar-list avatar-list-stacked">
                     <ng-template ngFor let-item [ngForOf]="projectList.member" let-i="index">
@@ -80,21 +80,21 @@
                       class="avatar bradius bg-primary">+{{projectList?.member!.length - number}}</span>
                   </td>
                   <td>
-                    <ngb-highlight class="text-muted fs-15 fw-semibold" [result]="projectList.dueDate"
-                      [term]="service.searchTerm"></ngb-highlight>
+                    <!-- <ngb-highlight class="text-muted fs-15 fw-semibold" [result]="projectList.dueDate"
+                      [term]="service.searchTerm"></ngb-highlight> -->
                   </td>
                   <td>
                     <ngb-progressbar class="fileprogress ps-0 h-auto" type="{{projectList.progressStatus}}"
                       [value]="projectList.progress!"></ngb-progressbar>
                   </td>
                   <td>
-                    <ngb-highlight class="text-muted fs-15 fw-semibold" [result]="projectList.submittedDate"
-                      [term]="service.searchTerm"></ngb-highlight>
+                    <!-- <ngb-highlight class="text-muted fs-15 fw-semibold" [result]="projectList.submittedDate"
+                      [term]="service.searchTerm"></ngb-highlight> -->
                   </td>
                   <td>
-                    <ngb-highlight
+                    <!-- <ngb-highlight
                       class="mb-0 mt-1 badge rounded-pill text-{{projectList.status}} bg-{{projectList.status}}-transparent"
-                      [result]="projectList.statusText" [term]="service.searchTerm"></ngb-highlight>
+                      [result]="projectList.statusText" [term]="service.searchTerm"></ngb-highlight> -->
                   </td>
                   <td>
                     <div class="d-flex align-items-stretch" ngbDropdown>

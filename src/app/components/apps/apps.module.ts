@@ -15,17 +15,17 @@ import { ClientsModule } from './clients/clients.module';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { SharedModule } from 'src/app/shared/shared.module';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
-import { PerfectScrollbarModule } from 'ngx-perfect-scrollbar';
-import { PERFECT_SCROLLBAR_CONFIG } from 'ngx-perfect-scrollbar';
-import { PerfectScrollbarConfigInterface } from 'ngx-perfect-scrollbar';
+// import { PerfectScrollbarModule } from 'ngx-perfect-scrollbar';
+// import { PERFECT_SCROLLBAR_CONFIG } from 'ngx-perfect-scrollbar';
+// import { PerfectScrollbarConfigInterface } from 'ngx-perfect-scrollbar';
 import { NgSelectModule } from '@ng-select/ng-select';
 import { CalendarModule, DateAdapter } from 'angular-calendar';
 import { adapterFactory } from 'angular-calendar/date-adapters/date-fns';
 
-const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
-  suppressScrollX: true,
-  wheelPropagation: false
-};
+// const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
+//   suppressScrollX: true,
+//   wheelPropagation: false
+// };
 
 
 @NgModule({
@@ -47,18 +47,18 @@ const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
     SharedModule,
     NgbModule,
     FormsModule, ReactiveFormsModule,
-    PerfectScrollbarModule,
+   // PerfectScrollbarModule,
     NgSelectModule,    
     CalendarModule.forRoot({
       provide: DateAdapter,
       useFactory: adapterFactory
     }),
   ],
-  providers: [
-    {
-      provide: PERFECT_SCROLLBAR_CONFIG,
-      useValue: DEFAULT_PERFECT_SCROLLBAR_CONFIG
-    }
-  ]
+  // providers: [
+  //   {
+  //     provide: PERFECT_SCROLLBAR_CONFIG,
+  //     useValue: DEFAULT_PERFECT_SCROLLBAR_CONFIG
+  //   }
+  // ]
 })
 export class AppsModule { }

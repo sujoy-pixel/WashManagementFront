@@ -26,10 +26,10 @@ export const content: Routes = [
     path: 'icons',
     loadChildren: () => import('../../components/icons/icons.module').then(m => m.IconsModule)
   },
-  {
-    path: 'maps',
-    loadChildren: () => import('../../components/maps/maps.module').then(m => m.MapsModule)
-  },
+  // {
+  //   path: 'maps',
+  //   loadChildren: () => import('../../components/maps/maps.module').then(m => m.MapsModule)
+  // },
   {
     path: 'pages',
     loadChildren: () => import('../../components/pages/pages.module').then(m => m.PagesModule)

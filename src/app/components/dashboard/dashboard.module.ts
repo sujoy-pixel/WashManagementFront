@@ -15,7 +15,7 @@ import { FormsModule } from '@angular/forms';
 
 // Import ng-circle-progress
 import { NgCircleProgressModule } from 'ng-circle-progress';
-import { NgxChartsModule } from '@swimlane/ngx-charts';
+//import { NgxChartsModule } from '@swimlane/ngx-charts';
 import { NgChartsModule } from 'ng2-charts';
 
 @NgModule({
@@ -31,7 +31,7 @@ import { NgChartsModule } from 'ng2-charts';
     NgbModule,
     FormsModule,
     NgCircleProgressModule.forRoot(),
-    NgxChartsModule,
+   // NgxChartsModule,
     NgChartsModule
   ]
 })

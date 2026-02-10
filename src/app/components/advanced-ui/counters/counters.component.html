@@ -14,7 +14,7 @@
                     <div class="d-sm-flex">
                         <span class="mb-sm-0 mb-3"><i class="fs-30 fe fe-clock"></i></span>
                         <div class="ms-sm-3 mb-sm-0 mb-3">
-                            <cd-timer id="timer-countup" class="h3" format="hms">[hours] hours [minutes] minutes [seconds] seconds</cd-timer>
+                            <!-- <cd-timer id="timer-countup" class="h3" format="hms">[hours] hours [minutes] minutes [seconds] seconds</cd-timer> -->
                             <h5 class="mb-0 mt-1">Only 6 min left</h5>
                         </div>
                         <div class="ms-auto text-sm-end">
@@ -38,7 +38,7 @@
                     <div class="d-sm-flex">
                         <span class="mb-sm-0 mb-3"><i class="fs-30 fe fe-clock"></i></span>
                         <div class="ms-sm-3 mb-sm-0 mb-3">
-                            <cd-timer id="timer-countinbetween" class="h3" format="hms" [startTime]="60" [endTime]="20" [countdown]="true" ></cd-timer>
+                            <!-- <cd-timer id="timer-countinbetween" class="h3" format="hms" [startTime]="60" [endTime]="20" [countdown]="true" ></cd-timer> -->
                             <h5 class="mb-0 mt-1">Only 6 min left</h5>
                         </div>
                         <span class="h1 ms-auto mb-0 mb-sm-0 mb-3">$1000</span>
@@ -59,8 +59,8 @@
                     <div class="d-sm-flex">
                         <span class="mb-sm-0 mb-3"><i class="fs-30 fe fe-clock"></i></span>
                         <div class="ms-sm-3 mb-sm-0 mb-3">
-                            <cd-timer id="timer-countercallback" class="h3" format="hms" [startTime]="60" [countdown]="true"(onComplete)="onComplete($event)"
-                            (onTick)="onTick($event)" (onStart)="onStart($event)"></cd-timer>
+                            <!-- <cd-timer id="timer-countercallback" class="h3" format="hms" [startTime]="60" [countdown]="true"(onComplete)="onComplete($event)"
+                            (onTick)="onTick($event)" (onStart)="onStart($event)"></cd-timer> -->
                             <h5 class="mb-0 mt-1">Only 6 min left</h5>
                         </div>
                         <span class="h1 text-center ms-auto mb-0 mb-sm-0 mb-3 ">$1000</span>
@@ -81,7 +81,7 @@
                     <div class="col-md-6 mx-auto">
                         <div class=" example bg-info br-7 d-f-ai-c-jc-c">
                             <i class="fe fe-calendar fs-30 text-white pe-3"></i>
-                            <cd-timer id="timer-outputpattern" class="h3 text-white mb-0" format="default" [startTime]="222222" [countdown]="true"></cd-timer>
+                            <!-- <cd-timer id="timer-outputpattern" class="h3 text-white mb-0" format="default" [startTime]="222222" [countdown]="true"></cd-timer> -->
                         </div>
                     </div>
                 </div>
@@ -100,9 +100,9 @@
             </div>
             <div class="card-body text-center">
                 <img src="./assets/images/media/illustrate.png" alt="counter-image" class="wd-300 ht-300 ">
-                <div class="pb-0 mt-4  bg-primary text-white p-3 br-5">
+                <!-- <div class="pb-0 mt-4  bg-primary text-white p-3 br-5">
                     <cd-timer id="timer-countup1" class="text-26 mb-0" format="hms">[hours] hours [minutes] minutes [seconds] seconds</cd-timer>
-                </div>
+                </div> -->
             </div>
         </div>
     </div><!-- COL-END -->
@@ -113,9 +113,9 @@
             </div>
             <div class="card-body text-center">
                 <img src="./assets/images/media/illustrate1.png" alt="counter-image" class="wd-300 ht-300 ">
-                <div class="mt-4 bg-warning text-white p-3 br-5">
+                <!-- <div class="mt-4 bg-warning text-white p-3 br-5">
                    <cd-timer id="timer-countinbetween1" class="text-26 mb-0" format="hms" [startTime]="60" [endTime]="20" [countdown]="true" ></cd-timer>
-                </div>
+                </div> -->
             </div>
         </div>
     </div><!-- COL-END -->
@@ -126,10 +126,10 @@
             </div>
             <div class="card-body text-center">
                 <img src="./assets/images/media/illustrate2.png" alt="counter-image" class="wd-300 ht-300 ">
-                <div class="mt-4 bg-secondary text-white p-3 br-5">
+                <!-- <div class="mt-4 bg-secondary text-white p-3 br-5">
                     <cd-timer id="timer-countercallback1" class="text-26 mb-0" format="hms" [startTime]="60" [countdown]="true"(onComplete)="onComplete($event)"
           (onTick)="onTick($event)" (onStart)="onStart($event)"></cd-timer>
-                </div>
+                </div> -->
             </div>
         </div>
     </div><!-- COL-END -->

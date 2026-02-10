@@ -263,7 +263,7 @@
             <div class="form-group">
               <mat-form-field class="chip-list w-100">
                 <mat-label>Favorite Fruits</mat-label>
-                <mat-chip-list #chipList aria-label="Fruit selection">
+                <!-- <mat-chip-list #chipList aria-label="Fruit selection">
                   <mat-chip *ngFor="let fruit of fruits" (removed)="remove(fruit)">
                     {{fruit}}
                     <button matChipRemove>
@@ -273,7 +273,7 @@
                   <input placeholder="New fruit..." #fruitInput [formControl]="fruitCtrl" [matAutocomplete]="auto"
                     [matChipInputFor]="chipList" [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
                     (matChipInputTokenEnd)="add($event)">
-                </mat-chip-list>
+                </mat-chip-list> -->
                 <mat-autocomplete #auto="matAutocomplete" (optionSelected)="selected($event)">
                   <mat-option *ngFor="let fruit of filteredFruits | async" [value]="fruit">
                     {{fruit}}
@@ -299,14 +299,14 @@
                   <li class="select-client">
                     <mat-form-field class="chip-list w-100">
                       <mat-label>Video keywords</mat-label>
-                      <mat-chip-list #chipList1 aria-label="Video keywords" multiple [formControl]="fc">
+                      <!-- <mat-chip-list #chipList1 aria-label="Video keywords" multiple [formControl]="fc">
                         <mat-chip *ngFor="let keyword of keywords" [selected]="keyword" [value]="keyword"
                           (removed)="removeKeyword(keyword)">
                           {{keyword}}
                         </mat-chip>
                         <input placeholder="New keyword..." [matChipInputFor]="chipList1"
                           (matChipInputTokenEnd)="addKeywordFromInput($event)">
-                      </mat-chip-list>
+                      </mat-chip-list> -->
                     </mat-form-field>
                   </li>
                 </ul>

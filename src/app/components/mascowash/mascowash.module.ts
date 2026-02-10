@@ -21,7 +21,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 
-import { NgxChartsModule } from '@swimlane/ngx-charts';
+//import { NgxChartsModule } from '@swimlane/ngx-charts';
 import { ProcessNameEntryComponent } from './setup/entry/process-name-entry/process-name-entry.component';
 
 import { InspectionTypeEntryComponent } from './setup/entry/inspection-type-entry/inspection-type-entry.component';
@@ -75,7 +75,7 @@ import { WashItemDeliveryComponent } from './setup/entry/wash-item-delivery/wash
     MatFormFieldModule,
     MatSelectModule,
     MatCheckboxModule,
-    NgxChartsModule,
+    // NgxChartsModule,
   ],
 })
 export class MascowashModule {}

@@ -21,7 +21,6 @@
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
             "allowedCommonJsDependencies": [
-              "leaflet",
               "apexcharts",
               "chartist",
               "quill"
