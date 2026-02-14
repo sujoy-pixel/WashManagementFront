@@ -91,11 +91,11 @@
           "builder": "@angular-devkit/build-angular:dev-server",
           "configurations": {
             "production": {
-              "browserTarget": "preview:build:production"
+              "buildTarget": "preview:build:production"
             },
             
             "development": {
-              "browserTarget": "preview:build:development"
+              "buildTarget": "preview:build:development"
             }
           },
           "defaultConfiguration": "development"
@@ -103,7 +103,7 @@
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "preview:build"
+            "buildTarget": "preview:build"
           }
         },
         "test": {
@@ -130,7 +130,6 @@
       }
     }
   },
-  "defaultProject": "preview",
   "cli": {
     "analytics": "5edd09dd-886d-459d-aa45-8fb4fff23269"
   }

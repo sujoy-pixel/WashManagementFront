@@ -18,7 +18,7 @@ import { FootersComponent } from './footers/footers.component';
 import { UserlistComponent } from './userlist/userlist.component';
 import { FileAttachmentsComponent } from './file-attachments/file-attachments.component';
 import { SharedModule } from 'src/app/shared/shared.module';
-import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import { NgbAccordionModule, NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { MaterialModuleModule } from 'src/app/materialModule/material-module/material-module.module';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 //import { CdTimerModule } from 'angular-cd-timer';
@@ -64,6 +64,7 @@ import { faGithub, faGithubAlt, faTwitter } from '@fortawesome/free-brands-svg-i
     //CdTimerModule,
     BarRatingModule,
     FontAwesomeModule,
+    NgbAccordionModule
   ]
 })
 export class AdvancedUiModule { 
