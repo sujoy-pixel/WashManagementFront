@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { HttpClientModule } from '@angular/common/http';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
 import { TableRoutingModule } from './table-routing.module';
 import { DefaultTableComponent } from './default-table/default-table.component';
@@ -24,36 +24,30 @@ import { ToastrModule, ToastrService } from 'ngx-toastr';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 
 
-@NgModule({
-  declarations: [
-    DefaultTableComponent,
-    DataTableComponent,
-    EditableTableComponent,
-    BasicDataTableComponent,
-    ExpandableRowsComponent,
-    FilterSortPaginationComponent,
-    RetiveingHttpComponent,
-    TableSelectComponent,
-    AdddialogBoxComponent,
-    AddMemberComponent,
-    CRUDComponent,
-    EditMemberComponent,
-    MemberListComponent
-  ],
-  imports: [
-    CommonModule,
-    HttpClientModule,
-    TableRoutingModule,
-    SharedModule,
-    FormsModule,
-    NgbModule,
-    ReactiveFormsModule,
-    MaterialModuleModule,
-    NgxPaginationModule,
-    ToastrModule.forRoot(), // ToastrModule added
-  ],
-  providers:[
-    ToastrService
-  ]
-})
+@NgModule({ declarations: [
+        DefaultTableComponent,
+        DataTableComponent,
+        EditableTableComponent,
+        BasicDataTableComponent,
+        ExpandableRowsComponent,
+        FilterSortPaginationComponent,
+        RetiveingHttpComponent,
+        TableSelectComponent,
+        AdddialogBoxComponent,
+        AddMemberComponent,
+        CRUDComponent,
+        EditMemberComponent,
+        MemberListComponent
+    ], imports: [CommonModule,
+        TableRoutingModule,
+        SharedModule,
+        FormsModule,
+        NgbModule,
+        ReactiveFormsModule,
+        MaterialModuleModule,
+        NgxPaginationModule,
+        ToastrModule.forRoot()], providers: [
+        ToastrService,
+        provideHttpClient(withInterceptorsFromDi())
+    ] })
 export class TableModule { }

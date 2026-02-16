@@ -1,7 +1,7 @@
 import { CUSTOM_ELEMENTS_SCHEMA, NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { HttpClientModule } from '@angular/common/http';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
@@ -47,63 +47,54 @@ import { MultiSelectModule } from 'primeng/multiselect';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 //import { ReceiveOperationComponent } from './components/Operation/receive-operation/receive-operation.component';
 //import { ReceiveOperationComponent } from '../../../WashManagementFront/src/app/components/Operation/receive-operation/receive-operation.component';
-@NgModule({
-  declarations: [
-    // TypeaheadModule,
-    AppComponent,
-    HomePageComponent,
-    HeaderComponent,
-    FooterComponent,
-    BannerComponent,
-    //ReceiveOperationComponent,
-    // TypeOfInspectionComponent,
-  
-    //FormsModule
-
-    //AdmissionFormComponent,
-    //TestComponent,
-    // StudentPreviousInstituteComponent,
-  ],
-  imports: [
-    // DropdownModule,
-    // Component,
-    //PrimeNGConfig,
-    BsDatepickerModule.forRoot(),
-    BoldReportViewerModule,
-    FormsModule,
-    // MatTabsModule,
-    NgSelectModule,
-    DialogModule,
-    TypeaheadModule,
-    HttpClientModule,
-    BrowserModule,
-    BrowserAnimationsModule,
-    AppRoutingModule,
-    AngularFireModule.initializeApp(environment.firebase),
-    AngularFirestoreModule,
-    AngularFireAuthModule,
-    AngularFireDatabaseModule,
-   // SimpleNotificationsModule.forRoot(),
-    //ToastrModule.forRoot(),
-    ToastrModule.forRoot({
-      enableHtml: true, // Allows HTML in toast messages
-    }),
-
-    ReactiveFormsModule,
-    PanelModule,
-    TableModule,
-    CommonModule,
-    NgSelectModule,
-    BsDatepickerModule.forRoot(),
-    CalendarModule, // Ensure this module is imported
-    //NgxChartsModule,
-    MultiSelectModule,
-    MatCheckboxModule
-  ],
-  providers: [ColorPickerService, DatePipe],
-  bootstrap: [AppComponent],
-  schemas: [CUSTOM_ELEMENTS_SCHEMA],
-})
+@NgModule({ declarations: [
+        // TypeaheadModule,
+        AppComponent,
+        HomePageComponent,
+        HeaderComponent,
+        FooterComponent,
+        BannerComponent,
+        //ReceiveOperationComponent,
+        // TypeOfInspectionComponent,
+        //FormsModule
+        //AdmissionFormComponent,
+        //TestComponent,
+        // StudentPreviousInstituteComponent,
+    ],
+    bootstrap: [AppComponent],
+    schemas: [CUSTOM_ELEMENTS_SCHEMA], imports: [
+        // DropdownModule,
+        // Component,
+        //PrimeNGConfig,
+        BsDatepickerModule.forRoot(),
+        BoldReportViewerModule,
+        FormsModule,
+        // MatTabsModule,
+        NgSelectModule,
+        DialogModule,
+        TypeaheadModule,
+        BrowserModule,
+        BrowserAnimationsModule,
+        AppRoutingModule,
+        AngularFireModule.initializeApp(environment.firebase),
+        AngularFirestoreModule,
+        AngularFireAuthModule,
+        AngularFireDatabaseModule,
+        // SimpleNotificationsModule.forRoot(),
+        //ToastrModule.forRoot(),
+        ToastrModule.forRoot({
+            enableHtml: true, // Allows HTML in toast messages
+        }),
+        ReactiveFormsModule,
+        PanelModule,
+        TableModule,
+        CommonModule,
+        NgSelectModule,
+        BsDatepickerModule.forRoot(),
+        CalendarModule, // Ensure this module is imported
+        //NgxChartsModule,
+        MultiSelectModule,
+        MatCheckboxModule], providers: [ColorPickerService, DatePipe, provideHttpClient(withInterceptorsFromDi())] })
 export class AppModule {
   //MatTabsModule
 }

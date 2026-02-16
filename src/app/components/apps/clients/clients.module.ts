@@ -9,24 +9,18 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MaterialModuleModule } from 'src/app/materialModule/material-module/material-module.module';
 import { NgSelectModule } from '@ng-select/ng-select';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
-import { HttpClientModule } from '@angular/common/http';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
 
-@NgModule({
-  declarations: [
-    ClientsComponent,
-    AddClientComponent
-  ],
-  imports: [
-    CommonModule,
-    ClientsRoutingModule,
-    SharedModule,
-    HttpClientModule,
-    FormsModule,
-    ReactiveFormsModule,
-    MaterialModuleModule,
-    NgSelectModule,
-    NgbModule
-  ]
-})
+@NgModule({ declarations: [
+        ClientsComponent,
+        AddClientComponent
+    ], imports: [CommonModule,
+        ClientsRoutingModule,
+        SharedModule,
+        FormsModule,
+        ReactiveFormsModule,
+        MaterialModuleModule,
+        NgSelectModule,
+        NgbModule], providers: [provideHttpClient(withInterceptorsFromDi())] })
 export class ClientsModule { }
