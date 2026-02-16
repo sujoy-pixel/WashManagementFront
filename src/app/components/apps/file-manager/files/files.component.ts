@@ -37,9 +37,10 @@ const RecentFilesData: RecentFilesType[]=[
 ]
 
 @Component({
-  selector: 'app-files',
-  templateUrl: './files.component.html',
-  styleUrls: ['./files.component.scss']
+    selector: 'app-files',
+    templateUrl: './files.component.html',
+    styleUrls: ['./files.component.scss'],
+    standalone: false
 })
 export class FilesComponent implements OnInit {
   FilesList!:list[];

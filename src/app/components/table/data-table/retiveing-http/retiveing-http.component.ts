@@ -7,9 +7,10 @@ import {catchError, map, startWith, switchMap} from 'rxjs/operators';
 import { ExampleHttpDatabase, GithubIssue } from './httpClient';
 
 @Component({
-  selector: 'app-retiveing-http',
-  templateUrl: './retiveing-http.component.html',
-  styleUrls: ['./retiveing-http.component.scss']
+    selector: 'app-retiveing-http',
+    templateUrl: './retiveing-http.component.html',
+    styleUrls: ['./retiveing-http.component.scss'],
+    standalone: false
 })
 export class RetiveingHttpComponent implements OnInit {
 

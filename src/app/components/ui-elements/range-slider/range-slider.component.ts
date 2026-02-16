@@ -2,9 +2,10 @@ import { LabelType, Options } from '@angular-slider/ngx-slider';
 import { Component, OnInit } from '@angular/core';
 
 @Component({
-  selector: 'app-range-slider',
-  templateUrl: './range-slider.component.html',
-  styleUrls: ['./range-slider.component.scss']
+    selector: 'app-range-slider',
+    templateUrl: './range-slider.component.html',
+    styleUrls: ['./range-slider.component.scss'],
+    standalone: false
 })
 export class RangeSliderComponent implements OnInit {
 

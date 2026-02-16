@@ -2,9 +2,10 @@ import { Component, OnInit } from '@angular/core';
 import { AuthService } from 'src/app/shared/services/firebase/auth.service';
 
 @Component({
-  selector: 'app-resister',
-  templateUrl: './resister.component.html',
-  styleUrls: ['./resister.component.scss']
+    selector: 'app-resister',
+    templateUrl: './resister.component.html',
+    styleUrls: ['./resister.component.scss'],
+    standalone: false
 })
 export class ResisterComponent implements OnInit {
 

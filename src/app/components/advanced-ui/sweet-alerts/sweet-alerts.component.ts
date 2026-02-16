@@ -3,9 +3,10 @@ declare var require: any;
 const Swal = require('sweetalert2');
 
 @Component({
-  selector: 'app-sweet-alerts',
-  templateUrl: './sweet-alerts.component.html',
-  styleUrls: ['./sweet-alerts.component.scss'],
+    selector: 'app-sweet-alerts',
+    templateUrl: './sweet-alerts.component.html',
+    styleUrls: ['./sweet-alerts.component.scss'],
+    standalone: false
 })
 export class SweetAlertsComponent implements OnInit {
   constructor() {}

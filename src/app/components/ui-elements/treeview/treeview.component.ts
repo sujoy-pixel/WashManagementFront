@@ -74,9 +74,10 @@ const Static_TREE_DATA: staticTreeNode[] = [
 ];
 
 @Component({
-  selector: 'app-treeview',
-  templateUrl: './treeview.component.html',
-  styleUrls: ['./treeview.component.scss']
+    selector: 'app-treeview',
+    templateUrl: './treeview.component.html',
+    styleUrls: ['./treeview.component.scss'],
+    standalone: false
 })
 export class TreeviewComponent implements OnInit {
 

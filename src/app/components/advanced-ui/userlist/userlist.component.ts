@@ -39,9 +39,10 @@ const UserList: UserData[] = [
 ];
 
 @Component({
-  selector: 'app-userlist',
-  templateUrl: './userlist.component.html',
-  styleUrls: ['./userlist.component.scss']
+    selector: 'app-userlist',
+    templateUrl: './userlist.component.html',
+    styleUrls: ['./userlist.component.scss'],
+    standalone: false
 })
 export class UserlistComponent implements OnInit {
 

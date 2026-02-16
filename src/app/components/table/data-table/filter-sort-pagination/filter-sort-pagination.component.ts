@@ -44,9 +44,10 @@ const NAMES: string[] = [
 ];
 
 @Component({
-  selector: 'app-filter-sort-pagination',
-  templateUrl: './filter-sort-pagination.component.html',
-  styleUrls: ['./filter-sort-pagination.component.scss']
+    selector: 'app-filter-sort-pagination',
+    templateUrl: './filter-sort-pagination.component.html',
+    styleUrls: ['./filter-sort-pagination.component.scss'],
+    standalone: false
 })
 export class FilterSortPaginationComponent implements OnInit {
 

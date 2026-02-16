@@ -6,9 +6,10 @@ import { ToastrService } from 'ngx-toastr';
 import { CrudService } from 'src/app/shared/services/firebase/crud.service';
 
 @Component({
-  selector: 'app-edit-member',
-  templateUrl: './edit-member.component.html',
-  styleUrls: ['./edit-member.component.scss']
+    selector: 'app-edit-member',
+    templateUrl: './edit-member.component.html',
+    styleUrls: ['./edit-member.component.scss'],
+    standalone: false
 })
 
 export class EditMemberComponent implements OnInit {

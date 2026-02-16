@@ -12,9 +12,10 @@ export interface Member {
     designation: string
  }
 @Component({
-  selector: 'app-member-list',
-  templateUrl: './member-list.component.html',
-  styleUrls: ['./member-list.component.scss']
+    selector: 'app-member-list',
+    templateUrl: './member-list.component.html',
+    styleUrls: ['./member-list.component.scss'],
+    standalone: false
 })
 
 export class MemberListComponent implements OnInit {

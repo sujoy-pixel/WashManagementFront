@@ -4,9 +4,10 @@ import Swal from 'sweetalert2';
 import { WashSetupService } from '../../../services/washsetup.service';
 
 @Component({
-  selector: 'app-inspection-area-entry',
-  templateUrl: './inspection-area-entry.component.html',
-  styleUrls: ['./inspection-area-entry.component.scss']
+    selector: 'app-inspection-area-entry',
+    templateUrl: './inspection-area-entry.component.html',
+    styleUrls: ['./inspection-area-entry.component.scss'],
+    standalone: false
 })
 export class InspectionAreaEntryComponent {
 

@@ -30,9 +30,10 @@ export class MyErrorStateMatcher implements ErrorStateMatcher {
 }
 
 @Component({
-  selector: 'app-form-advanced',
-  templateUrl: './form-advanced.component.html',
-  styleUrls: ['./form-advanced.component.scss'],
+    selector: 'app-form-advanced',
+    templateUrl: './form-advanced.component.html',
+    styleUrls: ['./form-advanced.component.scss'],
+    standalone: false
 })
 export class FormAdvancedComponent implements OnInit {
   constructor(private ngbCalendar: NgbCalendar, private dateAdapter: NgbDateAdapter<string>, private dataService: DataService) {}

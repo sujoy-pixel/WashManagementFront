@@ -1,7 +1,8 @@
 import { Directive, HostListener } from '@angular/core';
 
 @Directive({
-  selector: '[appToggleTheme]'
+    selector: '[appToggleTheme]',
+    standalone: false
 })
 export class ToggleThemeDirective {
   private body:HTMLBodyElement | any = document.querySelector('body');

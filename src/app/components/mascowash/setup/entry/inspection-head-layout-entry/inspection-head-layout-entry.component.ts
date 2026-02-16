@@ -8,9 +8,10 @@ import { NgZone } from '@angular/core';
 import Swal from 'sweetalert2';
 
 @Component({
-  selector: 'app-inspection-head-layout-entry',
-  templateUrl: './inspection-head-layout-entry.component.html',
-  styleUrls: ['./inspection-head-layout-entry.component.scss'],
+    selector: 'app-inspection-head-layout-entry',
+    templateUrl: './inspection-head-layout-entry.component.html',
+    styleUrls: ['./inspection-head-layout-entry.component.scss'],
+    standalone: false
 })
 export class InspectionHeadLayoutEntryComponent {
   model: any = null;

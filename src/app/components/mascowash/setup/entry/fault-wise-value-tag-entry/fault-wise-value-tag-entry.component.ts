@@ -13,9 +13,10 @@ import { NgZone } from '@angular/core';
 import Swal from 'sweetalert2';
 
 @Component({
-  selector: 'app-fault-wise-value-tag-entry',
-  templateUrl: './fault-wise-value-tag-entry.component.html',
-  styleUrls: ['./fault-wise-value-tag-entry.component.scss'],
+    selector: 'app-fault-wise-value-tag-entry',
+    templateUrl: './fault-wise-value-tag-entry.component.html',
+    styleUrls: ['./fault-wise-value-tag-entry.component.scss'],
+    standalone: false
 })
 export class FaultWiseValueTagEntryComponent {
   InspectionTypeList: any[] = [];

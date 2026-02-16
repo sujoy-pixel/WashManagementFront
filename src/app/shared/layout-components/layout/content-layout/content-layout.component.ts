@@ -3,9 +3,10 @@ import { Menu, NavService } from 'src/app/shared/services/nav.service';
 import { SwitcherService } from 'src/app/shared/services/switcher.service';
 
 @Component({
-  selector: 'app-content-layout',
-  templateUrl: './content-layout.component.html',
-  styleUrls: ['./content-layout.component.scss'],
+    selector: 'app-content-layout',
+    templateUrl: './content-layout.component.html',
+    styleUrls: ['./content-layout.component.scss'],
+    standalone: false
 })
 export class ContentLayoutComponent implements OnInit {
   public menuItems!: Menu[];

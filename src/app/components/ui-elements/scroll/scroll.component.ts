@@ -2,9 +2,10 @@ import { Component, OnInit } from '@angular/core';
 import PerfectScrollbar from 'perfect-scrollbar';
 
 @Component({
-  selector: 'app-scroll',
-  templateUrl: './scroll.component.html',
-  styleUrls: ['./scroll.component.scss']
+    selector: 'app-scroll',
+    templateUrl: './scroll.component.html',
+    styleUrls: ['./scroll.component.scss'],
+    standalone: false
 })
 export class ScrollComponent implements OnInit {
 

@@ -6,9 +6,10 @@ import { AngularEditorConfig } from '@kolkov/angular-editor';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
-  selector: 'app-form-editor',
-  templateUrl: './form-editor.component.html',
-  styleUrls: ['./form-editor.component.scss'],
+    selector: 'app-form-editor',
+    templateUrl: './form-editor.component.html',
+    styleUrls: ['./form-editor.component.scss'],
+    standalone: false
 })
 export class FormEditorComponent implements OnInit {
 

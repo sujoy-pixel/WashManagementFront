@@ -1,9 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 
 @Component({
-  selector: 'app-medial-object',
-  templateUrl: './medial-object.component.html',
-  styleUrls: ['./medial-object.component.scss']
+    selector: 'app-medial-object',
+    templateUrl: './medial-object.component.html',
+    styleUrls: ['./medial-object.component.scss'],
+    standalone: false
 })
 export class MedialObjectComponent implements OnInit {
 

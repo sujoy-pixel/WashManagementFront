@@ -4,9 +4,10 @@ import Swal from 'sweetalert2';
 import { WashSetupService } from '../../../services/washsetup.service';
 
 @Component({
-  selector: 'app-fault-name-layout',
-  templateUrl: './fault-name-layout.component.html',
-  styleUrls: ['./fault-name-layout.component.scss'],
+    selector: 'app-fault-name-layout',
+    templateUrl: './fault-name-layout.component.html',
+    styleUrls: ['./fault-name-layout.component.scss'],
+    standalone: false
 })
 export class FaultNameLayoutComponent {
   priorityList: number[] = [];

@@ -2,9 +2,10 @@ import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 
 @Component({
-  selector: 'app-ngmdefault-dialog',
-  templateUrl: './ngmdefault-dialog.component.html',
-  styleUrls: ['./ngmdefault-dialog.component.scss']
+    selector: 'app-ngmdefault-dialog',
+    templateUrl: './ngmdefault-dialog.component.html',
+    styleUrls: ['./ngmdefault-dialog.component.scss'],
+    standalone: false
 })
 export class NGMDefaultDialogComponent implements OnInit {
   constructor(public dialog: MatDialog) {}
@@ -24,8 +25,8 @@ export class NGMDefaultDialogComponent implements OnInit {
 
 
 @Component({
-  selector: 'default-dialog-content',
-  template: `
+    selector: 'default-dialog-content',
+    template: `
   <h2 mat-dialog-title>Default Dialog</h2>
   <mat-dialog-content class="mat-typography">
     <p>Praesent commodo cursus magna, vel scelerisque nisl consectetur et. Vivamus sagittis lacus vel augue laoreet rutrum faucibus dolor auctor.</p>
@@ -37,6 +38,7 @@ export class NGMDefaultDialogComponent implements OnInit {
     <button mat-button [mat-dialog-close]="true" cdkFocusInitial>Save</button>
   </mat-dialog-actions>
 
-  `
+  `,
+    standalone: false
 })
 export class BasicDialogContent {}

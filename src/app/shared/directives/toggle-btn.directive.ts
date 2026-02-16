@@ -2,7 +2,8 @@ import { Directive, ElementRef, Input } from '@angular/core';
 import { fromEvent } from 'rxjs';
 
 @Directive({
-  selector: '[appToggleBtn]'
+    selector: '[appToggleBtn]',
+    standalone: false
 })
 export class ToggleBtnDirective {
   // used in form Element component

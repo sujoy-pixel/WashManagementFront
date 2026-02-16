@@ -6,10 +6,11 @@ import { TaskListService } from './product-details.service';
 import { TaskListType } from './task-list.module';
 
 @Component({
-  selector: 'app-task-list',
-  templateUrl: './task-list.component.html',
-  styleUrls: ['./task-list.component.scss'],
-  providers: [TaskListService, DecimalPipe],
+    selector: 'app-task-list',
+    templateUrl: './task-list.component.html',
+    styleUrls: ['./task-list.component.scss'],
+    providers: [TaskListService, DecimalPipe],
+    standalone: false
 })
 export class TaskListComponent implements OnInit {
 

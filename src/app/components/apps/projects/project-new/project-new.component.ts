@@ -4,9 +4,10 @@ import { NgbDateStruct } from '@ng-bootstrap/ng-bootstrap';
 import { Editor, Toolbar, Validators } from 'ngx-editor';
 
 @Component({
-  selector: 'app-project-new',
-  templateUrl: './project-new.component.html',
-  styleUrls: ['./project-new.component.scss', '../../../forms/form-editor/form-editor.component.scss']
+    selector: 'app-project-new',
+    templateUrl: './project-new.component.html',
+    styleUrls: ['./project-new.component.scss', '../../../forms/form-editor/form-editor.component.scss'],
+    standalone: false
 })
 export class ProjectNewComponent implements OnInit {
   model!: NgbDateStruct;

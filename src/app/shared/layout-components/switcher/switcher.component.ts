@@ -5,9 +5,10 @@ import { SwitcherService } from '../../services/switcher.service';
 import * as switcher from './switcher';
 
 @Component({
-  selector: 'app-switcher',
-  templateUrl: './switcher.component.html',
-  styleUrls: ['./switcher.component.scss'],
+    selector: 'app-switcher',
+    templateUrl: './switcher.component.html',
+    styleUrls: ['./switcher.component.scss'],
+    standalone: false
 })
 export class SwitcherComponent implements OnInit {
   layoutSub: Subscription;

@@ -7,8 +7,8 @@ export interface UsersData {
 }
 
 @Component({
-  selector: 'app-adddialog-box',
-  template: `
+    selector: 'app-adddialog-box',
+    template: `
     <h1 mat-dialog-title>Row Action :: <strong>{{action}}</strong></h1>
 <div mat-dialog-content>
   <mat-form-field *ngIf="action != 'Delete'; else elseTemplate" class="w-100">
@@ -23,8 +23,8 @@ export interface UsersData {
   <button mat-button (click)="closeDialog()" mat-flat-button color="warn">Cancel</button>
 </div>
   `,
-  styles: [
-  ]
+    styles: [],
+    standalone: false
 })
 export class AdddialogBoxComponent implements OnInit {
 

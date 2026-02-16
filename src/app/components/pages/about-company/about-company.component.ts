@@ -2,9 +2,10 @@ import { Component, OnInit } from '@angular/core';
 import counterUp from 'counterup2';
 
 @Component({
-  selector: 'app-about-company',
-  templateUrl: './about-company.component.html',
-  styleUrls: ['./about-company.component.scss']
+    selector: 'app-about-company',
+    templateUrl: './about-company.component.html',
+    styleUrls: ['./about-company.component.scss'],
+    standalone: false
 })
 export class AboutCompanyComponent implements OnInit {
 

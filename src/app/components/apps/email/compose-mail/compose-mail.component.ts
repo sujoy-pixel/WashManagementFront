@@ -1,9 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 
 @Component({
-  selector: 'app-compose-mail',
-  templateUrl: './compose-mail.component.html',
-  styleUrls: ['./compose-mail.component.scss']
+    selector: 'app-compose-mail',
+    templateUrl: './compose-mail.component.html',
+    styleUrls: ['./compose-mail.component.scss'],
+    standalone: false
 })
 export class ComposeMailComponent implements OnInit {
 

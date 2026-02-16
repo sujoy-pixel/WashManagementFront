@@ -4,9 +4,10 @@ import Swal from 'sweetalert2';
 import { WashSetupService } from '../../../services/washsetup.service';
 
 @Component({
-  selector: 'app-machine-name-entry',
-  templateUrl: './machine-name-entry.component.html',
-  styleUrls: ['./machine-name-entry.component.scss'],
+    selector: 'app-machine-name-entry',
+    templateUrl: './machine-name-entry.component.html',
+    styleUrls: ['./machine-name-entry.component.scss'],
+    standalone: false
 })
 export class MachineNameEntryComponent implements OnInit {
   UnitList: any[] = [];

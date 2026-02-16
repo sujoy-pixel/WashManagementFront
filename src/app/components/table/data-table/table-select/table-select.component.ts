@@ -24,9 +24,10 @@ const ELEMENT_DATA: PeriodicElement[] = [
 
 
 @Component({
-  selector: 'app-table-select',
-  templateUrl: './table-select.component.html',
-  styleUrls: ['./table-select.component.scss']
+    selector: 'app-table-select',
+    templateUrl: './table-select.component.html',
+    styleUrls: ['./table-select.component.scss'],
+    standalone: false
 })
 export class TableSelectComponent implements OnInit {
 

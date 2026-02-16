@@ -2,9 +2,10 @@ import { Component, OnInit } from '@angular/core';
 import { ClientData, ClientDataType } from './client.module';
 
 @Component({
-  selector: 'app-clients',
-  templateUrl: './clients.component.html',
-  styleUrls: ['./clients.component.scss']
+    selector: 'app-clients',
+    templateUrl: './clients.component.html',
+    styleUrls: ['./clients.component.scss'],
+    standalone: false
 })
 export class ClientsComponent implements OnInit {
   ClientData!:ClientDataType[];

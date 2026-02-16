@@ -2,9 +2,10 @@ import { Component, OnInit } from '@angular/core';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
-  selector: 'app-file-manager',
-  templateUrl: './file-manager.component.html',
-  styleUrls: ['./file-manager.component.scss']
+    selector: 'app-file-manager',
+    templateUrl: './file-manager.component.html',
+    styleUrls: ['./file-manager.component.scss'],
+    standalone: false
 })
 export class FileManagerComponent implements OnInit {
 

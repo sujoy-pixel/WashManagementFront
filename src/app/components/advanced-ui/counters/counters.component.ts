@@ -2,9 +2,10 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { CdTimerComponent, TimeInterface } from 'angular-cd-timer';
 
 @Component({
-  selector: 'app-counters',
-  templateUrl: './counters.component.html',
-  styleUrls: ['./counters.component.scss']
+    selector: 'app-counters',
+    templateUrl: './counters.component.html',
+    styleUrls: ['./counters.component.scss'],
+    standalone: false
 })
 export class CountersComponent implements OnInit {
 

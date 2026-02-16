@@ -13,9 +13,10 @@ import { NgZone } from '@angular/core';
 import Swal from 'sweetalert2';
 
 @Component({
-  selector: 'app-operation-name-entry',
-  templateUrl: './operation-name-entry.component.html',
-  styleUrls: ['./operation-name-entry.component.scss'],
+    selector: 'app-operation-name-entry',
+    templateUrl: './operation-name-entry.component.html',
+    styleUrls: ['./operation-name-entry.component.scss'],
+    standalone: false
 })
 export class OperationNameEntryComponent {
   CompanyBankInfoForm: FormGroup | any;

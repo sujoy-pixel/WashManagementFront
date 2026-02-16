@@ -4,9 +4,10 @@ import { User } from './user.module';
 import { UserService } from './user.service';
 
 @Component({
-  selector: 'app-form-validation',
-  templateUrl: './form-validation.component.html',
-  styleUrls: ['./form-validation.component.scss']
+    selector: 'app-form-validation',
+    templateUrl: './form-validation.component.html',
+    styleUrls: ['./form-validation.component.scss'],
+    standalone: false
 })
 export class FormValidationComponent implements OnInit {
   title = 'Angular Form Validation Tutorial';

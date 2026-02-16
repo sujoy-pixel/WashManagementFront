@@ -1,9 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 
 @Component({
-  selector: 'app-themify-icons',
-  templateUrl: './themify-icons.component.html',
-  styleUrls: ['./themify-icons.component.scss']
+    selector: 'app-themify-icons',
+    templateUrl: './themify-icons.component.html',
+    styleUrls: ['./themify-icons.component.scss'],
+    standalone: false
 })
 export class ThemifyIconsComponent implements OnInit {
 

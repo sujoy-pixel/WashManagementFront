@@ -8,9 +8,10 @@ import { NgZone } from '@angular/core';
 import Swal from 'sweetalert2';
 
 @Component({
-  selector: 'app-fault-head-name-entry',
-  templateUrl: './fault-head-name-entry.component.html',
-  styleUrls: ['./fault-head-name-entry.component.scss'],
+    selector: 'app-fault-head-name-entry',
+    templateUrl: './fault-head-name-entry.component.html',
+    styleUrls: ['./fault-head-name-entry.component.scss'],
+    standalone: false
 })
 export class FaultHeadNameEntryComponent {
   model: any = null;

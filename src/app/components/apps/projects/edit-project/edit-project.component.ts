@@ -1,9 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 
 @Component({
-  selector: 'app-edit-project',
-  templateUrl: './edit-project.component.html',
-  styleUrls: ['./edit-project.component.scss']
+    selector: 'app-edit-project',
+    templateUrl: './edit-project.component.html',
+    styleUrls: ['./edit-project.component.scss'],
+    standalone: false
 })
 export class EditProjectComponent implements OnInit {
 

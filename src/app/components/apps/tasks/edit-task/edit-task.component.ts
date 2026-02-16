@@ -4,9 +4,10 @@ import { NgbDateStruct } from '@ng-bootstrap/ng-bootstrap';
 import { Editor, Toolbar, Validators } from 'ngx-editor';
 
 @Component({
-  selector: 'app-edit-task',
-  templateUrl: './edit-task.component.html',
-  styleUrls: ['./edit-task.component.scss', '../../../forms/form-editor/form-editor.component.scss']
+    selector: 'app-edit-task',
+    templateUrl: './edit-task.component.html',
+    styleUrls: ['./edit-task.component.scss', '../../../forms/form-editor/form-editor.component.scss'],
+    standalone: false
 })
 export class EditTaskComponent implements OnInit {
   model!: NgbDateStruct;

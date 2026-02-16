@@ -9,9 +9,10 @@ import { Chart, registerables } from 'chart.js';
 import { WashSetupService } from 'src/app/components/mascowash/services/washsetup.service';
 Chart.register(...registerables, ChartDataLabels);
 @Component({
-  selector: 'app-dashboard',
-  templateUrl: './dashboard.component.html',
-  styleUrls: ['./dashboard.component.scss']
+    selector: 'app-dashboard',
+    templateUrl: './dashboard.component.html',
+    styleUrls: ['./dashboard.component.scss'],
+    standalone: false
 })
 export class DashboardComponent {
   DashboardArrayList: any = [];

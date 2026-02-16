@@ -3,9 +3,10 @@ import { FormControl, FormGroup } from '@angular/forms';
 import { ColorPickerService } from 'ngx-color-picker';
 
 @Component({
-  selector: 'app-form-elements',
-  templateUrl: './form-elements.component.html',
-  styleUrls: ['./form-elements.component.scss']
+    selector: 'app-form-elements',
+    templateUrl: './form-elements.component.html',
+    styleUrls: ['./form-elements.component.scss'],
+    standalone: false
 })
 export class FormElementsComponent implements OnInit {
   public color: string = '#2889e9';

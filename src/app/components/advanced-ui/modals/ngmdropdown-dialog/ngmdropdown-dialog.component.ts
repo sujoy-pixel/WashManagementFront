@@ -3,9 +3,10 @@ import { MatDialog } from '@angular/material/dialog';
 import { MatMenuTrigger } from '@angular/material/menu';
 
 @Component({
-  selector: 'app-ngmdropdown-dialog',
-  templateUrl: './ngmdropdown-dialog.component.html',
-  styleUrls: ['./ngmdropdown-dialog.component.scss']
+    selector: 'app-ngmdropdown-dialog',
+    templateUrl: './ngmdropdown-dialog.component.html',
+    styleUrls: ['./ngmdropdown-dialog.component.scss'],
+    standalone: false
 })
 export class NGMDropdownDialogComponent implements OnInit {
 
@@ -26,8 +27,8 @@ export class NGMDropdownDialogComponent implements OnInit {
 }
 
 @Component({
-  selector: 'dialog-from-menu-dialog',
-  template: `
+    selector: 'dialog-from-menu-dialog',
+    template: `
     <mat-dialog-content>
     This is a dialog
   </mat-dialog-content>
@@ -35,5 +36,6 @@ export class NGMDropdownDialogComponent implements OnInit {
     <button mat-button mat-dialog-close>Okay</button>
   </mat-dialog-actions>
 `,
+    standalone: false
 })
 export class DialogMenuDialog {}

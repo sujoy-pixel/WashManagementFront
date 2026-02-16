@@ -1,9 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 
 @Component({
-  selector: 'app-weather-icons',
-  templateUrl: './weather-icons.component.html',
-  styleUrls: ['./weather-icons.component.scss']
+    selector: 'app-weather-icons',
+    templateUrl: './weather-icons.component.html',
+    styleUrls: ['./weather-icons.component.scss'],
+    standalone: false
 })
 export class WeatherIconsComponent implements OnInit {
 

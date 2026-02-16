@@ -2,9 +2,10 @@ import { Component, OnInit } from '@angular/core';
 import { NgbActiveModal, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
-  selector: 'app-modals',
-  templateUrl: './modals.component.html',
-  styleUrls: ['./modals.component.scss']
+    selector: 'app-modals',
+    templateUrl: './modals.component.html',
+    styleUrls: ['./modals.component.scss'],
+    standalone: false
 })
 export class ModalsComponent implements OnInit {
 
@@ -47,7 +48,7 @@ export class ModalsComponent implements OnInit {
 // For multiModal
 
 @Component({
-  template: `
+    template: `
     <div class="modal-header">
       <h6 class="modal-title">First Modal</h6>
       <button type="button" class="btn-close" aria-label="Close" (click)="activeModal.dismiss('Cross click')"></button>
@@ -59,7 +60,8 @@ export class ModalsComponent implements OnInit {
       <p><button class="btn btn-primary" (click)="open()">Second modal</button></p>
       <button type="button" class="btn btn-light" (click)="activeModal.close('Close click')">Close</button>
     </div>
-  `
+  `,
+    standalone: false
 })
 export class NgbdModal1Content {
   constructor(private modalService: NgbModal, public activeModal: NgbActiveModal) {}
@@ -68,7 +70,7 @@ export class NgbdModal1Content {
 }
 
 @Component({
-  template: `
+    template: `
     <div class="modal-header">
       <h6 class="modal-title">Second Modal</h6>
       <button type="button" class="btn-close" aria-label="Close" (click)="activeModal.dismiss('Cross click')"></button>
@@ -79,7 +81,8 @@ export class NgbdModal1Content {
     <div class="modal-footer">
       <button type="button" class="btn btn-light" (click)="activeModal.close('Close click')">Close</button>
     </div>
-  `
+  `,
+    standalone: false
 })
 export class NgbdModal2Content {
   constructor(public activeModal: NgbActiveModal) {}

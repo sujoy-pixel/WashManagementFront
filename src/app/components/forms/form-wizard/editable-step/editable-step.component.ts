@@ -2,10 +2,10 @@ import { Component, OnInit } from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 
 @Component({
-  selector: 'app-editable-step',
-  templateUrl: './editable-step.component.html',
-  styles:[]
-
+    selector: 'app-editable-step',
+    templateUrl: './editable-step.component.html',
+    styles: [],
+    standalone: false
 })
 export class EditableStepComponent implements OnInit {
   firstFormGroup!: FormGroup;

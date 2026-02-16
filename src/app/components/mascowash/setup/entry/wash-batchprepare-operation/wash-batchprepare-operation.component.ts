@@ -61,9 +61,10 @@ gsmId:number;
   sizeDetails: SizeDetail[];
 }
 @Component({
-  selector: 'app-wash-batchprepare-operation',
-  templateUrl: './wash-batchprepare-operation.component.html',
-  styleUrls: ['./wash-batchprepare-operation.component.scss']
+    selector: 'app-wash-batchprepare-operation',
+    templateUrl: './wash-batchprepare-operation.component.html',
+    styleUrls: ['./wash-batchprepare-operation.component.scss'],
+    standalone: false
 })
 export class WashBatchPrepareOperationComponent implements OnInit {
 

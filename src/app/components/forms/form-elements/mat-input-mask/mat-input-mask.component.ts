@@ -6,14 +6,15 @@ import {MAT_FORM_FIELD, MatFormField, MatFormFieldControl} from '@angular/materi
 import {Subject} from 'rxjs';
 import { MyTel } from '../form-elements.component';
 @Component({
-  selector: 'app-mat-input-mask',
-  templateUrl: './mat-input-mask.component.html',
-  styleUrls: ['./mat-input-mask.component.scss'],
-  providers: [{provide: MatFormFieldControl, useExisting: MatInputMaskComponent}],
-  host: {
-    '[class.floating]': 'shouldLabelFloat',
-    '[id]': 'id',
-  },
+    selector: 'app-mat-input-mask',
+    templateUrl: './mat-input-mask.component.html',
+    styleUrls: ['./mat-input-mask.component.scss'],
+    providers: [{ provide: MatFormFieldControl, useExisting: MatInputMaskComponent }],
+    host: {
+        '[class.floating]': 'shouldLabelFloat',
+        '[id]': 'id',
+    },
+    standalone: false
 })
 export class MatInputMaskComponent implements ControlValueAccessor, MatFormFieldControl<MyTel>, OnDestroy {
   static nextId = 0;

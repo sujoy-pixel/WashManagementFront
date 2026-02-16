@@ -56,9 +56,10 @@ interface WashBatchRow {
 
 /* ===================== COMPONENT ===================== */
 @Component({
-  selector: 'app-wash-item-delivery',
-  templateUrl: './wash-item-delivery.component.html',
-  styleUrls: ['./wash-item-delivery.component.scss']
+    selector: 'app-wash-item-delivery',
+    templateUrl: './wash-item-delivery.component.html',
+    styleUrls: ['./wash-item-delivery.component.scss'],
+    standalone: false
 })
 export class WashItemDeliveryComponent implements OnInit {
 

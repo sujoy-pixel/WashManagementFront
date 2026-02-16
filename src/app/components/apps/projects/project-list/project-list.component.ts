@@ -6,10 +6,11 @@ import { ProjectListType } from './project-list.module';
 import { ProjectListService } from './project-list.service';
 
 @Component({
-  selector: 'app-project-list',
-  templateUrl: './project-list.component.html',
-  styleUrls: ['./project-list.component.scss'],
-  providers: [ProjectListService, DecimalPipe]
+    selector: 'app-project-list',
+    templateUrl: './project-list.component.html',
+    styleUrls: ['./project-list.component.scss'],
+    providers: [ProjectListService, DecimalPipe],
+    standalone: false
 })
 export class ProjectListComponent implements OnInit {
   number:number = 4;

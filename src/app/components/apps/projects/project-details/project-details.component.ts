@@ -18,10 +18,11 @@ import {
 import { ProductsDetailsService } from './product-details.service';
 
 @Component({
-  selector: 'app-project-details',
-  templateUrl: './project-details.component.html',
-  styleUrls: ['./project-details.component.scss'],
-  providers: [ProductsDetailsService, DecimalPipe],
+    selector: 'app-project-details',
+    templateUrl: './project-details.component.html',
+    styleUrls: ['./project-details.component.scss'],
+    providers: [ProductsDetailsService, DecimalPipe],
+    standalone: false
 })
 export class ProjectDetailsComponent implements OnInit {
   model!: NgbDateStruct;

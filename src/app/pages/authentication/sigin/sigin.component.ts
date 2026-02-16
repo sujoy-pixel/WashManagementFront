@@ -1,9 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 
 @Component({
-  selector: 'app-sigin',
-  templateUrl: './sigin.component.html',
-  styleUrls: ['./sigin.component.scss']
+    selector: 'app-sigin',
+    templateUrl: './sigin.component.html',
+    styleUrls: ['./sigin.component.scss'],
+    standalone: false
 })
 export class SiginComponent implements OnInit {
 

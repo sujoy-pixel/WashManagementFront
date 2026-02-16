@@ -4,9 +4,10 @@ import { ToastrService } from 'ngx-toastr'; // Alert message using NGX toastr
 import { CrudService } from 'src/app/shared/services/firebase/crud.service'; // CRUD services API
 
 @Component({
-  selector: 'app-add-member',
-  templateUrl: './add-member.component.html',
-  styleUrls: ['./add-member.component.scss']
+    selector: 'app-add-member',
+    templateUrl: './add-member.component.html',
+    styleUrls: ['./add-member.component.scss'],
+    standalone: false
 })
 
 export class AddMemberComponent implements OnInit {

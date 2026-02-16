@@ -1,9 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 
 @Component({
-  selector: 'app-margin',
-  templateUrl: './margin.component.html',
-  styleUrls: ['./margin.component.scss']
+    selector: 'app-margin',
+    templateUrl: './margin.component.html',
+    styleUrls: ['./margin.component.scss'],
+    standalone: false
 })
 export class MarginComponent implements OnInit {
 

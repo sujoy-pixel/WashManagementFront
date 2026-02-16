@@ -13,9 +13,10 @@ import { NgZone } from '@angular/core';
 import Swal from 'sweetalert2';
 
 @Component({
-  selector: 'app-process-name-entry',
-  templateUrl: './process-name-entry.component.html',
-  styleUrls: ['./process-name-entry.component.scss'],
+    selector: 'app-process-name-entry',
+    templateUrl: './process-name-entry.component.html',
+    styleUrls: ['./process-name-entry.component.scss'],
+    standalone: false
 })
 export class ProcessNameEntryComponent {
   CompanyBankInfoForm: FormGroup | any;

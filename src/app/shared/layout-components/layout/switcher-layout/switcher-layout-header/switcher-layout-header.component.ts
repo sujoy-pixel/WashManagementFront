@@ -6,9 +6,10 @@ import { Menu, NavService } from 'src/app/shared/services/nav.service';
 import { SwitcherService } from 'src/app/shared/services/switcher.service';
 
 @Component({
-  selector: 'app-switcher-layout-header',
-  templateUrl: './switcher-layout-header.component.html',
-  styleUrls: ['./switcher-layout-header.component.scss'],
+    selector: 'app-switcher-layout-header',
+    templateUrl: './switcher-layout-header.component.html',
+    styleUrls: ['./switcher-layout-header.component.scss'],
+    standalone: false
 })
 export class SwitcherLayoutHeaderComponent implements OnInit {
   public isCollapsed = true;

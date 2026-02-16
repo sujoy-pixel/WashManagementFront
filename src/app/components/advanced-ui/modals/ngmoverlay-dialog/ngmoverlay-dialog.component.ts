@@ -8,9 +8,10 @@ export interface DialogData {
 
 
 @Component({
-  selector: 'app-ngmoverlay-dialog',
-  templateUrl: './ngmoverlay-dialog.component.html',
-  styleUrls: ['./ngmoverlay-dialog.component.scss']
+    selector: 'app-ngmoverlay-dialog',
+    templateUrl: './ngmoverlay-dialog.component.html',
+    styleUrls: ['./ngmoverlay-dialog.component.scss'],
+    standalone: false
 })
 export class NGMOverlayDialogComponent implements OnInit {
 
@@ -36,8 +37,8 @@ export class NGMOverlayDialogComponent implements OnInit {
 }
 
 @Component({
-  selector: 'dialog-overvie',
-  template: `
+    selector: 'dialog-overvie',
+    template: `
   <h1 mat-dialog-title>Hi {{data.name}}</h1>
     <div mat-dialog-content>
       <p>What's your favorite food?</p>
@@ -52,6 +53,7 @@ export class NGMOverlayDialogComponent implements OnInit {
     </div>
 
   `,
+    standalone: false
 })
 export class DialogOverview {
   constructor(

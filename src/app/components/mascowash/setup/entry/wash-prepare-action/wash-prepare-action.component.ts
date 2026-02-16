@@ -7,9 +7,10 @@ import { T } from '@angular/cdk/keycodes';
 import { FormControl } from '@angular/forms';
 
 @Component({
-  selector: 'app-wash-prepare-action',
-  templateUrl: './wash-prepare-action.component.html',
-  styleUrls: ['./wash-prepare-action.component.scss']
+    selector: 'app-wash-prepare-action',
+    templateUrl: './wash-prepare-action.component.html',
+    styleUrls: ['./wash-prepare-action.component.scss'],
+    standalone: false
 })
 export class WashPrepareActionComponent implements OnInit {
 

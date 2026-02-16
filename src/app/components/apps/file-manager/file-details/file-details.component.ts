@@ -2,9 +2,10 @@ import { Component, OnInit } from '@angular/core';
 import { Gallery, GalleryItem, ImageItem,  } from 'ng-gallery';
 
 @Component({
-  selector: 'app-file-details',
-  templateUrl: './file-details.component.html',
-  styleUrls: ['./file-details.component.scss']
+    selector: 'app-file-details',
+    templateUrl: './file-details.component.html',
+    styleUrls: ['./file-details.component.scss'],
+    standalone: false
 })
 export class FileDetailsComponent implements OnInit {
   items!: GalleryItem[];

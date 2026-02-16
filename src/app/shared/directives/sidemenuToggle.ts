@@ -1,7 +1,8 @@
 import { Directive, HostListener } from '@angular/core';
 
 @Directive({
-  selector: '[appSidemenuToggle]'
+    selector: '[appSidemenuToggle]',
+    standalone: false
 })
 export class SidemenuToggleDirective {
   private body:any = document.querySelector('body');

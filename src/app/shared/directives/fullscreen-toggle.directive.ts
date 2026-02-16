@@ -2,7 +2,8 @@ import { Directive, HostListener, Inject } from '@angular/core';
 import { DOCUMENT } from "@angular/common";
 
 @Directive({
-  selector: '[appFullscreen]'
+    selector: '[appFullscreen]',
+    standalone: false
 })
 export class FullscreenDirective {
 

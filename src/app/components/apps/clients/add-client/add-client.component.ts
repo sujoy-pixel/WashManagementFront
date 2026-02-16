@@ -2,9 +2,10 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
 @Component({
-  selector: 'app-add-client',
-  templateUrl: './add-client.component.html',
-  styleUrls: ['./add-client.component.scss']
+    selector: 'app-add-client',
+    templateUrl: './add-client.component.html',
+    styleUrls: ['./add-client.component.scss'],
+    standalone: false
 })
 export class AddClientComponent implements OnInit {
 

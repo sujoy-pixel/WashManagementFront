@@ -1,9 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 
 @Component({
-  selector: 'app-width',
-  templateUrl: './width.component.html',
-  styleUrls: ['./width.component.scss']
+    selector: 'app-width',
+    templateUrl: './width.component.html',
+    styleUrls: ['./width.component.scss'],
+    standalone: false
 })
 export class WidthComponent implements OnInit {
 

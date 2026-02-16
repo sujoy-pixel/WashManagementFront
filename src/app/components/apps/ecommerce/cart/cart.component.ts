@@ -17,9 +17,10 @@ const CardDataList:CardDataType[] = [
   {id:7, img:'./assets//images/pngs/8.png', title:'Analog Wall Clock - 30cm × 30cm', price:'$110', items:1},
 ]
 @Component({
-  selector: 'app-cart',
-  templateUrl: './cart.component.html',
-  styleUrls: ['./cart.component.scss']
+    selector: 'app-cart',
+    templateUrl: './cart.component.html',
+    styleUrls: ['./cart.component.scss'],
+    standalone: false
 })
 export class CartComponent implements OnInit {
   CartData!: CardDataType[];

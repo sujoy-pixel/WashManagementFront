@@ -15,9 +15,10 @@ const ELEMENT_DATA: UsersData[] = [
   {id: 1560608805101, name: 'Blockchain'}
 ];
 @Component({
-  selector: 'app-editable-table',
-  templateUrl: './editable-table.component.html',
-  styleUrls: ['./editable-table.component.scss']
+    selector: 'app-editable-table',
+    templateUrl: './editable-table.component.html',
+    styleUrls: ['./editable-table.component.scss'],
+    standalone: false
 })
 export class EditableTableComponent implements OnInit {
   displayedColumns: string[] = ['id', 'name', 'action'];

@@ -3,14 +3,15 @@ import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {STEPPER_GLOBAL_OPTIONS} from '@angular/cdk/stepper';
 
 @Component({
-  selector: 'app-erro-in-step',
-  templateUrl: './erro-in-step.component.html',
-  providers: [
-    {
-      provide: STEPPER_GLOBAL_OPTIONS,
-      useValue: {showError: true},
-    },
-  ],
+    selector: 'app-erro-in-step',
+    templateUrl: './erro-in-step.component.html',
+    providers: [
+        {
+            provide: STEPPER_GLOBAL_OPTIONS,
+            useValue: { showError: true },
+        },
+    ],
+    standalone: false
 })
 export class ErroInStepComponent implements OnInit {
   firstFormGroup!: FormGroup;

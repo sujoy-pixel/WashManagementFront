@@ -4,9 +4,10 @@ import { Component, OnInit } from '@angular/core';
 // Removed MatAccordion unless you are actually using Material expansion panels elsewhere in the same HTML
 
 @Component({
-  selector: 'app-accordions',
-  templateUrl: './accordions.component.html',
-  styleUrls: ['./accordions.component.scss']
+    selector: 'app-accordions',
+    templateUrl: './accordions.component.html',
+    styleUrls: ['./accordions.component.scss'],
+    standalone: false
 })
 // @NgModule({
 //   declarations: [

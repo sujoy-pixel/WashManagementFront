@@ -17,9 +17,10 @@ interface ReceiveRecord {
   receiveDate: string; // ISO string or Date
 }
 @Component({
-  selector: 'app-receive-operation',
-  templateUrl: './receive-operation.component.html',
-  styleUrls: ['./receive-operation.component.scss']
+    selector: 'app-receive-operation',
+    templateUrl: './receive-operation.component.html',
+    styleUrls: ['./receive-operation.component.scss'],
+    standalone: false
 })
 
 export class ReceiveOperationComponent implements OnInit {

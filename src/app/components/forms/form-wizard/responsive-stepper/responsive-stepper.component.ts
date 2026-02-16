@@ -6,8 +6,9 @@ import {Observable} from 'rxjs';
 import {map} from 'rxjs/operators';
 
 @Component({
-  selector: 'app-responsive-stepper',
-  templateUrl: './responsive-stepper.component.html',
+    selector: 'app-responsive-stepper',
+    templateUrl: './responsive-stepper.component.html',
+    standalone: false
 })
 export class ResponsiveStepperComponent implements OnInit {
 

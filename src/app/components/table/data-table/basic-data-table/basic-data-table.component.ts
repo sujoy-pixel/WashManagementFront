@@ -21,9 +21,10 @@ const ELEMENT_DATA: PeriodicElement[] = [
 ];
 
 @Component({
-  selector: 'app-basic-data-table',
-  templateUrl: './basic-data-table.component.html',
-  styleUrls: ['./basic-data-table.component.scss']
+    selector: 'app-basic-data-table',
+    templateUrl: './basic-data-table.component.html',
+    styleUrls: ['./basic-data-table.component.scss'],
+    standalone: false
 })
 export class BasicDataTableComponent implements OnInit {
   displayedColumns: string[] = ['position', 'name', 'weight', 'symbol'];

@@ -17,10 +17,11 @@ import { DomSanitizer } from '@angular/platform-browser';
 import { number } from 'echarts';
 
 @Component({
-  selector: 'app-sidebar',
-  templateUrl: './sidebar.component.html',
-  styleUrls: ['./sidebar.component.scss'],
-  encapsulation: ViewEncapsulation.None,
+    selector: 'app-sidebar',
+    templateUrl: './sidebar.component.html',
+    styleUrls: ['./sidebar.component.scss'],
+    encapsulation: ViewEncapsulation.None,
+    standalone: false
 })
 export class SidebarComponent {
   public menuItems!: Menu[];

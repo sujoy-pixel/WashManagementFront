@@ -5,9 +5,10 @@ import { WashSetupService } from '../../../services/washsetup.service';
 import { CommonServiceService } from '../../../services/common-service';
 
 @Component({
-  selector: 'app-inspection-type-entry',
-  templateUrl: './inspection-type-entry.component.html',
-  styleUrls: ['./inspection-type-entry.component.scss']
+    selector: 'app-inspection-type-entry',
+    templateUrl: './inspection-type-entry.component.html',
+    styleUrls: ['./inspection-type-entry.component.scss'],
+    standalone: false
 })
 export class InspectionTypeEntryComponent implements OnInit {
 

@@ -1,9 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 
 @Component({
-  selector: 'app-timelog-invoice',
-  templateUrl: './timelog-invoice.component.html',
-  styleUrls: ['./timelog-invoice.component.scss']
+    selector: 'app-timelog-invoice',
+    templateUrl: './timelog-invoice.component.html',
+    styleUrls: ['./timelog-invoice.component.scss'],
+    standalone: false
 })
 export class TimelogInvoiceComponent implements OnInit {
 
