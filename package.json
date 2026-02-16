@@ -85,8 +85,7 @@
     "tslib": "^2.5.0",
     "xlsx": "^0.18.5",
     "xlsx-js-style": "^1.2.0",
-    "xlsx-style": "^0.8.13",
-    "zone.js": "~0.14.10"
+    "xlsx-style": "^0.8.13"
   },
   "devDependencies": {
     "@angular-devkit/build-angular": "^18.2.21",
