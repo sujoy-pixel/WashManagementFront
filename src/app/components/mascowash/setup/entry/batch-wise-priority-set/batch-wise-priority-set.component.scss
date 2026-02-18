@@ -1,0 +1,13 @@
+.size-scroll-body {
+  max-height: 420px;     /* adjust height */
+  overflow-y: auto;      /* vertical scroll */
+  overflow-x: hidden;
+}
+
+/* sticky header */
+.table thead th {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  background: #f8f9fa;
+}
