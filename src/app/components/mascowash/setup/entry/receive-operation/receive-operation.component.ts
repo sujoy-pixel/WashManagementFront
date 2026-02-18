@@ -449,19 +449,19 @@ next: (res: any) => {
 
 
 
-    // console.log('SAVE PAYLOAD', payload);
-    // debugger;
-    // this.service.saveReceiveOperation(payload)
-    //   .subscribe({
-    //     next: () => {
-    //       this.toastr.success('Saved Successfully');
-    //       this.clearAll();
-    //     },
-    //     error: (error) => {
-    //       console.log(error);
-    //       this.toastr.error('Save Failed');
-    //     }
-    //   });
+    console.log('SAVE PAYLOAD', payload);
+    debugger;
+    this.service.saveReceiveOperation(payload)
+      .subscribe({
+        next: () => {
+          this.toastr.success('Saved Successfully');
+          this.clearAll();
+        },
+        error: (error) => {
+          console.log(error);
+          this.toastr.error('Save Failed');
+        }
+      });
   }
 
   buildSavePayload(): any {
