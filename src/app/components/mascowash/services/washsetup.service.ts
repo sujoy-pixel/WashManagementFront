@@ -467,14 +467,37 @@ export class WashSetupService {
 
 
   getFaultWiseList(data: any) {
-debugger;
+    debugger;
+    const params = new HttpParams()
+      .set('inspectionTypeId', parseInt(data.inspectionTypeId))
+      .set('inspectionHeadId', parseInt(data.inspectionHeadId))
+      .set('faultHeadId', parseInt(data.faultHeadId));
+
+    return this.http.get<any[]>(
+      this.baseUrl_ + 'Setup/getFaultWiseList',
+      {
+        headers: this.token.headerToken(),
+        params
+      }
+    );
+  }
+
+  saveFaultWiseValue(model: any) {
+    return this.http.post(
+      this.baseUrl_ + 'Setup/SaveFaultWiseValue',
+      model,
+      { headers: this.token.headerToken() }
+    );
+  }
+
+getBatchPriorityList(data: any) {
+
   const params = new HttpParams()
-    .set('inspectionTypeId', parseInt(data.inspectionTypeId))
-    .set('inspectionHeadId', parseInt(data.inspectionHeadId))
-    .set('faultHeadId', parseInt(data.faultHeadId));
+    .set('unitId', Number(data.unitId))
+    .set('date', String(data.date));   // must be string
 
   return this.http.get<any[]>(
-    this.baseUrl_ + 'Setup/getFaultWiseList',
+    this.baseUrl_ + 'Setup/getBatchPriorityList',
     {
       headers: this.token.headerToken(),
       params
@@ -482,9 +505,10 @@ debugger;
   );
 }
 
- saveFaultWiseValue(model: any) {
+  saveBatchPriorityBulk(model: any) {
+    debugger;
     return this.http.post(
-      this.baseUrl_ + 'Setup/SaveFaultWiseValue',
+      this.baseUrl_ + 'Setup/SaveBatchPriorityBulk',
       model,
       { headers: this.token.headerToken() }
     );

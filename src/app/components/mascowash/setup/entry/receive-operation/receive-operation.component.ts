@@ -429,22 +429,39 @@ openSizePopup(row: any) {
     }
 
 
+next: (res: any) => {
+
+  console.log('SAVE RESPONSE', res);
+
+  if (res?.resultCode === 1) {
+
+    // ⭐ set receive no
+    this.review.receiveNo = res.receiveNo;
+
+    this.toastr.success(`Saved Successfully. Receive No: ${res.receiveNo}`);
+
+    this.clearAll();
+
+  } else {
+    this.toastr.error(res?.message || 'Save Failed');
+  }
+}
 
 
 
-    console.log('SAVE PAYLOAD', payload);
-    debugger;
-    this.service.saveReceiveOperation(payload)
-      .subscribe({
-        next: () => {
-          this.toastr.success('Saved Successfully');
-          this.clearAll();
-        },
-        error: (error) => {
-          console.log(error);
-          this.toastr.error('Save Failed');
-        }
-      });
+    // console.log('SAVE PAYLOAD', payload);
+    // debugger;
+    // this.service.saveReceiveOperation(payload)
+    //   .subscribe({
+    //     next: () => {
+    //       this.toastr.success('Saved Successfully');
+    //       this.clearAll();
+    //     },
+    //     error: (error) => {
+    //       console.log(error);
+    //       this.toastr.error('Save Failed');
+    //     }
+    //   });
   }
 
   buildSavePayload(): any {
