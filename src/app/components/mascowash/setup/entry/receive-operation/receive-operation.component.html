@@ -113,6 +113,45 @@
 
 <div class="card custom-card mb-3" *ngIf="!isReviewMode">
   <div class="card-body">
+    <div class="row g-3">
+
+      <!-- ================= UNIT ================= -->
+      <div class="col-md-4">
+        <label class="d-none d-sm-inline text-dark">
+          Unit <span class="text-danger">*</span>
+        </label>
+
+        <ng-select
+          [(ngModel)]="Model.UnitId"
+          [items]="UnitList"
+          bindLabel="label"
+          bindValue="value"
+          placeholder="Select Unit">
+        </ng-select>
+      </div>
+
+
+      <!-- ================= RECEIVE NO (READ ONLY) ================= -->
+      <div class="col-md-4">
+        <label class="d-none d-sm-inline text-dark">
+          Receive No
+        </label>
+
+        <input
+          type="text"
+          class="form-control common-border fw-semibold bg-light"
+          [(ngModel)]="review.receiveNo"
+          readonly>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+
+
+<!-- <div class="card custom-card mb-3" *ngIf="!isReviewMode">
+  <div class="card-body">
     <div class="col-md-4">
       <label class="d-none d-sm-inline text-dark">Unit <span class="text-danger">*</span></label>
       <div class="form-control col-md-8 common-border">
@@ -124,7 +163,7 @@
 
     </div>
   </div>
-</div>
+</div> -->
 
 
 
@@ -154,7 +193,7 @@
         <div class="d-flex justify-content-between mb-1">
           <label class="form-label mb-0">Dyeing Batch</label>
           <label class="switch">
-            <input type="checkbox" [(ngModel)]="Model.isDyeingActive" (change)="Model.isTrackingActive=false;                  
+            <input type="checkbox" [(ngModel)]="Model.isDyeingActive" (change)="Model.isTrackingActive=false;
                    Model.isManualActive=false" class="success">
             <span class="slider round"></span>
           </label>

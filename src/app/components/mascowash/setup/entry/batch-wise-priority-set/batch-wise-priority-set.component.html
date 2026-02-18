@@ -1,0 +1,166 @@
+<div class="row">
+  <div class="col-md-12">
+
+    <!-- ================= FILTER ================= -->
+    <div class="card mb-3 shadow-sm">
+      <div class="card-body">
+        <div class="row g-3">
+
+          <!-- Unit -->
+          <div class="col-md-3">
+            <label class="form-label">Unit *</label>
+            <ng-select
+              [items]="UnitList"
+              bindLabel="label"
+              bindValue="value"
+              [(ngModel)]="Model.UnitId"
+              placeholder="Select Unit">
+            </ng-select>
+          </div>
+
+          <!-- Date -->
+          <div class="col-md-3">
+            <label class="form-label">Date *</label>
+        <input type="text" class="form-control" bsDatepicker [(ngModel)]="Model.date">
+          </div>
+
+          <!-- Search -->
+          <div class="col-md-2 d-flex align-items-end">
+            <button class="btn btn-info w-100" (click)="onSearch()">
+              <i class="fa fa-search me-1"></i> Search
+            </button>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <!-- ================= GRID ================= -->
+    <div class="table-responsive shadow-sm">
+      <table class="table table-bordered table-sm align-middle text-center">
+
+        <thead class="table-light">
+          <tr>
+            <th>Batch</th>
+            <th>Buyer</th>
+            <th>Job</th>
+            <th>Style</th>
+            <th>Order</th>
+            <th>Color</th>
+            <th>Qty</th>
+            <th>Machine</th>
+            <th width="120">Priority</th>
+            <th width="90">Size</th>
+          </tr>
+        </thead>
+
+        <tbody>
+
+          <tr *ngFor="let row of dataList">
+
+            <td>{{ row.BatchNo }}</td>
+            <td>{{ row.BuyerName }}</td>
+            <td>{{ row.JobName }}</td>
+            <td>{{ row.StyleName }}</td>
+            <td>{{ row.OrderName }}</td>
+            <td>{{ row.ColorName }}</td>
+            <td class="fw-semibold text-primary">{{ row.totalQty }}</td>
+            <td>{{ row.MachineNo }}</td>
+
+            <!-- Priority -->
+            <td>
+              <ng-select
+                [items]="priorityList"
+                [(ngModel)]="row.Priority"
+                [searchable]="true"
+                [clearable]="false">
+              </ng-select>
+            </td>
+
+            <!-- Size Button -->
+            <td>
+              <button
+                class="btn btn-sm btn-outline-primary"
+                (click)="openSizePopup(row)">
+                Size
+              </button>
+            </td>
+
+          </tr>
+
+          <tr *ngIf="!dataList.length">
+            <td colspan="10" class="text-muted">No Data Found</td>
+          </tr>
+
+        </tbody>
+      </table>
+    </div>
+
+
+    <!-- ================= SAVE BUTTON ================= -->
+    <div class="text-end mt-3">
+      <button class="btn btn-primary" (click)="onSubmit()">
+        <i class="fa fa-save me-1"></i> Save All
+      </button>
+    </div>
+
+  </div>
+</div>
+
+
+
+<!-- ================= SIZE POPUP (YOUR DESIGN) ================= -->
+<div class="modal-backdrop fade show" *ngIf="sizePopupVisible"></div>
+
+<div class="modal fade show d-block" *ngIf="sizePopupVisible" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered modal-md">
+    <div class="modal-content shadow-lg border-0 rounded-3">
+
+      <div class="modal-header bg-primary text-white py-2">
+        <h6 class="mb-0 fw-semibold">Size Wise Quantity</h6>
+        <button type="button" class="btn-close btn-close-white"
+                (click)="sizePopupVisible=false"></button>
+      </div>
+
+      <div class="modal-body px-4 py-3">
+
+        <table class="table table-sm table-bordered text-center">
+          <thead class="table-light">
+            <tr>
+              <th>SizeId</th>
+              <th>Size</th>
+              <th>Qty</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            <tr *ngFor="let s of sizeList">
+              <td>{{ s.sizeId }}</td>
+              <td>{{ s.size }}</td>
+              <td>
+                <input type="number"
+                       class="form-control form-control-sm text-end"
+                       [(ngModel)]="s.sizeQty"
+                       (input)="calculateTotal()"
+                       min="0">
+              </td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div class="text-end fw-bold text-primary">
+          Total : {{ totalSizeQty }}
+        </div>
+
+      </div>
+
+      <div class="modal-footer">
+        <button class="btn btn-secondary btn-sm"
+                (click)="sizePopupVisible=false">Cancel</button>
+        <button class="btn btn-primary btn-sm"
+                (click)="confirmSizeQty()">Confirm</button>
+      </div>
+
+    </div>
+  </div>
+</div>

@@ -429,6 +429,23 @@ openSizePopup(row: any) {
     }
 
 
+next: (res: any) => {
+
+  console.log('SAVE RESPONSE', res);
+
+  if (res?.resultCode === 1) {
+
+    // ⭐ set receive no
+    this.review.receiveNo = res.receiveNo;
+
+    this.toastr.success(`Saved Successfully. Receive No: ${res.receiveNo}`);
+
+    this.clearAll();
+
+  } else {
+    this.toastr.error(res?.message || 'Save Failed');
+  }
+}
 
 
 
@@ -449,7 +466,7 @@ openSizePopup(row: any) {
 
   buildSavePayload(): any {
     debugger;
-    console.log('DETAIL LIST', this.detailList);
+    console.log('Tracking Wise', this.detailList);
     const master = {
       Operation: 'TrackingNo',
       unitId: this.Model.UnitId,
