@@ -391,7 +391,12 @@ openSizePopup(row: any) {
   clearAll() {
     this.Model.trackingNo = '';
     this.detailList = [];
+  //     this.review = {
+  //   receiveNo: this.review.receiveNo
+  // };
+   this.Model.UnitId = 0;
   }
+
 
   onSubmit() {
     debugger;
@@ -428,42 +433,116 @@ openSizePopup(row: any) {
 
     }
 
+ payload = this.buildSavePayload();
 
-next: (res: any) => {
+  console.log('SAVE PAYLOAD', payload);
 
-  console.log('SAVE RESPONSE', res);
+//   this.service.saveReceiveOperation(payload)
+//     .subscribe({
+//       next: (res: any) => {
 
-  if (res?.resultCode === 1) {
+//         console.log('SAVE RESPONSE', res);
+// debugger;
+// //res = {succeeded: true, message: '{"ResultCode":1,"Maste
 
-    // ⭐ set receive no
-    this.review.receiveNo = res.receiveNo;
+//         if (res?.resultCode === 1) {
+//  this.toastr.success('Saved Successfully');
+//  this.clearAll();
+//           // clear form first
+          
+//           // set receive no after clear
+//          // this.review.receiveNo = res.receiveNo;
+//           this.review.receiveNo = res.ReceiveNo;
 
-    this.toastr.success(`Saved Successfully. Receive No: ${res.receiveNo}`);
 
-    this.clearAll();
+//         } else {
+//           this.toastr.error(res?.message || 'Save Failed');
+//         }
+//       },
 
-  } else {
-    this.toastr.error(res?.message || 'Save Failed');
+//       error: (error) => {
+//         console.log(error);
+//         this.toastr.error('Save Failed');
+//       }
+//     });
+// }
+this.service.saveReceiveOperation(payload)
+.subscribe({
+  next: (res: any) => {
+
+    console.log('SAVE RESPONSE', res);
+
+    if (!res?.succeeded) {
+      this.toastr.error('Save Failed');
+      return;
+    }
+
+    // ⭐ parse JSON string
+    const data = JSON.parse(res.message);
+
+    if (data?.ResultCode === 1) {
+
+      this.clearAll();
+
+      this.review.receiveNo = data.ReceiveNo;
+
+      this.toastr.success(
+        `Saved Successfully. Receive No: ${data.ReceiveNo}`
+      );
+
+    } else {
+      this.toastr.error(data?.Message || 'Save Failed');
+    }
+  },
+
+  error: () => {
+    this.toastr.error('Save Failed');
   }
-}
-
-
-
-    console.log('SAVE PAYLOAD', payload);
-    debugger;
-    this.service.saveReceiveOperation(payload)
-      .subscribe({
-        next: () => {
-          this.toastr.success('Saved Successfully');
-          this.clearAll();
-        },
-        error: (error) => {
-          console.log(error);
-          this.toastr.error('Save Failed');
-        }
-      });
+});
   }
+// next: (res: any) => {
+// debugger;
 
+//     console.log('SAVE PAYLOAD', payload);
+//     debugger;
+//     this.service.saveReceiveOperation(payload)
+//       .subscribe({
+//         next: () => {
+//           if (res?.resultCode === 1)
+//           this.toastr.success('Saved Successfully');
+//           this.clearAll();
+//           this.review.receiveNo = res.receiveNo;
+//         }, 
+//         error: (error) => {
+//           console.log(error);
+//           this.toastr.error('Save Failed');
+//         }
+//       });
+//    }
+// this.service.saveReceiveOperation(payload)
+// .subscribe({
+//   next: (res: any) => {
+
+//     if (res?.resultCode === 1) {
+
+//       this.clearAll();
+
+//       this.review.receiveNo = res.receiveNo;
+
+//       this.toastr.success(
+//         `Saved Successfully. Receive No: ${res.receiveNo}`
+//       );
+
+//     } else {
+//       this.toastr.error(res?.message || 'Save Failed');
+//     }
+//   },
+//   error: () => {
+//     this.toastr.error('Save Failed');
+//   }
+// });
+
+   //}
   buildSavePayload(): any {
     debugger;
     console.log('Tracking Wise', this.detailList);
