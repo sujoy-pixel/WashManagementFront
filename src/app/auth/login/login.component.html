@@ -1,6 +1,6 @@
 <!-- PAGE -->
 <div class="page d-flex justify-content-center align-items-center min-vh-100 position-relative"
-  style="background: url('./assets/images/commercial_background.png') no-repeat center center / cover;">
+  style="background: url('./assets/images/wash.png') no-repeat center center / cover;">
 
   <!-- Optional dark overlay for better readability -->
   <div class="position-absolute top-0 start-0 w-100 h-100" style="background-color: rgba(0, 0, 0, 0.4); z-index: 1;">
@@ -54,16 +54,10 @@
         [ngStyle]="{'background-color': '#00897b'}" 
           [class.loader--text]="authService.showLoader">
           Login
-        </button></div>
-
-      <!-- Optional Register Link -->
-      <!--
-      <div class="text-center">
-        <p class="small">Don't have an account?
-          <a routerLink="/auth/register" class="text-primary">Register</a>
-        </p>
+          <i class="pi pi-spin pi-spinner" ></i>
+        </button>
       </div>
-      -->
+
     </form>
   </div>
 </div>

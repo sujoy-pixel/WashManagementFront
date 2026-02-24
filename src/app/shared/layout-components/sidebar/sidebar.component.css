@@ -1,6 +1,10 @@
 .side-menu .side-menu__icon:before {
   display: none;
 }
+.side-header .school-title span {
+  font-weight: 700 !important;
+  color: #FFF !important;
+}
 
 body:not(.horizontal-hover) .sub-slide-menu.open {
   display: block !important;
