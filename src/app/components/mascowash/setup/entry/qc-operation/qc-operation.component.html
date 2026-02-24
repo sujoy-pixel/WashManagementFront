@@ -4,14 +4,14 @@
   </div>
 
   <div class="qc-grid">
-    <div (click)="showDialog()" class="qc-circle blue">QC-1</div>
+    <div (click)="showLoginDialog()" class="qc-circle blue">QC-1</div>
     <div class="qc-circle purple">QC-2</div>
     <div class="qc-circle green">QC-3</div>
     <div class="qc-circle cyan">QC-4</div>
 
     
   </div>
-  <p-dialog header="Login" [(visible)]="visible" [modal]="true" [style]="{ width: '28rem' }" [draggable]="false" [resizable]="false">
+  <p-dialog header="Login" [(visible)]="showLoginModal" [modal]="true" [style]="{ width: '28rem' }" [draggable]="false" [resizable]="false">
         <div class="flex flex-column gap-4 mt-2">
             <div class="field-container">
                 <label for="username" class="block font-bold mb-2">Employee ID</label>
@@ -30,4 +30,5 @@
             </div>
         </ng-template>
     </p-dialog>
+    <app-qc-profile [(visible)]="showProfileModal"></app-qc-profile>
 </div>
