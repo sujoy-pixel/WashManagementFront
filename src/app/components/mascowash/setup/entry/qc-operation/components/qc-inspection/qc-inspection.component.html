@@ -1,0 +1,25 @@
+
+<p-dialog 
+    header="Quality Inspection Operation" 
+    [(visible)]="visible" 
+    (onHide)="visibleChange.emit(false)"
+    [modal]="true" 
+    [style]="{ width: '80vw', height: '80vh' }"  
+    [draggable]="false"
+    [resizable]="false"
+    [maximizable]="true"> <ng-template pTemplate="header">
+        <div class="flex align-items-center justify-content-between w-full">
+            <span class="font-bold text-xl">Inspection Dashboard</span>
+            <!-- <button 
+                pButton 
+                type="button"
+                [icon]="isMaximized ? 'pi pi-window-minimize' : 'pi pi-window-maximize'" 
+                class="p-button-text p-button-rounded mr-4" 
+                (click)="handleMaximize()">
+            </button> -->
+        </div>
+    </ng-template>
+
+    <div class="dashboard-body">
+        </div>
+</p-dialog>
