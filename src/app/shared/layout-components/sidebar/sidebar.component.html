@@ -40,7 +40,7 @@
             <span class="side-menu__icon">
               <i class="fe fe-{{menuItem.icon}} "></i>
             </span>
-            <span class="side-menu__label">{{menuItem.title}} Test Menu Item</span>
+            <span class="side-menu__label">{{menuItem.title}}</span>
           </a>
           <!-- empty path -->
           <a class="side-menu__item has__link" href="javascript:;" *ngIf="menuItem.type === 'empty'" routerLinkActive="active"
@@ -50,7 +50,7 @@
             <span class="side-menu__icon">
               <i class="fe fe-{{menuItem.icon}} "></i>
             </span>
-            <span class="side-menu__label">{{menuItem.title}}Test Menu</span>
+            <span class="side-menu__label">{{menuItem.title}}</span>
           </a>
           <!-- external -->
           <a class="side-menu__item has__link" routerLinkActive="active" target="_blank"
@@ -59,8 +59,8 @@
             <span class="side-menu__icon">
               <i class="fe fe-{{menuItem.icon}} "></i>
             </span>
-            <span class="side-menu__label">{{menuItem.title}}Test Menu Item</span>
-            <span class="badge badge-sm bg-{{menuItem.badgeClass}} badge-hide">{{menuItem.badgeValue}}Test Bage</span>
+            <span class="side-menu__label">{{menuItem.title}}</span>
+            <span class="badge badge-sm bg-{{menuItem.badgeClass}} badge-hide">{{menuItem.badgeValue}}</span>
           </a>
           <!-- has-Sub -->
           <a class="side-menu__item" [routerLink]="menuItem.type ? null: [menuItem.path]"
