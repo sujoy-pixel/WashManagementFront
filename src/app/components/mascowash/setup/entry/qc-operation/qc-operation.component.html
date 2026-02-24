@@ -1,0 +1,33 @@
+<div class="dashboard-container">
+  <div class="header">
+    Real Time Inspection Monitoring (Sewing)
+  </div>
+
+  <div class="qc-grid">
+    <div (click)="showDialog()" class="qc-circle blue">QC-1</div>
+    <div class="qc-circle purple">QC-2</div>
+    <div class="qc-circle green">QC-3</div>
+    <div class="qc-circle cyan">QC-4</div>
+
+    
+  </div>
+  <p-dialog header="Login" [(visible)]="visible" [modal]="true" [style]="{ width: '28rem' }" [draggable]="false" [resizable]="false">
+        <div class="flex flex-column gap-4 mt-2">
+            <div class="field-container">
+                <label for="username" class="block font-bold mb-2">Employee ID</label>
+                <input pInputText id="username" name="employeeId" [(ngModel)]="loginData.employeeId" class="w-full custom-input" placeholder="Enter your username" autocomplete="off" />
+            </div>
+
+            <div class="field-container">
+                <label for="password" class="block font-bold mb-2">Password</label>
+                <input pInputText id="password" name="password" type="password" [(ngModel)]="loginData.password" class="w-full custom-input" placeholder="Enter your password" />
+            </div>
+        </div>
+
+        <ng-template pTemplate="footer">
+            <div class="w-full">
+                <button pButton label="Login" class="w-full login-btn" (click)="login()"></button>
+            </div>
+        </ng-template>
+    </p-dialog>
+</div>

@@ -23,6 +23,7 @@ import { ReceiveOperationComponent } from './setup/entry/receive-operation/recei
 import { WashPrepareActionComponent } from './setup/entry/wash-prepare-action/wash-prepare-action.component';
 import { WashItemDeliveryComponent } from './setup/entry/wash-item-delivery/wash-item-delivery.component';
 import { BatchWisePrioritySetComponent } from './setup/entry/batch-wise-priority-set/batch-wise-priority-set.component';
+import { QcOperationComponent } from './setup/entry/qc-operation/qc-operation.component';
 const routes: Routes = [
   {
     path: 'mascowash',
@@ -100,6 +101,11 @@ const routes: Routes = [
       {
         path: 'setup/entry/batch-wise-priority-set',
         component: BatchWisePrioritySetComponent,
+        runGuardsAndResolvers: 'always',
+      },
+        {
+        path: 'setup/entry/qc-operation',
+        component: QcOperationComponent,
         runGuardsAndResolvers: 'always',
       },
     ],
