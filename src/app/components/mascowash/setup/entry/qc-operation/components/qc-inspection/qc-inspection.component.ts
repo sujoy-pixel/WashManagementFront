@@ -3,11 +3,12 @@ import { DialogModule } from 'primeng/dialog';
 import { CommonModule } from '@angular/common';
 import { ButtonModule } from 'primeng/button';
 import { FormsModule } from '@angular/forms';
+import { QcDashboardComponent } from '../qc-dashboard/qc-dashboard.component';
 
 @Component({
   selector: 'app-qc-inspection',
   standalone: true,
-  imports: [DialogModule, CommonModule, ButtonModule, FormsModule],
+  imports: [DialogModule, CommonModule, ButtonModule, FormsModule, QcDashboardComponent],
   templateUrl: './qc-inspection.component.html',
   styleUrl: './qc-inspection.component.scss'
 })

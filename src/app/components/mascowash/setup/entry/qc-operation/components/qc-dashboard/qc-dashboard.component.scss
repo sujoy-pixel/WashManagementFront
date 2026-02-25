@@ -1,0 +1,295 @@
+// :host {
+//     display: block;
+//     height: 100%;
+// }
+// .inspection-dashboard {
+//     background-color: #1a1a1a;
+//     border-radius: 10px;
+//     height: 100%;
+//     display: flex;
+//     flex-direction: column; 
+// }
+
+// .header-info-bar {
+//     background: #333;
+//     border-radius: 5px;
+//     font-size: 0.9rem;
+// }
+
+// .card-section {
+//     display: flex;
+//     flex-direction: column;
+//     align-items: center;
+//     justify-content: space-between;
+//     padding: 20px;
+//     border-radius: 10px;
+//     min-height: 400px;
+//     max-width: 350px;
+    
+//     &.green-section { background-color: #4CAF50; }
+//     &.yellow-section { background-color: #FFC107; }
+//     &.red-section { background-color: #F44336; }
+
+//     .counter-value {
+//         font-size: 8rem;
+//         font-weight: bold;
+//         color: white;
+//     }
+
+//     .label {
+//         font-size: 1.5rem;
+//         color: white;
+//         font-weight: bold;
+//     }
+
+// .action-btn {
+//     background: transparent;
+//     border: none;
+//     color: white;
+//     cursor: pointer;
+//     padding: 10px;
+//     display: flex;
+//     justify-content: center;
+//     align-items: center;
+//     transition: transform 0.2s, opacity 0.2s;
+//     width: 100%;
+
+//     &:hover {
+//         opacity: 0.8;
+//         transform: scale(1.1); 
+//     }
+
+//     &:active {
+//         transform: scale(0.9); 
+//     }
+
+//     i {
+//         font-size: 5rem !important; 
+//         font-weight: bold;
+//     }
+// }
+// }
+
+// .defect-section {
+//     background-color: #333;
+//     border-radius: 10px;
+//     .defect-btn {
+//         background: #555;
+//         border: none;
+//         color: #ddd;
+//         font-size: 0.9rem;
+//     }
+// }
+// .footer-bar {
+//     background-color: #1a1a1a;
+//     border-top: 1px solid #333;
+//     color: white;
+//     bottom: 0;
+//     width: 100%;
+// }
+
+// .footer-avatar {
+//     width: 40px;
+//     height: 40px;
+//     border-radius: 50%;
+//     border: 1px solid #555;
+//     object-fit: cover;
+// }
+
+// .user-name {
+//     font-size: 0.9rem;
+//     font-weight: bold;
+// }
+
+// .user-role {
+//     font-size: 0.7rem;
+//     color: #aaa;
+// }
+
+// .stats-summary {
+//     font-size: 0.9rem;
+    
+//     i {
+//         font-size: 0.6rem;
+//     }
+// }
+
+// .btn-custom {
+//     font-weight: bold !important;
+//     padding: 0.5rem 1.5rem !important;
+//     border-radius: 4px !important;
+    
+//     &.save-btn { background-color: #44a347 !important; border: none; }
+//     &.cancel-btn { background-color: #d32f2f !important; border: none; }
+//     &.refresh-btn { border: 1px solid #00bcd4 !important; color: #00bcd4 !important; }
+// }
+
+// // Stats Text Colors
+// .text-green-500 { color: #4caf50; }
+// .text-orange-500 { color: #ff9800; }
+// New ::view-transition-old
+
+
+
+:host {
+    display: block;
+    height: 100%;
+}
+
+.inspection-dashboard {
+    background-color: #1a1a1a;
+    border-radius: 10px;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.header-info-bar {
+    background: #333;
+    border-radius: 5px;
+    font-size: 0.9rem;
+}
+
+.card-section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    padding: 20px;
+    border-radius: 10px;
+    min-height: 400px;
+    max-width: 350px;
+
+    &.green-section { background-color: #4CAF50; }
+    &.yellow-section { background-color: #FFC107; }
+    &.red-section { background-color: #F44336; }
+
+    .counter-value {
+        font-size: 8rem;
+        font-weight: bold;
+        color: white;
+    }
+
+    .label {
+        font-size: 1.5rem;
+        color: white;
+        font-weight: bold;
+    }
+
+    .action-btn {
+        background: transparent;
+        border: none;
+        color: white;
+        cursor: pointer;
+        padding: 10px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        transition: transform 0.2s, opacity 0.2s;
+        width: 100%;
+
+        &:hover {
+            opacity: 0.8;
+            transform: scale(1.1);
+        }
+
+        &:active {
+            transform: scale(0.9);
+        }
+
+        i {
+            font-size: 5rem !important;
+            font-weight: bold;
+        }
+    }
+}
+
+.defect-section {
+    background-color: #333;
+    border-radius: 10px;
+
+    .defect-btn {
+        background: #555;
+        border: none;
+        color: #ddd;
+        font-size: 0.9rem;
+    }
+}
+
+.footer-bar {
+    background-color: #1a1a1a;
+    border-top: 1px solid #333;
+    color: white;
+    bottom: 0;
+    width: 100%;
+}
+
+.footer-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    border: 1px solid #555;
+    object-fit: cover;
+}
+
+.user-name {
+    font-size: 0.9rem;
+    font-weight: bold;
+}
+
+.user-role {
+    font-size: 0.7rem;
+    color: #aaa;
+}
+
+.stats-summary {
+    font-size: 0.9rem;
+
+    i {
+        font-size: 0.6rem;
+    }
+}
+
+.btn-custom {
+    font-weight: bold !important;
+    padding: 0.5rem 1.5rem !important;
+    border-radius: 4px !important;
+
+    &.save-btn { background-color: #44a347 !important; border: none; }
+    &.cancel-btn { background-color: #d32f2f !important; border: none; }
+    &.refresh-btn { border: 1px solid #00bcd4 !important; color: #00bcd4 !important; }
+}
+
+// Stats Text Colors
+.text-green-500 { color: #4caf50; }
+.text-orange-500 { color: #ff9800; }
+
+.counter-circle-container {
+    // Circle design
+    width: clamp(150px, 15vw, 250px); // Responsive size based on screen
+    height: clamp(150px, 15vw, 250px);
+    background-color: rgba(255, 255, 255, 0.2); // Semi-transparent glass effect
+    border: 8px solid white;
+    border-radius: 50%;
+    
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+}
+
+.counter-value {
+    font-size: clamp(3rem, 6vw, 6rem) !important; // Scales with circle size
+    color: white;
+    font-weight: 800;
+    line-height: 1;
+}
+
+.label-title {
+    font-size: clamp(1.2rem, 2vw, 2rem);
+    color: white;
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-top: 15px;
+}
