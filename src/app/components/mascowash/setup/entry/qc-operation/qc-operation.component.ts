@@ -26,7 +26,7 @@ export class QcOperationComponent {
 // ID:18200   Pass:sam2311
   login() {
       console.log('Login Form Data:', this.loginData);
-    if (this.loginData.employeeId === '18200' && this.loginData.password === 'sam2311') {
+    if (this.loginData.employeeId && this.loginData.password ) {
       console.log('Login Successful!');
       
       this.showLoginModal = false; 
