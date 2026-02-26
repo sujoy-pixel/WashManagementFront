@@ -23,6 +23,7 @@ import { ReceiveOperationComponent } from './setup/entry/receive-operation/recei
 import { WashPrepareActionComponent } from './setup/entry/wash-prepare-action/wash-prepare-action.component';
 import { WashItemDeliveryComponent } from './setup/entry/wash-item-delivery/wash-item-delivery.component';
 import { BatchWisePrioritySetComponent } from './setup/entry/batch-wise-priority-set/batch-wise-priority-set.component';
+import { ReportViewComponent } from './report/report-view/report-view.component';
 const routes: Routes = [
   {
     path: 'mascowash',
@@ -101,6 +102,10 @@ const routes: Routes = [
         path: 'setup/entry/batch-wise-priority-set',
         component: BatchWisePrioritySetComponent,
         runGuardsAndResolvers: 'always',
+      },
+       {
+        path: 'report-view',
+        component: ReportViewComponent, // A component specifically for displaying the report
       },
     ],
   },

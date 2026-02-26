@@ -4,6 +4,10 @@ import { WashSetupService } from '../../../services/washsetup.service';
 import { Router } from '@angular/router';
 import { is } from 'date-fns/locale';
 import { T } from '@angular/cdk/keycodes';
+import { SafeResourceUrl, DomSanitizer } from "@angular/platform-browser";
+import { BsDatepickerConfig } from 'ngx-bootstrap/datepicker';
+import { environment } from 'src/environments/environment';
+import { HttpClient,HttpHeaders } from '@angular/common/http';
 
 @Component({
   selector: 'app-wash-prepare-action',
@@ -11,7 +15,7 @@ import { T } from '@angular/cdk/keycodes';
   styleUrls: ['./wash-prepare-action.component.scss']
 })
 export class WashPrepareActionComponent implements OnInit {
-
+ isLoading:any = false;
   Model: any = {
     processList: [],
     machineList: []
@@ -55,12 +59,24 @@ export class WashPrepareActionComponent implements OnInit {
 
   totalPcs = 0;
   totalKg = 0;
-
+   bsConfig: Partial<BsDatepickerConfig>;
+   ReportUrl:SafeResourceUrl;
+   public _dom22:any|string;
+   baseUrl = environment.apiUrl;
+   baseUrl_ = this.baseUrl.replace(/[?&]$/, '');
   constructor(
     private service: WashSetupService,
     private toastr: ToastrService,
-    private router: Router
-  ) { }
+    private router: Router,
+    private _dom: DomSanitizer,
+    private http: HttpClient,
+    private route: Router
+  )
+     {
+       this.bsConfig = { dateInputFormat: 'DD-MMM-YYYY' };
+       this.ReportUrl = this._dom.bypassSecurityTrustResourceUrl("");
+      
+   }
 
   ngOnInit(): void {
     this.loadProcessDDL();
@@ -199,6 +215,7 @@ console.log('✅ Merged Size Map:', sizeMap);
   clearAll(): void {
     // this.detailList = [];
   }
+  
 
   onSubmit(): void {
 debugger;
@@ -262,17 +279,80 @@ debugger;
     };
 
     console.log('✅ SAVE PAYLOAD:', payload);
-
+    
     /* ================= API CALL ================= */
     this.service.SaveWashPrepare(payload).subscribe({
       next: (res: any) => {
         this.toastr.success('Saved successfully');
-        this.router.navigate(['/wash/prepare-list']);
+        //this.router.navigate(['/wash/prepare-list']);
+        let reportName = "Batch Card Preview";
+        let generateNumber = "";
+        console.log("res",res.message);
+        alert(res.message);
+
+
+        this.printReport(reportName,res.message);
+
       },
       error: (err: any) => {
         console.error('❌ Save Error:', err);
         this.toastr.error('Save failed');
       }
     });
+  }
+
+  ReportUrlTab:any;
+  printReport(ReportType,GenerateNumber)
+  {
+      this.isLoading=true;
+      const token = localStorage.getItem("token");
+    const headers = { Authorization: `Bearer ${token}` };
+
+    console.log("headers",headers);
+       var objparam = {
+         ReportName: "Batch Card Preview",
+         Type: "PDF",
+         GenerateNumber: GenerateNumber,
+         //FromDate: "",
+         //ToDate:""
+
+       }
+      const queryParams = new URLSearchParams(objparam as any).toString();
+ 
+ 
+      this.http.post<any>(`${this.baseUrl_}Report/ShowReport`, objparam, { headers }).subscribe(
+       (response) => {
+         if (response && response.url) {
+         
+          
+           this.ReportUrl = this._dom.bypassSecurityTrustResourceUrl(response.url);
+          //if(ReportType==="PDF"){
+             this.isLoading=false;
+           window.open(
+             this.route.serializeUrl(
+               this.route.createUrlTree(['/mascowash/report-view'], {
+                  queryParams: { 
+                  url: response.url, 
+                  TrackingNo: GenerateNumber,
+                 
+    
+       }
+               })
+             ),
+             '_blank'
+           );
+         //}
+           //this.route.navigate(['/report-view'], { queryParams: { url: response.url } });
+         } else {
+          this.isLoading=false;
+           console.error('No URL returned from the backend.');
+         }
+       },
+       (error) => {
+         console.error('Error fetching the report URL:', error);
+          this.toastr.warning(error.error);
+         this.isLoading=false;
+       }
+       );
   }
 }
