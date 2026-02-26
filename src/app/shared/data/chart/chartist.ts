@@ -1,16 +1,16 @@
 import * as Chartist from 'chartist';
-import { ChartEvent, ChartType } from 'ng-chartist';
+// import { ChartEvent, ChartType } from 'ng-chartist';
 
 let root:any = document.querySelector(':root')
 const primary_color = getComputedStyle(root)?.getPropertyValue("--primary-bg-color");
 let secondary_color = localStorage.getItem('secondary_color') || '#53caed';
 
 export interface Chart {
-	type: ChartType;
+	type: 'Line' | 'Bar' | 'Pie';
 	data: Chartist.IChartistData;
 	options?: any;
 	responsiveOptions?: any;
-	events?: ChartEvent;
+	events?: 'draw' | 'created' | 'error' | 'data' | 'data2' | 'optionsChanged' | 'responsiveOptionsChanged';
 }
 
 // Chart 1 SVG Path animation

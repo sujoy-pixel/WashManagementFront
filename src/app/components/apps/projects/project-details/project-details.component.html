@@ -367,12 +367,12 @@
                                   </div>
                                 </td>
                                 <td class="text-muted fs-15 fw-semibold">
-                                  <ngb-highlight [result]="productDetails.tasks | number" [term]="service.searchTerm">
-                                  </ngb-highlight>
+                                  <!-- <ngb-highlight [result]="productDetails.tasks | number" [term]="service.searchTerm">
+                                  </ngb-highlight> -->
                                 </td>
                                 <td class="text-muted fs-15 fw-semibold">
-                                  <ngb-highlight [result]="productDetails.role" [term]="service.searchTerm">
-                                  </ngb-highlight>
+                                  <!-- <ngb-highlight [result]="productDetails.role" [term]="service.searchTerm">
+                                  </ngb-highlight> -->
                                 </td>
                                 <td>
                                   <div class="d-flex align-items-stretch" ngbDropdown>
@@ -685,16 +685,16 @@
                               <tr *ngFor="let taskList of productDetailsTaskList$ | async">
                                 <th scope="row">{{ taskList.id }}</th>
 
-                                <td class="text-muted fs-15 fw-semibold"><a href="javascript:void(0)" class="text-dark"
+                                <!-- <td class="text-muted fs-15 fw-semibold"><a href="javascript:void(0)" class="text-dark"
                                     data-bs-target="#Vertically" data-bs-toggle="modal"><ngb-highlight [result]="taskList.task" [term]="service.searchTermTaskList">
-                                    </ngb-highlight></a></td>
+                                    </ngb-highlight></a></td> -->
                                 <td class="text-muted fs-15 fw-semibold">
-                                  <ngb-highlight [result]="taskList.project">
-                                  </ngb-highlight>
+                                  <!-- <ngb-highlight [result]="taskList.project">
+                                  </ngb-highlight> -->
                                 </td>
                                 <td class="text-danger fs-15 fw-semibold">
-                                  <ngb-highlight [result]="taskList.dueDate" [term]="service.searchTermTaskList">
-                                  </ngb-highlight>
+                                  <!-- <ngb-highlight [result]="taskList.dueDate" [term]="service.searchTermTaskList">
+                                  </ngb-highlight> -->
                                 </td>
                                 <td>
                                   <div class="d-flex align-items-center">
@@ -704,12 +704,12 @@
                                     </div>
                                     <div>
                                       <h6 class="mb-0">
-                                        <ngb-highlight [result]="taskList.name" [term]="service.searchTermTaskList">
-                                        </ngb-highlight>
+                                        <!-- <ngb-highlight [result]="taskList.name" [term]="service.searchTermTaskList">
+                                        </ngb-highlight> -->
                                       </h6>
                                       <span class="text-muted fs-12">
-                                        <ngb-highlight [result]="taskList.email " [term]="service.searchTermTaskList">
-                                        </ngb-highlight>
+                                        <!-- <ngb-highlight [result]="taskList.email " [term]="service.searchTermTaskList">
+                                        </ngb-highlight> -->
                                       </span>
                                     </div>
                                   </div>
@@ -818,20 +818,20 @@
                                     <span class="data-image avatar avatar-md rounded-circle"
                                       style="background-image: url({{timeTracking.teamMemberImg}})"></span>
                                   </div>
-                                  <div>
+                                  <!-- <div>
                                     <h6 class="mb-0"><ngb-highlight [result]="timeTracking.teamMembername" [term]="service.searchTermTimeTracking"></ngb-highlight></h6>
                                     <span class="text-muted fs-12"><ngb-highlight [result]="timeTracking.teamMemberemail" [term]="service.searchTermTimeTracking"></ngb-highlight></span>
-                                  </div>
+                                  </div> -->
                                 </div>
                               </td>
-                              <td class="text-muted fs-15 fw-semibold"><a href="javascript:void(0)" class="text-dark"
+                              <!-- <td class="text-muted fs-15 fw-semibold"><a href="javascript:void(0)" class="text-dark"
                                   data-bs-target="#Vertically" data-bs-toggle="modal"><ngb-highlight [result]="timeTracking.task" [term]="service.searchTermTimeTracking"></ngb-highlight></a>
-                              </td>
-                              <td class="fs-15 fw-semibold"><a routerLink="/apps/projects/project-details"
-                                  class="text-dark"><ngb-highlight [result]="timeTracking.project"></ngb-highlight></a></td>
-                              <td class="text-muted fs-15 fw-semibold"><ngb-highlight [result]="timeTracking.startDateTime" [term]="service.searchTermTimeTracking"></ngb-highlight></td>
+                              </td> -->
+                              <!-- <td class="fs-15 fw-semibold"><a routerLink="/apps/projects/project-details"
+                                  class="text-dark"><ngb-highlight [result]="timeTracking.project"></ngb-highlight></a></td> -->
+                              <!-- <td class="text-muted fs-15 fw-semibold"><ngb-highlight [result]="timeTracking.startDateTime" [term]="service.searchTermTimeTracking"></ngb-highlight></td>
                               <td class="text-muted fs-15 fw-semibold"><ngb-highlight [result]="timeTracking.endDateTime" [term]="service.searchTermTimeTracking"></ngb-highlight></td>
-                              <td class="text-dark fs-15 fw-semibold"><ngb-highlight [result]="timeTracking.totalTime" [term]="service.searchTermTimeTracking"></ngb-highlight></td>
+                              <td class="text-dark fs-15 fw-semibold"><ngb-highlight [result]="timeTracking.totalTime" [term]="service.searchTermTimeTracking"></ngb-highlight></td> -->
                               <td>
                                 <div class="d-flex align-items-stretch" ngbDropdown>
                                   <a class="btn btn-sm btn-outline-secondary border me-2" ngbTooltip="Delete">
@@ -1019,11 +1019,11 @@
                                 <th scope="row">{{ taskList.id }}</th>
 <!--  -->
                                 <!-- <td class="text-muted fs-15 fw-semibold"><ngb-highlight [result]="taskList.project"></ngb-highlight></td> -->
-                                <td class="text-muted fs-15 fw-semibold"><ngb-highlight [result]="taskList.ticketId" [term]="service.searchTermTickets"></ngb-highlight></td>
+                                <!-- <td class="text-muted fs-15 fw-semibold"><ngb-highlight [result]="taskList.ticketId" [term]="service.searchTermTickets"></ngb-highlight></td>
                                 <td class="text-muted fs-15 fw-semibold"><a routerLink="/apps/tickets"
                                     class="text-dark"><ngb-highlight [result]="taskList.title" [term]="service.searchTermTickets"></ngb-highlight></a></td>
                                 <td class="text-muted fs-15 fw-semibold"><ngb-highlight [result]="taskList.client" [term]="service.searchTermTickets"></ngb-highlight></td>
-                                <td class="text-muted fs-15 fw-semibold"><ngb-highlight [result]="taskList.ticketType" [term]="service.searchTermTickets"></ngb-highlight></td>
+                                <td class="text-muted fs-15 fw-semibold"><ngb-highlight [result]="taskList.ticketType" [term]="service.searchTermTickets"></ngb-highlight></td> -->
                                 <td>
                                   <div class="d-flex align-items-center">
                                     <div class="me-2">
@@ -1032,12 +1032,12 @@
                                     </div>
                                     <div>
                                       <h6 class="mb-0">
-                                        <ngb-highlight [result]="taskList.name" [term]="service.searchTermTickets">
-                                        </ngb-highlight>
+                                        <!-- <ngb-highlight [result]="taskList.name" [term]="service.searchTermTickets">
+                                        </ngb-highlight> -->
                                       </h6>
                                       <span class="text-muted fs-12">
-                                        <ngb-highlight [result]="taskList.email " [term]="service.searchTermTickets">
-                                        </ngb-highlight>
+                                        <!-- <ngb-highlight [result]="taskList.email " [term]="service.searchTermTickets">
+                                        </ngb-highlight> -->
                                       </span>
                                     </div>
                                   </div>

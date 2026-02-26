@@ -3,11 +3,22 @@
 <!-- Sidemenu -->
 <div class="app-sidebar" style="background-color: #2C3E50 !important;" [ngClass]="{ 'fixed-header visible-title': scrolled }">
   <div class="side-header" style="background-color: 	#334155 !important;">
-    <a class="header-brand1" routerLink="/dashboard/default">
+    <!-- <a class="header-brand1" routerLink="/dashboard/default">
       <img src="./assets/images/MascoLogo.png" class="header-brand-img desktop-logo" alt="NoaLogo">
+      <h3 class="school-title"><span>MASCO Wash</span></h3>
+    </a> -->
+    <a class="header-brand1 d-flex align-items-center gap-2"
+      routerLink="/dashboard/default">
+
+      <img src="./assets/images/MascoLogo.png"
+          class="header-brand-img desktop-logo"
+          alt="NoaLogo"
+          style="height:40px;">
+
+      <!-- <h3 class="school-title mb-0"><span>MASCO Wash</span></h3> -->
     </a>
   </div>
-  <perfect-scrollbar>
+  <div class="main-sidemenu" style="background-color: #2C3E50 !important;">
     <div class="main-sidemenu" style="background-color: #2C3E50 !important;">
       <!-- left-arrow -->
       <div class="slide-left disabled" id="slide-left"><svg xmlns="http://www.w3.org/2000/svg" fill="#7b8191" width="24"
@@ -19,10 +30,8 @@
       <ul class="side-menu">
         <!-- 1st Level Menu -->
         <li *ngFor="let menuItem of menuItems" [ngClass]="{'':menuItem.headTitle,'slide':menuItem.title, 'active': menuItem.active, 'is-expanded': menuItem.active}">
-           <h3 
-            *ngIf="menuItem.menu_Name">{{menuItem.menu_Name}}</h3> 
-         
-
+           <h3 *ngIf="menuItem.menu_Name">{{menuItem.menu_Name}}</h3> 
+        
           <!-- has-Link -->
           <a class="side-menu__item has__link" [routerLink]="!menuItem.type ? null : [menuItem.path]"
             *ngIf="menuItem.type === 'link' " routerLinkActive="active" (click)="toggleNavActive(menuItem)">
@@ -134,6 +143,17 @@
             </li>
           </ul>
         </li>
+        <li>
+           <a class="side-menu__item has__link" [routerLink]="['/mascowash/setup/entry/qc-operation']" routerLinkActive="active">
+            <span class="shape1"></span>
+            <span class="shape2"></span>
+            <span class="side-menu__icon">
+              <i class="fe fe-user "></i>
+            </span>
+            <span class="side-menu__label">QC Page</span>
+          </a>
+        </li>
+
       </ul>
       <!-- right-arrow  -->
       <div class="slide-right" id="slide-right"><svg xmlns="http://www.w3.org/2000/svg" fill="#7b8191" width="24"
@@ -143,6 +163,6 @@
           height="24" viewBox="0 0 24 24">
           <path d="M10.707 17.707 16.414 12l-5.707-5.707-1.414 1.414L13.586 12l-4.293 4.293z" /></svg></div>
     </div>
-  </perfect-scrollbar>
+  </div>
 </div>
 <!-- End Sidemenu -->

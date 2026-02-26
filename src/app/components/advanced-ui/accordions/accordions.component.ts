@@ -1,49 +1,52 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
-import { MatAccordion } from '@angular/material/expansion';
+import { CommonModule } from '@angular/common';
+import { Component, OnInit } from '@angular/core';
+
+// Removed MatAccordion unless you are actually using Material expansion panels elsewhere in the same HTML
 
 @Component({
   selector: 'app-accordions',
   templateUrl: './accordions.component.html',
   styleUrls: ['./accordions.component.scss']
 })
+// @NgModule({
+//   declarations: [
+//     AccordionsComponent
+//   ],
+//   imports: [
+//     CommonModule,
+//     NgbAccordionModule,  // <-- add this
+//   ]
+// })
 export class AccordionsComponent implements OnInit {
-  @ViewChild(MatAccordion) accordion!: MatAccordion;
-  constructor() { }
 
-  ngOnInit(): void {
-  }
+  // Use these properties to toggle classes in HTML using [class.collapsed]
   public isFirstGradient = false;
   public isSecondGradient = false;
-   
+  openPanels: string[] = ['panel1', 'panel2', 'panel3'];
+
+  constructor() { }
+
+  ngOnInit(): void { }
+
+  // Improved toggle logic without document.querySelector
   FirstGradient() {
     this.isFirstGradient = !this.isFirstGradient;
-    if (this.isFirstGradient == true) {
-      document.querySelector('.firstgradient')?.classList.remove('collapsed');
-    } else {
-      document.querySelector('.firstgradient')?.classList.add('collapsed');
-    }
   }
+
   SecondGradient() {
     this.isSecondGradient = !this.isSecondGradient;
-    if (this.isSecondGradient == true) {
-      document.querySelector('.secondgradient')?.classList.remove('collapsed');
-    } else {
-      document.querySelector('.secondgradient')?.classList.add('collapsed');
-    }
   }
 
-  // angular material accordion
+  // Logic for Material Accordion (if you still have one in the HTML)
   step = 0;
+  setStep(index: number) { this.step = index; }
+  nextStep() { this.step++; }
+  prevStep() { this.step--; }
 
-  setStep(index: number) {
-    this.step = index;
+  openAll() {
+    this.openPanels = ['panel1', 'panel2', 'panel3']; // all panel IDs
   }
-
-  nextStep() {
-    this.step++;
-  }
-
-  prevStep() {
-    this.step--;
+  closeAll() {
+    this.openPanels = []; // collapse all
   }
 }

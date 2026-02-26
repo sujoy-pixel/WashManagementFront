@@ -1,0 +1,30 @@
+::ng-deep {
+    .p-dialog-maximized {
+        transition: all 0.3s ease-in-out;
+    }
+    .p-dialog .p-dialog-header{
+        padding: 0.5rem !important;
+    }
+}
+::ng-deep .p-dialog {
+    display: flex;
+    flex-direction: column;
+}
+
+::ng-deep .p-dialog-content {
+    flex: 1;
+    overflow: hidden;
+    padding: "0px 25px 25px 25px" !important;
+}
+
+.dashboard-body {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+.main-operation-content {
+    padding: 20px;
+    height: 100%;
+    background-color: #2b2b2b; 
+    border-radius: 8px;
+}

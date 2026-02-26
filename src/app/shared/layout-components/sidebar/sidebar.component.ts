@@ -132,6 +132,7 @@ export class SidebarComponent {
 
   this.menuService.GetMenusByUserId(userId).subscribe(
     (res: any) => {
+      console.log("Menu List", res);
       if (res) {
         console.log("Menu List", res);
         localStorage.setItem("MenuTemp", JSON.stringify(res));

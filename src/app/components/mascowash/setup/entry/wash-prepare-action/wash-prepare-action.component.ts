@@ -8,6 +8,7 @@ import { SafeResourceUrl, DomSanitizer } from "@angular/platform-browser";
 import { BsDatepickerConfig } from 'ngx-bootstrap/datepicker';
 import { environment } from 'src/environments/environment';
 import { HttpClient,HttpHeaders } from '@angular/common/http';
+import { FormControl } from '@angular/forms';
 
 @Component({
   selector: 'app-wash-prepare-action',
@@ -16,6 +17,10 @@ import { HttpClient,HttpHeaders } from '@angular/common/http';
 })
 export class WashPrepareActionComponent implements OnInit {
  isLoading:any = false;
+
+  //  toppings = new FormControl('');
+  // toppingList: string[] = ['Extra cheese', 'Mushroom', 'Onion', 'Pepperoni', 'Sausage', 'Tomato'];
+
   Model: any = {
     processList: [],
     machineList: []
@@ -218,7 +223,7 @@ console.log('✅ Merged Size Map:', sizeMap);
   
 
   onSubmit(): void {
-debugger;
+//debugger;
     /* ================= VALIDATION ================= */
     if (!this.Model.processList?.length) {
       this.toastr.warning('Please select process');

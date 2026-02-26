@@ -5,121 +5,107 @@
 
   <div class="card-body px-4 py-4">
 
-    <div class="row g-4">
+    <!-- <div class="row g-4">
 
-      <!-- LEFT BLOCK -->
       <div class="col-md-5">
         <div class="info-box">
           <table class="table info-table">
-            <tr><th>Buyer</th><td>{{ batch.buyer }}</td></tr>
-            <tr><th>Job No</th><td>{{ batch.jobNo }}</td></tr>
-            <tr><th>Style No</th><td>{{ batch.styleNo }}</td></tr>
-            <tr><th>Order No</th><td>{{ batch.orderNo }}</td></tr>
             <tr>
-  <th style="vertical-align: middle; width: 150px;">
-    Process
-  </th>
+              <th>Buyer</th>
+              <td>{{ batch.buyer }}</td>
+            </tr>
+            <tr>
+              <th>Job No</th>
+              <td>{{ batch.jobNo }}</td>
+            </tr>
+            <tr>
+              <th>Style No</th>
+              <td>{{ batch.styleNo }}</td>
+            </tr>
+            <tr>
+              <th>Order No</th>
+              <td>{{ batch.orderNo }}</td>
+            </tr>
+            <tr>
+              <th style="vertical-align: middle; width: 150px;">
+                Process
+              </th>
 
-  <td>
-    <div class="row align-items-center m-0">
-      <div
-        class="col-md-4 p-0 border bg-white"
-        [class.focused-border]="currentFocus === 'processSelect'"
-        (focusin)="setFocus('processSelect')"
-        (focusout)="clearFocus()"
-        style="max-width: 220px; height: 70px"
-      >
-        <mat-form-field appearance="outline" class="w-100">
-          <mat-label>Process</mat-label>
+              <td>
+                <div class="row align-items-center m-0">
+                  <div class="col-md-4 p-0 border bg-white" [class.focused-border]="currentFocus === 'processSelect'"
+                    (focusin)="setFocus('processSelect')" (focusout)="clearFocus()"
+                    style="max-width: 220px; height: 70px">
+                    <mat-form-field appearance="outline" class="w-100">
+                      <mat-label>Process</mat-label>
 
-          <mat-select
-            [(value)]="Model.processList"
-            multiple
-            (selectionChange)="onSelectionChangeProcess($event)"
-          >
-            <!-- Select All -->
-            <mat-option (click)="toggleAllSelectionProcess()" [value]="null">
-              <strong>
-                {{ isAllSelectedProcess()
-                  ? '☑️ Unselect All'
-                  : '☐ Select All' }}
-              </strong>
-            </mat-option>
+                      <mat-select [(value)]="Model.processList" multiple
+                        (selectionChange)="onSelectionChangeProcess($event)">
+                        <mat-option (click)="toggleAllSelectionProcess()" [value]="null">
+                          <strong>
+                            {{ isAllSelectedProcess()
+                            ? '☑️ Unselect All'
+                            : '☐ Select All' }}
+                          </strong>
+                        </mat-option>
 
-            <!-- Process List -->
-            <mat-option
-              *ngFor="let p of processList"
-              [value]="p"
-            >
-              {{ p.label }}
-            </mat-option>
-          </mat-select>
-        </mat-form-field>
-      </div>
-    </div>
-  </td>
-</tr>
+                        <mat-option *ngFor="let p of processList" [value]="p">
+                          {{ p.label }}
+                        </mat-option>
+                      </mat-select>
+                    </mat-form-field>
+                  </div>
+                </div>
+              </td>
+            </tr>
 
           </table>
         </div>
 
         <div class="info-box mt-3">
           <table class="table info-table">
-            <tr><th>Batch No</th>
+            <tr>
+              <th>Batch No</th>
               <td class="fw-bold text-primary">{{ batch.batchNo }}</td>
             </tr>
           </table>
-        <br>
-        <table class="table info-table text-center">
-  <thead>
-    <tr class="table-light">
-      <th colspan="3">Batch Quantity</th>
-    </tr>
-    <tr>
-      <th>Size</th>
-      <th>Pcs</th>
-      <th>Kg</th>
-    </tr>
-  </thead>
+          <br>
+          <table class="table info-table text-center">
+            <thead>
+              <tr class="table-light">
+                <th colspan="3">Batch Quantity</th>
+              </tr>
+              <tr>
+                <th>Size</th>
+                <th>Pcs</th>
+                <th>Kg</th>
+              </tr>
+            </thead>
 
-  <tbody>
-    <tr *ngFor="let s of sizeQty; let i = index">
-      <td>{{ s.size }}</td>
+            <tbody>
+              <tr *ngFor="let s of sizeQty; let i = index">
+                <td>{{ s.size }}</td>
 
-      <!-- Editable PCS -->
-      <td>
-        <input
-          type="number"
-          class="form-control form-control-sm text-center"
-          [(ngModel)]="s.pcs"
-          (ngModelChange)="calculateTotals()"
-          min="0"
-        />
-      </td>
+                <td>
+                  <input type="number" class="form-control form-control-sm text-center" [(ngModel)]="s.pcs"
+                    (ngModelChange)="calculateTotals()" min="0" />
+                </td>
 
-      <!-- Editable KG -->
-      <td>
-        <input
-          type="number"
-          class="form-control form-control-sm text-center"
-          [(ngModel)]="s.kg"
-          (ngModelChange)="calculateTotals()"
-          min="0"
-          step="0.01"
-        />
-      </td>
-    </tr>
+                <td>
+                  <input type="number" class="form-control form-control-sm text-center" [(ngModel)]="s.kg"
+                    (ngModelChange)="calculateTotals()" min="0" step="0.01" />
+                </td>
+              </tr>
 
-    <!-- TOTAL ROW -->
-    <tr class="fw-bold table-light">
-      <td>Total</td>
-      <td>{{ totalPcs }}</td>
-      <td>{{ totalKg | number:'1.2-2' }}</td>
-    </tr>
-  </tbody>
-</table>
+              <tr class="fw-bold table-light">
+                <td>Total</td>
+                <td>{{ totalPcs }}</td>
+                <td>{{ totalKg | number:'1.2-2' }}</td>
+              </tr>
+            </tbody>
+          </table>
 
-           <!-- <table class="table info-table text-center">
+          <table class="table info-table text-center">
             <thead>
               <tr class="table-light">
                 <th colspan="3">Batch Quantity</th>
@@ -142,120 +128,400 @@
                 <td>{{ totalKg }}</td>
               </tr>
             </tbody>
-          </table> -->
+          </table>
         </div>
       </div>
 
-      <!-- RIGHT BLOCK -->
       <div class="col-md-4 offset-md-3">
 
         <div class="info-box mb-3">
           <table class="table info-table">
-            <tr><th>Document No</th><td>{{ batch.documentNo }}</td></tr>
-         <tr>
-  <th>Effective Date</th>
-  <td>
-    <input
-          type="text"
-          class="form-control"
-          bsDatepicker
-          [(ngModel)]="batch.effectiveDate"
-          />
- 
-  </td>
-</tr>
+            <tr>
+              <th>Document No</th>
+              <td>{{ batch.documentNo }}</td>
+            </tr>
+            <tr>
+              <th>Effective Date</th>
+              <td>
+                <input type="text" class="form-control" bsDatepicker [(ngModel)]="batch.effectiveDate" />
 
-<tr>
-  <th>Revision Date</th>
-  <td>
-   <input
-          type="text"
-          class="form-control"
-          bsDatepicker
-          [(ngModel)]="batch.revisionDate"
-          />
-  </td>
-</tr>
+              </td>
+            </tr>
 
             <tr>
-  <th>Revision No</th>
-  <td>
-    <input
-      type="text"
-      class="form-control form-control-sm"
-      [(ngModel)]="batch.revisionNo"
-      min="0"
-    />
-  </td>
-</tr>
+              <th>Revision Date</th>
+              <td>
+                <input type="text" class="form-control" bsDatepicker [(ngModel)]="batch.revisionDate" />
+              </td>
+            </tr>
+
+            <tr>
+              <th>Revision No</th>
+              <td>
+                <input type="text" class="form-control form-control-sm" [(ngModel)]="batch.revisionNo" min="0" />
+              </td>
+            </tr>
 
           </table>
         </div>
 
         <div class="info-box mb-3">
           <table class="table info-table">
-            <tr><th>Date</th><td>{{ batch.date }}</td></tr>
-            <tr><th>Fabrication</th><td>{{ batch.fabrication }}</td></tr>
-            <tr><th>Composition</th><td>{{ batch.composition }}</td></tr>
-            <tr><th>GSM</th><td>{{ batch.gsm }}</td></tr>
-            <tr><th>Color</th><td>{{ batch.color }}</td></tr>
+            <tr>
+              <th>Date</th>
+              <td>{{ batch.date }}</td>
+            </tr>
+            <tr>
+              <th>Fabrication</th>
+              <td>{{ batch.fabrication }}</td>
+            </tr>
+            <tr>
+              <th>Composition</th>
+              <td>{{ batch.composition }}</td>
+            </tr>
+            <tr>
+              <th>GSM</th>
+              <td>{{ batch.gsm }}</td>
+            </tr>
+            <tr>
+              <th>Color</th>
+              <td>{{ batch.color }}</td>
+            </tr>
           </table>
         </div>
 
-        <!-- MACHINE NO MULTI SELECT -->
-<div class="col-md-4">
-  <div class="row align-items-center">
-    <label class="form-label col-md-4">
-      <span class="d-none d-sm-inline">Machine No</span>
-      <span class="d-inline d-sm-none">Machine</span>
-    </label>
+        <div class="col-md-4">
+          <div class="row align-items-center">
+            <label class="form-label col-md-4">
+              <span class="d-none d-sm-inline">Machine No</span>
+              <span class="d-inline d-sm-none">Machine</span>
+            </label>
 
-    <div
-      class="col-8 p-0 border bg-white"
-      [class.focused-border]="currentFocus === 'machineSelect'"
-      (focusin)="setFocus('machineSelect')"
-      (focusout)="clearFocus()"
-      style="max-width: 220px; height: 70px"
-    >
-      <mat-form-field appearance="outline" class="w-100">
-        <mat-label>Machine No</mat-label>
+            <div class="col-8 p-0 border bg-white" [class.focused-border]="currentFocus === 'machineSelect'"
+              (focusin)="setFocus('machineSelect')" (focusout)="clearFocus()" style="max-width: 220px; height: 70px">
+              <mat-form-field appearance="outline" class="w-100">
+                <mat-label>Machine No</mat-label>
 
-        <mat-select
-          [(value)]="Model.machineList"
-          multiple
-          (selectionChange)="onSelectionChangeMachine($event)"
-        >
-          <mat-option (click)="toggleAllSelectionMachine()" [value]="null">
-            <strong>
-              {{ isAllSelectedMachine() ? '☑️ Unselect All' : '☐ Select All' }}
-            </strong>
-          </mat-option>
+                <mat-select [(value)]="Model.machineList" multiple (selectionChange)="onSelectionChangeMachine($event)">
+                  <mat-option (click)="toggleAllSelectionMachine()" [value]="null">
+                    <strong>
+                      {{ isAllSelectedMachine() ? '☑️ Unselect All' : '☐ Select All' }}
+                    </strong>
+                  </mat-option>
 
-          <mat-option
-            *ngFor="let m of machineList"
-            [value]="m"
-          >
-            {{ m.label }}
-          </mat-option>
-        </mat-select>
-      </mat-form-field>
-    </div>
-  </div>
-</div>
+                  <mat-option *ngFor="let m of machineList" [value]="m">
+                    {{ m.label }}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+          </div>
+        </div>
 
       </div>
+    </div> -->
+
+
+
+    <!-- //New Design -->
+    <div class="row g-3">
+
+      <!-- LEFT BLOCK -->
+      <div class="col-lg-6">
+
+        <div class="info-box mb-3">
+          <table class="table info-table">
+            <tr class="buyer-row">
+              <th>Buyer</th>
+              <td>{{ batch.buyer }}</td>
+            </tr>
+            <tr class="buyer-row">
+              <th>Job No</th>
+              <td>{{ batch.jobNo }}</td>
+            </tr>
+            <tr class="buyer-row">
+              <th>Style No</th>
+              <td>{{ batch.styleNo }}</td>
+            </tr>
+            <tr class="buyer-row">
+              <th>Order No</th>
+              <td>{{ batch.orderNo }}</td>
+            </tr>
+
+            <!-- PROCESS -->
+            <!-- <tr>
+              <th style="vertical-align: middle;">Process</th>
+              <td>
+                <div class="border bg-white" [class.focused-border]="currentFocus === 'processSelect'"
+                  (focusin)="setFocus('processSelect')" (focusout)="clearFocus()">
+
+                  <mat-form-field appearance="outline" class="w-100 m-0">
+                    <mat-label>Process</mat-label>
+
+                    <mat-select [(value)]="Model.processList" multiple
+                      (selectionChange)="onSelectionChangeProcess($event)">
+
+                      <mat-option (click)="toggleAllSelectionProcess()" [value]="null">
+                        <strong>
+                          {{ isAllSelectedProcess()
+                          ? '☑️ Unselect All'
+                          : '☐ Select All' }}
+                        </strong>
+                      </mat-option>
+
+                      <mat-option *ngFor="let p of processList" [value]="p">
+                        {{ p.label }}
+                      </mat-option>
+
+                    </mat-select>
+                  </mat-form-field>
+                </div>
+              </td>
+            </tr> -->
+          </table>
+        </div>
+
+        <!-- BATCH QTY -->
+        <div class="info-box">
+          <table class="table info-table">
+            <tr >
+              <th>Batch No</th>
+              <td class="fw-bold text-primary">{{ batch.batchNo }}</td>
+            </tr>
+          </table>
+
+          <table class="table info-table text-center mt-3">
+            <thead>
+              <tr class="table-light">
+                <th colspan="3">Batch Quantity</th>
+              </tr>
+              <tr class="buyer-row">
+                <th>Size</th>
+                <th>Pcs</th>
+                <th>Kg</th>
+              </tr>
+            </thead>
+
+            <tbody>
+              <tr *ngFor="let s of sizeQty">
+                <td>{{ s.size }}</td>
+
+                <td>
+                  <input type="number" class="form-control form-control-sm text-center" [(ngModel)]="s.pcs"
+                    (ngModelChange)="calculateTotals()" min="0" />
+                </td>
+
+                <td>
+                  <input type="number" class="form-control form-control-sm text-center" [(ngModel)]="s.kg"
+                    (ngModelChange)="calculateTotals()" min="0" step="0.01" />
+                </td>
+              </tr>
+
+              <tr class="fw-bold table-light">
+                <td>Total</td>
+                <td>{{ totalPcs }}</td>
+                <td>{{ totalKg | number:'1.2-2' }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+      </div>
+
+      <!-- RIGHT BLOCK -->
+      <div class="col-lg-6">
+
+        <div class="info-box mb-3">
+          <table class="table info-table">
+            <tr>
+              <th>Document No</th>
+              <td>{{ batch.documentNo }}</td>
+            </tr>
+            <tr>
+              <th>Effective Date</th>
+              <td>
+                <input type="date" class="form-control" bsDatepicker [(ngModel)]="batch.effectiveDate" />
+              </td>
+            </tr>
+            <tr>
+              <th>Revision Date</th>
+              <td>
+                <input type="date" class="form-control" bsDatepicker [(ngModel)]="batch.revisionDate" />
+              </td>
+            </tr>
+            <tr>
+              <th>Revision No</th>
+              <td>
+                <input type="text" class="form-control form-control-sm" [(ngModel)]="batch.revisionNo" />
+              </td>
+            </tr>
+          </table>
+        </div>
+
+        <div class="info-box mb-3">
+          <table class="table info-table">
+            <tr>
+              <th>Date</th>
+              <td>{{ batch.date }}</td>
+            </tr>
+            <tr>
+              <th>Fabrication</th>
+              <td>{{ batch.fabrication }}</td>
+            </tr>
+            <tr>
+              <th>Composition</th>
+              <td>{{ batch.composition }}</td>
+            </tr>
+            <tr>
+              <th>GSM</th>
+              <td>{{ batch.gsm }}</td>
+            </tr>
+            <tr>
+              <th>Color</th>
+              <td>{{ batch.color }}</td>
+            </tr>
+            <tr>
+              <th>Machine No</th>
+              <td>
+                <!-- <div class="bg-white" [class.focused-border]="currentFocus === 'machineSelect'"
+                  (focusin)="setFocus('machineSelect')" (focusout)="clearFocus()">
+
+                  <mat-form-field appearance="outline" class="m-0">
+                    <mat-label>Machine No</mat-label>
+
+                    <mat-select [(value)]="Model.machineList" multiple
+                      (selectionChange)="onSelectionChangeMachine($event)">
+
+                      <mat-option (click)="toggleAllSelectionMachine()" [value]="null">
+                        <strong>
+                          {{ isAllSelectedMachine()
+                          ? 'Unselect All'
+                          : 'Select All' }}
+                        </strong>
+                      </mat-option>
+
+                      <mat-option *ngFor="let m of machineList" [value]="m">
+                        {{ m.label }}
+                      </mat-option>
+
+                    </mat-select>
+                  </mat-form-field>
+                </div> -->
+                <mat-form-field appearance="outline" >
+                  <mat-label>Machine No</mat-label>
+                  <mat-select [(value)]="Model.machineList"  (selectionChange)="onSelectionChangeMachine($event)" multiple>
+                    <mat-option (click)="toggleAllSelectionMachine()" [value]="true">
+                        <strong>
+                          {{ isAllSelectedMachine()
+                          ? 'Unselect All'
+                          : 'Select All' }}
+                        </strong>
+                      </mat-option>
+                    <mat-option *ngFor="let machine of machineList" [value]="machine"> {{ machine.label }}</mat-option>
+                  </mat-select>
+                </mat-form-field>
+
+
+              </td>
+            </tr>
+            <tr>
+              <th>Process</th>
+              <td>
+                <!-- <div class="bg-white" [class.focused-border]="currentFocus === 'machineSelect'"
+                  (focusin)="setFocus('machineSelect')" (focusout)="clearFocus()">
+
+                  <mat-form-field appearance="outline" class="m-0">
+                    <mat-label>Machine No</mat-label>
+
+                    <mat-select [(value)]="Model.machineList" multiple
+                      (selectionChange)="onSelectionChangeMachine($event)">
+
+                      <mat-option (click)="toggleAllSelectionMachine()" [value]="null">
+                        <strong>
+                          {{ isAllSelectedMachine()
+                          ? 'Unselect All'
+                          : 'Select All' }}
+                        </strong>
+                      </mat-option>
+
+                      <mat-option *ngFor="let m of machineList" [value]="m">
+                        {{ m.label }}
+                      </mat-option>
+
+                    </mat-select>
+                  </mat-form-field>
+                </div> -->
+                <mat-form-field appearance="outline" >
+                  <mat-label>Process</mat-label>
+                  <mat-select [(value)]="Model.processList" multiple
+                      (selectionChange)="onSelectionChangeProcess($event)">
+                      <!-- Select All Option -->
+                   <mat-option (click)="toggleAllSelectionProcess()" [value]="null">
+                        <strong>
+                          {{ isAllSelectedProcess()
+                          ? 'Unselect All'
+                          : 'Select All' }}
+                        </strong>
+                      </mat-option>
+                    <mat-option *ngFor="let process of processList" [value]="process"> {{ process.label }}</mat-option>
+                  </mat-select>
+                </mat-form-field>
+
+              </td>
+            </tr>
+          </table>
+        </div>
+
+        <!-- MACHINE -->
+        <!-- <div class="info-box">
+          <table class="table info-table">
+            <tr>
+              <th>Machine No</th>
+              <td>
+                <div class="bg-white" [class.focused-border]="currentFocus === 'machineSelect'"
+                  (focusin)="setFocus('machineSelect')" (focusout)="clearFocus()">
+
+                  <mat-form-field appearance="outline" class="m-0">
+                    <mat-label>Machine No</mat-label>
+
+                    <mat-select [(value)]="Model.machineList" multiple
+                      (selectionChange)="onSelectionChangeMachine($event)">
+
+                      <mat-option (click)="toggleAllSelectionMachine()" [value]="null">
+                        <strong>
+                          {{ isAllSelectedMachine()
+                          ? '☑️ Unselect All'
+                          : '☐ Select All' }}
+                        </strong>
+                      </mat-option>
+
+                      <mat-option *ngFor="let m of machineList" [value]="m">
+                        {{ m.label }}
+                      </mat-option>
+
+                    </mat-select>
+                  </mat-form-field>
+                </div>
+              </td>
+            </tr>
+          </table>
+        </div> -->
+
+      </div>
+
     </div>
 
-<div class="text-right mt-3">
-          <button type="button" class="btn btn-primary" (click)="onSubmit()">
-            <i class="fa fa-database" aria-hidden="true"></i>
-            {{ saveButtonTitle }}
-          </button>
-          &nbsp;
-          <button class="btn btn-danger" type="button" (click)="clearAll()">
-            <i class="fa fa-refresh" aria-hidden="true"></i> Clear
-          </button>
-          &nbsp; &nbsp;
-        </div>
+
+    <div class="text-right mt-3">
+      <button type="button" class="btn btn-primary" (click)="onSubmit()">
+        <i class="fa fa-database" aria-hidden="true"></i>
+        {{ saveButtonTitle }}
+      </button>
+      &nbsp;
+      <button class="btn btn-danger" type="button" (click)="clearAll()">
+        <i class="fa fa-refresh" aria-hidden="true"></i> Clear
+      </button>
+      &nbsp; &nbsp;
+    </div>
   </div>
 </div>

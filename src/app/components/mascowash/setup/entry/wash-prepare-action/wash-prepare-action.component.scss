@@ -52,3 +52,34 @@
 .btn-primary {
   border-radius: 8px;
 }
+
+.info-table tr.buyer-row th,
+.info-table tr.buyer-row td {
+  padding-top: 15px !important;
+  padding-bottom: 15px !important;
+}
+.compact-field {
+  margin: 0 !important;
+}
+
+/* outer wrapper padding remove */
+
+
+/* main content vertical padding কমানো */
+.compact-field .mat-form-field-infix {
+  padding: 6px 0 !important;
+  border-top: 0 !important;
+}
+
+/* height ছোট করা */
+.compact-field .mat-form-field-flex {
+  height: 38px;
+  align-items: center;
+}
+::ng-deep .mat-form-field-wrapper {
+  padding-bottom: 0 !important;
+}
+/* outline gap fix */
+.compact-field .mat-form-field-outline {
+  top: 0 !important;
+}

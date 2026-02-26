@@ -28,7 +28,6 @@ import { GalleryModule } from 'ng-gallery';
     AboutCompanyComponent,
     SwitcherComponent,
     TermsComponent,
-    FaqsComponent,
     PricingComponent,
 
   ],
@@ -42,7 +41,8 @@ import { GalleryModule } from 'ng-gallery';
     ColorPickerModule,
     RouterModule,
     LightboxModule,
-    GalleryModule
+    GalleryModule,
+    FaqsComponent,
   ],
   exports: [SwitcherComponent],
 })

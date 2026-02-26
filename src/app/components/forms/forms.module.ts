@@ -29,7 +29,7 @@ import { NgxDropzoneModule } from 'ngx-dropzone';
 import {MatDatepickerModule} from '@angular/material/datepicker';
 import {MatNativeDateModule} from '@angular/material/core';
 import { DataService } from './form-advanced/data.service';
-import { HttpClientModule } from '@angular/common/http';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { QuillModule } from 'ngx-quill';
 import { NgxEditorModule } from "ngx-editor";
 import { AngularEditorModule } from '@kolkov/angular-editor';
@@ -40,37 +40,31 @@ import { ResponsiveStepperComponent } from './form-wizard/responsive-stepper/res
 
 export const options: Partial<IConfig> | (() => Partial<IConfig>) | any = null;
 
-@NgModule({
-  declarations: [
-    FormElementsComponent,
-    FormLayoutsComponent,
-    FormValidationComponent,
-    FormAdvancedComponent,
-    FormEditorComponent,
-    FormWizardComponent,
-    MatInputMaskComponent,
-    EditableStepComponent,
-    ErroInStepComponent,
-    VerticalContentComponent,
-    ResponsiveStepperComponent
-  ],
-  imports: [
-    CommonModule,
-    FormsRoutingModule,
-    HttpClientModule,
-    SharedModule,
-    ReactiveFormsModule,
-    FormsModule,
-    NgbModule,
-    NgxMaskModule.forRoot(),
-    ColorPickerModule,
-    MatSliderModule, MatCardModule, MatFormFieldModule, MatCheckboxModule, MatInputModule, MatIconModule,MatSelectModule, MatDatepickerModule,MatNativeDateModule, MatStepperModule,
-    NgSelectModule, NgxDropzoneModule,
-    QuillModule.forRoot(), NgxEditorModule,  AngularEditorModule
-  ],
-  providers:[
-    UserService,
-    DataService
-  ]
-})
+@NgModule({ declarations: [
+        FormElementsComponent,
+        FormLayoutsComponent,
+        FormValidationComponent,
+        FormAdvancedComponent,
+        FormEditorComponent,
+        FormWizardComponent,
+        MatInputMaskComponent,
+        EditableStepComponent,
+        ErroInStepComponent,
+        VerticalContentComponent,
+        ResponsiveStepperComponent
+    ], imports: [CommonModule,
+        FormsRoutingModule,
+        SharedModule,
+        ReactiveFormsModule,
+        FormsModule,
+        NgbModule,
+        NgxMaskModule.forRoot(),
+        ColorPickerModule,
+        MatSliderModule, MatCardModule, MatFormFieldModule, MatCheckboxModule, MatInputModule, MatIconModule, MatSelectModule, MatDatepickerModule, MatNativeDateModule, MatStepperModule,
+        NgSelectModule, NgxDropzoneModule,
+        QuillModule.forRoot(), NgxEditorModule, AngularEditorModule], providers: [
+        UserService,
+        DataService,
+        provideHttpClient(withInterceptorsFromDi())
+    ] })
 export class FormModule { }

@@ -25,7 +25,7 @@ import { SharedModule } from 'src/app/shared/shared.module';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { MaterialModuleModule } from 'src/app/materialModule/material-module/material-module.module';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { NgxSliderModule } from '@angular-slider/ngx-slider';
+//import { NgxSliderModule } from '@angular-slider/ngx-slider';
 import { GalleryModule } from 'ng-gallery';
 import { LightboxModule } from 'ng-gallery/lightbox';
 
@@ -62,7 +62,7 @@ import { LightboxModule } from 'ng-gallery/lightbox';
       // thumbView: 'contain',
     }),
     LightboxModule,
-    NgxSliderModule
+    // NgxSliderModule
   ]
 })
 export class UiElementsModule { }

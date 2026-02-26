@@ -21,19 +21,19 @@ import { HoverEffectSidebarDirective } from './directives/hover-effect-sidebar.d
 // Plugins
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { ColorPickerModule } from 'ngx-color-picker';
-import { PerfectScrollbarModule } from 'ngx-perfect-scrollbar';
-import { PERFECT_SCROLLBAR_CONFIG } from 'ngx-perfect-scrollbar';
-import { PerfectScrollbarConfigInterface } from 'ngx-perfect-scrollbar';
+// import { PerfectScrollbarModule } from 'ngx-perfect-scrollbar';
+// import { PERFECT_SCROLLBAR_CONFIG } from 'ngx-perfect-scrollbar';
+// import { PerfectScrollbarConfigInterface } from 'ngx-perfect-scrollbar';
 import { NgbdSortableHeader } from './directives/soratable.directive';
 import { FormsModule } from '@angular/forms';
 import { SwitcherLayoutComponent } from './layout-components/layout/switcher-layout/switcher-layout.component';
 import { SwitcherLayoutHeaderComponent } from './layout-components/layout/switcher-layout/switcher-layout-header/switcher-layout-header.component';
 import { LandingPageLayoutComponent } from './layout-components/layout/landingpage-layout/landingpage-layout.component';
 
-const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
-  suppressScrollX: true,
-  wheelPropagation: false
-};
+// const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
+//   suppressScrollX: true,
+//   wheelPropagation: false
+// };
 
 @NgModule({
   declarations: [
@@ -61,18 +61,18 @@ const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
     CommonModule,
     NgbModule,
     RouterModule,
-    PerfectScrollbarModule,
+   // PerfectScrollbarModule,
     ColorPickerModule,
     FormsModule
   ],
   exports : [
     PageHeaderComponent, TabToTopComponent, FullLayoutComponent, ContentLayoutComponent, ErrorLayoutComponent, SwitcherComponent, LoaderComponent,ToggleBtnDirective, ToggleThemeDirective, NgbdSortableHeader, LandingPageLayoutComponent, SidemenuToggleDirective
   ],
-  providers: [
-    {
-      provide: PERFECT_SCROLLBAR_CONFIG,
-      useValue: DEFAULT_PERFECT_SCROLLBAR_CONFIG
-    },
-  ]
+  // providers: [
+  //   {
+  //     provide: PERFECT_SCROLLBAR_CONFIG,
+  //     useValue: DEFAULT_PERFECT_SCROLLBAR_CONFIG
+  //   },
+  // ]
 })
 export class SharedModule { }
