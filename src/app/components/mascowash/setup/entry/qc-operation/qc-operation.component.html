@@ -11,24 +11,5 @@
 
     
   </div>
-  <p-dialog header="Login" [(visible)]="showLoginModal" [modal]="true" [style]="{ width: '28rem' }" [draggable]="false" [resizable]="false">
-        <div class="flex flex-column gap-4 mt-2">
-            <div class="field-container">
-                <label for="username" class="block font-bold mb-2">Employee ID</label>
-                <input pInputText id="username" name="employeeId" [(ngModel)]="loginData.employeeId" class="w-full custom-input" placeholder="Enter your username" autocomplete="off" />
-            </div>
-
-            <div class="field-container">
-                <label for="password" class="block font-bold mb-2">Password</label>
-                <input pInputText id="password" name="password" type="password" [(ngModel)]="loginData.password" class="w-full custom-input" placeholder="Enter your password" />
-            </div>
-        </div>
-
-        <ng-template pTemplate="footer">
-            <div class="w-full">
-                <button pButton label="Login" class="w-full login-btn" (click)="login()"></button>
-            </div>
-        </ng-template>
-    </p-dialog>
     <app-qc-profile [(visible)]="showProfileModal"></app-qc-profile>
 </div>

@@ -1,24 +1,24 @@
-<div>
-    <p-dialog [(visible)]="visible" [modal]="true" [style]="{ width: '30rem' }" [closable]="true">
-        <div class="profile-content text-center py-4">
-            <div class="profile-img-container cursor-pointer" (click)="openInspection()">
-                <img src="assets/images/users/profile_image.PNG" class="profile-img" />
-            </div>
+    <div>
+        <p-dialog [(visible)]="visible" [modal]="true" [style]="{ width: '30rem' }" [closable]="true" (onHide)="onDialogHide()">
+            <div class="profile-content text-center py-4">
+                <div class="profile-img-container cursor-pointer" (click)="openInspection()">
+                    <img src="assets/images/users/profile_image.PNG" class="profile-img" />
+                </div>
 
-            <h2 class="mb-1">Ahmed Eid</h2>
-            <p class="text-secondary">Manager</p>
+                <h2 class="mb-1">Ahmed Eid</h2>
+                <p class="text-secondary">Manager</p>
 
-            <div class="new-inspection-btn mt-4">
-                <i class="pi pi-circle-fill text-primary"></i>
-                <span class="ml-2 font-bold text-xl">New Inspection</span>
+                <div class="new-inspection-btn mt-4">
+                    <i class="pi pi-circle-fill text-primary"></i>
+                    <span class="ml-2 font-bold text-xl">New Inspection</span>
+                </div>
+                <!-- <button label="Logout" class="p-button-danger mt-4 w-8rem"></button> -->
+                <div class="mt-5 pb-3">
+                    <button pButton type="button" label="Logout" class="p-button-danger w-full sm:w-8rem"
+                        (click)="handleClose()">
+                    </button>
+                </div>
             </div>
-            <!-- <button label="Logout" class="p-button-danger mt-4 w-8rem"></button> -->
-            <div class="mt-5 pb-3">
-                <button pButton type="button" label="Logout" class="p-button-danger w-full sm:w-8rem"
-                    (click)="handleClose()">
-                </button>
-            </div>
-        </div>
-    </p-dialog>
-    <app-qc-inspection [(visible)]="showInspectionModal"></app-qc-inspection>
-</div>
+        </p-dialog>
+        <app-qc-inspection [(visible)]="showInspectionModal"></app-qc-inspection>
+    </div>
