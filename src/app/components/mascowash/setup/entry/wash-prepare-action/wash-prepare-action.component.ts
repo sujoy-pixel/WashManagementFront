@@ -288,9 +288,7 @@ debugger;
         let reportName = "Batch Card Preview";
         let generateNumber = "";
         console.log("res",res.message);
-        alert(res.message);
-
-
+      
         this.printReport(reportName,res.message);
 
       },

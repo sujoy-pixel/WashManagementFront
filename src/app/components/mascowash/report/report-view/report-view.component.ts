@@ -16,7 +16,7 @@ export class ReportViewComponent {
    // Get URL from query parameters
    debugger;
    const reportUrl = this.route.snapshot.queryParamMap.get('url');
-   alert(reportUrl);
+ 
     if (reportUrl) {
       this.safeReportUrl = this.sanitizer.bypassSecurityTrustResourceUrl(reportUrl);
     }
