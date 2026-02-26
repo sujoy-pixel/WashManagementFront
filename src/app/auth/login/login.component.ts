@@ -1,4 +1,4 @@
-import { Component, OnInit,ViewChild,ElementRef,Renderer2,ChangeDetectorRef  } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef, Renderer2, ChangeDetectorRef } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { AuthService } from '../../shared/services/firebase/auth.service';
 
@@ -9,7 +9,7 @@ import { Router } from "@angular/router";
 //import { userInfo } from 'os';
 ////import { SpinnerService } from "src/app/shared/services/spinner.service";
 
- 
+
 //import { RoleService } from "../../admin/Services/role.service";
 //import { CommonServiceService } from "../../merchandising/Common-Services/common-service.service";
 import { ToastrService } from "ngx-toastr";
@@ -27,9 +27,10 @@ export class LoginComponent implements OnInit {
   toaster: any;
   @ViewChild('toggleSidebar') toggleSidebar!: ElementRef;
 
+  isLoading: boolean = false;
 
   constructor(
-    public authService: AuthService, 
+    public authService: AuthService,
     private fb: FormBuilder,
     private router: Router,
     private renderer: Renderer2,
@@ -41,17 +42,12 @@ export class LoginComponent implements OnInit {
       username: ["", [Validators.required]],
       password: ['', Validators.required],
     });
-//alert(this.loginForm.username);
+    //alert(this.loginForm.username);
     document.querySelector('body')?.classList.add('login-img');
   }
-  
 
-  
-  
-
-  
   ngOnInit() {
-    
+
   }
 
   showPassword() {
@@ -73,72 +69,60 @@ export class LoginComponent implements OnInit {
     this.authService.signInFacebok();
   }
 
-  // Simple Login
-  // login() {
-  //   this.authService.SignIn(
-  //     this.loginForm.value['email'],
-  //     this.loginForm.value['password']
-  //   );
-  // }
- private menuData: any[] = [];
+  private menuData: any[] = [];
 
   login() {
-    
-    //debugger;
-    console.log("loginFormValue",this.loginForm.value);
-    let {username, password} = this.loginForm.value;
 
-    if(username === "" || username === null || username === undefined){
-     this.toastr.warning("Please Enter User ID", "Warning");
-     return;
+    //debugger;
+    console.log("loginFormValue", this.loginForm.value);
+    let { username, password } = this.loginForm.value;
+
+    if (username === "" || username === null || username === undefined) {
+      this.toastr.warning("Please Enter User ID", "Warning");
+      return;
     }
 
-    if(password === "" || password === null || password === undefined){
-     this.toastr.warning("Please Enter Password", "Warning");
-     return;
+    if (password === "" || password === null || password === undefined) {
+      this.toastr.warning("Please Enter Password", "Warning");
+      return;
     }
 
     this.loginForm = this.fb.group({
       username: [this.loginForm.value.username, [Validators.required]],
       password: [this.loginForm.value.password, Validators.required],
     });
+    this.isLoading = true;
     if (this.loginForm.valid) {
-            this.authService.login(this.loginForm.value).subscribe({
-              
-              complete: () => {  
-
-             
-                
-                this.router.navigate(['/dashboard/default/']).then(() => {
-                  document.body.classList.remove('sidenav-toggled'); // Reset
-                  this.sidebarToggleService.resetToggleState();      // Reset service flag
-                  setTimeout(() => {
-                    this.sidebarToggleService.triggerToggle();
-                    this.toastr.success("Login Successful", "Success");// Open sidebar
-                  }, 1000); // Delay ensures dashboard is ready
-                });
-              
-            }, // completeHandler
-              error: () => { 
-                //this.alertify.error("Failed to login!");
-                this.toastr.warning("Invalid UserID or Password", "Warning");
-              },    // errorHandler 
-              next: () => { 
-                //this.alertify.success("Login successfully!"); 
-                //this.toastr.success("Login Successful", "Success");
-              this.router.navigate(["/dashboard/default/"]);
-                 },     // nextHandler
-            
+      this.authService.login(this.loginForm.value).subscribe({
+        complete: () => {
+          this.router.navigate(['/dashboard/default/']).then(() => {
+            this.isLoading = false;
+            document.body.classList.remove('sidenav-toggled'); // Reset
+            this.sidebarToggleService.resetToggleState();      // Reset service flag
+            setTimeout(() => {
+              this.sidebarToggleService.triggerToggle();
+              this.toastr.success("Login Successful", "Success");// Open sidebar
+            }, 1000); // Delay ensures dashboard is ready
           });
-      
+
+        }, // completeHandler
+        error: () => {
+          this.isLoading = false;
+          //this.alertify.error("Failed to login!");
+          this.toastr.warning("Invalid UserID or Password", "Warning");
+        },    // errorHandler 
+        next: () => {
+          //this.alertify.success("Login successfully!"); 
+          //this.toastr.success("Login Successful", "Success");
+          this.router.navigate(["/dashboard/default/"]);
+        },     // nextHandler
+
+      });
+
     } else {
       //this.commonService.ValidationShow(this.loginForm);
     }
   }
-
-
-
-
 
   ngOnDestroy() {
     document.querySelector('body')?.classList.remove('login-img');

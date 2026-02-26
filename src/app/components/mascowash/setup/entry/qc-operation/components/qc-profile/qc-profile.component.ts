@@ -27,4 +27,9 @@ export class QcProfileComponent {
         this.showInspectionModal = true;
       }, 200);   
   }
+
+  onDialogHide() {
+  this.visible = false;
+  this.visibleChange.emit(this.visible);
+}
 }

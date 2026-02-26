@@ -104,7 +104,7 @@ const routes: Routes = [
         runGuardsAndResolvers: 'always',
       },
         {
-        path: 'setup/entry/qc-operation',
+        path: 'setup/entry/wash-qc-operation',
         component: QcOperationComponent,
         runGuardsAndResolvers: 'always',
       },

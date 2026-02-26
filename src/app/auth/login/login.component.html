@@ -49,12 +49,14 @@
 
       <!-- Login Button -->
       <div class="d-grid mb-3">
-        <button type="submit" 
-        class="btn px-4 py-2 rounded-3 shadow-sm text-white"
-        [ngStyle]="{'background-color': '#00897b'}" 
-          [class.loader--text]="authService.showLoader">
+        <button type="submit" class="btn px-4 py-2 rounded-3 shadow-sm text-white"
+          [ngStyle]="{'background-color': '#00897b'}" [class.loader--text]="authService.showLoader">
           Login
-          <i class="pi pi-spin pi-spinner" ></i>
+          @if (isLoading) {
+            <span>
+              <i class="pi pi-spin pi-spinner" style="margin-left: 8px;"></i>
+            </span>
+          }
         </button>
       </div>
 
