@@ -19,10 +19,11 @@ import { FaultWiseValueTagEntryComponent } from './setup/entry/fault-wise-value-
 import { ReceiveOperationComponent } from './setup/entry/receive-operation/receive-operation.component';
 //import { ReceiveOperationComponent } from './Operation/receive-operation/receive-operation.component';
 
- import{ WashBatchPrepareOperationComponent } from './setup/entry/wash-batchprepare-operation/wash-batchprepare-operation.component';  
+import { WashBatchPrepareOperationComponent } from './setup/entry/wash-batchprepare-operation/wash-batchprepare-operation.component';
 import { WashPrepareActionComponent } from './setup/entry/wash-prepare-action/wash-prepare-action.component';
 import { WashItemDeliveryComponent } from './setup/entry/wash-item-delivery/wash-item-delivery.component';
 import { BatchWisePrioritySetComponent } from './setup/entry/batch-wise-priority-set/batch-wise-priority-set.component';
+import { ReportViewComponent } from './report/report-view/report-view.component';
 import { QcOperationComponent } from './setup/entry/qc-operation/qc-operation.component';
 const routes: Routes = [
   {
@@ -34,12 +35,12 @@ const routes: Routes = [
       //   component: ActualDateEntryComponent,
       //   runGuardsAndResolvers: 'always',
       // },
-        {
+      {
         path: 'setup/entry/wash-batchprepare-operation',
         component: WashBatchPrepareOperationComponent,
         runGuardsAndResolvers: 'always',
       },
-    {
+      {
         path: 'setup/entry/receive-operation',
         component: ReceiveOperationComponent,
         runGuardsAndResolvers: 'always',
@@ -103,8 +104,12 @@ const routes: Routes = [
         component: BatchWisePrioritySetComponent,
         runGuardsAndResolvers: 'always',
       },
-        {
-        path: 'setup/entry/wash-qc-operation',
+      {
+        path: 'report-view',
+        component: ReportViewComponent, // A component specifically for displaying the report
+      },
+      {
+        path: 'setup/entry/qc-operation',
         component: QcOperationComponent,
         runGuardsAndResolvers: 'always',
       },
@@ -117,5 +122,5 @@ const routes: Routes = [
   //providers:[ScrollService],
   exports: [RouterModule],
 })
-export class MascowashRoutingModule {}
+export class MascowashRoutingModule { }
 

@@ -8,6 +8,8 @@ export const environment = {
 
   //Test 
   apiUrl: "http://192.168.50.60:1214/api/",
+
+  //apiUrl: "https://mis.download.com/api/",
   //fileUrl: "http://192.168.50.60:85/",
  
   firebase:{

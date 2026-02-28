@@ -60,6 +60,7 @@ export class AuthService implements OnInit {
   login(model: any) {
    
     //console.log(model);
+    //return this.http.post(this.baseUrl + "login", model).pipe(
     return this.http.post(this.baseUrl + "login", model).pipe(
       map((response: any) => {
         const user = response[0];
