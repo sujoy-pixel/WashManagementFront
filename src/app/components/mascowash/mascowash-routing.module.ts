@@ -109,7 +109,7 @@ const routes: Routes = [
         component: ReportViewComponent, // A component specifically for displaying the report
       },
       {
-        path: 'setup/entry/qc-operation',
+        path: 'setup/entry/wash-qc-operation',
         component: QcOperationComponent,
         runGuardsAndResolvers: 'always',
       },

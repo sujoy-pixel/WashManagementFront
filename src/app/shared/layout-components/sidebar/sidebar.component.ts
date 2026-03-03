@@ -329,25 +329,63 @@ export class SidebarComponent {
   }
 
   // Toggle menu
+  // toggleNavActive(item: any) {
+  //   if (!item.active) {
+  //     this.menuItems.forEach((a: any) => {
+  //       if (this.menuItems.includes(item)) {
+  //         a.active = false;
+  //       }
+  //       if (!a.children) {
+  //         return false;
+  //       }
+  //       a.children.forEach((b: any) => {
+  //         if (a.children.includes(item)) {
+  //           b.active = false;
+  //         }
+  //       });
+  //       return;
+  //     });
+  //   }
+  //   item.active = !item.active;
+  // }
+
   toggleNavActive(item: any) {
-    if (!item.active) {
-      this.menuItems.forEach((a: any) => {
-        if (this.menuItems.includes(item)) {
-          a.active = false;
-        }
-        if (!a.children) {
-          return false;
-        }
+  // ১. যদি আইটেমটি অলরেডি একটিভ থাকে, তবে শুধু সেটাকে টগল (বন্ধ) করুন
+  if (item.is_Active) {
+    item.is_Active = false;
+  } else {
+    // ২. শুধুমাত্র সেই লেভেলের ভাই-বোনদের (siblings) বন্ধ করুন
+    // প্যারেন্ট মেনুগুলো যাতে বন্ধ না হয়, তাই লুপটি সতর্কভাবে চালাতে হবে
+    
+    this.menuItems.forEach((a: any) => {
+      // যদি ক্লিক করা আইটেমটি ১ম লেভেলের হয়, তবে অন্য ১ম লেভেলেরগুলো বন্ধ হবে
+      if (this.menuItems.includes(item) && a !== item) {
+        a.is_Active = false;
+      }
+
+      if (a.children) {
         a.children.forEach((b: any) => {
-          if (a.children.includes(item)) {
-            b.active = false;
+          // যদি ক্লিক করা আইটেমটি ২য় লেভেলের হয়, তবে অন্য ২য় লেভেলেরগুলো বন্ধ হবে
+          if (a.children.includes(item) && b !== item) {
+            b.is_Active = false;
+          }
+
+          if (b.children) {
+            b.children.forEach((c: any) => {
+              // যদি ক্লিক করা আইটেমটি ৩য় লেভেলের হয়
+              if (b.children.includes(item) && c !== item) {
+                c.is_Active = false;
+              }
+            });
           }
         });
-        return;
-      });
-    }
-    item.active = !item.active;
+      }
+    });
+
+    // ৩. সবশেষে ক্লিক করা আইটেমটিকে একটিভ করুন
+    item.active = true;
   }
+}
 
   // Close Nav menu
   closeNavActive() {

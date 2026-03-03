@@ -4,12 +4,13 @@
   </div>
 
   <div class="qc-grid">
-    <div (click)="showLoginDialog()" class="qc-circle blue">QC-1</div>
+    <div (click)="showInspectionDialog()" class="qc-circle blue">QC-1</div>
     <div class="qc-circle purple">QC-2</div>
     <div class="qc-circle green">QC-3</div>
     <div class="qc-circle cyan">QC-4</div>
 
     
   </div>
-    <app-qc-profile [(visible)]="showProfileModal"></app-qc-profile>
+    <!-- <app-qc-profile [(visible)]="showProfileModal"></app-qc-profile> -->
+    <app-qc-inspection [(visible)]="showInspectionModal"></app-qc-inspection>
 </div>
