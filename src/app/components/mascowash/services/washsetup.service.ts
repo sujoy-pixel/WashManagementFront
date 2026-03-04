@@ -513,6 +513,17 @@ getBatchPriorityList(data: any) {
       { headers: this.token.headerToken() }
     );
   }
+getBatchWishQCDataList(batchNo: string) {
 
+  const params = new HttpParams()
+    .set('batchNo', batchNo);
 
+  return this.http.get<any[]>(
+    this.baseUrl_ + 'Setup/getBatchWishQCDataList',
+    {
+      headers: this.token.headerToken(),
+      params
+    }
+  );
+}
 }
