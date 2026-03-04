@@ -1,4 +1,3 @@
-
 <div class="inspection-dashboard p-3">
     <div class="header-container mb-3">
         <div class="header-info-bar text-white flex justify-content-between p-3">
@@ -6,9 +5,21 @@
             <span><strong>Buyer:</strong> Target (Australia)</span>
             <span><strong>Bundle No:</strong> 37227OR</span>
         </div>
-          <div class="header-info-bar text-white flex justify-content-between p-3 mt-2">
+        <div class="header-info-bar text-white flex justify-content-between p-3 mt-2">
             <span><strong>Unit:</strong> Concept Knitting Ltd.</span>
             <span><strong>Buyer:</strong> Target (Australia)</span>
+            <span  class="d-flex align-items-center gap-2">
+                <strong class="mb-0">Batch No:</strong>
+                <input 
+                    type="text"
+                    class="form-control flex-grow-1" 
+                    [(ngModel)]="batchNo" 
+                    (keyup.enter)="loadBatchData()"
+                    (blur)="loadBatchData()" 
+                    placeholder="Scan or Enter Batch No" 
+                    autofocus 
+                />
+            </span>
             <span><strong>Bundle No:</strong> 37227OR</span>
         </div>
     </div>
@@ -17,7 +28,7 @@
         <div class="col card-section green-section">
             <button class="action-btn"><i class="pi pi-plus-circle"></i></button>
             <div class="label-title">Good Garments</div>
-            <div class="counter-value">29</div>
+            <div class="counter-value">{{ goodGarments }}</div>
             <button class="action-btn"><i class="pi pi-minus-circle"></i></button>
         </div>
 
