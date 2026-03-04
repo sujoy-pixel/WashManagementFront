@@ -1,15 +1,17 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ButtonModule } from 'primeng/button';
+import { RejectReasonComponent } from '../reject-reason/reject-reason.component';
 
 @Component({
   selector: 'app-qc-dashboard',
   standalone: true,
-  imports: [CommonModule,ButtonModule],
+  imports: [CommonModule,ButtonModule, RejectReasonComponent],
   templateUrl: './qc-dashboard.component.html',
   styleUrl: './qc-dashboard.component.scss'
 })
 export class QcDashboardComponent {
+  isShowRejectionDialog: boolean = false;
   defects: any[] = [
     { id: 1, name: 'Defect 1', description: 'Description of Defect 1' },
     { id: 2, name: 'Defect 2', description: 'Description of Defect 2' },
@@ -17,4 +19,10 @@ export class QcDashboardComponent {
     { id: 4, name: 'Defect 4', description: 'Description of Defect 4' },
     { id: 5, name: 'Defect 5', description: 'Description of Defect 5' }
   ];
+
+  showRejectionDialog() {
+    // Logic to show the rejection dialog
+    console.log('Show rejection dialog');
+    this.isShowRejectionDialog = true;
+  }
 }

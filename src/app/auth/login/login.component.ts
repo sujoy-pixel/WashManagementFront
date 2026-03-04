@@ -1,3 +1,4 @@
+//import { NgModule } from '@angular/core';
 import { Component, OnInit, ViewChild, ElementRef, Renderer2, ChangeDetectorRef } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { AuthService } from '../../shared/services/firebase/auth.service';
@@ -15,6 +16,12 @@ import { Router } from "@angular/router";
 import { ToastrService } from "ngx-toastr";
 import { SidebarToggleService } from "../../components/mascowash/services/sidebar-toggle.service";
 
+// @NgModule({
+//   imports: [
+//     PasswordModule,
+//   ]
+// })
+
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
@@ -22,6 +29,7 @@ import { SidebarToggleService } from "../../components/mascowash/services/sideba
 })
 export class LoginComponent implements OnInit {
   public show: boolean = false;
+  public isMask: boolean = false;
   public loginForm: FormGroup | any;
   public errorMessage: any;
   toaster: any;
@@ -49,6 +57,12 @@ export class LoginComponent implements OnInit {
   ngOnInit() {
 
   }
+ 
+
+  togglePasswordMask() {
+    this.isMask = !this.isMask;
+  }
+
 
   showPassword() {
     this.show = !this.show;

@@ -6,7 +6,6 @@ import { FormsModule } from '@angular/forms';
 import { QcProfileComponent } from './components/qc-profile/qc-profile.component';
 import { QcInspectionComponent } from './components/qc-inspection/qc-inspection.component';
 
-
 @Component({
   selector: 'app-qc-operation',
   standalone: true,

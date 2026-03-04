@@ -27,9 +27,9 @@
             </div>
             <div class="label-title">Repairable</div>
         </div>
-         <div class="col card-section red-section flex flex-column align-items-center justify-content-center">
+         <div (click)="showRejectionDialog()" class="col card-section red-section flex flex-column align-items-center justify-content-center cursor-pointer">
             <div class="counter-circle-container mb-3">
-                <div class="counter-value">1</div>
+                <div class="counter-value">0</div>
             </div>
             <div class="label-title">Reject</div>
         </div>
@@ -107,4 +107,5 @@
             <button pButton label="REFRESH" class="p-button-info p-button-outlined btn-custom refresh-btn"></button>
         </div>
     </div>
+    <app-reject-reason [visible]="isShowRejectionDialog" (visibleChange)="isShowRejectionDialog = $event"></app-reject-reason>
 </div>

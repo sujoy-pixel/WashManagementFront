@@ -8,6 +8,7 @@ import { ResisterComponent } from './resister/resister.component';
 import { ForgetPasswordComponent } from './forget-password/forget-password.component';
 import { VerifyEmailComponent } from './verify-email/verify-email.component';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import { PasswordModule } from 'primeng/password';
 
 
 @NgModule({
@@ -21,7 +22,8 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
     CommonModule,
     AuthRoutingModule,
     FormsModule, ReactiveFormsModule,
-    NgbModule
+    NgbModule,
+    PasswordModule
   ]
 })
 export class AuthModule { }

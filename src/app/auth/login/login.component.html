@@ -33,8 +33,18 @@
         <label class="form-label">Password</label>
         <div class="input-group">
           <span class="input-group-text bg-light"><i class="zmdi zmdi-lock text-primary"></i></span>
-          <input type="password" formControlName="password" class="form-control" placeholder="Enter Password"
+          <input  [type]="isMask ? 'text' : 'password'" formControlName="password" class="form-control" placeholder="Enter Password"
             required />
+             <span
+            class="input-group-text bg-light cursor-pointer"
+            (click)="togglePasswordMask()"
+            style="cursor: pointer;"
+          >
+            <i
+              class="zmdi"
+              [ngClass]="isMask ? 'zmdi-eye-off' : 'zmdi-eye'"
+            ></i>
+          </span>
         </div>
         <div *ngIf="loginForm.controls.password?.touched && loginForm.controls.password.errors?.required"
           class="text-danger small mt-1">
