@@ -107,4 +107,18 @@ export class QcDashboardComponent {
     console.log('Show rejection dialog');
     this.isShowRejectionDialog = true;
   }
+  repairableDefects: any[] = [
+    { id: 1, name: 'Repairable Defect 1', description: 'Description of Repairable Defect 1', count: 10 },
+    { id: 2, name: 'Repairable Defect 2', description: 'Description of Repairable Defect 2', count: 5 },
+    { id: 3, name: 'Repairable Defect 3', description: 'Description of Repairable Defect 3', count: 8 },
+    { id: 4, name: 'Repairable Defect 4', description: 'Description of Repairable Defect 4', count: 12 },
+    { id: 5, name: 'Repairable Defect 5', description: 'Description of Repairable Defect 5', count: 7 }
+  ];
+  rejectDefects: any[] = [
+    { id: 1, name: 'Reject Defect 1', description: 'Description of Reject Defect 1', count: 15 },
+    { id: 2, name: 'Reject Defect 2', description: 'Description of Reject Defect 2', count: 8 },
+    { id: 3, name: 'Reject Defect 3', description: 'Description of Reject Defect 3', count: 12 },
+    { id: 4, name: 'Reject Defect 4', description: 'Description of Reject Defect 4', count: 5 },
+    { id: 5, name: 'Reject Defect 5', description: 'Description of Reject Defect 5', count: 10 }
+  ];
 }
