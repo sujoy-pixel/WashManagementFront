@@ -44,6 +44,7 @@ export class QcDashboardComponent {
     this.loading = true;
 
     this.service.getBatchWishQCDataList(this.batchNo)
+
       .subscribe({
         next: (res: any[]) => {
 
@@ -51,10 +52,15 @@ export class QcDashboardComponent {
             this.resetValues();
             return;
           }
+          debugger;
+          console.log('Batch QC Data:', res);
           const data = res[0];
-          this.goodGarments = data.GoodGarments || 0;
-          this.repairable = data.Repairable || 0;
-          this.reject = data.Reject || 0;
+          this.goodGarments = data.goodGarments ?? 0;
+          //  data.goodGarments =this.goodGarments  ?? 0;
+          // this.goodGarments = data.GoodGarments || 0;
+          // this.repairable = data.Repairable || 0;
+          // this.reject = data.Reject || 0;
+          this.cleanTrackingNo();
         },
         error: (err) => {
           console.error(err);
@@ -65,13 +71,27 @@ export class QcDashboardComponent {
         }
       });
   }
-
+  cleanTrackingNo() {
+    this.batchNo = '';
+  }
   resetValues() {
     this.goodGarments = 0;
     this.repairable = 0;
     this.reject = 0;
   }
+  //goodGarments: number = 0;
 
+  // ➕ increase
+  increaseGood(): void {
+    this.goodGarments++;
+  }
+
+  // ➖ decrease
+  decreaseGood(): void {
+    if (this.goodGarments > 0) {
+      this.goodGarments--;
+    }
+  }
   defects: any[] = [
     { id: 1, name: 'Defect 1', description: 'Description of Defect 1' },
     { id: 2, name: 'Defect 2', description: 'Description of Defect 2' },
@@ -80,7 +100,9 @@ export class QcDashboardComponent {
     { id: 5, name: 'Defect 5', description: 'Description of Defect 5' }
   ];
 
+ 
   showRejectionDialog() {
+
     // Logic to show the rejection dialog
     console.log('Show rejection dialog');
     this.isShowRejectionDialog = true;

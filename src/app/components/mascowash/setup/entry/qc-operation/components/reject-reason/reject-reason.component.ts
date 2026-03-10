@@ -1,20 +1,11 @@
-// import { Component } from '@angular/core';
-
-// @Component({
-//   selector: 'app-reject-reason',
-//   standalone: true,
-//   imports: [],
-//   templateUrl: './reject-reason.component.html',
-//   styleUrl: './reject-reason.component.scss'
-// })
-// export class RejectReasonComponent {
-
-// }
-import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { Component, Input, Output, EventEmitter, OnInit } from '@angular/core';
 import { DialogModule } from 'primeng/dialog';
 import { CommonModule } from '@angular/common';
 import { ButtonModule } from 'primeng/button';
 import { FormsModule } from '@angular/forms';
+import { WashSetupService } from 'src/app/components/mascowash/services/washsetup.service';
+import { CommonServiceService } from 'src/app/components/mascowash/services/common-service';
+import { ToastrService } from 'ngx-toastr';
 
 interface DefectItem {
   name: string;
@@ -29,68 +20,65 @@ interface DefectItem {
   templateUrl: './reject-reason.component.html',
   styleUrl: './reject-reason.component.scss'
 })
+export class RejectReasonComponent implements OnInit {
 
-
-export class RejectReasonComponent {
   @Input() visible: boolean = false;
   @Output() visibleChange = new EventEmitter<boolean>();
+
+  items: DefectItem[] = [];
+  dataList: any[] = [];
 
   mainModalVisible: boolean = false;
   isFullScreen: boolean = false;
   isMaximized: boolean = false;
-items: DefectItem[] = [
-  { name: 'Back Front High Low', count: 0, isFlipped: false },
-  { name: 'Broken Stitch', count: 0, isFlipped: false },
-  { name: 'Color Bleed', count: 0, isFlipped: false },
-  { name: 'Defect Button', count: 0, isFlipped: false },
-  { name: 'Dirty Spot', count: 0, isFlipped: false },
-  { name: 'Distorted Shape', count: 0, isFlipped: false },
-  { name: 'Down Stitch', count: 0, isFlipped: false },
-  { name: 'Dyeing Spot', count: 0, isFlipped: false },
 
-  { name: 'Embroidery Defect', count: 0, isFlipped: false },
-  { name: 'Fabric Defect', count: 0, isFlipped: false },
-  { name: 'Fabric Hole', count: 0, isFlipped: false },
-  { name: 'Insecure Stitch', count: 0, isFlipped: false },
-  { name: 'Iron Problem', count: 0, isFlipped: false },
-  { name: 'Join Stitch', count: 0, isFlipped: false },
-  { name: 'Knot', count: 0, isFlipped: false },
-  { name: 'Label Missing', count: 0, isFlipped: false },
+  constructor(
+    private service: WashSetupService,
+    public commonService: CommonServiceService,
+    private toastr: ToastrService
+  ) {}
 
-  { name: 'Label Mistake', count: 0, isFlipped: false },
-  { name: 'Lycra Missing', count: 0, isFlipped: false },
-  { name: 'Needle Cut', count: 0, isFlipped: false },
-  { name: 'Needle Cut Irreparable', count: 0, isFlipped: false },
-  { name: 'Needle Mark', count: 0, isFlipped: false },
-  { name: 'Oil Spot', count: 0, isFlipped: false },
-  { name: 'Open Seam', count: 0, isFlipped: false },
-  { name: 'Over Stitch', count: 0, isFlipped: false },
+  ngOnInit(): void {
+    this.loadData();
+  }
 
-  { name: 'Pleat', count: 0, isFlipped: false },
-  { name: 'Point Up-Down', count: 0, isFlipped: false },
-  { name: 'Print Defect', count: 0, isFlipped: false },
-  { name: 'Print/Emb. Irreparable Problem', count: 0, isFlipped: false },
-  { name: 'Process Missing', count: 0, isFlipped: false },
-  { name: 'Puckering', count: 0, isFlipped: false },
-  { name: 'Raw Edge', count: 0, isFlipped: false },
-  { name: 'Reverse', count: 0, isFlipped: false },
+  // 🔹 Load Fault Name from API
+  loadData() {
+    this.service.getFaultNameList().subscribe({
+      next: (res: any) => {
 
-  { name: 'Scissor Cut', count: 0, isFlipped: false },
-  { name: 'Shading', count: 0, isFlipped: false },
-  { name: 'Shoulder Forward', count: 0, isFlipped: false },
-  { name: 'Skip Stitch', count: 0, isFlipped: false },
-  { name: 'Slanted', count: 0, isFlipped: false },
-  { name: 'Slub', count: 0, isFlipped: false },
-  { name: 'Tension Bad', count: 0, isFlipped: false },
-  { name: 'Twisting', count: 0, isFlipped: false },
+        console.log('Fault List From API:', res);
 
-  { name: 'Uncut Thread', count: 0, isFlipped: false },
-  { name: 'Uneven Stitch', count: 0, isFlipped: false },
-  { name: 'Wash Fail', count: 0, isFlipped: false },
-  { name: 'Wavy', count: 0, isFlipped: false },
-  { name: 'Width Uneven', count: 0, isFlipped: false },
-  { name: 'Wrong SPI', count: 0, isFlipped: false }
-];
+        this.dataList = res ?? [];
+
+        // Convert API → DefectItem list
+        this.items = this.dataList.map((x: any) => ({
+          name: x.faultName || x.FaultName,
+          count: 0,
+          isFlipped: false
+        }));
+
+        console.log('Items List:', this.items);
+      },
+      error: (err) => {
+        console.error(err);
+        this.toastr.error('Failed to load Fault Name data');
+      }
+    });
+  }
+
+  // 🔹 Open dialog
+  showDialog() {
+    this.visible = true;
+    this.visibleChange.emit(true);
+  }
+
+  // 🔹 Close dialog
+  closeDialog() {
+    this.visible = false;
+    this.visibleChange.emit(false);
+  }
+
   openMainOperation() {
     this.visible = false;
     this.mainModalVisible = true;
@@ -98,35 +86,39 @@ items: DefectItem[] = [
 
   handleMaximize() {
     this.isMaximized = !this.isMaximized;
-   // this.isFullScreen = false; 
   }
-increase(item: DefectItem) {
-  const previous = item.count;
-  item.count++;
 
-  // 0 → 1 হলে flip
-  if (previous === 0 && item.count === 1) {
-    item.isFlipped = true;
+  // 🔹 Increase count
+  increase(item: DefectItem) {
+    const previous = item.count;
+    item.count++;
+
+    if (previous === 0 && item.count === 1) {
+      item.isFlipped = true;
+    }
   }
-}
 
-decrease(item: DefectItem) {
-  if (item.count === 0) return;
+  // 🔹 Decrease count
+  decrease(item: DefectItem) {
 
-  const previous = item.count;
-  item.count--;
+    if (item.count === 0) return;
 
-  // 1 → 0 হলে flip back
-  if (previous === 1 && item.count === 0) {
-    item.isFlipped = false;
+    const previous = item.count;
+    item.count--;
+
+    if (previous === 1 && item.count === 0) {
+      item.isFlipped = false;
+    }
   }
-}
-getRows(arr: any[], chunkSize: number) {
-  const rows: any[][] = [];
-  for (let i = 0; i < arr.length; i += chunkSize) {
-    rows.push(arr.slice(i, i + chunkSize));
-  }
-  return rows;
-}
 
+  // 🔹 Create grid rows
+  getRows(arr: any[], chunkSize: number) {
+    const rows: any[][] = [];
+
+    for (let i = 0; i < arr.length; i += chunkSize) {
+      rows.push(arr.slice(i, i + chunkSize));
+    }
+
+    return rows;
+  }
 }

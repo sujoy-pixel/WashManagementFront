@@ -4,6 +4,7 @@
             <span><strong>Unit: </strong> <span class="text-xl font-bold">Concept Knitting Ltd.</span></span>
             <span><strong>Buyer:</strong> Target (Australia)</span>
             <span><strong>Bundle No:</strong> 37227OR</span>
+            <span><strong>Bundle No:</strong> 37227OR</span>
         </div>
         <div class="header-info-bar text-white flex justify-content-between p-3 mt-2">
             <span><strong>Unit:</strong> Concept Knitting Ltd.</span>
@@ -26,10 +27,10 @@
 
     <div class="grid grid-nogutter gap-3 dashboard-grid flex-grow-1">
         <div class="col card-section green-section">
-            <button class="action-btn"><i class="pi pi-plus-circle"></i></button>
+            <button class="action-btn"(click)="increaseGood()"><i class="pi pi-plus-circle"></i></button>
             <div class="label-title">Good Garments</div>
             <div class="counter-value">{{ goodGarments }}</div>
-            <button class="action-btn"><i class="pi pi-minus-circle"></i></button>
+            <button class="action-btn"(click)="decreaseGood()"><i class="pi pi-minus-circle"></i></button>
         </div>
 
         <div class="col card-section yellow-section flex flex-column align-items-center justify-content-center">
