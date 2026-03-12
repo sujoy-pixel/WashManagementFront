@@ -36,8 +36,14 @@ export class OperationNameEntryComponent {
   getCompanyBankList: any;
   getCompanyBankListDataKey: any;
   dataList: any[] = [];
+
   isEdit = false;
   isSubmitting = false;
+
+  first: number = 0;
+  rows: number = 10;
+  totalRecords: number = 0;
+  allDataList: any[] = [];
 
   constructor(
     private service: WashSetupService,
@@ -131,12 +137,20 @@ export class OperationNameEntryComponent {
     this.service.GetOperationNameEntryList().subscribe({
       next: (res: any) => {
         console.log('dataList:', res);
-        this.dataList = res ?? [];
+        this.allDataList = res ?? [];
+        this.totalRecords = this.allDataList.length;
+
+        this.dataList = this.allDataList.slice(0, this.rows);
       },
       error: () => {
         this.toastr.error('Failed to load Type of Inspection data');
       },
     });
+  }
+  onPageChange(event: any) {
+    this.first = event.first ?? 0;
+    this.rows = event.rows ?? 10;
+    this.dataList = this.allDataList.slice(this.first, this.first + this.rows);
   }
 
   setFocus(field: string): void {

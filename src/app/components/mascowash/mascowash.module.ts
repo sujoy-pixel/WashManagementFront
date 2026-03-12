@@ -14,14 +14,11 @@ import { MascowashComponent } from './mascowash.component';
 
 import { AutoCompleteModule } from 'primeng/autocomplete';
 import { SharedModule } from 'src/app/shared/shared.module';
-// import { ActualDateEntryComponent } from './setup/entry/actual-date-entry/actual-date-entry.component';
-//import { TypeaheadModule } from 'ngx-bootstrap/typeahead';
 
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 
-//import { NgxChartsModule } from '@swimlane/ngx-charts';
 import { ProcessNameEntryComponent } from './setup/entry/process-name-entry/process-name-entry.component';
 
 import { InspectionTypeEntryComponent } from './setup/entry/inspection-type-entry/inspection-type-entry.component';
@@ -33,20 +30,19 @@ import { FaultNameLayoutComponent } from './setup/entry/fault-name-layout/fault-
 import { InspectionHeadLayoutEntryComponent } from './setup/entry/inspection-head-layout-entry/inspection-head-layout-entry.component';
 import { FaultWiseValueTagEntryComponent } from './setup/entry/fault-wise-value-tag-entry/fault-wise-value-tag-entry.component';
 import { FaultHeadNameEntryComponent } from './setup/entry/fault-head-name-entry/fault-head-name-entry.component';
- //import { WashReceiveOperationComponent } from './setup/wash-receive-operation/wash-receive-operation.component';
  import { ReceiveOperationComponent } from './setup/entry/receive-operation/receive-operation.component';
  import { WashBatchPrepareOperationComponent } from './setup/entry/wash-batchprepare-operation/wash-batchprepare-operation.component';
 import { WashPrepareActionComponent } from './setup/entry/wash-prepare-action/wash-prepare-action.component';
 import { WashItemDeliveryComponent } from './setup/entry/wash-item-delivery/wash-item-delivery.component';
 import { BatchWisePrioritySetComponent } from './setup/entry/batch-wise-priority-set/batch-wise-priority-set.component';
 import { ReportViewComponent } from './report/report-view/report-view.component';
- //import WashRec
+import { TagModule } from 'primeng/tag';
+import { CustomPaginationComponent } from 'src/app/shared/custom-pagination/custom-pagination.component';
+
 @NgModule({
   declarations: [
     MascowashComponent,
-    // ActualDateEntryComponent,
     ProcessNameEntryComponent,
-
     InspectionTypeEntryComponent,
     ReceiveOperationComponent,
     WashBatchPrepareOperationComponent,
@@ -60,9 +56,8 @@ import { ReportViewComponent } from './report/report-view/report-view.component'
     WashPrepareActionComponent,
     WashItemDeliveryComponent,
     BatchWisePrioritySetComponent,
-    ReportViewComponent
-    
-   
+    ReportViewComponent,
+    CustomPaginationComponent
   ],
   imports: [
     MatTabsModule,
@@ -79,7 +74,10 @@ import { ReportViewComponent } from './report/report-view/report-view.component'
     MatFormFieldModule,
     MatSelectModule,
     MatCheckboxModule,
-    // NgxChartsModule,
+    TagModule,
   ],
+   exports: [
+    CustomPaginationComponent
+  ]
 })
 export class MascowashModule {}

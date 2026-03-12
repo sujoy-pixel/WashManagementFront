@@ -19,7 +19,12 @@ export class MachineNameEntryComponent implements OnInit {
 
   // Master grid
   machineMasterGrid: any[] = [];
-  displayMasterGrid: any[] = []; // for HTML display with concatenated machine names
+  displayMasterDataList: any[] = []; // for HTML display with concatenated machine names
+
+  first: number = 0;
+  rows: number = 10;
+  totalRecords: number = 0;
+  dataList: any[] = [];
 
   Model: any = {
     UnitId: null,
@@ -65,6 +70,7 @@ export class MachineNameEntryComponent implements OnInit {
       });
     });
   }
+
 
   // ================= Add Machine =================
   // Add or Edit Machine
@@ -173,7 +179,9 @@ export class MachineNameEntryComponent implements OnInit {
   loadMachineMasterList() {
     this.service.getMachineMasterList().subscribe(
       (res: any) => {
+        console.log('Master List Response:', res);
         const masterRecords = Array.isArray(res) ? res : res.data ?? [];
+
         this.machineMasterGrid = masterRecords;
 
         // Prepare display grid with concatenated machine names
@@ -204,12 +212,21 @@ export class MachineNameEntryComponent implements OnInit {
           }
         });
 
-        this.displayMasterGrid = Array.from(map.values());
+        this.displayMasterDataList = Array.from(map.values());
+        this.totalRecords = this.displayMasterDataList.length;
+
+        this.dataList = this.displayMasterDataList.slice(0, this.rows);
       },
       () => {
         this.toastr.error('Failed to load master list');
       }
     );
+  }
+
+  onPageChange(event: any) {
+    this.first = event.first ?? 0;
+    this.rows = event.rows ?? 10;
+    this.dataList = this.displayMasterDataList.slice(this.first, this.first + this.rows);
   }
 
   // ================= Edit/Delete from Master Grid =================

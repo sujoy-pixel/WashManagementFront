@@ -33,6 +33,7 @@ export class ProcessNameEntryComponent {
   BranchList: any = [];
   priorityList: number[] = [];
   dataList: any[] = [];
+  allDataList: any[] = [];
   isEdit = false;
   isSubmitting = false;
 
@@ -40,6 +41,11 @@ export class ProcessNameEntryComponent {
   getCompanyBankListDataKey: any;
   getProcessNameEntryList: any;
   getProcessNameEntryListDataKey: any;
+  first: number = 0;
+  rows: number = 10;
+  totalRecords: number = 0;
+
+
   constructor(
     private service: WashSetupService,
     public commonService: CommonServiceService,
@@ -68,6 +74,7 @@ export class ProcessNameEntryComponent {
     this.priorityList = Array.from({ length: 50 }, (_, i) => i + 1);
   }
 
+
   onChangeActiveStatus(event: any) {
     this.Model.activeStatus = event.target.checked;
   }
@@ -86,7 +93,7 @@ export class ProcessNameEntryComponent {
           });
         }
       },
-      (error) => {}
+      (error) => { }
     );
   }
   onUnitChange(event) {
@@ -166,12 +173,21 @@ export class ProcessNameEntryComponent {
     this.service.GetProcessNameEntryList().subscribe({
       next: (res: any) => {
         console.log('dataList:', res);
-        this.dataList = res ?? [];
+        this.allDataList = res ?? [];
+        this.totalRecords = this.allDataList.length;
+
+        this.dataList = this.allDataList.slice(0, this.rows);
       },
       error: () => {
         this.toastr.error('Failed to load Type of Inspection data');
       },
     });
+  }
+
+  onPageChange(event: any) {
+    this.first = event.first ?? 0;
+    this.rows = event.rows ?? 10;
+    this.dataList = this.allDataList.slice(this.first, this.first + this.rows);
   }
 
   setFocus(field: string): void {

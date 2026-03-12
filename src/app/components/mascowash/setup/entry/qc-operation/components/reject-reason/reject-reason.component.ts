@@ -19,7 +19,7 @@ interface DefectItem {
   imports: [DialogModule, CommonModule, ButtonModule, FormsModule],
   templateUrl: './reject-reason.component.html',
   styleUrl: './reject-reason.component.scss'
-  
+
 })
 export class RejectReasonComponent implements OnInit {
 
@@ -39,7 +39,7 @@ export class RejectReasonComponent implements OnInit {
     private service: WashSetupService,
     public commonService: CommonServiceService,
     private toastr: ToastrService
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.loadData();
@@ -49,19 +49,12 @@ export class RejectReasonComponent implements OnInit {
   loadData() {
     this.service.getFaultNameList().subscribe({
       next: (res: any) => {
-
-        console.log('Fault List From API:', res);
-
         this.dataList = res ?? [];
-
-        // Convert API → DefectItem list
         this.items = this.dataList.map((x: any) => ({
           name: x.faultName || x.FaultName,
           count: 0,
           isFlipped: false
         }));
-
-        console.log('Items List:', this.items);
       },
       error: (err) => {
         console.error(err);
@@ -95,7 +88,6 @@ export class RejectReasonComponent implements OnInit {
   increase(item: DefectItem) {
     const previous = item.count;
     item.count++;
-
     if (previous === 0 && item.count === 1) {
       item.isFlipped = true;
     }
@@ -103,12 +95,9 @@ export class RejectReasonComponent implements OnInit {
 
   // 🔹 Decrease count
   decrease(item: DefectItem) {
-
     if (item.count === 0) return;
-
     const previous = item.count;
     item.count--;
-
     if (previous === 1 && item.count === 0) {
       item.isFlipped = false;
     }
@@ -117,29 +106,23 @@ export class RejectReasonComponent implements OnInit {
   // 🔹 Create grid rows
   getRows(arr: any[], chunkSize: number) {
     const rows: any[][] = [];
-
     for (let i = 0; i < arr.length; i += chunkSize) {
       rows.push(arr.slice(i, i + chunkSize));
     }
-
     return rows;
   }
   confirmSelection() {
-debugger;
-  const selectedDefects = this.items
-    .filter(x => x.count > 0)
-    .map(x => ({
-      name: x.name,
-      count: x.count
-    }));
+    debugger;
+    const selectedDefects = this.items
+      .filter(x => x.count > 0)
+      .map(x => ({
+        name: x.name,
+        count: x.count
+      }));
 
-  console.log('Selected Defects:', selectedDefects);
+    this.onConfirm.emit(selectedDefects);
 
-  // this.confirmReject.emit(selectedDefects);
-
-     this.onConfirm.emit(selectedDefects);
-  
-  this.visible = false;
-  this.visibleChange.emit(false);
-}
+    this.visible = false;
+    this.visibleChange.emit(false);
+  }
 }
