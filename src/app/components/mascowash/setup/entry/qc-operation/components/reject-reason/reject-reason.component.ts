@@ -19,11 +19,14 @@ interface DefectItem {
   imports: [DialogModule, CommonModule, ButtonModule, FormsModule],
   templateUrl: './reject-reason.component.html',
   styleUrl: './reject-reason.component.scss'
+  
 })
 export class RejectReasonComponent implements OnInit {
 
   @Input() visible: boolean = false;
   @Output() visibleChange = new EventEmitter<boolean>();
+  @Output() confirmReject = new EventEmitter<any[]>();
+  @Output() onConfirm = new EventEmitter<any>();
 
   items: DefectItem[] = [];
   dataList: any[] = [];
@@ -121,4 +124,22 @@ export class RejectReasonComponent implements OnInit {
 
     return rows;
   }
+  confirmSelection() {
+debugger;
+  const selectedDefects = this.items
+    .filter(x => x.count > 0)
+    .map(x => ({
+      name: x.name,
+      count: x.count
+    }));
+
+  console.log('Selected Defects:', selectedDefects);
+
+  // this.confirmReject.emit(selectedDefects);
+
+     this.onConfirm.emit(selectedDefects);
+  
+  this.visible = false;
+  this.visibleChange.emit(false);
+}
 }

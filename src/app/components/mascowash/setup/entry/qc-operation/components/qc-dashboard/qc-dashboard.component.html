@@ -21,18 +21,27 @@
 
     <div class="grid grid-nogutter gap-3 dashboard-grid flex-grow-1">
         <div class="col card-section green-section">
-            <button class="action-btn"(click)="increaseGood()"><i class="pi pi-plus-circle"></i></button>
+            <button class="action-btn" (click)="increaseGood()"><i class="pi pi-plus-circle"></i></button>
             <div class="label-title">Good Garments</div>
             <div class="counter-value">{{ goodGarments }}</div>
-            <button class="action-btn"(click)="decreaseGood()"><i class="pi pi-minus-circle"></i></button>
+            <button class="action-btn" (click)="decreaseGood()"><i class="pi pi-minus-circle"></i></button>
         </div>
 
-        <div class="col card-section yellow-section flex flex-column align-items-center justify-content-center">
+        <!-- <div class="col card-section yellow-section flex flex-column align-items-center justify-content-center">
             <div class="counter-circle-container mb-3">
-                <div class="counter-value">1</div>
+                <div class="counter-value">0</div>
+            </div>
+            <div class="label-title">Repairable</div>
+        </div> -->
+
+       <div (click)="showRepairableDialog()" 
+       class="col card-section yellow-section flex flex-column align-items-center justify-content-center">
+            <div class="counter-circle-container mb-3">
+                <div class="counter-value">0</div>
             </div>
             <div class="label-title">Repairable</div>
         </div>
+
         <div (click)="showRejectionDialog()"
             class="col card-section red-section flex flex-column align-items-center justify-content-center cursor-pointer">
             <div class="counter-circle-container mb-3">
@@ -76,7 +85,7 @@
                         </div>
                     </div>
                 </div>
-
+              
             </div>
         </div>
     </div>
@@ -122,6 +131,18 @@
             <button pButton label="REFRESH" class="p-button-info p-button-outlined btn-custom refresh-btn"></button>
         </div>
     </div>
+
+   <app-reject-reason [visible]="isShowRepairableDialog"
+        (visibleChange)="isShowRepairableDialog = $event"
+
+        (onConfirm)="handleReparableData($event)">
+    </app-reject-reason>
+
     <app-reject-reason [visible]="isShowRejectionDialog"
-        (visibleChange)="isShowRejectionDialog = $event"></app-reject-reason>
+        (visibleChange)="isShowRejectionDialog = $event"
+
+        (onConfirm)="handleRejectionData($event)">
+    </app-reject-reason>
+    <!-- <app-reject-reason [visible]="isShowRejectionDialog"
+        (visibleChange)="isShowRejectionDialog = $event"></app-reject-reason> -->
 </div>

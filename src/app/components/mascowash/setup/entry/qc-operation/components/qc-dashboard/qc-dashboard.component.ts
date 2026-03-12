@@ -23,9 +23,10 @@ export class QcDashboardComponent {
   repairable: number = 0;
   reject: number = 0;
   isShowRejectionDialog: boolean = false;
-
+  isShowRepairableDialog: boolean = false
   loading: boolean = false;
-
+selectedRejects: any[] = [];
+selectedRepairable: any[] = [];
   constructor(
     private service: WashSetupService,
     public commonService: CommonServiceService,
@@ -34,6 +35,8 @@ export class QcDashboardComponent {
     public fb: FormBuilder,
     private cdr: ChangeDetectorRef
   ) { }
+
+
 
 
   loadBatchData() {
@@ -92,33 +95,100 @@ export class QcDashboardComponent {
       this.goodGarments--;
     }
   }
-  defects: any[] = [
-    { id: 1, name: 'Defect 1', description: 'Description of Defect 1' },
-    { id: 2, name: 'Defect 2', description: 'Description of Defect 2' },
-    { id: 3, name: 'Defect 3', description: 'Description of Defect 3' },
-    { id: 4, name: 'Defect 4', description: 'Description of Defect 4' },
-    { id: 5, name: 'Defect 5', description: 'Description of Defect 5' }
-  ];
+  // defects: any[] = [
+  //   { id: 1, name: 'Defect 1', description: 'Description of Defect 1' },
+  //   { id: 2, name: 'Defect 2', description: 'Description of Defect 2' },
+  //   { id: 3, name: 'Defect 3', description: 'Description of Defect 3' },
+  //   { id: 4, name: 'Defect 4', description: 'Description of Defect 4' },
+  //   { id: 5, name: 'Defect 5', description: 'Description of Defect 5' }
+  // ];
+showRepairableDialog() {
 
- 
+    // Logic to show the repairable dialog
+    console.log('Show repairable dialog');
+     this.isShowRepairableDialog = true;
+  }
+
+  ondDefectConfirm(data:any[])
+{
+  console.log('RShow repairable dialog:', data);
+debugger;
+  this.selectedRepairable = data;
+
+  // total reject calculate
+  this.reject = data.reduce((sum,x)=> sum + x.count ,0);
+}
+
+handleReparableData(data: any[]) {
+
+  console.log('Child Data:', data);
+
+  // bind child data to repairable list
+  this.repairableDefects = data;
+    this.rejectDefects = data;
+
+  // calculate total reject
+  this.reject = data.reduce((sum, x) => sum + x.count, 0);
+
+  this.isShowRepairableDialog = false;
+}
+
   showRejectionDialog() {
 
     // Logic to show the rejection dialog
     console.log('Show rejection dialog');
     this.isShowRejectionDialog = true;
   }
+
+
+  onRejectConfirm(data:any[])
+{
+  console.log('Reject Data From Dialog:', data);
+debugger;
+  this.selectedRejects = data;
+
+  // total reject calculate
+  this.reject = data.reduce((sum,x)=> sum + x.count ,0);
+}
+
+
+
   repairableDefects: any[] = [
-    { id: 1, name: 'Repairable Defect 1', description: 'Description of Repairable Defect 1', count: 10 },
-    { id: 2, name: 'Repairable Defect 2', description: 'Description of Repairable Defect 2', count: 5 },
-    { id: 3, name: 'Repairable Defect 3', description: 'Description of Repairable Defect 3', count: 8 },
-    { id: 4, name: 'Repairable Defect 4', description: 'Description of Repairable Defect 4', count: 12 },
-    { id: 5, name: 'Repairable Defect 5', description: 'Description of Repairable Defect 5', count: 7 }
+    // { id: 1, name: 'Repairable Defect 1', description: 'Description of Repairable Defect 1', count: 10 },
+    // { id: 2, name: 'Repairable Defect 2', description: 'Description of Repairable Defect 2', count: 5 },
+    // { id: 3, name: 'Repairable Defect 3', description: 'Description of Repairable Defect 3', count: 8 },
+    // { id: 4, name: 'Repairable Defect 4', description: 'Description of Repairable Defect 4', count: 12 },
+    // { id: 5, name: 'Repairable Defect 5', description: 'Description of Repairable Defect 5', count: 7 }
   ];
-  rejectDefects: any[] = [
-    { id: 1, name: 'Reject Defect 1', description: 'Description of Reject Defect 1', count: 15 },
-    { id: 2, name: 'Reject Defect 2', description: 'Description of Reject Defect 2', count: 8 },
-    { id: 3, name: 'Reject Defect 3', description: 'Description of Reject Defect 3', count: 12 },
-    { id: 4, name: 'Reject Defect 4', description: 'Description of Reject Defect 4', count: 5 },
-    { id: 5, name: 'Reject Defect 5', description: 'Description of Reject Defect 5', count: 10 }
-  ];
+
+
+  rejectDefects: any[] = [];
+
+handleRejectionData(data: any[]) {
+
+  console.log('Child Data:', data);
+
+  // bind child data to reject list
+  this.rejectDefects = data;
+
+  // calculate total reject
+  this.reject = data.reduce((sum, x) => sum + x.count, 0);
+
+  this.isShowRejectionDialog = false;
+
+}
+  // rejectDefects: any[] = [
+    
+    // { id: 1, name: 'Reject Defect 1', description: 'Description of Reject Defect 1', count: 15 },
+    // { id: 2, name: 'Reject Defect 2', description: 'Description of Reject Defect 2', count: 8 },
+    // { id: 3, name: 'Reject Defect 3', description: 'Description of Reject Defect 3', count: 12 },
+    // { id: 4, name: 'Reject Defect 4', description: 'Description of Reject Defect 4', count: 5 },
+    // { id: 5, name: 'Reject Defect 5', description: 'Description of Reject Defect 5', count: 10 }
+  // ];
+
+  // handleRejectionData(data: any) {
+  //   debugger;
+  //   console.log('Child Data:', data);
+  //   this.isShowRejectionDialog = false; 
+  // }
 }
