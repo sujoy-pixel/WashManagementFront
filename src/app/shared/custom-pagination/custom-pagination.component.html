@@ -1,0 +1,60 @@
+<div class="pagination-container">
+
+  <div class="pagination-info">
+    Showing {{startRecord}} - {{endRecord}} of {{totalRecords}}
+  </div>
+
+  <div class="pagination-controls">
+
+    <button 
+      class="nav-btn"
+      (click)="changePage(currentPage-1)"
+      [disabled]="currentPage===1">
+      <i class="fa fa-chevron-left" aria-hidden="true"></i>
+    </button>
+
+    <button 
+      *ngIf="currentPage > 3"
+      class="page-btn"
+      (click)="changePage(1)">
+      1
+    </button>
+
+    <span *ngIf="currentPage > 4">...</span>
+
+    <button
+      *ngFor="let page of pages"
+      class="page-btn"
+      [class.active]="page === currentPage"
+      (click)="changePage(page)">
+      {{page}}
+    </button>
+
+    <span *ngIf="currentPage < totalPages - 3">...</span>
+
+    <button 
+      *ngIf="currentPage < totalPages - 2"
+      class="page-btn"
+      (click)="changePage(totalPages)">
+      {{totalPages}}
+    </button>
+
+    <button 
+      class="nav-btn"
+      (click)="changePage(currentPage+1)"
+      [disabled]="currentPage===totalPages">
+      
+      <i class="fa fa-chevron-right" aria-hidden="true"></i>
+    </button>
+
+  </div>
+
+  <div class="rows-dropdown">
+    <select (change)="changeRows($event)">
+      <option *ngFor="let r of rowsPerPageOptions" [value]="r">
+        {{r}} / page
+      </option>
+    </select>
+  </div>
+
+</div>

@@ -26,7 +26,7 @@ export class SidebarComponent {
   public menuItems!: Menu[];
   public url: any;
   public routerSubscription: any;
-  public windowSubscribe$!:any;
+  public windowSubscribe$!: any;
 
   public fileurl: any;
   spinnerName = "listSpinner";
@@ -48,190 +48,112 @@ export class SidebarComponent {
     //this.LoadMenu();
   }
 
-  
-
-  //================Menu function
-  // LoadMenu() {
-  //   debugger;
-
-  //  let userId  = this.authService.decodedToken?.nameid;
-
-  //  if(userId==null)
-  //  {
-  //   userId=localStorage.getItem("user_create_id");
-  //  }
-  //  this.menuService.GetMenusByUserId(userId).subscribe(
-  //    (res: any) => {
-  //      if (res) {
-  //         debugger;
-  //        console.log("Menu List", res);
-  //        localStorage.setItem('MenuTemp', JSON.stringify(res));
-
-  //        var LstMenu = res;
-
-  //        if(LstMenu.length > 0){
-
-  //        var _FinalMenu: any = [];
-  //        var _obj={};
-  //        var mainMenu = LstMenu.filter(pID => pID.parent_Menu_Id == 0);
-  //        }
-
-  //        mainMenu.forEach(element => {
-        
-  //          var subMenu = LstMenu.filter(m => m.parent_Menu_Id == element.menu_Id);
-  //            if(subMenu.length > 0){
-  //              var _objSub:any ={
-  //                title: element.menu_Name,
-  //                icon: "grid",
-  //                type: "sub",
-  //                active: false,
-  //                children: []
-  //              }
-  //              subMenu.forEach(li => {
-  //                var _oo:any ={
-  //                  title: li.menu_Name,
-  //                  path: li.page_link,
-  //                  type: "link",
-  //                  icon:"School",
-  //                  badgeType:"primary",
-  //                  active: false
-  //                }
-  //                _objSub.children.push(_oo);
-  //              });
-  //              _FinalMenu.push(_objSub)
-  //            }else{
-  //              _obj= {
-  //                title: element.menu_Name,
-  //                path: element.page_link,
-  //                icon: "home",
-  //                type: "link",
-  //                badgeType: "primary",
-  //                active: true,
-  //              }
-  //              _FinalMenu.push(_obj)
-  //            }
-
-  //            this.menuItems = _FinalMenu;
-  //        });
-         
-    
-  //      }
-  //    },
-  //    (error) => {
-  //    }
-  //  );
-   
- 
-  // }
 
   LoadMenu() {
-  let userId = this.authService.decodedToken?.nameid;
-  if (!userId) {
-    userId = localStorage.getItem("user_create_id");
-  }
+    let userId = this.authService.decodedToken?.nameid;
+    if (!userId) {
+      userId = localStorage.getItem("user_create_id");
+    }
 
-  this.menuService.GetMenusByUserId(userId).subscribe(
-    (res: any) => {
-      console.log("Menu List", res);
-      if (res) {
-        console.log("Menu List", res);
-        localStorage.setItem("MenuTemp", JSON.stringify(res));
+    this.menuService.GetMenusByUserId(userId).subscribe(
+      (res: any) => {
+        //console.log("Menu List", res);
+        if (res) {
+          //console.log("Menu List", res);
+          localStorage.setItem("MenuTemp", JSON.stringify(res));
 
-        var LstMenu = res;
-        if (LstMenu.length > 0) {
-          var _FinalMenu: any = [];
-          var mainMenu = LstMenu.filter(pID => pID.parent_Menu_Id == 0);
+          var LstMenu = res;
+          if (LstMenu.length > 0) {
+            var _FinalMenu: any = [];
+            var mainMenu = LstMenu.filter(pID => pID.parent_Menu_Id == 0);
 
-          mainMenu.forEach(element => {
-            var subMenu = LstMenu.filter(m => m.parent_Menu_Id == element.menu_Id);
+            mainMenu.forEach(element => {
+              var subMenu = LstMenu.filter(m => m.parent_Menu_Id == element.menu_Id);
 
-            if (subMenu.length > 0) {
-              var _objSub: any = {
-                title: element.menu_Name,
-                icon: "grid",
-                type: "sub",
-                active: false,
-                children: []
-              };
+              if (subMenu.length > 0) {
+                var _objSub: any = {
+                  title: element.menu_Name,
+                  icon: "grid",
+                  type: "sub",
+                  active: false,
+                  children: []
+                };
 
-              subMenu.forEach(li => {
-                // check if this sub menu has children (3rd level)
-                var subSubMenu = LstMenu.filter(x => x.parent_Menu_Id == li.menu_Id);
+                subMenu.forEach(li => {
+                  // check if this sub menu has children (3rd level)
+                  var subSubMenu = LstMenu.filter(x => x.parent_Menu_Id == li.menu_Id);
 
-                if (subSubMenu.length > 0) {
-                  var _oo: any = {
-                    title: li.menu_Name,
-                    type: "sub",
-                    icon: "layers",
-                    active: false,
-                    children: []
-                  };
+                  if (subSubMenu.length > 0) {
+                    var _oo: any = {
+                      title: li.menu_Name,
+                      type: "sub",
+                      icon: "layers",
+                      active: false,
+                      children: []
+                    };
 
-                  subSubMenu.forEach(ss => {
-                    var _ooo: any = {
-                      title: ss.menu_Name,
-                      path: ss.page_link,
+                    subSubMenu.forEach(ss => {
+                      var _ooo: any = {
+                        title: ss.menu_Name,
+                        path: ss.page_link,
+                        type: "link",
+                        icon: "file",
+                        active: false
+                      };
+                      _oo.children.push(_ooo);
+                    });
+
+                    _objSub.children.push(_oo);
+                  } else {
+                    var _oo: any = {
+                      title: li.menu_Name,
+                      path: li.page_link,
                       type: "link",
-                      icon: "file",
+                      icon: "school",
+                      badgeType: "primary",
                       active: false
                     };
-                    _oo.children.push(_ooo);
-                  });
+                    _objSub.children.push(_oo);
+                  }
+                });
 
-                  _objSub.children.push(_oo);
-                } else {
-                  var _oo: any = {
-                    title: li.menu_Name,
-                    path: li.page_link,
-                    type: "link",
-                    icon: "school",
-                    badgeType: "primary",
-                    active: false
-                  };
-                  _objSub.children.push(_oo);
-                }
-              });
+                _FinalMenu.push(_objSub);
+              } else {
+                var _obj = {
+                  title: element.menu_Name,
+                  path: element.page_link,
+                  icon: "home",
+                  type: "link",
+                  badgeType: "primary",
+                  active: true
+                };
+                _FinalMenu.push(_obj);
+              }
+            });
 
-              _FinalMenu.push(_objSub);
-            } else {
-              var _obj = {
-                title: element.menu_Name,
-                path: element.page_link,
-                icon: "home",
-                type: "link",
-                badgeType: "primary",
-                active: true
-              };
-              _FinalMenu.push(_obj);
-            }
-          });
-
-          this.menuItems = _FinalMenu;
+            this.menuItems = _FinalMenu;
+            let currentUrl = this.router.url;
+            // const currentUrl = this.router.url;
+            // console.log('Current URL:', currentUrl);
+            this.setActiveMenu(this.menuItems, currentUrl);
+          }
         }
-      }
-    },
-    (error) => {}
-  );
-}
+      },
+      (error) => { }
+    );
+  }
 
 
   // To set Active on Load
   checkNavActiveOnLoad() {
-
-    //var userImage = localStorage.getItem("userImage");
-   // let objectURL = 'data:image/png;base64,' + userImage;
-    //this.image = this.sanitizer.bypassSecurityTrustUrl(objectURL);
-    //this.LoadMenu_02();
     this.LoadMenu();
-
-
 
     this.navServices.items.subscribe((menuItems: any) => {
       //this.menuItems = menuItems;
 
       this.router.events.subscribe((event: any) => {
         if (event instanceof NavigationStart) {
-          this.closeNavActive();
+          //  this.closeNavActive();
           setTimeout(() => {
             let sidemenu = document.querySelectorAll('.side-menu__item.active');
             let subSidemenu = document.querySelectorAll(
@@ -278,7 +200,9 @@ export class SidebarComponent {
 
     this.navServices.items.subscribe((menuItems: any) => {
       //this.menuItems = menuItems;
-      let currentUrl = this.router.url;
+
+      const currentUrl = this.router.url;
+
       menuItems.filter((items: any) => {
         if (items.path === currentUrl) {
           this.setNavActive(items);
@@ -329,67 +253,30 @@ export class SidebarComponent {
   }
 
   // Toggle menu
-  // toggleNavActive(item: any) {
-  //   if (!item.active) {
-  //     this.menuItems.forEach((a: any) => {
-  //       if (this.menuItems.includes(item)) {
-  //         a.active = false;
-  //       }
-  //       if (!a.children) {
-  //         return false;
-  //       }
-  //       a.children.forEach((b: any) => {
-  //         if (a.children.includes(item)) {
-  //           b.active = false;
-  //         }
-  //       });
-  //       return;
-  //     });
-  //   }
-  //   item.active = !item.active;
-  // }
-
   toggleNavActive(item: any) {
-  // ১. যদি আইটেমটি অলরেডি একটিভ থাকে, তবে শুধু সেটাকে টগল (বন্ধ) করুন
-  if (item.is_Active) {
-    item.is_Active = false;
-  } else {
-    // ২. শুধুমাত্র সেই লেভেলের ভাই-বোনদের (siblings) বন্ধ করুন
-    // প্যারেন্ট মেনুগুলো যাতে বন্ধ না হয়, তাই লুপটি সতর্কভাবে চালাতে হবে
-    
-    this.menuItems.forEach((a: any) => {
-      // যদি ক্লিক করা আইটেমটি ১ম লেভেলের হয়, তবে অন্য ১ম লেভেলেরগুলো বন্ধ হবে
-      if (this.menuItems.includes(item) && a !== item) {
-        a.is_Active = false;
-      }
-
-      if (a.children) {
+    if (!item.active) {
+      this.menuItems.forEach((a: any) => {
+        if (this.menuItems.includes(item)) {
+          a.active = false;
+        }
+        if (!a.children) {
+          return false;
+        }
         a.children.forEach((b: any) => {
-          // যদি ক্লিক করা আইটেমটি ২য় লেভেলের হয়, তবে অন্য ২য় লেভেলেরগুলো বন্ধ হবে
-          if (a.children.includes(item) && b !== item) {
-            b.is_Active = false;
-          }
-
-          if (b.children) {
-            b.children.forEach((c: any) => {
-              // যদি ক্লিক করা আইটেমটি ৩য় লেভেলের হয়
-              if (b.children.includes(item) && c !== item) {
-                c.is_Active = false;
-              }
-            });
+          if (a.children.includes(item)) {
+            b.active = false;
           }
         });
-      }
-    });
-
-    // ৩. সবশেষে ক্লিক করা আইটেমটিকে একটিভ করুন
-    item.active = true;
+        return;
+      });
+    }
+    item.active = !item.active;
   }
-}
 
   // Close Nav menu
   closeNavActive() {
     this.menuItems.forEach((a: any) => {
+      //console.log('closeNavActive', a);
       if (this.menuItems) {
         a.active = false;
       }
@@ -404,72 +291,95 @@ export class SidebarComponent {
       return;
     });
   }
+  setActiveMenu(menuItems: any[], url: string): boolean {
+    for (let item of menuItems) {
+
+      if (item.path === url) {
+        item.active = true;
+        return true;
+      }
+
+      if (item.children && item.children.length > 0) {
+        const childActive = this.setActiveMenu(item.children, url);
+
+        if (childActive) {
+          item.active = true;
+          return true;
+        }
+      }
+    }
+
+    return false;
+  }
   ngOnInit(): void {
     //this.LoadMenu();
     switcherArrowFn();
+
     // detect screen size changes
-    this.breakpointObserver
-      .observe(['(max-width: 991px)'])
-      .subscribe((result: BreakpointState) => {
-        if (result.matches) {
-          // small screen
-          this.checkCurrentActive();
-        } else {
-          // large screen
-          document
-            .querySelector('body.horizontal')
-            ?.classList.remove('sidenav-toggled');
-          if (document.querySelector('.horizontal')) {
-            this.closeNavActive();
-            setTimeout(() => {
-              parentNavActive();
-            }, 300);
-          }
-        }
-      });
+    // this.breakpointObserver
+    //   .observe(['(max-width: 991px)'])
+    //   .subscribe((result: BreakpointState) => {
+    //     if (result.matches) {
+    //       // small screen
+    //       this.checkCurrentActive();
+    //     } else {
+    //       // large screen
+    //       document
+    //         .querySelector('body.horizontal')
+    //         ?.classList.remove('sidenav-toggled');
+    //       if (document.querySelector('.horizontal')) {
+    //         this.closeNavActive();
+    //         setTimeout(() => {
+    //           parentNavActive();
+    //         }, 300);
+    //       }
+    //     }
+    //   });
 
     let horizontal: any = document.querySelectorAll('#myonoffswitch35');
     let horizontalHover: any = document.querySelectorAll('#myonoffswitch111');
-    fromEvent(horizontal, 'click').subscribe(() => {
-      this.closeNavActive();
-    });
-    fromEvent(horizontalHover, 'click').subscribe(() => {
-      this.closeNavActive();
-    });
+    // fromEvent(horizontal, 'click').subscribe(() => {
+    //   this.closeNavActive();
+    // });
+    // fromEvent(horizontalHover, 'click').subscribe(() => {
+    //   this.closeNavActive();
+    // });
 
     const WindowResize = fromEvent(window, 'resize')
     // subscribing the Observable 
     this.windowSubscribe$ = WindowResize.subscribe(() => {
       let menuWidth: any = document.querySelector<HTMLElement>('.horizontal-main');
-    let menuItems: any = document.querySelector<HTMLElement>('.side-menu');
-    let mainSidemenuWidth: any = document.querySelector<HTMLElement>('.main-sidemenu');
-    let menuContainerWidth = menuWidth?.offsetWidth - mainSidemenuWidth?.offsetWidth;
-    let marginLeftValue = Math.ceil(Number(window.getComputedStyle(menuItems).marginLeft.split('px')[0]));
-    let marginRightValue = Math.ceil(Number(window.getComputedStyle(menuItems).marginRight.split('px')[0]));
-    let check = menuItems.scrollWidth + (0 - menuWidth?.offsetWidth) + menuContainerWidth;
+      let menuItems: any = document.querySelector<HTMLElement>('.side-menu');
 
-    // to check and adjst the menu on screen size change
-    if (document.querySelector('body')?.classList.contains('ltr')) {
-      if (marginLeftValue > -check == false && menuWidth?.offsetWidth - menuContainerWidth < menuItems.scrollWidth) {
-        menuItems.style.marginLeft = -check;
+      let mainSidemenuWidth: any = document.querySelector<HTMLElement>('.main-sidemenu');
+      let menuContainerWidth = menuWidth?.offsetWidth - mainSidemenuWidth?.offsetWidth;
+      let marginLeftValue = Math.ceil(Number(window.getComputedStyle(menuItems).marginLeft.split('px')[0]));
+      let marginRightValue = Math.ceil(Number(window.getComputedStyle(menuItems).marginRight.split('px')[0]));
+      let check = menuItems.scrollWidth + (0 - menuWidth?.offsetWidth) + menuContainerWidth;
+
+      // to check and adjst the menu on screen size change
+      if (document.querySelector('body')?.classList.contains('ltr')) {
+        if (marginLeftValue > -check == false && menuWidth?.offsetWidth - menuContainerWidth < menuItems.scrollWidth) {
+          menuItems.style.marginLeft = -check;
+        } else {
+          menuItems.style.marginLeft = 0;
+        }
       } else {
-        menuItems.style.marginLeft = 0;
+        // console.log(menuWidth?.offsetWidth, menuItems.scrollWidth);
+        if (marginRightValue > -check == false && menuWidth?.offsetWidth - menuContainerWidth < menuItems.scrollWidth
+        ) {
+          menuItems.style.marginRight = -check;
+        } else {
+          menuItems.style.marginRight = 0;
+        }
+        if (menuWidth?.offsetWidth > menuItems.scrollWidth) {
+          document.querySelector('.slide-leftRTL')?.classList.add('d-none');
+          document.querySelector('.slide-rightRTL')?.classList.add('d-none');
+        } else {
+          document.querySelector('.slide-rightRTL')?.classList.remove('d-none');
+        }
       }
-    } else {
-      console.log(menuWidth?.offsetWidth, menuItems.scrollWidth);
-      if (marginRightValue > -check == false && menuWidth?.offsetWidth - menuContainerWidth < menuItems.scrollWidth
-      ) { menuItems.style.marginRight = -check;
-      } else {
-        menuItems.style.marginRight = 0;
-      }
-      if (menuWidth?.offsetWidth > menuItems.scrollWidth) {
-        document.querySelector('.slide-leftRTL')?.classList.add('d-none');
-        document.querySelector('.slide-rightRTL')?.classList.add('d-none');
-      } else {
-        document.querySelector('.slide-rightRTL')?.classList.remove('d-none');
-      }
-    }
-    checkHoriMenu();
+      checkHoriMenu();
     });
   }
 
@@ -486,13 +396,13 @@ export class SidebarComponent {
   onWindowScroll() {
     this.scrolled = window.scrollY > 74;
   }
-  ngDoCheck() {
-    if (document.querySelector('.horizontal')) {
-      document.querySelector('.horizontal .main-content')?.addEventListener('click', () => {this.closeNavActive();});
-    }
-  }
-  
-  ngOnDestroy(){
+  // ngDoCheck() {
+  //   if (document.querySelector('.horizontal')) {
+  //     document.querySelector('.horizontal .main-content')?.addEventListener('click', () => {this.closeNavActive();});
+  //   }
+  // }
+
+  ngOnDestroy() {
     // unsubscribing the Observable 
     this.windowSubscribe$.unsubscribe()
   }
