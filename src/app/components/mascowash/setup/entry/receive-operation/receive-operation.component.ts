@@ -88,6 +88,7 @@ export class ReceiveOperationComponent implements OnInit {
   }
 
   onSearch() {
+    debugger;
     if (!this.review.UnitId) {
       this.toastr.warning('Please Select Unit');
       return;
@@ -103,28 +104,25 @@ export class ReceiveOperationComponent implements OnInit {
       return;
     }
 
-  //  this.getSearchData();
+    this.getSearchData();
   }
 
 
-  // getSearchData() {
-  //   debugger;
-  //   this.service.getSearchData(
-  //     this.review.UnitId!,
-  //     this.review.receiveNo == null ? '' : this.review.receiveNo,
-  //     this.review.fromDate == null ? '' : this.review.fromDate,
-  //     this.review.toDate == null ? '' : this.review.toDate,
-  //   ).subscribe({
-  //     next: (res: ReceiveRecord[]) => {
-  //       //this.searchList = res || [];
-  //       this.buildSearchList(res || []);
-  //     },
-  //     error: (err) => {
-  //       this.toastr.error('Failed to load data');
-  //       console.error(err);
-  //     }
-  //   });
-  // }
+  getSearchData() {
+    debugger;
+    this.service.getSearchData(
+      this.review.UnitId!,
+      this.review.receiveNo == null ? '' : this.review.receiveNo,
+      this.review.fromDate == null ? '' : this.review.fromDate,
+      this.review.toDate == null ? '' : this.review.toDate,
+    ).subscribe({
+      next: (res: ReceiveRecord[]) => {
+        //this.searchList = res || [];
+        this.buildSearchList(res || []);
+      }
+     
+    });
+  }
 
   buildSearchList(rows: any[]) {
 
@@ -364,18 +362,41 @@ export class ReceiveOperationComponent implements OnInit {
   }
 
   // ================= SIZE POPUP =================
-  // openSizePopup(row: any) {
-  //   this.selectedRow = row;
-  //   this.sizeList = JSON.parse(JSON.stringify(row.sizeDetails));
-  //   this.calculateTotal();
-  //   this.sizePopupVisible = true;
-  // }
-openSizePopup(row: any) {
+ openSizePopup(row: any) {
+
   this.selectedRow = row;
-  this.sizeList = JSON.parse(JSON.stringify(row.sizeDetails));
+
+  const grouped = row.sizeDetails.reduce((acc: any, item: any) => {
+
+    if (!acc[item.sizeId]) {
+      acc[item.sizeId] = {
+        sizeId: item.sizeId,
+        size: item.size,
+        qty: 0
+      };
+    }
+
+    acc[item.sizeId].qty += Number(item.qty);
+
+    return acc;
+
+  }, {});
+
+  this.sizeList = Object.values(grouped);
+
+  console.log('Unique Size List:', this.sizeList);
+
   this.calculateTotal();
+
   this.sizePopupVisible = true;
 }
+// openSizePopup(row: any) {
+//   this.selectedRow = row;
+//   this.sizeList = JSON.parse(JSON.stringify(row.sizeDetails));
+//   console.log('Selected Row for Size Popup:', this.sizeList);
+//   this.calculateTotal();
+//   this.sizePopupVisible = true;
+// }
 
   calculateTotal() {
     this.totalSizeQty = this.sizeList.reduce((s, x) => s + (+x.qty || 0), 0);
@@ -399,6 +420,7 @@ openSizePopup(row: any) {
 
 
   onSubmit() {
+    
     debugger;
 
 
@@ -544,6 +566,13 @@ this.service.saveReceiveOperation(payload)
 
    //}
   buildSavePayload(): any {
+    if (!this.searchList || this.searchList.length === 0) {
+  if (!this.Model.UnitId) {
+      this.toastr.warning('Please Select Unit');
+      return;
+    }
+}
+    
     debugger;
     console.log('Tracking Wise', this.detailList);
     const master = {

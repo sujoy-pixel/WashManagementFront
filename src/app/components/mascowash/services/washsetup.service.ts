@@ -328,42 +328,36 @@ export class WashSetupService {
       { headers: this.token.headerToken() }
     );
   }
-  getSearchData(
+getSearchData(
+  unitId: number,
+  receiveNo?: string,
+  fromDate?: string,
+  toDate?: string
+): Observable<any[]> {
 
-    unitId: number,
-    receiveNo?: string,
-    fromDate?: string,
-    toDate?: string
-  ): Observable<any[]> {
-    debugger;
-    // let params = new HttpParams()
-    //   .set('unitId', unitId.toString());
-    const params = new HttpParams()
-      .set('unitId', unitId.toString())
-      .set('receiveNo', receiveNo ?? '')
-      .set('fromDate', fromDate ?? '')
-      .set('toDate', toDate ?? '');
-    // if (receiveNo) {
-    //   params = params.set('receiveNo', receiveNo);
-    // }
+  let params = new HttpParams()
+    .set('unitId', unitId.toString());
 
-    // if (fromDate) {
-    //   params = params.set('fromDate', fromDate);
-    // }
-
-    // if (toDate) {
-    //   params = params.set('toDate', toDate);
-    // }
-
-    return this.http.get<any[]>(
-      this.baseUrl_ + 'Setup/getSearchDataByReceiveNoOrDate',
-      {
-        headers: this.token.headerToken(),
-        params: params
-      }
-    );
-
+  if (receiveNo) {
+    params = params.set('receiveNo', receiveNo);
   }
+
+  if (fromDate) {
+    params = params.set('fromDate', fromDate);
+  }
+
+  if (toDate) {
+    params = params.set('toDate', toDate);
+  }
+
+  return this.http.get<any[]>(
+    this.baseUrl_ + 'Setup/getSearchDataByReceiveNoOrDate',
+    {
+      headers: this.token.headerToken(),
+      params: params
+    }
+  );
+}
   GetJobNoWithParameterDDL(data: any) {
     const params = new HttpParams()
       .set('unitId', data.unitId)
@@ -490,20 +484,20 @@ export class WashSetupService {
     );
   }
 
-getBatchPriorityList(data: any) {
+  getBatchPriorityList(data: any) {
 
-  const params = new HttpParams()
-    .set('unitId', Number(data.unitId))
-    .set('date', String(data.date));   // must be string
+    const params = new HttpParams()
+      .set('unitId', Number(data.unitId))
+      .set('date', String(data.date));   // must be string
 
-  return this.http.get<any[]>(
-    this.baseUrl_ + 'Setup/getBatchPriorityList',
-    {
-      headers: this.token.headerToken(),
-      params
-    }
-  );
-}
+    return this.http.get<any[]>(
+      this.baseUrl_ + 'Setup/getBatchPriorityList',
+      {
+        headers: this.token.headerToken(),
+        params
+      }
+    );
+  }
 
   saveBatchPriorityBulk(model: any) {
     debugger;
@@ -513,17 +507,17 @@ getBatchPriorityList(data: any) {
       { headers: this.token.headerToken() }
     );
   }
-getBatchWishQCDataList(batchNo: string) {
+  getBatchWishQCDataList(batchNo: string) {
 
-  const params = new HttpParams()
-    .set('batchNo', batchNo);
+    const params = new HttpParams()
+      .set('batchNo', batchNo);
 
-  return this.http.get<any[]>(
-    this.baseUrl_ + 'Setup/getBatchWishQCDataList',
-    {
-      headers: this.token.headerToken(),
-      params
-    }
-  );
-}
+    return this.http.get<any[]>(
+      this.baseUrl_ + 'Setup/getBatchWishQCDataList',
+      {
+        headers: this.token.headerToken(),
+        params
+      }
+    );
+  }
 }
