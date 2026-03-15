@@ -9,7 +9,7 @@
         <div class="row my-2">
           <div class="col-md-12">
             <div class="row align-items-center">
-              <label class="form-label col-md-2">
+              <label class="form-label col-md-3">
                 <!-- For larger screens -->
                 <span class="d-none d-sm-inline text-dark" title="Head Name"
                   >Fault Head Name
@@ -23,7 +23,7 @@
                 >
               </label>
               <div
-                class="form-control col-md-4 common-border"
+                class="form-control col-md-4 common-border-input"
                 [class.focused-border]="currentFocus === 'SwiftCodeData'"
               >
                 <input
@@ -41,7 +41,7 @@
         <div class="row my-2">
           <div class="col-md-12">
             <div class="row align-items-center">
-              <label class="form-label col-md-2">
+              <label class="form-label col-md-3">
                 <!-- For larger screens -->
                 <span class="d-none d-sm-inline text-dark" title="Head Name"
                   >Code No.
@@ -55,7 +55,7 @@
                 >
               </label>
               <div
-                class="form-control col-md-4 common-border"
+                class="form-control col-md-4 common-border-input"
                 [class.focused-border]="currentFocus === 'SwiftCodeData'"
               >
                 <input
@@ -74,7 +74,7 @@
         <div class="row my-2">
           <div class="col-md-12">
             <div class="row align-items-center">
-              <label class="form-label col-md-2">
+              <label class="form-label col-md-3">
                 <span class="d-none d-sm-inline text-dark" title="Priority">
                   Priority
                   <span style="color: red !important; font-size: 1.5em">*</span>
@@ -144,9 +144,9 @@
     </div>
     <div class="table-responsive mt-3">
       <table class="table table-striped table-bordered custom-table">
-        <thead>
+        <thead class="custom-table-header">
           <tr>
-            <th style="width: 60px; text-align: center">SL</th>
+            <th class="custom-table-th">SL</th>
             <th style="text-align: center">Fault Head Name</th>
             <th style="text-align: center">Code No.</th>
             <th style="text-align: center">Priority</th>
@@ -164,17 +164,23 @@
 
             <td class="text-center">{{ item.priority }}</td>
 
-            <td class="text-center">
+            <!-- <td class="text-center">
               <span
                 class="badge"
                 [ngClass]="item.isActive == 1 ? 'bg-success' : 'bg-danger'"
               >
                 {{ item.isActive == 1 ? "Active" : "Inactive" }}
               </span>
+            </td> -->
+            <td class="text-center">
+              <span class="status-badge" [ngClass]="item.isActive == 1 ? 'status-active' : 'status-inactive'">
+                <i class="status-dot" [ngClass]="item.isActive == 1 ? 'dot-active' : 'dot-inactive'"></i>
+                {{ item.isActive == 1 ? "Active" : "Inactive" }}
+              </span>
             </td>
 
             <td class="text-center">
-              <button class="btn btn-sm btn-info me-1" (click)="edit(item)">
+              <button class="btn btn-sm btn-success me-1" (click)="edit(item)">
                 Edit
               </button>
               <button class="btn btn-sm btn-danger" (click)="delete(item)">
@@ -188,6 +194,9 @@
           </tr>
         </tbody>
       </table>
+       <app-custom-pagination [totalRecords]="totalRecords" [rows]="rows" [rowsPerPageOptions]="[10, 20, 30]"
+        (pageChange)="onPageChange($event)">
+      </app-custom-pagination>
     </div>
   </div>
 </div>

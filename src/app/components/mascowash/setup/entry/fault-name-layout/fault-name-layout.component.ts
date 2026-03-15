@@ -17,6 +17,11 @@ export class FaultNameLayoutComponent {
   isEdit = false;
   currentFocus: string | null = null;
 
+  faultNameDataList: any[] = [];
+  totalRecords: number = 0;
+  first: number = 0;
+  rows: number = 10;
+
   Model: any = {
     FaultNameId: 0,
     FaultHeadId: null,
@@ -44,12 +49,6 @@ export class FaultNameLayoutComponent {
 
       next: (res: any) => {
        console.log('fuck',res);
-        // this.faultHeadList = res.map((x: any) => ({
-
-        // label: x.DisplayName ?? x.displayName,
-        // value: x.ID ?? x.id
-
-        // }));
         this.faultHeadList = res.map((x: any) => ({
           label: x.displayName,
           value: x.id
@@ -124,11 +123,21 @@ export class FaultNameLayoutComponent {
           priority: x.priority,
           isActive: x.isActive,
         }));
+
+        this.faultNameDataList = res ?? [];
+        this.totalRecords = this.faultNameDataList.length;
+
+        this.dataList = this.faultNameDataList.slice(0, this.rows);
       },
       error: () => this.toastr.error('Failed to load list'),
     });
   }
-
+  
+  onPageChange(event: any) {
+    this.first = event.first ?? 0;
+    this.rows = event.rows ?? 10;
+    this.dataList = this.faultNameDataList.slice(this.first, this.first + this.rows);
+  }
   // EDIT FUNCTION
   edit(item: any) {
     this.isEdit = true;

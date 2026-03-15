@@ -17,10 +17,15 @@ export class InspectionTypeEntryComponent implements OnInit {
     IsActive: true
   };
 
-  dataList: any[] = [];
   isEdit = false;
   saveButtonTitle: string = 'Save';
   isSubmitting = false;
+
+  first: number = 0;
+  rows: number = 10;
+  totalRecords: number = 0;
+  dataList: any[] = [];
+  inspectionDataList: any[] = [];
 
   constructor(
     private service: WashSetupService,
@@ -37,7 +42,11 @@ export class InspectionTypeEntryComponent implements OnInit {
   loadData() {
     this.service.getAllTypeofInspection().subscribe({
       next: (res: any) => {
-        this.dataList = res ?? [];
+
+        this.inspectionDataList = res ?? [];
+        this.totalRecords = this.inspectionDataList.length;
+
+        this.dataList = this.inspectionDataList.slice(0, this.rows);
       },
       error: () => {
         this.toastr.error('Failed to load Type of Inspection data');
@@ -86,6 +95,12 @@ export class InspectionTypeEntryComponent implements OnInit {
         this.isSubmitting = false;
       }
     });
+  }
+
+  onPageChange(event: any) {
+    this.first = event.first ?? 0;
+    this.rows = event.rows ?? 10;
+    this.dataList = this.inspectionDataList.slice(this.first, this.first + this.rows);
   }
 
   // Edit existing item
