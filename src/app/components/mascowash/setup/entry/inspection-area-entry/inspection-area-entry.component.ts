@@ -11,11 +11,17 @@ import { WashSetupService } from '../../../services/washsetup.service';
 export class InspectionAreaEntryComponent {
 
   priorityList: number[] = [];
-  dataList: any[] = [];
+ // dataList: any[] = [];
 
   saveButtonTitle = "Save";
   isEdit = false;
   currentFocus: string | null = null;
+
+  first: number = 0;
+  rows: number = 10;
+  totalRecords: number = 0;
+  dataList: any[] = [];
+  inspectionDataList: any[] = [];
 
   Model: any = {
     InspectionAreaId: 0,
@@ -76,15 +82,26 @@ export class InspectionAreaEntryComponent {
   loadData() {
     this.service.getInspectionAreaLists().subscribe({
       next: (res: any) => {
-        this.dataList = res.map((x: any) => ({
+        this.inspectionDataList = res.map((x: any) => ({
           inspectionAreaId: x.inspectionAreaId,
           inspectionArea: x.inspectionArea,
           priority: x.priority,
           isActive: x.isActive
         }));
+
+        // this.inspectionDataList = res ?? [];
+        this.totalRecords = this.inspectionDataList.length;
+
+        this.dataList = this.inspectionDataList.slice(0, this.rows);
       },
       error: () => this.toastr.error("Failed to load list")
     });
+  }
+
+  onPageChange(event: any) {
+    this.first = event.first ?? 0;
+    this.rows = event.rows ?? 10;
+    this.dataList = this.inspectionDataList.slice(this.first, this.first + this.rows);
   }
 
   // EDIT RECORD

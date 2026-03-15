@@ -24,6 +24,11 @@ export class FaultHeadNameEntryComponent {
   isEdit = false;
   isSubmitting = false;
 
+  first: number = 0;
+  rows: number = 10;
+  totalRecords: number = 0;
+  faultHeadDataList: any[] = [];
+
   constructor(
     private service: WashSetupService,
     public commonService: CommonServiceService,
@@ -122,13 +127,21 @@ export class FaultHeadNameEntryComponent {
   loadData() {
     this.service.GetFaultHeadList().subscribe({
       next: (res: any) => {
-        console.log('dataList:', res);
-        this.dataList = res ?? [];
+        console.log('faultHeadDataList:', res);
+        this.faultHeadDataList = res ?? [];
+        this.totalRecords = this.faultHeadDataList.length;
+        this.dataList = this.faultHeadDataList.slice(0, this.rows);
       },
       error: () => {
         this.toastr.error('Failed to load Fault Head data');
       },
     });
+  }
+
+   onPageChange(event: any) {
+    this.first = event.first ?? 0;
+    this.rows = event.rows ?? 10;
+    this.dataList = this.faultHeadDataList.slice(this.first, this.first + this.rows);
   }
 
   setFocus(field: string): void {

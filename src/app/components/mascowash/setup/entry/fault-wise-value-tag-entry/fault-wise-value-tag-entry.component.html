@@ -1,6 +1,8 @@
 <div class="row">
   <div class="col-md-12">
 
+
+
     <!-- ================= MASTER SECTION ================= -->
     <div class="card custom-card">
       <div class="card-header border-bottom">
@@ -8,64 +10,92 @@
       </div>
 
       <div class="card-body">
-
         <!-- Inspection Type -->
-        <div class="row my-2 align-items-center">
+        <div class="row my-2">
+          <div class="col-md-12">
+            <div class="row align-items-center">
+              <label class="form-label col-md-2">
+                <span class="d-none d-sm-inline text-dark" title="Inspection Type">
+                  Inspection Type
+                  <span style="color: red !important; font-size: 1.5em">*</span>
+                </span>
+                <span class="d-inline d-sm-none text-dark" title="Inspection Type">Inspection Type</span>
+              </label>
+              <div class="form-control col-md-4 common-border">
+                <ng-select [items]="InspectionTypeList" bindLabel="label" bindValue="value"
+                  [(ngModel)]="Model.InspectionType" (change)="onFilterChanged()" placeholder="Select Inspection Type">
+                </ng-select>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- Inspection Type -->
+        <!-- <div class="row my-2 align-items-center">
           <label class="form-label col-md-2 text-dark">
             Inspection Type <span class="text-danger">*</span>
           </label>
 
           <div class="col-md-4">
-            <ng-select
-              [items]="InspectionTypeList"
-              bindLabel="label"
-              bindValue="value"
-              [(ngModel)]="Model.InspectionType"
-              (change)="onFilterChanged()"
-              placeholder="Select">
+            <ng-select [items]="InspectionTypeList" bindLabel="label" bindValue="value"
+              [(ngModel)]="Model.InspectionType" (change)="onFilterChanged()" placeholder="Select">
             </ng-select>
           </div>
-        </div>
+        </div> -->
 
 
         <!-- Inspection Head -->
-        <div class="row my-2 align-items-center">
+        <div class="row my-2">
+          <div class="col-md-12">
+            <div class="row align-items-center">
+              <label class="form-label col-md-2">
+                <span class="d-none d-sm-inline text-dark" title="Inspection Head">
+                  Inspection Head
+                  <span style="color: red !important; font-size: 1.5em">*</span>
+                </span>
+                <span class="d-inline d-sm-none text-dark" title="Inspection Head">Inspection Head</span>
+              </label>
+              <div class="form-control col-md-4 common-border">
+                <ng-select [items]="InspectionHeadList" bindLabel="label" bindValue="value"
+                  [(ngModel)]="Model.InspectionHead" (change)="onFilterChanged()" placeholder="Select Inspection Head">
+                </ng-select>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- <div class="row my-2 align-items-center">
           <label class="form-label col-md-2 text-dark">
             Inspection Head <span class="text-danger">*</span>
           </label>
 
           <div class="col-md-4">
-            <ng-select
-              [items]="InspectionHeadList"
-              bindLabel="label"
-              bindValue="value"
-              [(ngModel)]="Model.InspectionHead"
-              (change)="onFilterChanged()"
-              placeholder="Select">
+            <ng-select [items]="InspectionHeadList" bindLabel="label" bindValue="value"
+              [(ngModel)]="Model.InspectionHead" (change)="onFilterChanged()" placeholder="Select">
             </ng-select>
           </div>
-        </div>
+        </div> -->
 
 
         <!-- Fault Head -->
-        <div class="row my-2 align-items-center">
-          <label class="form-label col-md-2 text-dark">
-            Fault Head <span class="text-danger">*</span>
-          </label>
-
-          <div class="col-md-4">
-            <ng-select
-              [items]="FaultHeadList"
-              bindLabel="label"
-              bindValue="value"
-              [(ngModel)]="Model.FaultHead"
-              (change)="onFilterChanged()"
-              [disabled]="!Model.InspectionType || !Model.InspectionHead"
-              placeholder="Select">
-            </ng-select>
+        <div class="row my-2">
+          <div class="col-md-12">
+            <div class="row align-items-center">
+              <label class="form-label col-md-2">
+                <span class="d-none d-sm-inline text-dark" title="Fault Head">
+                  Fault Head
+                  <span style="color: red !important; font-size: 1.5em">*</span>
+                </span>
+                <span class="d-inline d-sm-none text-dark" title="Fault Head">Fault Head</span>
+              </label>
+              <div class="form-control col-md-4 common-border">
+                <ng-select [items]="FaultHeadList" bindLabel="label" bindValue="value" [(ngModel)]="Model.FaultHead"
+                  (change)="onFilterChanged()" [disabled]="!Model.InspectionType || !Model.InspectionHead"
+                  placeholder="Select Fault Head">
+                </ng-select>
+              </div>
+            </div>
           </div>
         </div>
-
       </div>
     </div>
 
@@ -84,10 +114,7 @@
             <thead class="table-light text-center">
               <tr>
                 <th style="width:70px">
-                  <input
-                    type="checkbox"
-                    [(ngModel)]="selectAll"
-                    (change)="toggleAllRows()" />
+                  <input type="checkbox" [(ngModel)]="selectAll" (change)="toggleAllRows()" />
                 </th>
                 <th class="text-start">Fault Name</th>
                 <th style="width:200px">Value</th>
@@ -98,21 +125,14 @@
 
               <tr *ngFor="let row of FaultWiseList">
                 <td class="text-center">
-                  <input
-                    type="checkbox"
-                    [(ngModel)]="row.isSelected"
-                    (change)="updateSelectAll()" />
+                  <input type="checkbox" [(ngModel)]="row.isSelected" (change)="updateSelectAll()" />
                 </td>
 
                 <td>{{ row.faultName }}</td>
 
                 <td>
-                  <input
-                    type="number"
-                    class="form-control form-control-sm text-end"
-                    [(ngModel)]="row.value"
-                    [disabled]="!row.isSelected"
-                    min="0" />
+                  <input type="number" class="form-control form-control-sm text-end" [(ngModel)]="row.value"
+                    [disabled]="!row.isSelected" min="0" />
                 </td>
               </tr>
 
