@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { ToastrService } from 'ngx-toastr';
 import { WashSetupService } from '../../../services/washsetup.service';
 //import { subscribe } from 'diagnostics_channel';
@@ -69,12 +69,14 @@ export class ReceiveOperationComponent implements OnInit {
   totalSizeQty = 0;
   master: any;
   details: any[] = [];
+  currentFocus: string | null = null;
   // ✅ Initialize searchList as an empty array of ReceiveRecord
   searchList: ReceiveRecord[] = [];
 
   constructor(
     private service: WashSetupService,
-    private toastr: ToastrService
+    private toastr: ToastrService,
+     private cdr: ChangeDetectorRef
   ) { }
 
   ngOnInit(): void {
@@ -85,6 +87,22 @@ export class ReceiveOperationComponent implements OnInit {
   onNew() {
     this.isReviewMode = false;
     this.clearAll();
+  }
+    setFocus(field: string): void {
+    setTimeout(() => {
+      this.currentFocus = field;
+
+      const element = document.querySelector(
+        `input[ng-reflect-name="${field}"]`
+      );
+      if (element) {
+        (element as HTMLInputElement).focus();
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+
+      // After focus, force change detection if necessary
+      this.cdr.detectChanges();
+    }, 0);
   }
 
   onSearch() {
