@@ -455,7 +455,7 @@ export class ReceiveOperationComponent implements OnInit {
 
     }
 
- payload = this.buildSavePayload();
+//  payload = this.buildSavePayload();
 
   console.log('SAVE PAYLOAD', payload);
 
@@ -760,7 +760,8 @@ this.service.saveReceiveOperation(payload)
       Operation: 'Update',
       unitId: this.review.UnitId,
       MasterId: this.searchList[0].masterId,
-      TrackingNo: this.Model.trackingNo && this.Model.trackingNo !== 0 ? `${this.Model.trackingNo}` : `${this.Model.batchNo}`,
+      TrackingNo:this.detailList[0].trackingNo,
+      // TrackingNo: this.Model.trackingNo && this.Model.trackingNo !== 0 ? `${this.Model.trackingNo}` : `${this.Model.batchNo}`,
       createdBy: 'SYSTEM'
     };
 
