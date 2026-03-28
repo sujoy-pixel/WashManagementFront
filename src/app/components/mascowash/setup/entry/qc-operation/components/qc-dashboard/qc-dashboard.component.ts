@@ -25,8 +25,8 @@ export class QcDashboardComponent {
   isShowRejectionDialog: boolean = false;
   isShowRepairableDialog: boolean = false
   loading: boolean = false;
-selectedRejects: any[] = [];
-selectedRepairable: any[] = [];
+  selectedRejects: any[] = [];
+  selectedRepairable: any[] = [];
   constructor(
     private service: WashSetupService,
     public commonService: CommonServiceService,
@@ -125,7 +125,7 @@ handleReparableData(data: any[]) {
 
   // bind child data to repairable list
   this.repairableDefects = data;
-    this.rejectDefects = data;
+   // this.rejectDefects = data;
 
   // calculate total reject
   this.reject = data.reduce((sum, x) => sum + x.count, 0);
