@@ -9,6 +9,21 @@ import { ChangeDetectorRef, NgZone } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { RejectReasonComponent } from '../reject-reason/reject-reason.component';
 
+interface BatchHeaderModel {
+  unitName: string;
+  buyerName: string;
+  batchNo: string;
+  styleName: string;
+  orderNo: string;
+  jobNo: string;
+
+  type: string;
+  color: string;
+  dressPart: string;
+  uom: string;
+  date: string;
+}
+
 @Component({
   selector: 'app-qc-dashboard',
   standalone: true,
@@ -16,17 +31,46 @@ import { RejectReasonComponent } from '../reject-reason/reject-reason.component'
   templateUrl: './qc-dashboard.component.html',
   styleUrl: './qc-dashboard.component.scss'
 })
-
 export class QcDashboardComponent {
+
+  // 🔹 Input
   batchNo: string = '';
+
+  // 🔹 Header Model (NEW)
+  batchHeader: BatchHeaderModel = {
+    unitName: '',
+    buyerName: '',
+    batchNo: '',
+    styleName: '',
+    orderNo: '',
+    jobNo: '',
+    type: '',
+    color: '',
+    dressPart: '',
+    uom: '',
+    date: ''
+  };
+
+  // 🔹 Counters
   goodGarments: number = 0;
   repairable: number = 0;
   reject: number = 0;
+
+  // 🔹 Dialog Control
   isShowRejectionDialog: boolean = false;
-  isShowRepairableDialog: boolean = false
+  isShowRepairableDialog: boolean = false;
+
+  // 🔹 State
   loading: boolean = false;
+
+  // 🔹 Selected Data
   selectedRejects: any[] = [];
   selectedRepairable: any[] = [];
+
+  // 🔹 Lists
+  repairableDefects: any[] = [];
+  rejectDefects: any[] = [];
+
   constructor(
     private service: WashSetupService,
     public commonService: CommonServiceService,
@@ -34,39 +78,52 @@ export class QcDashboardComponent {
     private ngZone: NgZone,
     public fb: FormBuilder,
     private cdr: ChangeDetectorRef
-  ) { }
+  ) {}
 
-
-
-
+  // 🔥 Load Batch Data (MAIN)
   loadBatchData() {
-    debugger;
-    if (!this.batchNo || this.batchNo.trim() === '')
-      return;
+
+    if (!this.batchNo || this.batchNo.trim() === '') return;
 
     this.loading = true;
 
     this.service.getBatchWishQCDataList(this.batchNo)
-
       .subscribe({
         next: (res: any[]) => {
 
           if (!res || res.length === 0) {
             this.resetValues();
+            this.toastr.warning('No data found!');
             return;
           }
-          debugger;
-          console.log('Batch QC Data:', res);
+
           const data = res[0];
+
+          console.log('Batch QC Data:', data);
+
+          // 🔥 Header Binding (NEW)
+          this.batchHeader = {
+            unitName: data.unitName ?? '',
+            buyerName: data.buyerName ?? '',
+            batchNo: data.batchNo ?? '',
+            styleName: data.styleName ?? '',
+            orderNo: data.orderNo ?? '',
+            jobNo: data.jobNo ?? '',
+            type: data.type ?? '',
+            color: data.color ?? '',
+            dressPart: data.dressPart ?? '',
+            uom: data.uom ?? '',
+            date: data.date ?? ''
+          };
+
+          // 🔹 Existing Logic
           this.goodGarments = data.goodGarments ?? 0;
-          //  data.goodGarments =this.goodGarments  ?? 0;
-          // this.goodGarments = data.GoodGarments || 0;
-          // this.repairable = data.Repairable || 0;
-          // this.reject = data.Reject || 0;
+
           this.cleanTrackingNo();
         },
         error: (err) => {
           console.error(err);
+          this.toastr.error('Failed to load batch data');
           this.resetValues();
         },
         complete: () => {
@@ -74,121 +131,74 @@ export class QcDashboardComponent {
         }
       });
   }
-  cleanTrackingNo() {
-    this.batchNo = '';
-  }
+
+  // 🔹 Reset All
   resetValues() {
     this.goodGarments = 0;
     this.repairable = 0;
     this.reject = 0;
-  }
-  //goodGarments: number = 0;
 
-  // ➕ increase
-  increaseGood(): void {
+    this.batchHeader = {
+      unitName: '',
+      buyerName: '',
+      batchNo: '',
+      styleName: '',
+      orderNo: '',
+      jobNo: '',
+      type: '',
+      color: '',
+      dressPart: '',
+      uom: '',
+      date: ''
+    };
+
+    this.rejectDefects = [];
+    this.repairableDefects = [];
+  }
+
+  cleanTrackingNo() {
+    this.batchNo = '';
+  }
+
+  // 🔹 Good Garments
+  increaseGood() {
     this.goodGarments++;
   }
 
-  // ➖ decrease
-  decreaseGood(): void {
-    if (this.goodGarments > 0) {
-      this.goodGarments--;
-    }
-  }
-  // defects: any[] = [
-  //   { id: 1, name: 'Defect 1', description: 'Description of Defect 1' },
-  //   { id: 2, name: 'Defect 2', description: 'Description of Defect 2' },
-  //   { id: 3, name: 'Defect 3', description: 'Description of Defect 3' },
-  //   { id: 4, name: 'Defect 4', description: 'Description of Defect 4' },
-  //   { id: 5, name: 'Defect 5', description: 'Description of Defect 5' }
-  // ];
-showRepairableDialog() {
-
-    // Logic to show the repairable dialog
-    console.log('Show repairable dialog');
-     this.isShowRepairableDialog = true;
+  decreaseGood() {
+    if (this.goodGarments > 0) this.goodGarments--;
   }
 
-  ondDefectConfirm(data:any[])
-{
-  console.log('RShow repairable dialog:', data);
-debugger;
-  this.selectedRepairable = data;
+  // 🔹 Repairable Dialog
+  showRepairableDialog() {
+    this.isShowRepairableDialog = true;
+  }
 
-  // total reject calculate
-  this.reject = data.reduce((sum,x)=> sum + x.count ,0);
-}
+  handleReparableData(data: any[]) {
 
-handleReparableData(data: any[]) {
+    console.log('Repairable Data:', data);
 
-  console.log('Child Data:', data);
+    this.repairableDefects = data;
 
-  // bind child data to repairable list
-  this.repairableDefects = data;
-   // this.rejectDefects = data;
+    this.repairable = data.reduce((sum, x) => sum + x.count, 0);
 
-  // calculate total reject
-  this.reject = data.reduce((sum, x) => sum + x.count, 0);
+    this.isShowRepairableDialog = false;
+  }
 
-  this.isShowRepairableDialog = false;
-}
-
+  // 🔹 Reject Dialog
   showRejectionDialog() {
-
-    // Logic to show the rejection dialog
-    console.log('Show rejection dialog');
     this.isShowRejectionDialog = true;
   }
 
+  handleRejectionData(data: any[]) {
 
-  onRejectConfirm(data:any[])
-{
-  console.log('Reject Data From Dialog:', data);
-debugger;
-  this.selectedRejects = data;
+    console.log('Reject Data:', data);
 
-  // total reject calculate
-  this.reject = data.reduce((sum,x)=> sum + x.count ,0);
-}
+    this.rejectDefects = data;
 
+    this.reject = data.reduce((sum, x) => sum + x.count, 0);
 
+    this.isShowRejectionDialog = false;
+  }
 
-  repairableDefects: any[] = [
-    // { id: 1, name: 'Repairable Defect 1', description: 'Description of Repairable Defect 1', count: 10 },
-    // { id: 2, name: 'Repairable Defect 2', description: 'Description of Repairable Defect 2', count: 5 },
-    // { id: 3, name: 'Repairable Defect 3', description: 'Description of Repairable Defect 3', count: 8 },
-    // { id: 4, name: 'Repairable Defect 4', description: 'Description of Repairable Defect 4', count: 12 },
-    // { id: 5, name: 'Repairable Defect 5', description: 'Description of Repairable Defect 5', count: 7 }
-  ];
-
-
-  rejectDefects: any[] = [];
-
-handleRejectionData(data: any[]) {
-
-  console.log('Child Data:', data);
-
-  // bind child data to reject list
-  this.rejectDefects = data;
-
-  // calculate total reject
-  this.reject = data.reduce((sum, x) => sum + x.count, 0);
-
-  this.isShowRejectionDialog = false;
-
-}
-  // rejectDefects: any[] = [
-    
-    // { id: 1, name: 'Reject Defect 1', description: 'Description of Reject Defect 1', count: 15 },
-    // { id: 2, name: 'Reject Defect 2', description: 'Description of Reject Defect 2', count: 8 },
-    // { id: 3, name: 'Reject Defect 3', description: 'Description of Reject Defect 3', count: 12 },
-    // { id: 4, name: 'Reject Defect 4', description: 'Description of Reject Defect 4', count: 5 },
-    // { id: 5, name: 'Reject Defect 5', description: 'Description of Reject Defect 5', count: 10 }
-  // ];
-
-  // handleRejectionData(data: any) {
-  //   debugger;
-  //   console.log('Child Data:', data);
-  //   this.isShowRejectionDialog = false; 
-  // }
 }
