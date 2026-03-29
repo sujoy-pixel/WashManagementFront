@@ -1,21 +1,51 @@
 <div class="inspection-dashboard p-3">
     <div class="header-container mb-3">
         <div class="header-info-bar text-white flex justify-content-between p-3">
-            <span><strong>Unit: </strong> <span class="text-xl font-bold">Concept Knitting Ltd.</span></span>
-            <span><strong>Buyer:</strong> Target (Australia)</span>
-            <span><strong>Bundle No:</strong> 37227OR</span>
-            <span><strong>Bundle No:</strong> 37227OR</span>
+
+            <span><strong>Unit:</strong>
+                <span class="text-xl font-bold">
+                    {{ batchHeader.unitName }}
+                </span>
+            </span>
+
+            <span><strong>Buyer:</strong>
+                {{ batchHeader.buyerName }}
+            </span>
+
+            <span><strong>Batch No:</strong>
+                {{ batchHeader.batchNo }}
+            </span>
+
+            <span><strong>Style:</strong>
+                {{ batchHeader.styleName }}
+            </span>
+
+            <span><strong>Order:</strong>
+                {{ batchHeader.orderNo }}
+            </span>
+
+            <span><strong>Job No:</strong>
+                {{ batchHeader.jobNo }}
+            </span>
+
         </div>
         <div class="header-info-bar text-white flex justify-content-between p-3 mt-2">
-            <span><strong>Unit:</strong> Concept Knitting Ltd.</span>
-            <span><strong>Buyer:</strong> Target (Australia)</span>
+            <span><strong>Type:</strong> {{ batchHeader.type }}</span>
+            <span><strong>Color:</strong> {{ batchHeader.color }}</span>
             <span class="d-flex align-items-center gap-2">
                 <strong class="mb-0">Batch No:</strong>
                 <input type="text" class="form-control flex-grow-1" [(ngModel)]="batchNo"
                     (keyup.enter)="loadBatchData()" (blur)="loadBatchData()" placeholder="Scan or Enter Batch No"
                     autofocus />
             </span>
-            <span><strong>Bundle No:</strong> 37227OR</span>
+            <span><strong>Dress Part:</strong> {{ batchHeader.dressPart }}</span>
+             
+            <span><strong>UOM:</strong> {{ batchHeader.uom }}</span>
+            <span><strong>Date:</strong> {{ batchHeader.date }}</span>
+            <!-- <span><strong>Machine No:</strong> Target (Australia)</span>
+            <span><strong>Process No:</strong> Target (Australia)</span> -->
+           
+            <!-- <span><strong>Bundle No:</strong> 37227OR</span> -->
         </div>
     </div>
 
@@ -27,15 +57,10 @@
             <button class="action-btn" (click)="decreaseGood()"><i class="pi pi-minus-circle"></i></button>
         </div>
 
-        <!-- <div class="col card-section yellow-section flex flex-column align-items-center justify-content-center">
-            <div class="counter-circle-container mb-3">
-                <div class="counter-value">0</div>
-            </div>
-            <div class="label-title">Repairable</div>
-        </div> -->
 
-       <div (click)="showRepairableDialog()" 
-       class="col card-section yellow-section flex flex-column align-items-center justify-content-center">
+
+        <div (click)="showRepairableDialog()"
+            class="col card-section yellow-section flex flex-column align-items-center justify-content-center">
             <div class="counter-circle-container mb-3">
                 <div class="counter-value">0</div>
             </div>
@@ -85,7 +110,7 @@
                         </div>
                     </div>
                 </div>
-              
+
             </div>
         </div>
     </div>
@@ -132,15 +157,11 @@
         </div>
     </div>
 
-   <app-reject-reason [visible]="isShowRepairableDialog"
-        (visibleChange)="isShowRepairableDialog = $event"
-
+    <app-reject-reason [visible]="isShowRepairableDialog" (visibleChange)="isShowRepairableDialog = $event"
         (onConfirm)="handleReparableData($event)">
     </app-reject-reason>
 
-    <app-reject-reason [visible]="isShowRejectionDialog"
-        (visibleChange)="isShowRejectionDialog = $event"
-
+    <app-reject-reason [visible]="isShowRejectionDialog" (visibleChange)="isShowRejectionDialog = $event"
         (onConfirm)="handleRejectionData($event)">
     </app-reject-reason>
     <!-- <app-reject-reason [visible]="isShowRejectionDialog"
