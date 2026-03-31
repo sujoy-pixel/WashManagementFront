@@ -179,6 +179,9 @@ License        :   Licensed under ThemeForest License
     --font-family-sans-serif: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial,
         "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
     --font-family-monospace: SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+    --primary-new-bg-color: #2c3e50 ;
+    --primary-new-bg-hover: #2c3e50 ;
+    --primary-new-bg-border: #2c3e50 ;
 }
 
 * {
@@ -13904,7 +13907,7 @@ progress {
 }
 
 .table-light {
-    background-color: #fdfdfe;
+    background-color: #FFFFFF;
 }
 
 .table-light>th,
@@ -13997,6 +14000,15 @@ progress {
 .table-dark.table-hover tbody tr:hover {
     background-color: rgba(255, 255, 255, 0.075);
 }
+.empty-state-message {
+  text-align: center;
+  padding: 40px 20px;
+  border: 1px solid #ddd;
+  background-color: #f9f9f9;
+  margin-top: 10px;
+  color: #888;
+  font-style: italic;
+}
 
 @media (max-width: 575.98px) {
     .table-responsive-sm {
@@ -14084,6 +14096,32 @@ progress {
 
 .text-wrap .table-responsive>table {
     border: 0;
+}
+
+/* 🔹 Chrome, Edge, Safari */
+.table-responsive::-webkit-scrollbar {
+  width: 8px;
+}
+
+.table-responsive::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 10px;
+}
+
+.table-responsive::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, #415263, #4facfe);
+  border-radius: 10px;
+  transition: 0.3s;
+}
+
+.table-responsive::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(180deg, #415263, #3a8dde);
+}
+
+/* 🔹 Firefox */
+.table-responsive {
+  scrollbar-width: thin;
+  scrollbar-color: #415263 #f1f1f1;
 }
 
 .table-inbox {
@@ -76499,6 +76537,10 @@ textarea {
 .text-primary {
     color: var(--primary-bg-color) !important;
     fill: var(--primary-bg-color) !important;
+}
+
+.text-new-primary{
+    color: var(--primary-new-bg-color) !important;
 }
 
 a.text-primary:hover,

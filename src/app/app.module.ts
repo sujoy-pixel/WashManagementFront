@@ -10,10 +10,8 @@ import { environment } from 'src/environments/environment';
 import { AngularFirestoreModule } from '@angular/fire/compat/firestore';
 import { AngularFireAuthModule } from '@angular/fire/compat/auth';
 import { AngularFireDatabaseModule } from '@angular/fire/compat/database';
-// import { SimpleNotificationsModule } from 'angular2-notifications';
 import { ColorPickerService } from 'ngx-color-picker';
 import { ToastrModule } from 'ngx-toastr';
-//import { MascoschoolModule } from './components/mascoschool/mascoschool.module';
 import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { PanelModule } from 'primeng/panel';
 import { TableModule } from 'primeng/table';
@@ -29,47 +27,25 @@ import { BannerComponent } from './pages/common/banner/banner.component';
 import { BsDatepickerModule } from 'ngx-bootstrap/datepicker';
 import { BoldReportViewerModule } from '@boldreports/angular-reporting-components';
 import { CalendarModule } from 'primeng/calendar';
-//import { NgxChartsModule } from '@swimlane/ngx-charts';
-// import {TypeaheadModule} from 'ng2-bootstrap/components/typeahead';
-// import {DropdownModule} from 'primeng/dropdown';
-//import { MatTabsModule } from '@angular/material/tabs';
-//import { MascocommercialComponent } from './mascocommercial.component';
+import { CardModule } from 'primeng/card';
 
-//import { AdmissionFormComponent } from './components/mascoschool/admission-form/admission-form.component';
-//import { TestComponent } from './components/mascoschool/test/test.component';
-//import { StudentPreviousInstituteComponent } from './components/mascoschool/student-previous-institute/student-previous-institute.component';
-// Report viewer
 import '@boldreports/javascript-reporting-controls/Scripts/bold.report-viewer.min';
-// data-visualization
 import '@boldreports/javascript-reporting-controls/Scripts/data-visualization/ej.bulletgraph.min';
 import '@boldreports/javascript-reporting-controls/Scripts/data-visualization/ej.chart.min';
 import { MultiSelectModule } from 'primeng/multiselect';
 import { MatCheckboxModule } from '@angular/material/checkbox';
-//import { ReceiveOperationComponent } from './components/Operation/receive-operation/receive-operation.component';
-//import { ReceiveOperationComponent } from '../../../WashManagementFront/src/app/components/Operation/receive-operation/receive-operation.component';
 @NgModule({ declarations: [
-        // TypeaheadModule,
         AppComponent,
         HomePageComponent,
         HeaderComponent,
         FooterComponent,
-        BannerComponent,
-        //ReceiveOperationComponent,
-        // TypeOfInspectionComponent,
-        //FormsModule
-        //AdmissionFormComponent,
-        //TestComponent,
-        // StudentPreviousInstituteComponent,
+        BannerComponent
     ],
     bootstrap: [AppComponent],
     schemas: [CUSTOM_ELEMENTS_SCHEMA], imports: [
-        // DropdownModule,
-        // Component,
-        //PrimeNGConfig,
         BsDatepickerModule.forRoot(),
         BoldReportViewerModule,
         FormsModule,
-        // MatTabsModule,
         NgSelectModule,
         DialogModule,
         TypeaheadModule,
@@ -80,8 +56,6 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
         AngularFirestoreModule,
         AngularFireAuthModule,
         AngularFireDatabaseModule,
-        // SimpleNotificationsModule.forRoot(),
-        //ToastrModule.forRoot(),
         ToastrModule.forRoot({
             enableHtml: true, // Allows HTML in toast messages
         }),
@@ -92,7 +66,7 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
         NgSelectModule,
         BsDatepickerModule.forRoot(),
         CalendarModule, // Ensure this module is imported
-        //NgxChartsModule,
+        CardModule,
         MultiSelectModule,
         MatCheckboxModule], providers: [ColorPickerService, DatePipe, provideHttpClient(withInterceptorsFromDi())] })
 export class AppModule {

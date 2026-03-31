@@ -81,162 +81,176 @@
 </div>
 
 <!-- ================= GRID ================= -->
-<div class="table-responsive">
-  <table class="table table-striped table-bordered custom-table">
-    <thead class="custom-table-header">
-      <tr>
+<p-card>
+  <div class="table-responsive">
+    <table class="table table-striped table-bordered custom-table fixed-table">
+      <thead class="custom-table-header">
+        <tr>
+          <th class="custom-table-th">Prepare Button</th>
+          <th>Buyer</th>
+          <th>Job</th>
+          <th>Style</th>
+          <th>Order</th>
+          <th>Type</th>
+          <th>Fabrication Details</th>
+          <th>Color</th>
+          <th>Dress Part</th>
+          <th>UOM</th>
+          <th>Size</th>
+          <th>Total Qty</th>
+          <th>Already Prepared Qty</th>
+          <th>Remaining Qty</th>
+          <th>Shipment Date</th>
+          <th>Probable Delivery</th>
+          <th>Receive form</th>
+          <th>TrackingBatchNo</th>
 
-        <th class="custom-table-th">Prepare Button</th>
-        <th>Buyer</th>
-        <th>Job</th>
-        <th>Style</th>
-        <th>Order</th>
-        <th>Type</th>
-        <th>Fabrication Details</th>
-        <th>Color</th>
-        <th>Dress Part</th>
-        <th>UOM</th>
-        <th>Size</th>
-        <th>Total Qty</th>
-        <th>Already Prepared Qty</th>
-        <th>Remaining Qty</th>
-        <th>Shipment Date</th>
-        <th>Probable Delivery</th>
-        <th>Receive form</th>
-        <th>TrackingBatchNo</th>
+        </tr>
+      </thead>
 
-      </tr>
-    </thead>
+      <tbody>
+        <tr *ngFor="let row of detailList; let i = index">
 
-    <tbody>
-      <tr *ngFor="let row of detailList; let i = index">
+          <!-- PREPARE BUTTON -->
+          <!-- <td class="text-center">
+        <button class="btn btn-sm btn-success"
+                (click)="openPrepareTab(row)">
+          Prepare
+        </button>
+      </td> -->
+          <td class="text-center">
+            <button class="btn btn-sm btn-outline-primary" (click)="openPrepareTab(row)">
+              Prepare
+            </button>
 
-        <!-- PREPARE BUTTON -->
-        <!-- <td class="text-center">
-      <button class="btn btn-sm btn-success"
-              (click)="openPrepareTab(row)">
-        Prepare
-      </button>
-    </td> -->
-        <td class="text-center">
-          <button class="btn btn-sm btn-outline-primary" (click)="openPrepareTab(row)">
-            Prepare
-          </button>
+          </td>
 
-        </td>
+          <!-- BUYER -->
+          <td>
+            <ng-select [(ngModel)]="row.buyerNo" [items]="buyerList" bindLabel="label" bindValue="value" appendTo="body">
+            </ng-select>
+          </td>
 
-        <!-- BUYER -->
-        <td>
-          <ng-select [(ngModel)]="row.buyerNo" [items]="buyerList" bindLabel="label" bindValue="value" appendTo="body">
-          </ng-select>
-        </td>
+          <!-- JOB -->
+          <td>
+            <ng-select [(ngModel)]="row.jobId" [items]="jobList" bindLabel="label" bindValue="value" appendTo="body">
+            </ng-select>
+          </td>
 
-        <!-- JOB -->
-        <td>
-          <ng-select [(ngModel)]="row.jobId" [items]="jobList" bindLabel="label" bindValue="value" appendTo="body">
-          </ng-select>
-        </td>
+          <!-- STYLE -->
+          <td>
+            <ng-select [(ngModel)]="row.styleNo" [items]="styleList" bindLabel="label" bindValue="value" appendTo="body">
+            </ng-select>
+          </td>
 
-        <!-- STYLE -->
-        <td>
-          <ng-select [(ngModel)]="row.styleNo" [items]="styleList" bindLabel="label" bindValue="value" appendTo="body">
-          </ng-select>
-        </td>
+          <!-- ORDER -->
+          <td>
+            <ng-select [(ngModel)]="row.orderId" [items]="orderList" bindLabel="label" bindValue="value" appendTo="body">
+            </ng-select>
+          </td>
 
-        <!-- ORDER -->
-        <td>
-          <ng-select [(ngModel)]="row.orderId" [items]="orderList" bindLabel="label" bindValue="value" appendTo="body">
-          </ng-select>
-        </td>
+          <!-- TYPE -->
+          <td>
+            <ng-select [(ngModel)]="row.type" appendTo="body">
+              <ng-option value="Fabric">Fabric</ng-option>
+              <ng-option value="GMT">GMT</ng-option>
+              <ng-option value="Cutting">Cutting Parts</ng-option>
+            </ng-select>
+          </td>
 
-        <!-- TYPE -->
-        <td>
-          <ng-select [(ngModel)]="row.type" appendTo="body">
-            <ng-option value="Fabric">Fabric</ng-option>
-            <ng-option value="GMT">GMT</ng-option>
-            <ng-option value="Cutting">Cutting Parts</ng-option>
-          </ng-select>
-        </td>
+          <!-- FABRICATION -->
+          <td>
+            <ng-select [(ngModel)]="row.fabricationId" [items]="fabricationList" bindLabel="label" bindValue="value"
+              appendTo="body">
+            </ng-select>
+          </td>
 
-        <!-- FABRICATION -->
-        <td>
-          <ng-select [(ngModel)]="row.fabricationId" [items]="fabricationList" bindLabel="label" bindValue="value"
-            appendTo="body">
-          </ng-select>
-        </td>
+          <!-- COLOR -->
+          <td>
+            <ng-select [(ngModel)]="row.colorId" [items]="colorList" bindLabel="label" bindValue="value" appendTo="body">
+            </ng-select>
+          </td>
 
-        <!-- COLOR -->
-        <td>
-          <ng-select [(ngModel)]="row.colorId" [items]="colorList" bindLabel="label" bindValue="value" appendTo="body">
-          </ng-select>
-        </td>
+          <!-- DRESS PART -->
+          <td>
+            <ng-select [(ngModel)]="row.dressPartId" [items]="dressPartList" bindLabel="label" bindValue="value"
+              appendTo="body">
+            </ng-select>
+          </td>
 
-        <!-- DRESS PART -->
-        <td>
-          <ng-select [(ngModel)]="row.dressPartId" [items]="dressPartList" bindLabel="label" bindValue="value"
-            appendTo="body">
-          </ng-select>
-        </td>
+          <!-- UOM -->
+          <td>
+            <ng-select [(ngModel)]="row.uomId" [items]="uomList" bindLabel="label" bindValue="value" appendTo="body">
+            </ng-select>
+          </td>
 
-        <!-- UOM -->
-        <td>
-          <ng-select [(ngModel)]="row.uomId" [items]="uomList" bindLabel="label" bindValue="value" appendTo="body">
-          </ng-select>
-        </td>
+          <!-- SIZE -->
+          <td class="text-center">
+            <button class="btn btn-sm btn-outline-primary" (click)="openSizePopup(row)">
+              Size
+            </button>
+          </td>
 
-        <!-- SIZE -->
-        <td class="text-center">
-          <button class="btn btn-sm btn-outline-primary" (click)="openSizePopup(row)">
-            Size
-          </button>
-        </td>
+          <!-- TOTAL QTY -->
+          <td class="text-end fw-bold">
+            {{ row.totalQty }}
+          </td>
 
-        <!-- TOTAL QTY -->
-        <td class="text-end fw-bold">
-          {{ row.totalQty }}
-        </td>
+          <!-- ALREADY PREPARED -->
+          <td class="text-end">
+            {{ row.alreadyPreparedQty || 0 }}
+          </td>
 
-        <!-- ALREADY PREPARED -->
-        <td class="text-end">
-          {{ row.alreadyPreparedQty || 0 }}
-        </td>
+          <!-- REMAINING -->
+          <td class="text-end text-danger fw-bold">
+            {{ row.totalQty - (row.alreadyPreparedQty || 0) }}
+          </td>
 
-        <!-- REMAINING -->
-        <td class="text-end text-danger fw-bold">
-          {{ row.totalQty - (row.alreadyPreparedQty || 0) }}
-        </td>
+          <!-- SHIPMENT DATE -->
+          <td>
+            <input class="form-control form-control-sm" bsDatepicker [(ngModel)]="row.shipmentDate">
+          </td>
 
-        <!-- SHIPMENT DATE -->
-        <td>
-          <input class="form-control form-control-sm" bsDatepicker [(ngModel)]="row.shipmentDate">
-        </td>
+          <!-- PROBABLE DELIVERY -->
+          <td>
+            <input class="form-control form-control-sm" bsDatepicker [(ngModel)]="row.probableDeliveryDate">
+          </td>
 
-        <!-- PROBABLE DELIVERY -->
-        <td>
-          <input class="form-control form-control-sm" bsDatepicker [(ngModel)]="row.probableDeliveryDate">
-        </td>
+          <!-- RECEIVE FROM -->
+          <td class="text-center">
+            {{ row.fromUnitName }}
+          </td>
+          <td class="text-center">
+            {{ row.trackingNo}}
+          </td>
+        </tr>
+      </tbody>
 
-        <!-- RECEIVE FROM -->
-        <td class="text-center">
-          {{ row.fromUnitName }}
-        </td>
-        <td class="text-center">
-          {{ row.trackingNo}}
-        </td>
-      </tr>
-    </tbody>
-
-  </table>
-</div>
+    </table>
+    <div class="empty-state-message" *ngIf="detailList.length === 0">
+      <p>No results found. Try adjusting your search filters.</p>
+    </div>
+  </div>
+</p-card>
 
 <!-- ================= SIZE POPUP ================= -->
-<div class="modal-backdrop fade show" *ngIf="sizePopupVisible"></div>
+<!-- <div class="modal-backdrop fade show" *ngIf="sizePopupVisible"></div> -->
+<!-- <size-quantity visible="sizePopupVisible" [title]="'Size Wise Quantity'" (onClose)="sizePopupVisible=false"
+  (onConfirm)="confirmSizeQty()" /> -->
 
-<div class="modal fade show d-block" *ngIf="sizePopupVisible" tabindex="-1">
+<app-size-quantity 
+  *ngIf="sizePopupVisible"
+  [(visible)]="sizePopupVisible" 
+  (confirm)="confirmSizeQty()"  
+  [sizeList]="sizeList"
+  (totalCal)="calculateTotal()"
+>
+</app-size-quantity>
+
+<!-- <div class="modal fade show d-block" *ngIf="sizePopupVisible" tabindex="-1">
   <div class="modal-dialog modal-dialog-centered modal-md">
     <div class="modal-content shadow-lg border-0 rounded-3">
 
-      <!-- ===== HEADER ===== -->
       <div class="modal-header bg-primary text-white py-2">
         <h6 class="mb-0 fw-semibold">
           <i class="fa fa-ruler-combined me-6"></i>
@@ -246,7 +260,6 @@
         </button>
       </div>
 
-      <!-- ===== BODY ===== -->
       <div class="modal-body px-4 py-3">
 
         <table class="table table-sm table-bordered align-middle text-center mb-3">
@@ -273,24 +286,10 @@
                   (input)="calculateTotal()" min="0">
               </td>
             </tr>
-            <!-- <tr *ngFor="let s of sizeList; let i = index">
-              <td class="fw-semibold">
-                {{ s.size }}
-              </td>
-
-              <td>
-                <input type="number"
-                       class="form-control form-control-sm text-end fw-semibold"
-                       [(ngModel)]="s.qty"
-                       (input)="calculateTotal()"
-                       min="0"
-                       autofocus>
-              </td>
-            </tr> -->
+           
           </tbody>
         </table>
 
-        <!-- ===== TOTAL ===== -->
         <div class="d-flex justify-content-between align-items-center
                     bg-light rounded px-3 py-2">
           <span class="fw-semibold text-muted">Total Quantity</span>
@@ -301,7 +300,6 @@
 
       </div>
 
-      <!-- ===== FOOTER ===== -->
       <div class="modal-footer py-2">
         <button class="btn btn-sm btn-outline-secondary" (click)="sizePopupVisible=false">
           Cancel
@@ -315,4 +313,4 @@
 
     </div>
   </div>
-</div>
+</div> -->

@@ -1,0 +1,94 @@
+<!-- <div class="modal fade show d-block" *ngIf="visible">
+  <div class="modal-dialog modal-dialog-centered modal-md">
+    <div class="modal-content shadow-lg border-0 rounded-3">
+
+      <div class="modal-header header-background text-white py-3">
+        <h6 class="mb-0 fw-semibold">
+          {{ title }}
+        </h6>
+        <i class="fa fa-times" style="cursor:pointer" (click)="onClose()"></i>
+      </div>
+
+      <div class="modal-body px-4 py-3">
+         body here
+      </div>
+
+      <div class="modal-footer py-2">
+        <button class="btn btn-sm btn-outline-danger" (click)="onClose()">
+          Cancel
+        </button>
+
+        <button class="btn btn-sm btn-primary px-4" (click)="onConfirm()">
+          Confirm
+        </button>
+      </div>
+
+    </div>
+  </div>
+</div> -->
+<div class="modal-backdrop fade show" *ngIf="visible"></div>
+<div class="modal fade show d-block" *ngIf="visible" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered modal-md">
+    <div class="modal-content shadow-lg border-0 rounded-3">
+
+      <div class="modal-header header-background text-white py-3 poi">
+        <h6 class="mb-0 fw-semibold">
+          Size Wise Quantity
+        </h6>
+        <i class="fa fa-times me-1" style="cursor: pointer;" (click)="onClose()"></i>
+      </div>
+
+      <div class="modal-body px-4 py-3">
+        <div class="table-container-scroll-y">
+          <table class="table table-sm table-bordered align-middle text-center mb-3">
+            <thead class="table-light">
+              <tr>
+                <th style="width: 30%;display: none;">SizeId</th>
+                <th style="width: 30%">Size</th>
+                <th style="width: 40%">Quantity</th>
+              </tr>
+            </thead>
+
+            <tbody>
+              <tr *ngFor="let s of sizeList; let i = index">
+                <td class="fw-semibold text-muted" style="display: none;">
+                  {{ s.sizeId }}
+                </td>
+
+                <td class="fw-semibold">
+                  {{ s.size }}
+                </td>
+
+                <td>
+                  <input type="number" class="form-control form-control-sm text-end fw-semibold" [(ngModel)]="s.qty"
+                    (input)="calculateTotal()" min="0">
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="d-flex justify-content-between align-items-center
+                    bg-light rounded px-3 py-2">
+          <span class="fw-semibold text-muted">Total Quantity</span>
+          <span class="fw-bold fs-5 text-new-primary">
+            {{ totalSizeQty }}
+          </span>
+        </div>
+
+      </div>
+
+      <div class="modal-footer py-2">
+        <button class="btn btn-sm btn-outline-danger" (click)="onClose()">
+          Cancel
+        </button>
+
+        <button class="btn btn-sm btn-primary px-4" (click)="onConfirm()">
+          <i class="fa fa-check me-1"></i>
+          Confirm
+        </button>
+      </div>
+
+    </div>
+  </div>
+</div>

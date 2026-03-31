@@ -33,3 +33,20 @@
   transform: translateY(-2px);
   box-shadow: 0 12px 28px rgba(13, 110, 253, 0.35);
 }
+.fixed-table {
+  table-layout: fixed; 
+  width: 100%;
+}
+
+.fixed-table th, 
+.fixed-table td {
+  width: 200px !important;
+  white-space: normal;      
+  word-break: break-word;   
+  overflow: visible;         
+  text-overflow: unset;      
+  vertical-align: middle;
+}
+// .fixed-table td {
+//   height: 100px !important; 
+// }
