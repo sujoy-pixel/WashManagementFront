@@ -1,7 +1,14 @@
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { ToastrService } from 'ngx-toastr';
 import { WashSetupService } from '../../../services/washsetup.service';
-//import { subscribe } from 'diagnostics_channel';
+//import { SizeQuantityComponent } from 'src/app/components/advanced-ui/modals/size-quantity/size-quantity.component';
+import {SizeQuantityComponent} from '../../../../advanced-ui/modals/size-quantity/size-quantity.component';
+import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
+import { NgSelectModule } from '@ng-select/ng-select';
+import { BsDatepickerModule } from 'ngx-bootstrap/datepicker';
+import { CardModule } from 'primeng/card';
+
 interface SearchModel {
   UnitId?: number;
   fromDate?: string;
@@ -17,15 +24,19 @@ interface ReceiveRecord {
   receiveDate: string; // ISO string or Date
 }
 @Component({
+  standalone: true,
+  imports: [CommonModule, SizeQuantityComponent, FormsModule, NgSelectModule, BsDatepickerModule, CardModule],
   selector: 'app-receive-operation',
   templateUrl: './receive-operation.component.html',
-  styleUrls: ['./receive-operation.component.scss']
+  styleUrls: ['./receive-operation.component.scss'],
 })
 
 export class ReceiveOperationComponent implements OnInit {
 
   // ================= FLAGS =================
   isReviewMode = false;
+  isNewMode = true;
+  isEditMode = false;
   saveButtonTitle = 'Save';
   // ================= MASTER =================
   Model: any = {
@@ -76,7 +87,7 @@ export class ReceiveOperationComponent implements OnInit {
   constructor(
     private service: WashSetupService,
     private toastr: ToastrService,
-     private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef
   ) { }
 
   ngOnInit(): void {
@@ -86,9 +97,10 @@ export class ReceiveOperationComponent implements OnInit {
   // ================= HEADER =================
   onNew() {
     this.isReviewMode = false;
+    this.isNewMode = true;
     this.clearAll();
   }
-    setFocus(field: string): void {
+  setFocus(field: string): void {
     setTimeout(() => {
       this.currentFocus = field;
 
@@ -138,7 +150,7 @@ export class ReceiveOperationComponent implements OnInit {
         //this.searchList = res || [];
         this.buildSearchList(res || []);
       }
-     
+
     });
   }
 
@@ -189,6 +201,7 @@ export class ReceiveOperationComponent implements OnInit {
 
   onEdit(record: any) {
     debugger;
+    this.isEditMode = true;
     this.service.getSearchData(
       this.review.UnitId!,
       this.review.receiveNo,
@@ -214,7 +227,7 @@ export class ReceiveOperationComponent implements OnInit {
 
   onReview() {
     this.isReviewMode = !this.isReviewMode;
-
+    this.isNewMode = false;
   }
 
   // ================= LOAD MASTER DROPDOWNS =================
@@ -380,49 +393,50 @@ export class ReceiveOperationComponent implements OnInit {
   }
 
   // ================= SIZE POPUP =================
- openSizePopup(row: any) {
+  openSizePopup(row: any) {
 
-  this.selectedRow = row;
+    this.selectedRow = row;
 
-  const grouped = row.sizeDetails.reduce((acc: any, item: any) => {
+    const grouped = row.sizeDetails.reduce((acc: any, item: any) => {
 
-    if (!acc[item.sizeId]) {
-      acc[item.sizeId] = {
-        sizeId: item.sizeId,
-        size: item.size,
-        qty: 0
-      };
-    }
+      if (!acc[item.sizeId]) {
+        acc[item.sizeId] = {
+          sizeId: item.sizeId,
+          size: item.size,
+          qty: 0
+        };
+      }
 
-    acc[item.sizeId].qty += Number(item.qty);
+      acc[item.sizeId].qty += Number(item.qty);
 
-    return acc;
+      return acc;
 
-  }, {});
+    }, {});
 
-  this.sizeList = Object.values(grouped);
+    this.sizeList = Object.values(grouped);
 
-  console.log('Unique Size List:', this.sizeList);
+    console.log('Unique Size List:', this.sizeList);
 
-  this.calculateTotal();
+    this.calculateTotal();
 
-  this.sizePopupVisible = true;
-}
-// openSizePopup(row: any) {
-//   this.selectedRow = row;
-//   this.sizeList = JSON.parse(JSON.stringify(row.sizeDetails));
-//   console.log('Selected Row for Size Popup:', this.sizeList);
-//   this.calculateTotal();
-//   this.sizePopupVisible = true;
-// }
+    this.sizePopupVisible = true;
+  }
+  // openSizePopup(row: any) {
+  //   this.selectedRow = row;
+  //   this.sizeList = JSON.parse(JSON.stringify(row.sizeDetails));
+  //   console.log('Selected Row for Size Popup:', this.sizeList);
+  //   this.calculateTotal();
+  //   this.sizePopupVisible = true;
+  // }
 
   calculateTotal() {
     this.totalSizeQty = this.sizeList.reduce((s, x) => s + (+x.qty || 0), 0);
   }
 
   confirmSizeQty() {
+     this.selectedRow.totalQty = this.totalSizeQty;
     this.selectedRow.sizeDetails = [...this.sizeList];
-    this.selectedRow.totalQty = this.totalSizeQty;
+   
     this.sizePopupVisible = false;
   }
 
@@ -430,15 +444,16 @@ export class ReceiveOperationComponent implements OnInit {
   clearAll() {
     this.Model.trackingNo = '';
     this.detailList = [];
-  //     this.review = {
-  //   receiveNo: this.review.receiveNo
-  // };
-   this.Model.UnitId = 0;
+    //     this.review = {
+    //   receiveNo: this.review.receiveNo
+    // };
+    this.Model.UnitId = 0;
+    this.isEditMode = false;
   }
 
 
   onSubmit() {
-    
+
     debugger;
 
 
@@ -473,124 +488,124 @@ export class ReceiveOperationComponent implements OnInit {
 
     }
 
-//  payload = this.buildSavePayload();
+    //  payload = this.buildSavePayload();
 
-  console.log('SAVE PAYLOAD', payload);
+    console.log('SAVE PAYLOAD', payload);
 
-//   this.service.saveReceiveOperation(payload)
-//     .subscribe({
-//       next: (res: any) => {
+    //   this.service.saveReceiveOperation(payload)
+    //     .subscribe({
+    //       next: (res: any) => {
 
-//         console.log('SAVE RESPONSE', res);
-// debugger;
-// //res = {succeeded: true, message: '{"ResultCode":1,"Maste
+    //         console.log('SAVE RESPONSE', res);
+    // debugger;
+    // //res = {succeeded: true, message: '{"ResultCode":1,"Maste
 
-//         if (res?.resultCode === 1) {
-//  this.toastr.success('Saved Successfully');
-//  this.clearAll();
-//           // clear form first
-          
-//           // set receive no after clear
-//          // this.review.receiveNo = res.receiveNo;
-//           this.review.receiveNo = res.ReceiveNo;
+    //         if (res?.resultCode === 1) {
+    //  this.toastr.success('Saved Successfully');
+    //  this.clearAll();
+    //           // clear form first
+
+    //           // set receive no after clear
+    //          // this.review.receiveNo = res.receiveNo;
+    //           this.review.receiveNo = res.ReceiveNo;
 
 
-//         } else {
-//           this.toastr.error(res?.message || 'Save Failed');
-//         }
-//       },
+    //         } else {
+    //           this.toastr.error(res?.message || 'Save Failed');
+    //         }
+    //       },
 
-//       error: (error) => {
-//         console.log(error);
-//         this.toastr.error('Save Failed');
-//       }
-//     });
-// }
-this.service.saveReceiveOperation(payload)
-.subscribe({
-  next: (res: any) => {
+    //       error: (error) => {
+    //         console.log(error);
+    //         this.toastr.error('Save Failed');
+    //       }
+    //     });
+    // }
+    this.service.saveReceiveOperation(payload)
+      .subscribe({
+        next: (res: any) => {
 
-    console.log('SAVE RESPONSE', res);
+          console.log('SAVE RESPONSE', res);
 
-    if (!res?.succeeded) {
-      this.toastr.error('Save Failed');
-      return;
-    }
+          if (!res?.succeeded) {
+            this.toastr.error('Save Failed');
+            return;
+          }
 
-    // ⭐ parse JSON string
-    const data = JSON.parse(res.message);
+          // ⭐ parse JSON string
+          const data = JSON.parse(res.message);
 
-    if (data?.ResultCode === 1) {
+          if (data?.ResultCode === 1) {
 
-      this.clearAll();
+            this.clearAll();
 
-      this.review.receiveNo = data.ReceiveNo;
+            this.review.receiveNo = data.ReceiveNo;
 
-      this.toastr.success(
-        `Saved Successfully. Receive No: ${data.ReceiveNo}`
-      );
+            this.toastr.success(
+              `Saved Successfully. Receive No: ${data.ReceiveNo}`
+            );
 
-    } else {
-      this.toastr.error(data?.Message || 'Save Failed');
-    }
-  },
+          } else {
+            this.toastr.error(data?.Message || 'Save Failed');
+          }
+        },
 
-  error: () => {
-    this.toastr.error('Save Failed');
+        error: () => {
+          this.toastr.error('Save Failed');
+        }
+      });
   }
-});
-  }
-// next: (res: any) => {
-// debugger;
+  // next: (res: any) => {
+  // debugger;
 
-//     console.log('SAVE PAYLOAD', payload);
-//     debugger;
-//     this.service.saveReceiveOperation(payload)
-//       .subscribe({
-//         next: () => {
-//           if (res?.resultCode === 1)
-//           this.toastr.success('Saved Successfully');
-//           this.clearAll();
-//           this.review.receiveNo = res.receiveNo;
-//         }, 
-//         error: (error) => {
-//           console.log(error);
-//           this.toastr.error('Save Failed');
-//         }
-//       });
-//    }
-// this.service.saveReceiveOperation(payload)
-// .subscribe({
-//   next: (res: any) => {
+  //     console.log('SAVE PAYLOAD', payload);
+  //     debugger;
+  //     this.service.saveReceiveOperation(payload)
+  //       .subscribe({
+  //         next: () => {
+  //           if (res?.resultCode === 1)
+  //           this.toastr.success('Saved Successfully');
+  //           this.clearAll();
+  //           this.review.receiveNo = res.receiveNo;
+  //         }, 
+  //         error: (error) => {
+  //           console.log(error);
+  //           this.toastr.error('Save Failed');
+  //         }
+  //       });
+  //    }
+  // this.service.saveReceiveOperation(payload)
+  // .subscribe({
+  //   next: (res: any) => {
 
-//     if (res?.resultCode === 1) {
+  //     if (res?.resultCode === 1) {
 
-//       this.clearAll();
+  //       this.clearAll();
 
-//       this.review.receiveNo = res.receiveNo;
+  //       this.review.receiveNo = res.receiveNo;
 
-//       this.toastr.success(
-//         `Saved Successfully. Receive No: ${res.receiveNo}`
-//       );
+  //       this.toastr.success(
+  //         `Saved Successfully. Receive No: ${res.receiveNo}`
+  //       );
 
-//     } else {
-//       this.toastr.error(res?.message || 'Save Failed');
-//     }
-//   },
-//   error: () => {
-//     this.toastr.error('Save Failed');
-//   }
-// });
+  //     } else {
+  //       this.toastr.error(res?.message || 'Save Failed');
+  //     }
+  //   },
+  //   error: () => {
+  //     this.toastr.error('Save Failed');
+  //   }
+  // });
 
-   //}
+  //}
   buildSavePayload(): any {
     if (!this.searchList || this.searchList.length === 0) {
-  if (!this.Model.UnitId) {
-      this.toastr.warning('Please Select Unit');
-      return;
+      if (!this.Model.UnitId) {
+        this.toastr.warning('Please Select Unit');
+        return;
+      }
     }
-}
-    
+
     debugger;
     console.log('Tracking Wise', this.detailList);
     const master = {
@@ -778,7 +793,7 @@ this.service.saveReceiveOperation(payload)
       Operation: 'Update',
       unitId: this.review.UnitId,
       MasterId: this.searchList[0].masterId,
-      TrackingNo:this.detailList[0].trackingNo,
+      TrackingNo: this.detailList[0].trackingNo,
       // TrackingNo: this.Model.trackingNo && this.Model.trackingNo !== 0 ? `${this.Model.trackingNo}` : `${this.Model.batchNo}`,
       createdBy: 'SYSTEM'
     };

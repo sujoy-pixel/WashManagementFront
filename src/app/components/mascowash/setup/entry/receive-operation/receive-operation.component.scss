@@ -209,3 +209,82 @@
 //   text-overflow: ellipsis;
 //   white-space: nowrap;
 // }
+.fixed-table {
+  table-layout: fixed; 
+  width: 100%;
+}
+
+.fixed-table th, 
+.fixed-table td {
+  width: 160px; 
+  overflow: hidden;
+  text-overflow: ellipsis; 
+  white-space: nowrap; 
+  vertical-align: middle;
+}
+
+.larger-column {
+  width: 220px !important; 
+}
+
+.fixed-table ng-select {
+  width: 100% !important;
+}
+
+.table-container {
+  padding-left: 10px;
+  padding-right: 10px;
+  overflow-x: auto; 
+}
+
+.custom-table {
+  width: 100%;
+  margin-bottom: 0; 
+}
+.table-container-scroll-y {
+  max-height: 300px; 
+  overflow-y: auto;
+}
+/* 🔹 Chrome, Edge, Safari */
+.table-container-scroll-y::-webkit-scrollbar {
+  width: 8px;
+}
+
+.table-container-scroll-y::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 10px;
+}
+
+.table-container-scroll-y::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, #415263, #4facfe);
+  border-radius: 10px;
+  transition: 0.3s;
+}
+
+.table-container-scroll-y::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(180deg, #415263, #3a8dde);
+}
+
+/* 🔹 Firefox */
+.table-container-scroll-y {
+  scrollbar-width: thin;
+  scrollbar-color: #415263 #f1f1f1;
+}
+
+.btn-gradient {
+  background: linear-gradient(135deg, #d4baa4, #dd8c44);
+  color: #fff;
+  border: none;
+  border-radius: 0.75rem;
+  box-shadow: 0 8px 20px rgba(13, 110, 253, 0.25);
+  transition: all 0.3s ease;
+}
+
+.btn-gradient:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 28px rgba(13, 110, 253, 0.35);
+}
+
+.p-card .p-card-content{
+  padding-top: 0px !important;
+}

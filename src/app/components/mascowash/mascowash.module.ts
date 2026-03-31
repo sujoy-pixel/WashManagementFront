@@ -30,22 +30,23 @@ import { FaultNameLayoutComponent } from './setup/entry/fault-name-layout/fault-
 import { InspectionHeadLayoutEntryComponent } from './setup/entry/inspection-head-layout-entry/inspection-head-layout-entry.component';
 import { FaultWiseValueTagEntryComponent } from './setup/entry/fault-wise-value-tag-entry/fault-wise-value-tag-entry.component';
 import { FaultHeadNameEntryComponent } from './setup/entry/fault-head-name-entry/fault-head-name-entry.component';
- import { ReceiveOperationComponent } from './setup/entry/receive-operation/receive-operation.component';
- import { WashBatchPrepareOperationComponent } from './setup/entry/wash-batchprepare-operation/wash-batchprepare-operation.component';
+// import { ReceiveOperationComponent } from './setup/entry/receive-operation/receive-operation.component';
+// import { WashBatchPrepareOperationComponent } from './setup/entry/wash-batchprepare-operation/wash-batchprepare-operation.component';
 import { WashPrepareActionComponent } from './setup/entry/wash-prepare-action/wash-prepare-action.component';
 import { WashItemDeliveryComponent } from './setup/entry/wash-item-delivery/wash-item-delivery.component';
 import { BatchWisePrioritySetComponent } from './setup/entry/batch-wise-priority-set/batch-wise-priority-set.component';
 import { ReportViewComponent } from './report/report-view/report-view.component';
 import { TagModule } from 'primeng/tag';
 import { CustomPaginationComponent } from 'src/app/shared/custom-pagination/custom-pagination.component';
+import { CardModule } from 'primeng/card';
 
 @NgModule({
   declarations: [
     MascowashComponent,
     ProcessNameEntryComponent,
     InspectionTypeEntryComponent,
-    ReceiveOperationComponent,
-    WashBatchPrepareOperationComponent,
+    //ReceiveOperationComponent,
+    //WashBatchPrepareOperationComponent,
     OperationNameEntryComponent,
     InspectionAreaEntryComponent,
     MachineNameEntryComponent,
@@ -75,6 +76,7 @@ import { CustomPaginationComponent } from 'src/app/shared/custom-pagination/cust
     MatSelectModule,
     MatCheckboxModule,
     TagModule,
+    CardModule
   ],
    exports: [
     CustomPaginationComponent

@@ -3,7 +3,12 @@ import { ToastrService } from 'ngx-toastr';
 import { WashSetupService } from '../../../services/washsetup.service';
 import { de, tr } from 'date-fns/locale';
 import { Router } from '@angular/router';
-
+import { CommonModule } from '@angular/common';
+import {SizeQuantityComponent} from '../../../../advanced-ui/modals/size-quantity/size-quantity.component';
+import { FormsModule } from '@angular/forms';
+import { NgSelectModule } from '@ng-select/ng-select';
+import { BsDatepickerModule } from 'ngx-bootstrap/datepicker';
+import { CardModule } from 'primeng/card';
 
 
 interface DropdownItem {
@@ -61,6 +66,8 @@ gsmId:number;
   sizeDetails: SizeDetail[];
 }
 @Component({
+  standalone: true,
+  imports: [CommonModule, SizeQuantityComponent, FormsModule, NgSelectModule, BsDatepickerModule, CardModule],
   selector: 'app-wash-batchprepare-operation',
   templateUrl: './wash-batchprepare-operation.component.html',
   styleUrls: ['./wash-batchprepare-operation.component.scss']
