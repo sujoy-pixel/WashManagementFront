@@ -520,4 +520,12 @@ getSearchData(
       }
     );
   }
+  saveQCData(data: any) {
+  debugger;
+  return this.http.post(
+    this.baseUrl_ + 'Setup/SaveQCData',   // 👉 API endpoint (adjust if needed)
+    data,
+    { headers: this.token.headerToken() }
+  );
+}
 }

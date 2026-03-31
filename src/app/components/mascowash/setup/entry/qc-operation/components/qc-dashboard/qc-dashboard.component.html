@@ -62,7 +62,7 @@
         <div (click)="showRepairableDialog()"
             class="col card-section yellow-section flex flex-column align-items-center justify-content-center">
             <div class="counter-circle-container mb-3">
-                <div class="counter-value">0</div>
+                <div class="counter-value">{{ repairable }}</div>
             </div>
             <div class="label-title">Repairable</div>
         </div>
@@ -70,7 +70,7 @@
         <div (click)="showRejectionDialog()"
             class="col card-section red-section flex flex-column align-items-center justify-content-center cursor-pointer">
             <div class="counter-circle-container mb-3">
-                <div class="counter-value">0</div>
+                 <div class="counter-value">{{ reject }}</div>
             </div>
             <div class="label-title">Reject</div>
         </div>
@@ -149,12 +149,42 @@
                 <span>Processing Time: <span>00 hour 02 minutes</span></span>
             </div>
         </div>
+<!-- 🔥 ACTION BUTTONS -->
+<div class="action-buttons flex gap-2">
 
-        <div class="action-buttons flex gap-2">
+    <!-- ✅ SAVE -->
+    <button pButton
+            type="button"
+            label="SAVE"
+            icon="pi pi-check"
+            class="p-button-success btn-custom save-btn"
+            (click)="saveQCData()">
+    </button>
+
+    <!-- ❌ CANCEL -->
+    <button pButton
+            type="button"
+            label="CANCEL"
+            icon="pi pi-times"
+            class="p-button-danger btn-custom cancel-btn"
+            (click)="resetValues()">
+    </button>
+
+    <!-- 🔄 REFRESH -->
+    <button pButton
+            type="button"
+            label="REFRESH"
+            icon="pi pi-refresh"
+            class="p-button-info p-button-outlined btn-custom refresh-btn"
+            (click)="loadBatchData()">
+    </button>
+
+</div>
+        <!-- <div class="action-buttons flex gap-2">
             <button pButton label="SAVE" class="p-button-success btn-custom save-btn"></button>
             <button pButton label="CANCEL" class="p-button-danger btn-custom cancel-btn"></button>
             <button pButton label="REFRESH" class="p-button-info p-button-outlined btn-custom refresh-btn"></button>
-        </div>
+        </div> -->
     </div>
 
     <app-reject-reason [visible]="isShowRepairableDialog" (visibleChange)="isShowRepairableDialog = $event"

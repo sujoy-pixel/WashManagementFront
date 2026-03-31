@@ -1,15 +1,21 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectorRef, NgZone } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ButtonModule } from 'primeng/button';
 import { WashSetupService } from '../../../../../services/washsetup.service';
 import { CommonServiceService } from '../../../../../services/common-service';
 import { ToastrService } from 'ngx-toastr';
-import { FormBuilder } from '@angular/forms';
-import { ChangeDetectorRef, NgZone } from '@angular/core';
-import { FormsModule } from '@angular/forms';
+import { FormBuilder, FormsModule } from '@angular/forms';
 import { RejectReasonComponent } from '../reject-reason/reject-reason.component';
 
 interface BatchHeaderModel {
+  unitId?: number;
+  buyerId?: number;
+  styleId?: number;
+  orderId?: number;
+  jobId?: number;
+  dressPartId?: number;
+  uomId?: number;
+
   unitName: string;
   buyerName: string;
   batchNo: string;
@@ -33,10 +39,8 @@ interface BatchHeaderModel {
 })
 export class QcDashboardComponent {
 
-  // 🔹 Input
   batchNo: string = '';
 
-  // 🔹 Header Model (NEW)
   batchHeader: BatchHeaderModel = {
     unitName: '',
     buyerName: '',
@@ -51,21 +55,22 @@ export class QcDashboardComponent {
     date: ''
   };
 
-  // 🔹 Counters
+  // 🔥 COUNTERS
+  repairableCount: number = 0;
+  repairableLength: number = 0;
+
+  rejectCount: number = 0;
+  rejectLength: number = 0;
+
   goodGarments: number = 0;
   repairable: number = 0;
   reject: number = 0;
 
-  // 🔹 Dialog Control
+  // 🔹 Dialog
   isShowRejectionDialog: boolean = false;
   isShowRepairableDialog: boolean = false;
 
-  // 🔹 State
   loading: boolean = false;
-
-  // 🔹 Selected Data
-  selectedRejects: any[] = [];
-  selectedRepairable: any[] = [];
 
   // 🔹 Lists
   repairableDefects: any[] = [];
@@ -80,10 +85,10 @@ export class QcDashboardComponent {
     private cdr: ChangeDetectorRef
   ) {}
 
-  // 🔥 Load Batch Data (MAIN)
+  // 🔥 LOAD DATA
   loadBatchData() {
 
-    if (!this.batchNo || this.batchNo.trim() === '') return;
+    if (!this.batchNo?.trim()) return;
 
     this.loading = true;
 
@@ -99,10 +104,16 @@ export class QcDashboardComponent {
 
           const data = res[0];
 
-          console.log('Batch QC Data:', data);
-
-          // 🔥 Header Binding (NEW)
+          // ✅ WITH ID MAPPING
           this.batchHeader = {
+            unitId: data.unitId,
+            buyerId: data.buyerId,
+            styleId: data.styleId,
+            orderId: data.orderId,
+            jobId: data.jobId,
+            dressPartId: data.dressPartId,
+            uomId: data.uomId,
+
             unitName: data.unitName ?? '',
             buyerName: data.buyerName ?? '',
             batchNo: data.batchNo ?? '',
@@ -116,13 +127,11 @@ export class QcDashboardComponent {
             date: data.date ?? ''
           };
 
-          // 🔹 Existing Logic
           this.goodGarments = data.goodGarments ?? 0;
 
           this.cleanTrackingNo();
         },
-        error: (err) => {
-          console.error(err);
+        error: () => {
           this.toastr.error('Failed to load batch data');
           this.resetValues();
         },
@@ -132,35 +141,21 @@ export class QcDashboardComponent {
       });
   }
 
-  // 🔹 Reset All
+  // 🔹 RESET
   resetValues() {
     this.goodGarments = 0;
     this.repairable = 0;
     this.reject = 0;
 
-    this.batchHeader = {
-      unitName: '',
-      buyerName: '',
-      batchNo: '',
-      styleName: '',
-      orderNo: '',
-      jobNo: '',
-      type: '',
-      color: '',
-      dressPart: '',
-      uom: '',
-      date: ''
-    };
-
-    this.rejectDefects = [];
     this.repairableDefects = [];
+    this.rejectDefects = [];
   }
 
   cleanTrackingNo() {
     this.batchNo = '';
   }
 
-  // 🔹 Good Garments
+  // 🔹 GOOD
   increaseGood() {
     this.goodGarments++;
   }
@@ -169,36 +164,107 @@ export class QcDashboardComponent {
     if (this.goodGarments > 0) this.goodGarments--;
   }
 
-  // 🔹 Repairable Dialog
+  // 🔹 DIALOG
   showRepairableDialog() {
     this.isShowRepairableDialog = true;
   }
 
-  handleReparableData(data: any[]) {
-
-    console.log('Repairable Data:', data);
-
-    this.repairableDefects = data;
-
-    this.repairable = data.reduce((sum, x) => sum + x.count, 0);
-
-    this.isShowRepairableDialog = false;
-  }
-
-  // 🔹 Reject Dialog
   showRejectionDialog() {
     this.isShowRejectionDialog = true;
   }
 
-  handleRejectionData(data: any[]) {
+  // 🔹 REPAIRABLE
+  handleReparableData(data: any[]) {
 
-    console.log('Reject Data:', data);
+    this.repairableDefects = data;
+
+    this.repairableLength = data?.length || 0;
+
+    this.repairableCount = data?.length
+      ? data.reduce((sum, x) => sum + (x.count || 0), 0)
+      : 0;
+
+    this.repairable = this.repairableLength;
+
+    this.isShowRepairableDialog = false;
+
+    this.cdr.detectChanges();
+  }
+
+  // 🔹 REJECT
+  handleRejectionData(data: any[]) {
 
     this.rejectDefects = data;
 
-    this.reject = data.reduce((sum, x) => sum + x.count, 0);
+    this.rejectLength = data?.length || 0;
+
+    this.rejectCount = data?.length
+      ? data.reduce((sum, x) => sum + (x.count || 0), 0)
+      : 0;
+
+    this.reject = this.rejectLength;
 
     this.isShowRejectionDialog = false;
+
+    this.cdr.detectChanges();
   }
 
+  // 🔥🔥🔥 SAVE METHOD (MAIN PART)
+  saveQCData() {
+    debugger;
+
+    if (!this.batchHeader.batchNo) {
+      this.toastr.warning('Batch No required!');
+      return;
+    }
+
+    // 🔥 MASTER
+    const master = {
+      unitId: this.batchHeader.unitId,
+      buyerId: this.batchHeader.buyerId,
+      styleId: this.batchHeader.styleId,
+      orderId: this.batchHeader.orderId,
+      jobId: this.batchHeader.jobId,
+      dressPartId: this.batchHeader.dressPartId,
+      uomId: this.batchHeader.uomId,
+
+      batchNo: this.batchHeader.batchNo,
+      type: this.batchHeader.type,
+      color: this.batchHeader.color,
+      date: this.batchHeader.date,
+
+      goodGarments: this.goodGarments,
+      rejectQty: this.rejectLength,         // ✅ LENGTH
+      repairableQty: this.repairableLength  // ✅ LENGTH
+    };
+
+    // 🔥 DETAILS
+    const repairableDetails = this.repairableDefects.map(x => ({
+      defectId: x.defectId,
+      qty: x.count || 0
+    }));
+
+    const rejectDetails = this.rejectDefects.map(x => ({
+      defectId: x.defectId,
+      qty: x.count || 0
+    }));
+
+    const payload = {
+      master,
+      repairableDetails,
+      rejectDetails
+    };
+
+    console.log('FINAL SAVE:', payload);
+
+    this.service.saveQCData(payload).subscribe({
+      next: () => {
+        this.toastr.success('Saved Successfully');
+        this.resetValues();
+      },
+      error: () => {
+        this.toastr.error('Save Failed');
+      }
+    });
+  }
 }
