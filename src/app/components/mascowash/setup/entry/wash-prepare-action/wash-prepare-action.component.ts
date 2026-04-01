@@ -51,7 +51,8 @@ export class WashPrepareActionComponent implements OnInit {
     gsm: '',
     color: '',
     type: '',
-    trackingNo: ''
+    trackingNo: '',
+    AutoBatchNo: ''
   };
 
   // ======= ID STORAGE FOR SAVE =========
@@ -282,26 +283,101 @@ console.log('✅ Merged Size Map:', sizeMap);
       }))
 
     };
+console.log('✅ SAVE PAYLOAD:', payload);
 
-    console.log('✅ SAVE PAYLOAD:', payload);
+/* ================= API CALL ================= */
+this.service.SaveWashPrepare(payload).subscribe({
+  next: (res: any) => {
+    debugger;
+
+    console.log("Full Response:", res);
+
+    // ✅ Correct condition
+    if (res && res.succeeded === true) {
+
+      this.toastr.success('Saved successfully');
+
+      let reportName = "Batch Card Preview";
+      let generateNumber = "";
+      // ✅ Correct binding from message
+      this.batch.AutoBatchNo = res.message;
+
+      // ✅ Send correct value to report
+      this.printReport(reportName, res.message);
+
+    } else {
+      this.toastr.warning(res?.errors?.length ? res.errors[0] : 'Save failed');
+    }
+  },
+
+  error: (err: any) => {
+    console.error('❌ Save Error:', err);
+    this.toastr.error('Save failed');
+  }
+});
+  //   console.log('✅ SAVE PAYLOAD:', payload);
     
-    /* ================= API CALL ================= */
-    this.service.SaveWashPrepare(payload).subscribe({
-      next: (res: any) => {
-        this.toastr.success('Saved successfully');
-        //this.router.navigate(['/wash/prepare-list']);
-        let reportName = "Batch Card Preview";
-        let generateNumber = "";
-        console.log("res",res.message);
-      
-        this.printReport(reportName,res.message);
+  //   /* ================= API CALL ================= */
+  //   this.service.SaveWashPrepare(payload)
+   
+  //   .subscribe({
+  //     next: (res: any) => {
+  //        debugger;
+  //       // this.toastr.success('Saved successfully');
+  //       //this.router.navigate(['/wash/prepare-list']);
+  //       // let reportName = "Batch Card Preview";
+  //        if (res && res.ResultCode === 1) {
+  //       this.toastr.success('Saved successfully');
 
-      },
-      error: (err: any) => {
-        console.error('❌ Save Error:', err);
-        this.toastr.error('Save failed');
-      }
-    });
+  //       let reportName = "Batch Card Preview";
+
+  //       let generateNumber = "";
+  //    // ✅ Correct binding
+  //       this.batch.AutoBatchNo = res.AutoBatchNo;
+
+  //       // ✅ Pass correct value to report
+  //       this.printReport(reportName, res.AutoBatchNo);
+  //     } else {
+  //       this.toastr.warning('Save failed or invalid response');
+  //     }
+  //   },
+  //   error: (err: any) => {
+  //     console.error('❌ Save Error:', err);
+  //     this.toastr.error('Save failed');
+  //   }
+  // });
+    
+
+
+// .subscribe({
+//         next: (res: any) => {
+
+//           console.log('SAVE RESPONSE', res);
+
+//           if (!res?.succeeded) {
+//             this.toastr.error('Save Failed');
+//             return;
+//           }
+
+//           // ⭐ parse JSON string
+//           const data = JSON.parse(res.message);
+
+//           if (data?.ResultCode === 1) {
+
+//             this.clearAll();
+
+//             this.review.receiveNo = data.ReceiveNo;
+
+//             this.toastr.success(
+//               `Saved Successfully. Receive No: ${data.ReceiveNo}`
+//             );
+
+//           } else {
+//             this.toastr.error(data?.Message || 'Save Failed');
+//           }
+//         },
+
+
   }
 
   ReportUrlTab:any;

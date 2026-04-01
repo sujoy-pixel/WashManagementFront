@@ -283,13 +283,20 @@
 
         <!-- BATCH QTY -->
         <div class="info-box">
-          <table class="table info-table">
+          <!-- <table class="table info-table">
             <tr >
               <th>Batch No</th>
-              <td class="fw-bold text-primary">{{ batch.batchNo }}</td>
+              <td class="fw-bold text-primary">{{ batch.AutoBatchNo }}</td>
             </tr>
-          </table>
-
+          </table> -->
+<table class="table info-table">
+  <tr>
+    <th>Batch No</th>
+    <td class="fw-bold text-primary">
+      {{ batch.AutoBatchNo }}
+    </td>
+  </tr>
+</table>
           <table class="table info-table text-center mt-3">
             <thead>
               <tr class="table-light">

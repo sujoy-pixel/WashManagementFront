@@ -508,7 +508,7 @@ getSearchData(
     );
   }
   getBatchWishQCDataList(batchNo: string) {
-
+debugger;
     const params = new HttpParams()
       .set('batchNo', batchNo);
 
