@@ -40,3 +40,8 @@ export class CommonFiles {
     filE_OBJECT_ID:number|any;
 
 }
+
+export interface DropdownItem {
+  label: string;
+  value: number | string;
+}
