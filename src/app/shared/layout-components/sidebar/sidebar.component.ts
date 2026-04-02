@@ -135,7 +135,10 @@ export class SidebarComponent {
             let currentUrl = this.router.url;
             // const currentUrl = this.router.url;
             // console.log('Current URL:', currentUrl);
-            this.setActiveMenu(this.menuItems, currentUrl);
+            // this.setActiveMenu(this.menuItems, currentUrl);
+            setTimeout(() => {
+              this.setActiveMenu(this.menuItems, this.router.url);
+            }, 0);
           }
         }
       },
@@ -148,86 +151,86 @@ export class SidebarComponent {
   checkNavActiveOnLoad() {
     this.LoadMenu();
 
-    this.navServices.items.subscribe((menuItems: any) => {
-      //this.menuItems = menuItems;
+    // this.navServices.items.subscribe((menuItems: any) => {
+    //   //this.menuItems = menuItems;
 
-      this.router.events.subscribe((event: any) => {
-        if (event instanceof NavigationStart) {
-          //  this.closeNavActive();
-          setTimeout(() => {
-            let sidemenu = document.querySelectorAll('.side-menu__item.active');
-            let subSidemenu = document.querySelectorAll(
-              '.sub-side-menu__item.active'
-            );
-            sidemenu.forEach((e) => e.classList.remove('active'));
-            subSidemenu.forEach((e) => e.classList.remove('active'));
-          }, 100);
-        }
-        if (event instanceof NavigationEnd) {
-          menuItems.filter((items: any) => {
-            if (items.path === event.url) {
-              this.setNavActive(items);
-            }
-            if (!items.children) {
-              return false;
-            }
-            items.children.filter((subItems: any) => {
-              if (subItems.path === event.url) {
-                this.setNavActive(subItems);
-              }
-              if (!subItems.children) {
-                return false;
-              }
-              subItems.children.filter((subSubItems: any) => {
-                if (subSubItems.path === event.url) {
-                  this.setNavActive(subSubItems);
-                }
-              });
-              return;
-            });
-            return;
-          });
-          setTimeout(() => {
-            parentNavActive();
-          }, 200);
-        }
-      });
-    });
+    //   this.router.events.subscribe((event: any) => {
+    //     if (event instanceof NavigationStart) {
+    //       //  this.closeNavActive();
+    //       setTimeout(() => {
+    //         let sidemenu = document.querySelectorAll('.side-menu__item.active');
+    //         let subSidemenu = document.querySelectorAll(
+    //           '.sub-side-menu__item.active'
+    //         );
+    //         sidemenu.forEach((e) => e.classList.remove('active'));
+    //         subSidemenu.forEach((e) => e.classList.remove('active'));
+    //       }, 100);
+    //     }
+    //     if (event instanceof NavigationEnd) {
+    //       menuItems.filter((items: any) => {
+    //         if (items.path === event.url) {
+    //           this.setNavActive(items);
+    //         }
+    //         if (!items.children) {
+    //           return false;
+    //         }
+    //         items.children.filter((subItems: any) => {
+    //           if (subItems.path === event.url) {
+    //             this.setNavActive(subItems);
+    //           }
+    //           if (!subItems.children) {
+    //             return false;
+    //           }
+    //           subItems.children.filter((subSubItems: any) => {
+    //             if (subSubItems.path === event.url) {
+    //               this.setNavActive(subSubItems);
+    //             }
+    //           });
+    //           return;
+    //         });
+    //         return;
+    //       });
+    //       setTimeout(() => {
+    //         parentNavActive();
+    //       }, 200);
+    //     }
+    //   });
+    // });
   }
 
-  checkCurrentActive() {
-    this.LoadMenu();
+  // checkCurrentActive() {
+  //   this.LoadMenu();
 
-    this.navServices.items.subscribe((menuItems: any) => {
-      //this.menuItems = menuItems;
+  //   this.navServices.items.subscribe((menuItems: any) => {
+  //     //this.menuItems = menuItems;
 
-      const currentUrl = this.router.url;
+  //     const currentUrl = this.router.url;
 
-      menuItems.filter((items: any) => {
-        if (items.path === currentUrl) {
-          this.setNavActive(items);
-        }
-        if (!items.children) {
-          return false;
-        }
-        items.children.filter((subItems: any) => {
-          if (subItems.path === currentUrl) {
-            this.setNavActive(subItems);
-          }
-          if (!subItems.children) {
-            return false;
-          }
-          subItems.children.filter((subSubItems: any) => {
-            if (subSubItems.path === currentUrl) {
-              this.setNavActive(subSubItems);
-            }
-          });
-          return;
-        });
-        return;
-      });
-    });
-  }
+  //     menuItems.filter((items: any) => {
+  //       if (items.path === currentUrl) {
+  //         this.setNavActive(items);
+  //       }
+  //       if (!items.children) {
+  //         return false;
+  //       }
+  //       items.children.filter((subItems: any) => {
+  //         if (subItems.path === currentUrl) {
+  //           this.setNavActive(subItems);
+  //         }
+  //         if (!subItems.children) {
+  //           return false;
+  //         }
+  //         subItems.children.filter((subSubItems: any) => {
+  //           if (subSubItems.path === currentUrl) {
+  //             this.setNavActive(subSubItems);
+  //           }
+  //         });
+  //         return;
+  //       });
+  //       return;
+  //     });
+  //   });
+  // }
   //Active Nav State
   setNavActive(item: any) {
     this.menuItems.filter((menuItem) => {
@@ -404,6 +407,8 @@ export class SidebarComponent {
 
   ngOnDestroy() {
     // unsubscribing the Observable 
-    this.windowSubscribe$.unsubscribe()
+    if (this.windowSubscribe$) {
+      this.windowSubscribe$.unsubscribe();
+    }
   }
 }

@@ -1,0 +1,153 @@
+<div class="card custom-card shadow-sm rounded-4">
+    <div class="card-header">
+        <h5 class="card-title"> Wash Operation Start End</h5>
+    </div>
+ 
+    <div class="card-body px-4 py-4">
+        
+        <div class="row align-items-center mb-2">
+            <div class="col-md-4">
+                <label class="form-label fw-semibold">
+                    Unit <span class="text-danger">*</span>
+                </label>
+                <!-- <pre>{{UnitList | json}}</pre> -->
+                <div class="form-control common-border">
+                    <ng-select [(ngModel)]="Model.UnitId" [items]="UnitList" bindLabel="label" bindValue="value"
+                        placeholder="Select Unit">
+                    </ng-select>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <label class="form-label fw-semibold">
+                    Tracking / Batch No <span class="text-danger">*</span>
+                </label>
+                <input 
+                    type="text" 
+                    class="form-control 
+                    common-border-input" 
+                    placeholder="Enter Batch No" 
+                    [(ngModel)]="Model.trackingNo" 
+                    (keydown.enter)="fetchTrackingData()"
+                >
+                <!-- [(ngModel)]="Model.trackingBatchNo" -->
+            </div>
+            <div class="col-md-4">
+                <label class="form-label fw-semibold">
+                    Buyer <span class="text-danger">*</span>
+                </label>
+                <div class="form-control common-border">
+                    <ng-select [(ngModel)]="Model.BuyerId" placeholder="Buyer" (ngModelChange)="onBuyerChange()">
+                        <ng-option *ngFor="let u of buyerList" [value]="u.value">
+                            {{ u.label }}
+                        </ng-option>
+                    </ng-select>
+                </div>
+
+            </div>
+            <div class="col-md-4">
+                <label class="form-label fw-semibold">
+                    M/C Name <span class="text-danger">*</span>
+                </label>
+                <input type="text" class="form-control common-border-input" placeholder="Enter M/C Name">
+                <!-- [(ngModel)]="model.trackingBatchNo" -->
+            </div>
+
+            <div class="col-md-4">
+                <label class="form-label fw-semibold">
+                    Job No <span class="text-danger">*</span>
+                </label>
+                <input type="text" class="form-control common-border-input" placeholder="Enter Job No">
+                <!-- [(ngModel)]="model.trackingBatchNo" -->
+            </div>
+
+            <div class="col-md-4">
+                <label class="form-label fw-semibold">
+                    Style <span class="text-danger">*</span>
+                </label>
+                <div class="form-control common-border">
+                    <ng-select [(ngModel)]="Model.BuyerId" placeholder="Buyer" (ngModelChange)="onBuyerChange()">
+                        <ng-option *ngFor="let u of buyerList" [value]="u.value">
+                            {{ u.label }}
+                        </ng-option>
+                    </ng-select>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <label class="form-label fw-semibold">
+                    Order <span class="text-danger">*</span>
+                </label>
+                <input type="text" class="form-control common-border-input" placeholder="Enter Order No">
+                <!-- [(ngModel)]="model.trackingBatchNo" -->
+            </div>
+            <div class="col-md-4">
+                <label class="form-label fw-semibold">
+                    Weight <span class="text-danger">*</span>
+                </label>
+                <input type="text" class="form-control common-border-input" placeholder="Enter Weight">
+                <!-- [(ngModel)]="model.trackingBatchNo" -->
+            </div>
+            <div class="col-md-4">
+                <label class="form-label fw-semibold">
+                    Color <span class="text-danger">*</span>
+                </label>
+                <input type="text" class="form-control common-border-input" placeholder="Enter Color">
+                <!-- [(ngModel)]="model.trackingBatchNo" -->
+            </div>
+        </div>
+        <div class="row align-items-center mb-2">
+            <div class="col-md-4">
+                <label class="form-label fw-semibold">
+                    Batch Start
+                </label>
+                <input type="text" class="form-control common-border-input" bsDatepicker>
+
+                <!-- [(ngModel)]="model.trackingBatchNo" -->
+            </div>
+            <div class="col-md-4">
+                <label class="form-label fw-semibold">
+                    Batch End
+                </label>
+                <input type="text" class="form-control common-border-input" bsDatepicker>
+
+            </div>
+            <div class="col-md-4">
+                <label class="form-label fw-semibold">
+                    Operation Time
+                </label>
+                <div class="form-control common-border">
+                    <ng-select placeholder="Operation Time">
+                        <ng-option>
+                            1st Operation
+                        </ng-option>
+                        <ng-option>
+                            2nd Operation
+                        </ng-option>
+                        <ng-option>
+                            3rd Operation
+                        </ng-option>
+                    </ng-select>
+                </div>
+            </div>
+
+
+
+
+
+        </div>
+        <!-- Search Button -->
+        <div class="text-right mt-3">
+            <button class="btn btn-success px-2 shadow-sm" (click)="onSubmit()">
+                <i class="fa fa-save me-2"></i> Save
+            </button>
+            &nbsp;
+            <button class="btn btn-warning" type="button" (click)="onClear()">
+                <i class="fa fa-refresh" aria-hidden="true"></i> Refresh
+            </button>
+            &nbsp; &nbsp;
+            <button class="btn btn-danger" type="button" (click)="onClear()">
+                <i class="fa fa-danger" aria-hidden="true"></i> Close
+            </button>
+        </div>
+
+    </div>
+</div>
