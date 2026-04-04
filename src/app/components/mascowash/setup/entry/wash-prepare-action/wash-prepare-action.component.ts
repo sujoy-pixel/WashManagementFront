@@ -383,6 +383,7 @@ this.service.SaveWashPrepare(payload).subscribe({
   ReportUrlTab:any;
   printReport(ReportType,GenerateNumber)
   {
+    debugger;
       this.isLoading=true;
       const token = localStorage.getItem("token");
     const headers = { Authorization: `Bearer ${token}` };

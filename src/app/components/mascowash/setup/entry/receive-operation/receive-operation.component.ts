@@ -449,6 +449,7 @@ export class ReceiveOperationComponent implements OnInit {
     // };
     this.Model.UnitId = 0;
     this.isEditMode = false;
+    this.review.receiveNo = '';
   }
 
 

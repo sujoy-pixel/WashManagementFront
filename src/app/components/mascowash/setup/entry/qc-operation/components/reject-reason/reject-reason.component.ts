@@ -8,6 +8,7 @@ import { CommonServiceService } from 'src/app/components/mascowash/services/comm
 import { ToastrService } from 'ngx-toastr';
 
 interface DefectItem {
+defectId: number;
   name: string;
   count: number;
   isFlipped: boolean;
@@ -47,10 +48,13 @@ export class RejectReasonComponent implements OnInit {
 
   // 🔹 Load Fault Name from API
   loadData() {
+      debugger;
     this.service.getFaultNameList().subscribe({
+    
       next: (res: any) => {
         this.dataList = res ?? [];
         this.items = this.dataList.map((x: any) => ({
+          defectId: x.faultNameId || x.FaultNameId,
           name: x.faultName || x.FaultName,
           count: 0,
           isFlipped: false
@@ -116,6 +120,7 @@ export class RejectReasonComponent implements OnInit {
     const selectedDefects = this.items
       .filter(x => x.count > 0)
       .map(x => ({
+        defectId: x.defectId,
         name: x.name,
         count: x.count
       }));

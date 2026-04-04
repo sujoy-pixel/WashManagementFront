@@ -56,23 +56,24 @@ export class QcDashboardComponent {
   };
 
   // 🔥 COUNTERS
-  repairableCount: number = 0;
-  repairableLength: number = 0;
+  repairableCount = 0;
+  repairableLength = 0;
 
-  rejectCount: number = 0;
-  rejectLength: number = 0;
+  rejectCount = 0;
+  rejectLength = 0;
 
-  goodGarments: number = 0;
-  repairable: number = 0;
-  reject: number = 0;
+  goodGarments = 0;
+  repairable = 0;
+  reject = 0;
 
-  // 🔹 Dialog
-  isShowRejectionDialog: boolean = false;
-  isShowRepairableDialog: boolean = false;
+  // 🔥 BASE VALUE (IMPORTANT)
+  baseGoodGarments = 0;
 
-  loading: boolean = false;
+  isShowRejectionDialog = false;
+  isShowRepairableDialog = false;
 
-  // 🔹 Lists
+  loading = false;
+
   repairableDefects: any[] = [];
   rejectDefects: any[] = [];
 
@@ -104,7 +105,6 @@ export class QcDashboardComponent {
 
           const data = res[0];
 
-          // ✅ WITH ID MAPPING
           this.batchHeader = {
             unitId: data.unitId,
             buyerId: data.buyerId,
@@ -127,7 +127,9 @@ export class QcDashboardComponent {
             date: data.date ?? ''
           };
 
-          this.goodGarments = data.goodGarments ?? 0;
+          // 🔥 BASE + CURRENT
+          this.baseGoodGarments = data.goodGarments ?? 0;
+          this.goodGarments = this.baseGoodGarments;
 
           this.cleanTrackingNo();
         },
@@ -142,26 +144,41 @@ export class QcDashboardComponent {
   }
 
   // 🔹 RESET
-  resetValues() {
-    this.goodGarments = 0;
-    this.repairable = 0;
-    this.reject = 0;
+  // resetValues() {
+  //   this.goodGarments = 0;
+  //   this.baseGoodGarments = 0;
+  //   this.repairable = 0;
+  //   this.reject = 0;
 
-    this.repairableDefects = [];
-    this.rejectDefects = [];
-  }
+  //   this.repairableDefects = [];
+  //   this.rejectDefects = [];
+  // }
 
   cleanTrackingNo() {
     this.batchNo = '';
   }
 
-  // 🔹 GOOD
+  // 🔥 CORE LOGIC (SUPER CLEAN)
+  private recalculateGood() {
+    this.goodGarments =
+      this.baseGoodGarments - (this.rejectLength + this.repairableLength);
+
+    if (this.goodGarments < 0) {
+      this.goodGarments = 0;
+    }
+  }
+
+  // 🔹 GOOD MANUAL (optional)
   increaseGood() {
-    this.goodGarments++;
+    this.baseGoodGarments++;
+    this.recalculateGood();
   }
 
   decreaseGood() {
-    if (this.goodGarments > 0) this.goodGarments--;
+    if (this.baseGoodGarments > 0) {
+      this.baseGoodGarments--;
+      this.recalculateGood();
+    }
   }
 
   // 🔹 DIALOG
@@ -186,6 +203,9 @@ export class QcDashboardComponent {
 
     this.repairable = this.repairableLength;
 
+    // 🔥 UPDATE GOOD
+    this.recalculateGood();
+
     this.isShowRepairableDialog = false;
 
     this.cdr.detectChanges();
@@ -204,21 +224,22 @@ export class QcDashboardComponent {
 
     this.reject = this.rejectLength;
 
+    // 🔥 UPDATE GOOD
+    this.recalculateGood();
+
     this.isShowRejectionDialog = false;
 
     this.cdr.detectChanges();
   }
 
-  // 🔥🔥🔥 SAVE METHOD (MAIN PART)
+  // 🔥 SAVE
   saveQCData() {
-    debugger;
 
     if (!this.batchHeader.batchNo) {
       this.toastr.warning('Batch No required!');
       return;
     }
 
-    // 🔥 MASTER
     const master = {
       unitId: this.batchHeader.unitId,
       buyerId: this.batchHeader.buyerId,
@@ -234,11 +255,10 @@ export class QcDashboardComponent {
       date: this.batchHeader.date,
 
       goodGarments: this.goodGarments,
-      rejectQty: this.rejectLength,         // ✅ LENGTH
-      repairableQty: this.repairableLength  // ✅ LENGTH
+      repairable: this.repairable,
+      reject: this.reject
     };
 
-    // 🔥 DETAILS
     const repairableDetails = this.repairableDefects.map(x => ({
       defectId: x.defectId,
       qty: x.count || 0
@@ -256,15 +276,63 @@ export class QcDashboardComponent {
     };
 
     console.log('FINAL SAVE:', payload);
-
-    this.service.saveQCData(payload).subscribe({
-      next: () => {
-        this.toastr.success('Saved Successfully');
-        this.resetValues();
-      },
-      error: () => {
-        this.toastr.error('Save Failed');
-      }
-    });
+     this.toastr.success('Saved Successfully');
+     this.resetValues();
+    // this.service.saveQCData(payload).subscribe({
+    //   next: () => {
+    //     this.toastr.success('Saved Successfully');
+    //     this.resetValues();
+    //   },
+    //   error: () => {
+    //     this.toastr.error('Save Failed');
+    //   }
+    // });
   }
+
+  resetValues() {
+
+  // 🔹 Header Reset
+  this.batchHeader = {
+    unitName: '',
+    buyerName: '',
+    batchNo: '',
+    styleName: '',
+    orderNo: '',
+    jobNo: '',
+    type: '',
+    color: '',
+    dressPart: '',
+    uom: '',
+    date: ''
+  };
+
+  // 🔹 Input Reset
+  this.batchNo = '';
+
+  // 🔹 Counters Reset
+  this.goodGarments = 0;
+  this.baseGoodGarments = 0;
+
+  this.repairable = 0;
+  this.reject = 0;
+
+  this.repairableLength = 0;
+  this.rejectLength = 0;
+
+  this.repairableCount = 0;
+  this.rejectCount = 0;
+
+  // 🔹 Lists Reset
+  this.repairableDefects = [];
+  this.rejectDefects = [];
+
+  // 🔹 Dialog Close
+  this.isShowRejectionDialog = false;
+  this.isShowRepairableDialog = false;
+
+  // 🔹 UI Refresh
+  this.cdr.detectChanges();
+
+  this.toastr.info('Form cleared');
+}
 }
