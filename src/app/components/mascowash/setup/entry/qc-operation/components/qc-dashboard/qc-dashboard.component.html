@@ -39,12 +39,12 @@
                     autofocus />
             </span>
             <span><strong>Dress Part:</strong> {{ batchHeader.dressPart }}</span>
-             
+
             <span><strong>UOM:</strong> {{ batchHeader.uom }}</span>
             <span><strong>Date:</strong> {{ batchHeader.date }}</span>
             <!-- <span><strong>Machine No:</strong> Target (Australia)</span>
             <span><strong>Process No:</strong> Target (Australia)</span> -->
-           
+
             <!-- <span><strong>Bundle No:</strong> 37227OR</span> -->
         </div>
     </div>
@@ -70,7 +70,7 @@
         <div (click)="showRejectionDialog()"
             class="col card-section red-section flex flex-column align-items-center justify-content-center cursor-pointer">
             <div class="counter-circle-container mb-3">
-                 <div class="counter-value">{{ reject }}</div>
+                <div class="counter-value">{{ reject }}</div>
             </div>
             <div class="label-title">Reject</div>
         </div>
@@ -86,11 +86,29 @@
                             Repairable Defect
                         </div>
 
-                        <div class="defect-list">
-                            <div class="defect-item" *ngFor="let item of repairableDefects">
-                                <i class="pi pi-times text-red-500 mr-2"></i>
-                                {{ item.name }} ({{ item.count }})
+                        <!-- <div class="defect-list">
+                            <div *ngFor="let item of repairableDefects">
+                                <div class="defect-item" [ngStyle]="{'background': item.backgroundColor}">
+                                    <i class="pi pi-times text-red-500 mr-2"></i>
+                                    {{ item.name }} ({{ item.count }})
+                                </div>
                             </div>
+                        </div> -->
+                        <div class="defect-list">
+                            <ng-container *ngFor="let group of repairableDefects | keyvalue">
+
+                                <div *ngFor="let item of group.value; let i = index">
+                                    <div class="defect-item" [ngStyle]="{'background': item.backgroundColor}">
+
+                                        <i class="pi pi-times text-red-500 mr-2 cursor-pointer"
+                                            (click)="removeDefect(group.key, i)">
+                                        </i>
+
+                                        {{ item.name }} ({{ item.count }})
+                                    </div>
+                                </div>
+
+                            </ng-container>
                         </div>
                     </div>
                 </div>
@@ -102,11 +120,27 @@
                             Reject
                         </div>
 
-                        <div class="defect-list">
+                        <!-- <div class="defect-list">
                             <div class="defect-item reject-bg" *ngFor="let item of rejectDefects">
                                 <i class="pi pi-times text-red-600 mr-2"></i>
                                 {{ item.name }} ({{ item.count }})
                             </div>
+                        </div> -->
+                        <div class="defect-list">
+                            <ng-container *ngFor="let group of rejectDefects | keyvalue">
+
+                                <div *ngFor="let item of group.value; let i = index">
+                                    <div class="defect-item" [ngStyle]="{'background': item.backgroundColor}">
+
+                                        <i class="pi pi-times text-red-500 mr-2 cursor-pointer"
+                                           (click)="removeReject(group.key, i)">
+                                        </i>
+
+                                        {{ item.name }} ({{ item.count }})
+                                    </div>
+                                </div>
+
+                            </ng-container>
                         </div>
                     </div>
                 </div>
@@ -149,37 +183,25 @@
                 <span>Processing Time: <span>00 hour 02 minutes</span></span>
             </div>
         </div>
-<!-- 🔥 ACTION BUTTONS -->
-<div class="action-buttons flex gap-2">
+        <!-- 🔥 ACTION BUTTONS -->
+        <div class="action-buttons flex gap-2">
 
-    <!-- ✅ SAVE -->
-    <button pButton
-            type="button"
-            label="SAVE"
-            icon="pi pi-check"
-            class="p-button-success btn-custom save-btn"
-            (click)="saveQCData()">
-    </button>
+            <!-- ✅ SAVE -->
+            <button pButton type="button" label="SAVE" icon="pi pi-check" class="p-button-success btn-custom save-btn"
+                (click)="saveQCData()">
+            </button>
 
-    <!-- ❌ CANCEL -->
-    <button pButton
-            type="button"
-            label="CANCEL"
-            icon="pi pi-times"
-            class="p-button-danger btn-custom cancel-btn"
-            (click)="resetValues()">
-    </button>
+            <!-- ❌ CANCEL -->
+            <button pButton type="button" label="CANCEL" icon="pi pi-times"
+                class="p-button-danger btn-custom cancel-btn" (click)="resetValues()">
+            </button>
 
-    <!-- 🔄 REFRESH -->
-    <button pButton
-            type="button"
-            label="REFRESH"
-            icon="pi pi-refresh"
-            class="p-button-info p-button-outlined btn-custom refresh-btn"
-            (click)="resetValues()">
-    </button>
+            <!-- 🔄 REFRESH -->
+            <button pButton type="button" label="REFRESH" icon="pi pi-refresh"
+                class="p-button-info p-button-outlined btn-custom refresh-btn" (click)="resetValues()">
+            </button>
 
-</div>
+        </div>
         <!-- <div class="action-buttons flex gap-2">
             <button pButton label="SAVE" class="p-button-success btn-custom save-btn"></button>
             <button pButton label="CANCEL" class="p-button-danger btn-custom cancel-btn"></button>
@@ -187,13 +209,12 @@
         </div> -->
     </div>
 
-    <app-reject-reason [visible]="isShowRepairableDialog" (visibleChange)="isShowRepairableDialog = $event"
-        (onConfirm)="handleReparableData($event)">
+    <app-reject-reason type="repairable" title="Repairable Defects" [visible]="isShowRepairableDialog"
+        (visibleChange)="isShowRepairableDialog = $event" (onConfirm)="handleReparableData($event)">
     </app-reject-reason>
 
-    <app-reject-reason [visible]="isShowRejectionDialog" (visibleChange)="isShowRejectionDialog = $event"
-        (onConfirm)="handleRejectionData($event)">
+    <app-reject-reason type="reject" title="Rejected Defects" [visible]="isShowRejectionDialog"
+        (visibleChange)="isShowRejectionDialog = $event" (onConfirm)="handleRejectionData($event)">
     </app-reject-reason>
-    <!-- <app-reject-reason [visible]="isShowRejectionDialog"
-        (visibleChange)="isShowRejectionDialog = $event"></app-reject-reason> -->
+   
 </div>

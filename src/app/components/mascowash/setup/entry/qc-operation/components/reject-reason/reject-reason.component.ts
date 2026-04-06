@@ -7,8 +7,11 @@ import { WashSetupService } from 'src/app/components/mascowash/services/washsetu
 import { CommonServiceService } from 'src/app/components/mascowash/services/common-service';
 import { ToastrService } from 'ngx-toastr';
 
+let repairableColorIndex = 0;
+let rejectColorIndex = 0;
+
 interface DefectItem {
-defectId: number;
+  defectId: number;
   name: string;
   count: number;
   isFlipped: boolean;
@@ -25,6 +28,9 @@ defectId: number;
 export class RejectReasonComponent implements OnInit {
 
   @Input() visible: boolean = false;
+  @Input() title: string = '';
+  @Input() type: string = '';
+
   @Output() visibleChange = new EventEmitter<boolean>();
   @Output() confirmReject = new EventEmitter<any[]>();
   @Output() onConfirm = new EventEmitter<any>();
@@ -35,6 +41,10 @@ export class RejectReasonComponent implements OnInit {
   mainModalVisible: boolean = false;
   isFullScreen: boolean = false;
   isMaximized: boolean = false;
+  allSelectedDefects: any[] = [];
+  groupedDefects: { [key: string]: any[] } = {};
+  groupCounter = 1;
+
 
   constructor(
     private service: WashSetupService,
@@ -46,11 +56,12 @@ export class RejectReasonComponent implements OnInit {
     this.loadData();
   }
 
+
   // 🔹 Load Fault Name from API
   loadData() {
-      debugger;
+    debugger;
     this.service.getFaultNameList().subscribe({
-    
+
       next: (res: any) => {
         this.dataList = res ?? [];
         this.items = this.dataList.map((x: any) => ({
@@ -115,18 +126,52 @@ export class RejectReasonComponent implements OnInit {
     }
     return rows;
   }
+
+  generateColorVariant(index: number, type: 'repairable' | 'reject'): string {
+    const lightnessMap = [90, 80, 70, 60, 50];
+    let lightness = lightnessMap[index - 1] ?? (88 - index * 8);
+    if (type === 'repairable') {
+      return `hsl(50, 100%, ${lightness}%)`; // yellow
+    }
+    if (type === 'reject') {
+      return `hsl(10, 100%, ${lightness}%)`; // red
+    }
+    return `hsl(0, 0%, 90%)`;
+  }
+
   confirmSelection() {
-    debugger;
-    const selectedDefects = this.items
+    const groupKey = this.groupCounter.toString().padStart(4, '0');
+    let currentIndex = 0;
+
+    if (this.type === 'repairable') {
+      repairableColorIndex++;
+      currentIndex = repairableColorIndex;
+    } else if (this.type === 'reject') {
+      rejectColorIndex++;
+      currentIndex = rejectColorIndex;
+    }
+    const groupColor = this.generateColorVariant(currentIndex, this.type as any);
+
+    const newDefects = this.items
       .filter(x => x.count > 0)
       .map(x => ({
         defectId: x.defectId,
         name: x.name,
-        count: x.count
+        count: x.count,
+        backgroundColor: groupColor,
       }));
+    if (newDefects.length) {
+      this.groupedDefects[groupKey] = newDefects;
+      this.groupCounter++;
+    }
 
-    this.onConfirm.emit(selectedDefects);
+    this.items.forEach(x => {
+      x.count = 0;
+      x.isFlipped = false;
+    });
 
+    console.log('Grouped Defects:', this.groupedDefects);
+    this.onConfirm.emit(this.groupedDefects);
     this.visible = false;
     this.visibleChange.emit(false);
   }

@@ -84,7 +84,7 @@ export class QcDashboardComponent {
     private ngZone: NgZone,
     public fb: FormBuilder,
     private cdr: ChangeDetectorRef
-  ) {}
+  ) { }
 
   // 🔥 LOAD DATA
   loadBatchData() {
@@ -192,46 +192,69 @@ export class QcDashboardComponent {
 
   // 🔹 REPAIRABLE
   handleReparableData(data: any[]) {
-
+    console.log('Received Repairable Data:', data);
     this.repairableDefects = data;
 
-    this.repairableLength = data?.length || 0;
+    // this.repairableLength = data?.length || 0;
 
-    this.repairableCount = data?.length
-      ? data.reduce((sum, x) => sum + (x.count || 0), 0)
-      : 0;
 
-    this.repairable = this.repairableLength;
+    // this.repairableCount = data?.length
+    //   ? data.reduce((sum, x) => sum + (x.count || 0), 0)
+    //   : 0;
 
-    // 🔥 UPDATE GOOD
-    this.recalculateGood();
+    this.repairable = Object.keys(this.repairableDefects).length;
 
-    this.isShowRepairableDialog = false;
+    // // 🔥 UPDATE GOOD
+     this.recalculateGood();
 
-    this.cdr.detectChanges();
+     this.isShowRepairableDialog = false;
+
+     this.cdr.detectChanges();
   }
 
   // 🔹 REJECT
   handleRejectionData(data: any[]) {
-
     this.rejectDefects = data;
 
-    this.rejectLength = data?.length || 0;
+    this.reject = Object.keys(this.rejectDefects).length;
 
-    this.rejectCount = data?.length
-      ? data.reduce((sum, x) => sum + (x.count || 0), 0)
-      : 0;
+    // this.rejectDefects = data;
 
-    this.reject = this.rejectLength;
+    // this.rejectLength = data?.length || 0;
 
-    // 🔥 UPDATE GOOD
-    this.recalculateGood();
+    // this.rejectCount = data?.length
+    //   ? data.reduce((sum, x) => sum + (x.count || 0), 0)
+    //   : 0;
 
-    this.isShowRejectionDialog = false;
+    // this.reject = this.rejectLength;
 
-    this.cdr.detectChanges();
+    // // 🔥 UPDATE GOOD
+     this.recalculateGood();
+
+     this.isShowRejectionDialog = false;
+
+     this.cdr.detectChanges();
   }
+  removeDefect(groupKey: string, index: number) {
+    this.repairableDefects[groupKey].splice(index, 1);
 
+    if (this.repairableDefects[groupKey].length === 0) {
+      delete this.repairableDefects[groupKey];
+    }
+
+    this.repairableDefects = { ...this.repairableDefects };
+    this.repairable = Object.keys(this.repairableDefects).length;
+  }
+  removeReject(groupKey: string, index: number) {
+    this.rejectDefects[groupKey].splice(index, 1);
+
+    if (this.rejectDefects[groupKey].length === 0) {
+      delete this.rejectDefects[groupKey];
+    }
+
+    this.rejectDefects = { ...this.rejectDefects };
+    this.reject = Object.keys(this.rejectDefects).length;
+  }
   // 🔥 SAVE
   saveQCData() {
 
@@ -261,12 +284,14 @@ export class QcDashboardComponent {
 
     const repairableDetails = this.repairableDefects.map(x => ({
       defectId: x.defectId,
-      qty: x.count || 0
+      qty: x.count || 0,
+      backgroundColor: x.backgroundColor
     }));
 
     const rejectDetails = this.rejectDefects.map(x => ({
       defectId: x.defectId,
-      qty: x.count || 0
+      qty: x.count || 0,
+      backgroundColor: x.backgroundColor
     }));
 
     const payload = {
@@ -276,8 +301,8 @@ export class QcDashboardComponent {
     };
 
     console.log('FINAL SAVE:', payload);
-     this.toastr.success('Saved Successfully');
-     this.resetValues();
+    this.toastr.success('Saved Successfully');
+    this.resetValues();
     // this.service.saveQCData(payload).subscribe({
     //   next: () => {
     //     this.toastr.success('Saved Successfully');
@@ -291,48 +316,48 @@ export class QcDashboardComponent {
 
   resetValues() {
 
-  // 🔹 Header Reset
-  this.batchHeader = {
-    unitName: '',
-    buyerName: '',
-    batchNo: '',
-    styleName: '',
-    orderNo: '',
-    jobNo: '',
-    type: '',
-    color: '',
-    dressPart: '',
-    uom: '',
-    date: ''
-  };
+    // 🔹 Header Reset
+    this.batchHeader = {
+      unitName: '',
+      buyerName: '',
+      batchNo: '',
+      styleName: '',
+      orderNo: '',
+      jobNo: '',
+      type: '',
+      color: '',
+      dressPart: '',
+      uom: '',
+      date: ''
+    };
 
-  // 🔹 Input Reset
-  this.batchNo = '';
+    // 🔹 Input Reset
+    this.batchNo = '';
 
-  // 🔹 Counters Reset
-  this.goodGarments = 0;
-  this.baseGoodGarments = 0;
+    // 🔹 Counters Reset
+    this.goodGarments = 0;
+    this.baseGoodGarments = 0;
 
-  this.repairable = 0;
-  this.reject = 0;
+    this.repairable = 0;
+    this.reject = 0;
 
-  this.repairableLength = 0;
-  this.rejectLength = 0;
+    this.repairableLength = 0;
+    this.rejectLength = 0;
 
-  this.repairableCount = 0;
-  this.rejectCount = 0;
+    this.repairableCount = 0;
+    this.rejectCount = 0;
 
-  // 🔹 Lists Reset
-  this.repairableDefects = [];
-  this.rejectDefects = [];
+    // 🔹 Lists Reset
+    this.repairableDefects = [];
+    this.rejectDefects = [];
 
-  // 🔹 Dialog Close
-  this.isShowRejectionDialog = false;
-  this.isShowRepairableDialog = false;
+    // 🔹 Dialog Close
+    this.isShowRejectionDialog = false;
+    this.isShowRepairableDialog = false;
 
-  // 🔹 UI Refresh
-  this.cdr.detectChanges();
+    // 🔹 UI Refresh
+    this.cdr.detectChanges();
 
-  this.toastr.info('Form cleared');
-}
+    this.toastr.info('Form cleared');
+  }
 }

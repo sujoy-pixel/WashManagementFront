@@ -1,18 +1,8 @@
-<!-- <p-dialog header="Rejection Reason" [(visible)]="visible" (onHide)="visibleChange.emit(false)" [modal]="true"
-    [style]="{ width: '100vw'}" [contentStyle]="{ height: '100vh', background: '#fbaeae'}" [draggable]="false" [resizable]="false"
-    [maximizable]="true">  -->
-    <p-dialog
-    header="Rejection Reason"
-    [(visible)]="visible"
-    [modal]="true"
-    [maximizable]="true"
-    [draggable]="false"
-    [resizable]="false"
-    (onHide)="visibleChange.emit(false)"
-    [contentStyle]="{background: '#fbaeae'}"
+<p-dialog header={{title}} [(visible)]="visible" [modal]="true" [maximizable]="true" [draggable]="false"
+    [resizable]="false" (onHide)="visibleChange.emit(false)" [contentStyle]="{background: '#fbaeae'}"
     styleClass="custom-dialog">
     <div class="dashboard-body" style="margin-top: 15px;">
-        <div class="grid" >
+        <div class="grid">
             <div class="defect-card" *ngFor="let item of items; let i = index" [class.flipped]="item.isFlipped">
                 <div class="card-inner">
                     <div class="card-front">
@@ -20,11 +10,15 @@
                             {{ item.name }}
                         </div>
                         <div class="card-body">
-                            <button type="button" style="width: 30px; height: 30px;" class="btn btn-primary d-flex align-items-center justify-content-center" (click)="increase(item)">
+                            <button type="button" style="width: 30px; height: 30px;"
+                                class="btn btn-primary d-flex align-items-center justify-content-center"
+                                (click)="increase(item)">
                                 <i class="pi pi-plus"></i>
                             </button>
                             <span>{{ item.count }}</span>
-                            <button type="button" style="width: 30px; height: 30px;"  class="btn btn-danger d-flex align-items-center justify-content-center" (click)="decrease(item)">
+                            <button type="button" style="width: 30px; height: 30px;"
+                                class="btn btn-danger d-flex align-items-center justify-content-center"
+                                (click)="decrease(item)">
                                 <i class="pi pi-minus"></i>
                             </button>
                         </div>
@@ -34,14 +28,18 @@
                             {{ item.name }}
                         </div>
                         <div class="card-body">
-                             <button type="button" style="width: 30px; height: 30px;" class="btn btn-primary d-flex align-items-center justify-content-center" (click)="increase(item)">
+                            <button type="button" style="width: 30px; height: 30px;"
+                                class="btn btn-primary d-flex align-items-center justify-content-center"
+                                (click)="increase(item)">
                                 <i class="pi pi-plus"></i>
-                             </button>
-                              <span>{{ item.count }}</span>
-                            <button type="button" style="width: 30px; height: 30px;" class="btn btn-danger d-flex align-items-center justify-content-center" (click)="decrease(item)">
+                            </button>
+                            <span>{{ item.count }}</span>
+                            <button type="button" style="width: 30px; height: 30px;"
+                                class="btn btn-danger d-flex align-items-center justify-content-center"
+                                (click)="decrease(item)">
                                 <i class="pi pi-minus"></i>
                             </button>
-                           
+
                         </div>
                     </div>
                 </div>
@@ -49,21 +47,13 @@
         </div>
     </div>
     <ng-template pTemplate="footer">
-  <div style="width:100%;display:flex;justify-content:flex-end;gap:8px;">
-
-    <button type="button"
-    class="btn btn-primary"
-    (click)="confirmSelection()">
-      OK
-    </button>
-
-    <button type="button"
-    class="btn btn-danger"
-    (click)="closeDialog()">
-      Close
-    </button>
-
-  </div>
-</ng-template>
-   
+        <div style="width:100%;display:flex;justify-content:flex-end;gap:8px;">
+            <button type="button" class="btn btn-primary" (click)="confirmSelection()">
+                OK
+            </button>
+            <button type="button" class="btn btn-danger" (click)="closeDialog()">
+                Close
+            </button>
+        </div>
+    </ng-template>
 </p-dialog>
