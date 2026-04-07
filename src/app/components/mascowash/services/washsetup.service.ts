@@ -328,36 +328,36 @@ export class WashSetupService {
       { headers: this.token.headerToken() }
     );
   }
-getSearchData(
-  unitId: number,
-  receiveNo?: string,
-  fromDate?: string,
-  toDate?: string
-): Observable<any[]> {
+  getSearchData(
+    unitId: number,
+    receiveNo?: string,
+    fromDate?: string,
+    toDate?: string
+  ): Observable<any[]> {
 
-  let params = new HttpParams()
-    .set('unitId', unitId.toString());
+    let params = new HttpParams()
+      .set('unitId', unitId.toString());
 
-  if (receiveNo) {
-    params = params.set('receiveNo', receiveNo);
-  }
-
-  if (fromDate) {
-    params = params.set('fromDate', fromDate);
-  }
-
-  if (toDate) {
-    params = params.set('toDate', toDate);
-  }
-
-  return this.http.get<any[]>(
-    this.baseUrl_ + 'Setup/getSearchDataByReceiveNoOrDate',
-    {
-      headers: this.token.headerToken(),
-      params: params
+    if (receiveNo) {
+      params = params.set('receiveNo', receiveNo);
     }
-  );
-}
+
+    if (fromDate) {
+      params = params.set('fromDate', fromDate);
+    }
+
+    if (toDate) {
+      params = params.set('toDate', toDate);
+    }
+
+    return this.http.get<any[]>(
+      this.baseUrl_ + 'Setup/getSearchDataByReceiveNoOrDate',
+      {
+        headers: this.token.headerToken(),
+        params: params
+      }
+    );
+  }
   GetJobNoWithParameterDDL(data: any) {
     const params = new HttpParams()
       .set('unitId', data.unitId)
@@ -508,7 +508,7 @@ getSearchData(
     );
   }
   getBatchWishQCDataList(batchNo: string) {
-debugger;
+    debugger;
     const params = new HttpParams()
       .set('batchNo', batchNo);
 
@@ -521,11 +521,27 @@ debugger;
     );
   }
   saveQCData(data: any) {
-  debugger;
-  return this.http.post(
-    this.baseUrl_ + 'Setup/SaveQCData',   // 👉 API endpoint (adjust if needed)
-    data,
-    { headers: this.token.headerToken() }
-  );
-}
+    debugger;
+    return this.http.post(
+      this.baseUrl_ + 'Setup/SaveQCData',   // 👉 API endpoint (adjust if needed)
+      data,
+      { headers: this.token.headerToken() }
+    );
+
+  }
+
+
+  getBatchWishStartEndData(batchNo: string) {
+    debugger;
+    const params = new HttpParams()
+      .set('batchNo', batchNo);
+
+    return this.http.get<any[]>(
+      this.baseUrl_ + 'Setup/getBatchWishStartEndData',
+      {
+        headers: this.token.headerToken(),
+        params
+      }
+    );
+  }
 }

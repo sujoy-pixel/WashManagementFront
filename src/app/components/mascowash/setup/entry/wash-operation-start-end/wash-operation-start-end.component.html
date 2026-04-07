@@ -21,14 +21,15 @@
                 <label class="form-label fw-semibold">
                     Tracking / Batch No <span class="text-danger">*</span>
                 </label>
-                <input 
-                    type="text" 
-                    class="form-control 
-                    common-border-input" 
-                    placeholder="Enter Batch No" 
-                    [(ngModel)]="Model.trackingNo" 
-                    (keydown.enter)="fetchTrackingData()"
-                >
+                   
+<input type="text" class="form-control flex-grow-1" [(ngModel)]="batchNo"
+                    (keyup.enter)="loadBatchData()" (blur)="loadBatchData()" placeholder="Scan or Enter Batch No"
+                    autofocus />
+
+
+                <!-- <input type="text" class="form-control common-border-input" placeholder="Enter Batch No" [(ngModel)]="Model.trackingNo" (keydown.enter)="fetchTrackingData()"> -->
+
+                
                 <!-- [(ngModel)]="Model.trackingBatchNo" -->
             </div>
             <div class="col-md-4">

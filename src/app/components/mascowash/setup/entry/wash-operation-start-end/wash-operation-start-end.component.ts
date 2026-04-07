@@ -9,7 +9,28 @@ import { FormsModule } from '@angular/forms';
 import { NgSelectModule } from '@ng-select/ng-select';
 import { BsDatepickerModule } from 'ngx-bootstrap/datepicker';
 import { CardModule } from 'primeng/card';
+interface BatchHeaderModel {
+  unitId?: number;
+  buyerId?: number;
+  styleId?: number;
+  orderId?: number;
+  jobId?: number;
+  dressPartId?: number;
+  uomId?: number;
 
+  unitName: string;
+  buyerName: string;
+  batchNo: string;
+  styleName: string;
+  orderNo: string;
+  jobNo: string;
+
+  type: string;
+  color: string;
+  dressPart: string;
+  uom: string;
+  date: string;
+}
 @Component({
   selector: 'app-wash-operation-start-end',
   standalone: true,
@@ -18,6 +39,25 @@ import { CardModule } from 'primeng/card';
   styleUrl: './wash-operation-start-end.component.scss'
 })
 export class WashOperationStartEndComponent {
+
+
+  batchNo: string = '';
+
+  batchHeader: BatchHeaderModel = {
+    unitName: '',
+    buyerName: '',
+    batchNo: '',
+    styleName: '',
+    orderNo: '',
+    jobNo: '',
+    type: '',
+    color: '',
+    dressPart: '',
+    uom: '',
+    date: ''
+  };
+
+
   constructor(
     private service: WashSetupService,
     private toastr: ToastrService,
@@ -30,7 +70,8 @@ export class WashOperationStartEndComponent {
     JobId: null as number | null,
     StyleId: null as number | null,
     OrderId: null as number | null,
-    trackingNo: '' as string
+    trackingNo: '' as string,
+    batchNo: '' as string
   };
 
   buyerList: DropdownItem[] = [];
@@ -83,23 +124,32 @@ export class WashOperationStartEndComponent {
       StyleId: null,
       OrderId: null,
       trackingNo: '',
+      batchNo: ''
     };
     this.toastr.info('Form cleared.');
   }
-  fetchTrackingData() {
-    const trackingNo = this.Model.trackingNo;
-    if (!trackingNo) {
-      this.toastr.warning('Tracking No required');
-      return;
-    }
+  // fetchTrackingData() {
+  //   const trackingNo = this.Model.trackingNo;
+  //   if (!trackingNo) {
+  //     this.toastr.warning('Tracking No required');
+  //     return;
+  //   }
   
-    this.service.getReceiveByTrackingNo(trackingNo).subscribe({
-      next: (res: any) => {
-        console.log("API Response:", res);
+  // }
+  // 🔥 LOAD DATA
+  loadBatchData() {
+  const batch = this.batchNo?.trim();
+
+  if (!batch) return;
+
+  
+  this.service.getBatchWishStartEndData(batch)
+    .subscribe({
+      next: (res: any[]) => {
+
+   debugger;
       },
-      error: () => {
-        alert("Invalid Tracking Number");
-      }
+ 
     });
-  }
+}
 }
