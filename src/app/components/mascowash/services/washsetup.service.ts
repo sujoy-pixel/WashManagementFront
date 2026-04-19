@@ -544,4 +544,18 @@ export class WashSetupService {
       }
     );
   }
+
+
+
+
+
+  saveWashStartEnd(model: any) {
+    debugger;
+    return this.http.post(
+      this.baseUrl_ + 'Setup/SaveWashStartEndData',
+      model,
+      { headers: this.token.headerToken() }
+    );
+  }
+
 }

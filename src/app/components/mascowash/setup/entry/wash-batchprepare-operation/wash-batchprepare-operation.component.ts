@@ -122,11 +122,28 @@ export class WashBatchPrepareOperationComponent implements OnInit {
       value: x.ID ?? x.id
     }));
 
+
+
+    
     // ✅ AUTO SELECT UNIT
-    if (this.UnitList.length === 1) {
-      this.Model.UnitId = this.UnitList[0].value;
-    }
+    // if (this.UnitList.length === 1) {
+    //   this.Model.UnitId = this.UnitList[0].value;
+    // }
+
+    const found = this.UnitList.find(x => x.value === 60);
+      if (found) {
+        this.Model.UnitId = 60;
+      }
+
   });
+
+// const found = this.UnitList.find(x => x.value === 60);
+//       if (found) {
+//         this.Model.UnitId = 60;
+//       }
+
+
+
 
   this.service.GetBuyerNameDDL().subscribe(res => {
     this.buyerList = res.map((x: any) => ({
@@ -258,7 +275,9 @@ this.Model.BuyerId = Number(this.buyerList[0].value);
     
 
     this.service.getWashBatchPrepareGrid(params).subscribe({
+      
   next: (res: any[]) => {
+    debugger;
     console.log('WashBatchPrepareGrid Response:', res); // 👈 see DB data
     this.bindDetailRows(res);
   },
@@ -272,7 +291,7 @@ this.Model.BuyerId = Number(this.buyerList[0].value);
 
   /* ===================== GRID BIND ===================== */
   bindDetailRows(rows: any[]): void {
-
+debugger;
     const map = new Map<string, WashBatchRow>();
 
     rows.forEach(r => {
@@ -303,7 +322,7 @@ this.Model.BuyerId = Number(this.buyerList[0].value);
 
           type: r.type,
 
-          fabricationId: r.fabrication,
+          fabricationId: r.fabricationId,
           fabricationName: r.fabricationName,
           composition:r.composition,
           colorId: r.icleid,
@@ -319,7 +338,7 @@ this.Model.BuyerId = Number(this.buyerList[0].value);
 
           shipmentDate: r.shipmentDate ? new Date(r.shipmentDate) : null,
           probableDeliveryDate: r.probableDeliveryDate ? new Date(r.probableDeliveryDate) : null,
-           fromUnitId: r.fromUnitId,
+          fromUnitId: r.fromUnitId,
           fromUnitName: r.fromUnitName,
           receiveNo: r.receiveNo,
           sizeDetails: [],
@@ -357,27 +376,81 @@ this.Model.BuyerId = Number(this.buyerList[0].value);
   }
 
   /* ===================== SIZE POPUP ===================== */
-  openSizePopup(row: WashBatchRow): void {
+  // openSizePopup(row: WashBatchRow): void {
+  //   this.selectedRow = row;
+  //   this.sizeList = JSON.parse(JSON.stringify(row.sizeDetails));
+  //   this.calculateTotal();
+  //   this.sizePopupVisible = true;
+  // }
+
+  // calculateTotal(): void {
+  //   this.totalSizeQty = this.sizeList.reduce((s, x) => s + (+x.qty || 0), 0);
+  // }
+
+  // confirmSizeQty(): void {
+  //   this.selectedRow.sizeDetails = [...this.sizeList];
+  //   this.selectedRow.totalQty = this.totalSizeQty;
+  //   this.sizePopupVisible = false;
+  // }
+
+ openSizePopup(row: any) {
+
     this.selectedRow = row;
-    this.sizeList = JSON.parse(JSON.stringify(row.sizeDetails));
+
+    const grouped = row.sizeDetails.reduce((acc: any, item: any) => {
+
+      if (!acc[item.sizeId]) {
+        acc[item.sizeId] = {
+          sizeId: item.sizeId,
+          size: item.size,
+          qty: 0
+        };
+      }
+
+      acc[item.sizeId].qty += Number(item.qty);
+
+      return acc;
+
+    }, {});
+
+    this.sizeList = Object.values(grouped);
+
+    console.log('Unique Size List:', this.sizeList);
+
     this.calculateTotal();
+
     this.sizePopupVisible = true;
   }
+  // openSizePopup(row: any) {
+  //   this.selectedRow = row;
+  //   this.sizeList = JSON.parse(JSON.stringify(row.sizeDetails));
+  //   console.log('Selected Row for Size Popup:', this.sizeList);
+  //   this.calculateTotal();
+  //   this.sizePopupVisible = true;
+  // }
 
-  calculateTotal(): void {
+  calculateTotal() {
     this.totalSizeQty = this.sizeList.reduce((s, x) => s + (+x.qty || 0), 0);
   }
 
-  confirmSizeQty(): void {
+  confirmSizeQty() {
+     this.selectedRow.totalQty = this.totalSizeQty;
     this.selectedRow.sizeDetails = [...this.sizeList];
-    this.selectedRow.totalQty = this.totalSizeQty;
+   
     this.sizePopupVisible = false;
   }
+
+
+
 
   /* ===================== ACTIONS ===================== */
 
 openPrepareTab(row: WashBatchRow): void {
-
+debugger;
+if (row.totalQty==row.alreadyPreparedQty) {
+  this.toastr.warning('All quantity already prepared for this batch.');
+  return;
+}
   if (!row?.orderId) return;
 
   const navState = {
@@ -409,7 +482,7 @@ openPrepareTab(row: WashBatchRow): void {
     type:row.type ?? '',
     // ===== CHILD =====
     sizeDetails: row.sizeDetails ?? [],
-    totalQty: row.totalQty ?? 0
+    totalQty: (row.remainingQty ?? 0) === 0 ? row.totalQty : row.remainingQty
   };
 
   localStorage.setItem(

@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ToastrService } from 'ngx-toastr';
 import { WashSetupService } from '../../../services/washsetup.service';
 import { Router } from '@angular/router';
-import { is } from 'date-fns/locale';
+import { is, th } from 'date-fns/locale';
 import { T } from '@angular/cdk/keycodes';
 import { SafeResourceUrl, DomSanitizer } from "@angular/platform-browser";
 import { BsDatepickerConfig } from 'ngx-bootstrap/datepicker';
@@ -42,7 +42,7 @@ export class WashPrepareActionComponent implements OnInit {
     process: '',
     batchNo: '',
     documentNo: '',
-    effectiveDate: '',
+    effectiveDate: new Date(),
     revisionDate: '',
     revisionNo: '',
     date: '',
@@ -55,6 +55,7 @@ export class WashPrepareActionComponent implements OnInit {
     AutoBatchNo: ''
   };
 
+
   // ======= ID STORAGE FOR SAVE =========
   batchIds: any = {};
 
@@ -64,7 +65,7 @@ export class WashPrepareActionComponent implements OnInit {
   sizeQty: { sizeId?: number | null; size: string; pcs: number; kg: number }[] = [];
 
   totalPcs = 0;
-  totalKg = 0;
+  totalKg;
    bsConfig: Partial<BsDatepickerConfig>;
    ReportUrl:SafeResourceUrl;
    public _dom22:any|string;
@@ -85,11 +86,47 @@ export class WashPrepareActionComponent implements OnInit {
    }
 
   ngOnInit(): void {
+    debugger;
     this.loadProcessDDL();
     this.loadMachineDDL();
     this.loadDataFromParent();
+   
   }
 
+onlyNumber(event: any) {
+  const input = event.target.value;
+
+  // ✅ allow only digits
+  const cleanValue = input.replace(/[^0-9]/g, '');
+
+  event.target.value = cleanValue;
+  this.totalPcs = cleanValue ? Number(cleanValue) : 0;
+}
+Number(event: any) {
+  const input = event.target.value;
+
+  // ✅ allow only digits
+  const cleanValue = input.replace(/[^0-9]/g, '');
+
+  event.target.value = cleanValue;
+  this.totalKg = cleanValue ? Number(cleanValue) : 0;
+}
+initialTotalPcs: number = 0; // ✅ DB value
+
+
+isTotalEditable: boolean = false;
+onToggleTotalEdit() {
+debugger;
+
+  if (this.isTotalEditable) {
+    // ✅ when checked → show blank (null)
+    this.totalKg = null;
+  }
+
+}
+  // onChangeActiveStatus(event: any) {
+  //   this.Model.activeStatus = event.target.checked;
+  // }
   loadProcessDDL() {
     this.service.GetProcessNameDDL().subscribe(res => {
       this.processList = res.map((x: any) => ({
@@ -144,17 +181,45 @@ export class WashPrepareActionComponent implements OnInit {
   clearFocus() {
     this.currentFocus = null;
   }
+showSizeDetails: boolean = true;
+applyToAll: boolean = false;
+remainingPcs: number = 0;
+toggleSizeView() {
+  this.showSizeDetails = !this.showSizeDetails;
+}
 
+applyFirstValueToAll() {
+  if (!this.sizeQty.length) return;
+
+  const firstValue = this.sizeQty[0].pcs;
+
+  this.sizeQty.forEach(x => {
+    x.pcs = firstValue;
+  });
+
+  this.calculateTotals();
+}
   private loadDataFromParent(): void {
-
+debugger;
     const navState = localStorage.getItem('WASH_PREPARE_NAV_STATE');
 
     if (!navState) {
       console.error('❌ No navigation state found');
       return;
     }
-
+   
     const data = JSON.parse(navState);
+     const today = new Date();
+   // ✅ DIRECT TOTAL FROM DB (NO SIZE DEPENDENCY)
+  this.totalPcs = data.totalQty ?? 0;
+ this.remainingPcs = data.remainingQty;
+
+  // ✅ STORE ORIGINAL VALUE (VERY IMPORTANT)
+this.initialTotalPcs = this.totalPcs ?? 0;
+
+
+
+
 
     /* ================= STORE IDS (FOR SAVE) ================= */
     this.batchIds = {
@@ -177,7 +242,7 @@ export class WashPrepareActionComponent implements OnInit {
     this.batch.orderNo = data.orderNo ?? '';
     this.batch.batchNo = data.batchNo ?? '';
     this.batch.documentNo = data.documentNo ?? '';
-    this.batch.effectiveDate = data.effectiveDate ?? '';
+    this.batch.effectiveDate = new Date();
     this.batch.revisionDate = data.revisionDate ?? '';
     this.batch.revisionNo = data.revisionNo ?? '';
     this.batch.date = data.date ?? '';
@@ -188,6 +253,7 @@ export class WashPrepareActionComponent implements OnInit {
     this.batch.type = data.type ?? '';
     this.batch.trackingNo = data.trackingNo ?? '';
     /* ================= SIZE DETAILS (MERGE + ID) ================= */
+    this.showSizeDetails = false; // ✅ default hidden
     if (Array.isArray(data.sizeDetails)) {
 
       const sizeMap = new Map<string, any>();
@@ -196,189 +262,322 @@ export class WashPrepareActionComponent implements OnInit {
         const key = x.sizeId ?? x.size;
 
         if (sizeMap.has(key)) {
-          sizeMap.get(key).pcs += +x.qty || +x.pcs || 0;
+          sizeMap.get(key).pcs += +x.qty || +x.pcs;
         } else {
           sizeMap.set(key, {
             sizeId: x.sizeId ?? null,
             size: x.size,
-            pcs: +x.qty || +x.pcs || 0,
-            kg: +x.kg || 0
+            pcs: +x.qty || +x.pcs,
+            kg: +x.kg 
           });
         }
       });
 console.log('✅ Merged Size Map:', sizeMap);
       this.sizeQty = Array.from(sizeMap.values());
-      this.calculateTotals();
+      // this.calculateTotals();
       
     }
   }
 
   calculateTotals(): void {
     this.totalPcs = this.sizeQty.reduce((s, x) => s + (+x.pcs || 0), 0);
-    this.totalKg = this.sizeQty.reduce((s, x) => s + (+x.kg || 0), 0);
+    this.totalKg = this.sizeQty.reduce((s, x) => s + (+x.kg|| ''), '');
+
   }
 
-  clearAll(): void {
-    // this.detailList = [];
+
+clearAll(): void {
+
+  // ================= MODEL =================
+  this.Model = {
+    processList: [],
+    machineList: [],
+    shade: false
+  };
+
+  // ================= BATCH INFO =================
+  this.batch = {
+    buyer: '',
+    jobNo: '',
+    styleNo: '',
+    orderNo: '',
+    process: '',
+    batchNo: '',
+    documentNo: '',
+    effectiveDate: new Date(),
+    revisionDate: '',
+    revisionNo: '',
+    date: '',
+    fabrication: '',
+    composition: '',
+    gsm: '',
+    color: '',
+    type: '',
+    trackingNo: '',
+    AutoBatchNo: ''
+  };
+
+  // ================= IDS =================
+  this.batchIds = {};
+
+  // ================= SIZE GRID =================
+  this.sizeQty = [];
+
+  // ================= TOTALS =================
+  this.totalPcs = 0;
+  this.totalKg = 0;
+  this.initialTotalPcs = 0;
+  this.remainingPcs = 0;
+
+  // ================= FLAGS =================
+  this.isTotalEditable = false;
+  this.showSizeDetails = true;
+  this.allSelectedProcess = false;
+  this.allSelectedMachine = false;
+
+  // Optional UI state reset
+  this.currentFocus = null;
+}
+
+onTotalPcsChange() {
+
+  // handle empty / null / 0
+  if (!this.totalPcs) {
+    this.totalPcs = this.initialTotalPcs;
+    return;
   }
-  
 
-  onSubmit(): void {
-//debugger;
-    /* ================= VALIDATION ================= */
-    if (!this.Model.processList?.length) {
-      this.toastr.warning('Please select process');
-      return;
+  // ❌ exceed check
+  if (this.totalPcs > this.initialTotalPcs) {
+
+    this.toastr.warning(
+      `Max allowed: ${this.initialTotalPcs}`,
+      'Invalid Total Pcs'
+    );
+
+    // ✅ revert to original (NOT 0)
+    this.totalPcs = this.initialTotalPcs;
+  }
+}
+onTotalKgChange() {
+
+ 
+}
+onSubmit(): void {
+  debugger;
+
+  /* ================= VALIDATION ================= */
+  if (!this.Model.processList?.length) {
+    this.toastr.warning('Please select process');
+    return;
+  }
+
+  if (!this.Model.machineList?.length) {
+    this.toastr.warning('Please select machine');
+    return;
+  }
+
+  /* ================= SAFE VALUES ================= */
+  const safeTotalPcs = Number(this.totalPcs) || 0;
+  const safeTotalKg = Number(this.totalKg) || 0;
+
+  /* ================= DATE FORMAT FIX ================= */
+  const formatDate = (date: any) => {
+    return date ? new Date(date).toISOString() : null;
+  };
+
+  /* ================= MASTER ================= */
+  const master = {
+    operation: "INSERT",
+    createdBy: "SYSTEM",
+    masterId: 0,
+
+    unitId: this.batchIds.fromUnitId,
+    trackingNo: this.batch.trackingNo ?? '',
+
+    batchNo: this.batch.batchNo ?? '',
+    type: this.batch.type ?? '',
+    documentNo: this.batch.documentNo ?? '',
+
+    effectiveDate: formatDate(this.batch.effectiveDate),
+    revisionDate: formatDate(this.batch.revisionDate),
+    revisionNo: this.batch.revisionNo ?? '',
+    date: formatDate(this.batch.date),
+
+    composition: this.batch.composition ?? '',
+
+    buyerId: this.batchIds.buyerId ?? 0,
+    jobId: this.batchIds.jobId ?? 0,
+    styleId: this.batchIds.styleId ?? 0,
+    orderId: this.batchIds.orderId ?? 0,
+    fabricationId: this.batchIds.fabricationId ?? 0,
+    colorId: this.batchIds.colorId ?? null,
+    dressPartId: this.batchIds.dressPartId ?? null,
+    uomId: this.batchIds.uomId ?? null,
+    iszId: this.batchIds.iszid ?? null,
+
+    processIds: (this.Model.processList || []).map((x: any) => x.value).join(','),
+    machineIds: (this.Model.machineList || []).map((x: any) => x.value).join(','),
+
+    totalPcs: safeTotalPcs,
+    totalKg: safeTotalKg,
+
+    IsManualTotal: !!this.isTotalEditable,
+    shade: !!this.Model.shade
+  };
+
+  /* ================= SIZE DETAILS ================= */
+  let sizeDetails: any[] = [];
+
+  if (!this.isTotalEditable && this.sizeQty?.length) {
+    sizeDetails = this.sizeQty.map(x => ({
+      sizeId: x.sizeId ?? null,
+      size: x.size ?? '',
+      qty: Number(x.pcs) || 0,
+      kg: Number(x.kg) || 0
+    }));
+  }
+
+  /* ================= FINAL PAYLOAD ================= */
+  const payload = {
+    master: master,
+    sizeDetails: sizeDetails // ✅ ALWAYS ARRAY (NEVER NULL)
+  };
+
+  console.log('✅ FINAL PAYLOAD:', payload);
+
+  /* ================= API CALL ================= */
+  this.service.SaveWashPrepare(payload).subscribe({
+
+    next: (res: any) => {
+      console.log("✅ RESPONSE:", res);
+
+      if (res?.succeeded) {
+        this.toastr.success('Saved successfully');
+
+        this.batch.AutoBatchNo = res.message;
+
+        this.printReport("Batch Card Preview", res.message);
+      } else {
+        this.toastr.error(res?.errors?.[0] || 'Save failed');
+      }
+    },
+
+    error: (err: any) => {
+      console.error('❌ ERROR:', err);
+
+      // 🔥 SHOW BACKEND VALIDATION ERROR
+      if (err?.error?.errors) {
+        const firstError = Object.values(err.error.errors)[0];
+        this.toastr.error(firstError as any);
+      } else {
+        this.toastr.error(
+          err?.error?.message ||
+          err?.message ||
+          'Server error / Controller not hit'
+        );
+      }
+    },
+
+    complete: () => {
+      console.log('✅ API CALL COMPLETED');
     }
+  });
+  this.clearAll();
+}
+// onSubmit(): void {
+//   debugger;
 
-    if (!this.Model.machineList?.length) {
-      this.toastr.warning('Please select machine');
-      return;
-    }
+//   /* ================= VALIDATION ================= */
+//   if (!this.Model.processList?.length) {
+//     this.toastr.warning('Please select process');
+//     return;
+//   }
 
-    /* ================= BUILD PAYLOAD ================= */
-    const payload = {
+//   if (!this.Model.machineList?.length) {
+//     this.toastr.warning('Please select machine');
+//     return;
+//   }
+
+//   /* ================= BUILD PAYLOAD ================= */
+//   const payload: any = {
+//     master: {
+//       operation: "INSERT",
+//       createdBy: "SYSTEM",
+//       masterId: 0,
+//       unitId: this.batchIds.fromUnitId,
+//       trackingNo: this.batch.trackingNo ?? '',
+
+//       batchNo: this.batch.batchNo,
+//       documentNo: this.batch.documentNo,
+//       effectiveDate: this.batch.effectiveDate,
+//       revisionDate: this.batch.revisionDate,
+//       revisionNo: this.batch.revisionNo,
+//       date: this.batch.date,
+//       composition: this.batch.composition,
+//       Type: this.batch.type,
+
+//       buyerId: this.batchIds.buyerId,
+//       jobId: this.batchIds.jobId,
+//       styleId: this.batchIds.styleId,
+//       orderId: this.batchIds.orderId,
+//       fabricationId: this.batchIds.fabricationId,
+//       colorId: this.batchIds.colorId,
+//       dressPartId: this.batchIds.dressPartId,
+//       uomId: this.batchIds.uomId,
+//       iszId: this.batchIds.iszid,
+
+//       processIds: this.Model.processList.map((x: any) => x.value).join(','),
+//       machineIds: this.Model.machineList.map((x: any) => x.value).join(','),
+
+//       totalPcs: this.totalPcs,
+//       totalKg: this.totalKg,
+
+//       shade: this.Model.shade ? 1 : 0,
+//       IsManualTotal: this.isTotalEditable ? 1 : 0
       
-      master: {
-        
-        operation: "INSERT",
-        createdBy: "SYSTEM",
-        masterId: 0,
-        unitId: this.batchIds.fromUnitId,
-        trackingNo: this.batch.trackingNo ?? '',
+//     }
+//   };
 
-        // Your master display fields
-        batchNo: this.batch.batchNo,
-        documentNo: this.batch.documentNo,
-        effectiveDate: this.batch.effectiveDate,
-        revisionDate: this.batch.revisionDate,
-        revisionNo: this.batch.revisionNo,
-        date: this.batch.date,
-        composition: this.batch.composition,
-        Type: this.batch.type,
-        // Master IDs
-        buyerId: this.batchIds.buyerId,
-        jobId: this.batchIds.jobId,
-        styleId: this.batchIds.styleId,
-        orderId: this.batchIds.orderId,
-        fabricationId: this.batchIds.fabricationId,
-        colorId: this.batchIds.colorId,
-        dressPartId: this.batchIds.dressPartId,
-        uomId: this.batchIds.uomId,
-        iszId: this.batchIds.iszid,
-        
-        // MULTI SELECT CSV
-        processIds: this.Model.processList.map((x: any) => x.value).join(','),
-        machineIds: this.Model.machineList.map((x: any) => x.value).join(','),
+//   /* ================= CONDITION FOR SIZE DETAILS ================= */
+//   if (!this.isTotalEditable) {
+//     payload.sizeDetails = this.sizeQty.map(x => ({
+//       sizeId: x.sizeId ?? null,
+//       size: x.size,
+//       qty: Number(x.pcs),
+//       kg: Number(x.kg)
+//     }));
+//   }
 
-        totalPcs: this.totalPcs,
-        totalKg: this.totalKg
-      },
+//   console.log('✅ SAVE PAYLOAD:', payload);
 
-      sizeDetails: this.sizeQty.map(x => ({
-        sizeId: x.sizeId ?? null,
-        size: x.size,
-        qty: Number(x.pcs) || 0,
-        kg: Number(x.kg) || 0
-      }))
+//   /* ================= API CALL ================= */
+//   this.service.SaveWashPrepare(payload).subscribe({
+//     next: (res: any) => {
+//       debugger;
 
-    };
-console.log('✅ SAVE PAYLOAD:', payload);
+//       console.log("Full Response:", res);
 
-/* ================= API CALL ================= */
-this.service.SaveWashPrepare(payload).subscribe({
-  next: (res: any) => {
-    debugger;
+//       if (res && res.succeeded === true) {
 
-    console.log("Full Response:", res);
+//         this.toastr.success('Saved successfully');
 
-    // ✅ Correct condition
-    if (res && res.succeeded === true) {
+//         this.batch.AutoBatchNo = res.message;
 
-      this.toastr.success('Saved successfully');
+//         this.printReport("Batch Card Preview", res.message);
 
-      let reportName = "Batch Card Preview";
-      let generateNumber = "";
-      // ✅ Correct binding from message
-      this.batch.AutoBatchNo = res.message;
+//       } else {
+//         this.toastr.warning(res?.errors?.length ? res.errors[0] : 'Save failed');
+//       }
+//     },
 
-      // ✅ Send correct value to report
-      this.printReport(reportName, res.message);
+  
+//   });
+// }
+onShadeChange() {
+  this.Model.shade = this.Model.shade ? 1 : 0;
+}
 
-    } else {
-      this.toastr.warning(res?.errors?.length ? res.errors[0] : 'Save failed');
-    }
-  },
-
-  error: (err: any) => {
-    console.error('❌ Save Error:', err);
-    this.toastr.error('Save failed');
-  }
-});
-  //   console.log('✅ SAVE PAYLOAD:', payload);
-    
-  //   /* ================= API CALL ================= */
-  //   this.service.SaveWashPrepare(payload)
-   
-  //   .subscribe({
-  //     next: (res: any) => {
-  //        debugger;
-  //       // this.toastr.success('Saved successfully');
-  //       //this.router.navigate(['/wash/prepare-list']);
-  //       // let reportName = "Batch Card Preview";
-  //        if (res && res.ResultCode === 1) {
-  //       this.toastr.success('Saved successfully');
-
-  //       let reportName = "Batch Card Preview";
-
-  //       let generateNumber = "";
-  //    // ✅ Correct binding
-  //       this.batch.AutoBatchNo = res.AutoBatchNo;
-
-  //       // ✅ Pass correct value to report
-  //       this.printReport(reportName, res.AutoBatchNo);
-  //     } else {
-  //       this.toastr.warning('Save failed or invalid response');
-  //     }
-  //   },
-  //   error: (err: any) => {
-  //     console.error('❌ Save Error:', err);
-  //     this.toastr.error('Save failed');
-  //   }
-  // });
-    
-
-
-// .subscribe({
-//         next: (res: any) => {
-
-//           console.log('SAVE RESPONSE', res);
-
-//           if (!res?.succeeded) {
-//             this.toastr.error('Save Failed');
-//             return;
-//           }
-
-//           // ⭐ parse JSON string
-//           const data = JSON.parse(res.message);
-
-//           if (data?.ResultCode === 1) {
-
-//             this.clearAll();
-
-//             this.review.receiveNo = data.ReceiveNo;
-
-//             this.toastr.success(
-//               `Saved Successfully. Receive No: ${data.ReceiveNo}`
-//             );
-
-//           } else {
-//             this.toastr.error(data?.Message || 'Save Failed');
-//           }
-//         },
-
-
-  }
 
   ReportUrlTab:any;
   printReport(ReportType,GenerateNumber)

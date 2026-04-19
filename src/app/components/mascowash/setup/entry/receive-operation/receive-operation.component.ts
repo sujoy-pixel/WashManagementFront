@@ -231,15 +231,31 @@ export class ReceiveOperationComponent implements OnInit {
   }
 
   // ================= LOAD MASTER DROPDOWNS =================
-  loadDropdowns() {
+  // loadDropdowns() {
 
+  //   this.service.GetUnitName().subscribe(res => {
+  //     this.UnitList = res.map((x: any) => ({
+  //       label: x.DisplayName ?? x.displayName,
+  //       value: x.ID ?? x.id
+  //     }));
+  //     this.fromUnitList = [...this.UnitList];
+  //   });
+
+loadDropdowns() {
     this.service.GetUnitName().subscribe(res => {
       this.UnitList = res.map((x: any) => ({
         label: x.DisplayName ?? x.displayName,
         value: x.ID ?? x.id
       }));
-      this.fromUnitList = [...this.UnitList];
+      const found = this.UnitList.find(x => x.value === 60);
+      if (found) {
+        this.Model.UnitId = 60;
+      }
     });
+  
+
+
+
 
     this.service.GetBuyerNameDDL().subscribe(res => {
       this.buyerList = res.map((x: any) => ({
