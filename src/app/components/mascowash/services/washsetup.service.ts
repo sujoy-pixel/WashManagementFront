@@ -546,15 +546,26 @@ export class WashSetupService {
   }
 
 
-
-
-
   saveWashStartEnd(model: any) {
     debugger;
     return this.http.post(
       this.baseUrl_ + 'Setup/SaveWashStartEndData',
       model,
       { headers: this.token.headerToken() }
+    );
+  }
+
+  getStartEndOperationData(batchNo: string) {
+    debugger;
+    const params = new HttpParams()
+      .set('batchNo', batchNo);
+
+    return this.http.get<any[]>(
+      this.baseUrl_ + 'Setup/getStartEndOperationData',
+      {
+        headers: this.token.headerToken(),
+        params
+      }
     );
   }
 

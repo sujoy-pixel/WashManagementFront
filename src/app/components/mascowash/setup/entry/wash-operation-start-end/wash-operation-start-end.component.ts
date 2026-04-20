@@ -1,4 +1,4 @@
-import { Component, ViewChild, ElementRef } from '@angular/core';
+import { Component, ViewChild, ElementRef, ChangeDetectorRef } from '@angular/core';
 import { WashSetupService } from '../../../services/washsetup.service';
 import { ToastrService } from 'ngx-toastr';
 import { Router } from '@angular/router';
@@ -19,19 +19,35 @@ interface BatchHeaderModel {
   styleId?: number;
   orderId?: number;
   jobId?: number;
-
   unitName: string;
   buyerName: string;
   batchNo: string;
   styleName: string;
   orderNo: string;
   jobNo: string;
-
   type: string;
   color: string;
   dressPart: string;
   uom: string;
   date: string;
+}
+
+interface OperationHistory {
+  id?: number;
+  operation: string;
+  processNames: string;
+  machineNames: string;
+  startDate: string | Date;
+  startTime: string;
+  endDate: string | Date | null;
+  endTime: string | null;
+  unitId?: number;
+  buyerId?: number;
+  jobId?: number;
+  styleId?: number;
+  orderId?: number;
+  machineId?: number | string;
+  processId?: number | string;
 }
 
 @Component({
@@ -56,7 +72,7 @@ export class WashOperationStartEndComponent {
 
   processList: any[] = [];
   machineList: any[] = [];
-  operationList: any[] = [];
+  operationList: OperationHistory[] = [];
   allSelectedProcess = false;
   allSelectedMachine = false;
   
@@ -98,10 +114,17 @@ export class WashOperationStartEndComponent {
   buyerList: DropdownItem[] = [];
   UnitList: DropdownItem[] = [];
 
+  // Track pending selections to apply after dropdowns load
+  private pendingSelections = {
+    machineIds: [] as number[],
+    processIds: [] as number[]
+  };
+
   constructor(
     private service: WashSetupService,
     private toastr: ToastrService,
-    private router: Router
+    private router: Router,
+    private cdr: ChangeDetectorRef
   ) {}
 
   // ================= INIT =================
@@ -110,9 +133,7 @@ export class WashOperationStartEndComponent {
     this.loadUnitList();
     this.loadProcessDDL();
     this.loadMachineDDL();
-    
-    // ✅ Page Load: Start = NOW, End = NULL
-    this.setPageLoadDateTime();
+    this.setInitialDateTime();
   }
 
   ngAfterViewInit(): void {
@@ -122,14 +143,9 @@ export class WashOperationStartEndComponent {
     }, 100);
   }
 
-  // ================= DATE TIME LOGIC =================
+  // ================= DATE TIME LOGIC - FIXED =================
   
-  /**
-   * ✅ Page Load Condition:
-   * Start = NOW (current date and current Time)
-   * End = NULL
-   */
-  private setPageLoadDateTime() {
+  private setInitialDateTime() {
     const now = new Date();
     this.startDate = now;
     this.startTime = this.formatTimeForInput(now);
@@ -138,37 +154,118 @@ export class WashOperationStartEndComponent {
   }
 
   /**
-   * ✅ Apply Conditions based on existing operations:
-   * 1. If Start exists, End not → Start = NULL, End = NOW
-   * 2. If both exist → Start = NOW, End = NULL
+   * ✅ FIXED: Get latest operation by ID (not just date) to ensure correct order
    */
-  private applySmartDateTimeLogic() {
+  private getLatestOperation(): OperationHistory | null {
+    if (!this.operationList || this.operationList.length === 0) return null;
+
+    // Sort by ID descending to get the most recent operation (highest ID = latest)
+    // If same ID (shouldn't happen), fallback to date
+    const sorted = [...this.operationList].sort((a, b) => {
+      // Primary sort: ID descending (newest first)
+      const idA = a.id || 0;
+      const idB = b.id || 0;
+      if (idB !== idA) return idB - idA;
+      
+      // Secondary sort: Start date descending
+      const dateA = new Date(a.startDate).getTime();
+      const dateB = new Date(b.startDate).getTime();
+      return dateB - dateA;
+    });
+
+    console.log('Sorted operations (latest first):', sorted.map(o => ({ 
+      id: o.id, 
+      operation: o.operation, 
+      startDate: o.startDate,
+      endDate: o.endDate 
+    })));
+    
+    return sorted[0];
+  }
+
+  /**
+   * ✅ FIXED SMART LOGIC: Correctly handles running vs completed operations
+   */
+  private determineDateTimeFromHistory() {
     const now = new Date();
     const timeString = this.formatTimeForInput(now);
-    
-    // Get the last operation from history
-    const lastOperation = this.operationList?.length > 0 
-      ? this.operationList[this.operationList.length - 1] 
-      : null;
-    
-    if (!lastOperation) {
-      // No existing data - treat as Page Load
+
+    // Check if we have operation history data
+    if (!this.operationList || this.operationList.length === 0) {
+      console.log('No history - Fresh start: Start=NOW, End=NULL');
       this.startDate = now;
       this.startTime = timeString;
       this.endDate = null;
       this.endTime = '';
+      return;
+    }
+
+    // Get the truly LATEST operation (by ID, not just date)
+    const latestOperation = this.getLatestOperation();
+    
+    if (!latestOperation) {
+      console.log('No valid latest operation');
+      this.startDate = now;
+      this.startTime = timeString;
+      this.endDate = null;
+      this.endTime = '';
+      return;
+    }
+
+    console.log('Analyzing latest operation:', {
+      id: latestOperation.id,
+      operation: latestOperation.operation,
+      startDate: latestOperation.startDate,
+      startTime: latestOperation.startTime,
+      endDate: latestOperation.endDate,
+      endTime: latestOperation.endTime
+    });
+
+    // Check if operation has BOTH start AND end (completed)
+    const hasStartDate = this.isValidDate(latestOperation.startDate);
+    const hasStartTime = !!latestOperation.startTime && latestOperation.startTime.trim() !== '';
+    const hasEndDate = this.isValidDate(latestOperation.endDate);
+    const hasEndTime = !!latestOperation.endTime && latestOperation.endTime.trim() !== '';
+    
+    const hasCompleteStart = hasStartDate && hasStartTime;
+    const hasCompleteEnd = hasEndDate && hasEndTime;
+
+    console.log('Status flags:', { 
+      hasCompleteStart, 
+      hasCompleteEnd, 
+      hasStartDate, 
+      hasStartTime, 
+      hasEndDate, 
+      hasEndTime 
+    });
+
+    // Scenario 1: Running operation (Has Start, NO End) -> Ready to END it
+    if (hasCompleteStart && !hasCompleteEnd) {
+      console.log('✅ Operation RUNNING (ID:' + latestOperation.id + ') -> Ready to END: Start=NULL, End=NOW');
+      this.startDate = null;      // Clear start
+      this.startTime = '';        // Clear start time
+      this.endDate = now;         // Set end to now
+      this.endTime = timeString;  // Set end time to now
     } 
-    else if (lastOperation.startDate && !lastOperation.endDate) {
-      // ✅ Condition: If Start exists, End not
-      // Start = NULL, End = NOW
-      this.startDate = null;
-      this.startTime = '';
-      this.endDate = now;
-      this.endTime = timeString;
-    } 
-    else if (lastOperation.startDate && lastOperation.endDate) {
-      // ✅ Condition: If both exist
-      // Start = NOW, End = NULL (Ready for new operation)
+    // Scenario 2: Completed operation (Has Both) -> Ready for NEW operation
+    else if (hasCompleteStart && hasCompleteEnd) {
+      console.log('✅ Operation COMPLETED (ID:' + latestOperation.id + ') -> Ready for NEW: Start=NOW, End=NULL');
+      this.startDate = now;
+      this.startTime = timeString;
+      this.endDate = null;
+      this.endTime = '';
+    }
+    // Scenario 3: Invalid state (No Start, Has End) -> Reset
+    else if (!hasCompleteStart && hasCompleteEnd) {
+      console.log('⚠️ Invalid state -> Reset to Start=NOW');
+      this.startDate = now;
+      this.startTime = timeString;
+      this.endDate = null;
+      this.endTime = '';
+    }
+    // Scenario 4: Empty/Invalid (No Start, No End) -> Fresh start
+    else {
+      console.log('⚠️ Empty operation -> Fresh start: Start=NOW');
       this.startDate = now;
       this.startTime = timeString;
       this.endDate = null;
@@ -176,36 +273,70 @@ export class WashOperationStartEndComponent {
     }
   }
 
+  private isValidDate(date: any): boolean {
+    if (!date || date === null || date === undefined) return false;
+    const d = new Date(date);
+    return !isNaN(d.getTime());
+  }
+
   private formatTimeForInput(date: Date): string {
     const hours = date.getHours().toString().padStart(2, '0');
     const minutes = date.getMinutes().toString().padStart(2, '0');
-    return `${hours}:${minutes}`; // Returns "HH:mm" for input type="time"
+    return `${hours}:${minutes}`;
   }
 
   // ================= LOAD DDL =================
-  loadProcessDDL() {
-    this.service.GetProcessNameDDL().subscribe(res => {
-      this.processList = res.map((x: any) => ({
-        label: x.displayName ?? x.DisplayName,
-        value: x.id ?? x.ID
-      }));
+  loadProcessDDL(callback?: () => void) {
+    this.service.GetProcessNameDDL().subscribe({
+      next: (res: any) => {
+        this.processList = res.map((x: any) => ({
+          label: x.displayName || x.DisplayName || x.processName || x.ProcessName,
+          value: Number(x.id || x.ID || x.processId || x.ProcessId)
+        })).filter((x: any) => x.value > 0);
+        
+        if (this.pendingSelections.processIds.length > 0) {
+          this.applyProcessSelection(this.pendingSelections.processIds);
+          this.pendingSelections.processIds = [];
+        }
+        
+        if (callback) callback();
+        this.cdr.detectChanges();
+      },
+      error: (err) => {
+        console.error('Error loading Process DDL:', err);
+        if (callback) callback();
+      }
     });
   }
 
-  loadMachineDDL() {
-    this.service.GetMachineNoDDL().subscribe(res => {
-      this.machineList = res.map((x: any) => ({
-        label: x.displayName ?? x.DisplayName,
-        value: x.id ?? x.ID
-      }));
+  loadMachineDDL(callback?: () => void) {
+    this.service.GetMachineNoDDL().subscribe({
+      next: (res: any) => {
+        this.machineList = res.map((x: any) => ({
+          label: x.displayName || x.DisplayName || x.machineName || x.MachineName,
+          value: Number(x.id || x.ID || x.machineId || x.MachineId)
+        })).filter((x: any) => x.value > 0);
+        
+        if (this.pendingSelections.machineIds.length > 0) {
+          this.applyMachineSelection(this.pendingSelections.machineIds);
+          this.pendingSelections.machineIds = [];
+        }
+        
+        if (callback) callback();
+        this.cdr.detectChanges();
+      },
+      error: (err) => {
+        console.error('Error loading Machine DDL:', err);
+        if (callback) callback();
+      }
     });
   }
 
   loadUnitList() {
     this.service.GetUnitName().subscribe(res => {
       this.UnitList = res.map((x: any) => ({
-        label: x.DisplayName ?? x.displayName,
-        value: x.ID ?? x.id
+        label: x.DisplayName || x.displayName,
+        value: Number(x.ID || x.id)
       }));
 
       const found = this.UnitList.find(x => x.value === 60);
@@ -216,8 +347,8 @@ export class WashOperationStartEndComponent {
   loadBuyerList() {
     this.service.GetBuyerNameDDL().subscribe(res => {
       this.buyerList = res.map((x: any) => ({
-        label: x.DisplayName ?? x.displayName ?? x.BuyerName,
-        value: x.ID ?? x.id ?? x.BuyerNo
+        label: x.DisplayName || x.displayName || x.BuyerName,
+        value: Number(x.ID || x.id || x.BuyerNo)
       }));
 
       if (this.buyerList.length === 1) {
@@ -226,126 +357,244 @@ export class WashOperationStartEndComponent {
     });
   }
 
-  // ================= MACHINE =================
+  // ================= SELECTION HANDLERS =================
   onSelectionChangeMachine() {
     this.Model.machineList = this.Model.machineList.filter(x => x !== 0 && x !== null);
+    this.allSelectedMachine = this.isAllSelectedMachine();
+    this.cdr.detectChanges();
   }
 
   toggleAllSelectionMachine() {
     this.allSelectedMachine = !this.allSelectedMachine;
-
-    this.Model.machineList = this.allSelectedMachine
-      ? this.machineList.map(x => x.value)
-      : [];
+    if (this.allSelectedMachine) {
+      this.Model.machineList = this.machineList.map(x => x.value);
+    } else {
+      this.Model.machineList = [];
+    }
+    this.cdr.detectChanges();
   }
 
   isAllSelectedMachine(): boolean {
-    return this.Model.machineList.length === this.machineList.length;
+    return this.machineList.length > 0 && this.Model.machineList.length === this.machineList.length;
   }
 
-  // ================= PROCESS =================
   onSelectionChangeProcess() {
     this.Model.processList = this.Model.processList.filter(x => x !== 0 && x !== null);
+    this.allSelectedProcess = this.isAllSelectedProcess();
+    this.cdr.detectChanges();
   }
 
   toggleAllSelectionProcess() {
     this.allSelectedProcess = !this.allSelectedProcess;
-
-    this.Model.processList = this.allSelectedProcess
-      ? this.processList.map(x => x.value)
-      : [];
+    if (this.allSelectedProcess) {
+      this.Model.processList = this.processList.map(x => x.value);
+    } else {
+      this.Model.processList = [];
+    }
+    this.cdr.detectChanges();
   }
 
   isAllSelectedProcess(): boolean {
-    return this.Model.processList.length === this.processList.length;
+    return this.processList.length > 0 && this.Model.processList.length === this.processList.length;
   }
 
   // ================= LOAD BATCH (MAIN LOGIC) =================
   loadBatchData() {
     const batch = this.batchNo?.trim();
-    if (!batch) return;
+    if (!batch) {
+      this.toastr.warning('Please enter Batch No');
+      return;
+    }
 
+    // Reset selections
+    this.pendingSelections = { machineIds: [], processIds: [] };
+    this.Model.machineList = [];
+    this.Model.processList = [];
+    this.allSelectedMachine = false;
+    this.allSelectedProcess = false;
+
+    // Load batch data
     this.service.getBatchWishStartEndData(batch).subscribe({
-      next: (res: any[]) => {
-
-        if (!res || res.length === 0) {
-          this.toastr.warning('No data found');
+      next: (res: any) => {
+        if (!res || (Array.isArray(res) && res.length === 0)) {
+          this.toastr.warning('No data found for this batch');
+          this.operationList = [];
+          this.determineDateTimeFromHistory();
           return;
         }
 
-        const first = res[0];
+        const responseData = Array.isArray(res) ? res : res.data || [];
+        
+        if (responseData.length === 0) {
+          this.toastr.warning('No header data found');
+          this.operationList = [];
+          this.determineDateTimeFromHistory();
+          return;
+        }
 
-        // ✅ HEADER SET
-        this.Model.UnitId = first.unitId;
-        this.Model.BuyerId = first.buyerId;
-        this.Model.JobId = first.jobId;
-        this.Model.StyleId = first.styleId;
-        this.Model.OrderId = first.orderId;
+        const first = responseData[0];
+
+        // Bind Header
+        this.Model.UnitId = first.unitId ?? first.UnitId ?? null;
+        this.Model.BuyerId = first.buyerId ?? first.BuyerId ?? null;
+        this.Model.JobId = first.jobId ?? first.JobId ?? null;
+        this.Model.StyleId = first.styleId ?? first.StyleId ?? null;
+        this.Model.OrderId = first.orderId ?? first.OrderId ?? null;
 
         this.batchHeader = {
-          unitName: first.unitName,
-          buyerName: first.buyerName,
-          batchNo: first.batchNo,
-          styleName: first.styleName,
-          orderNo: first.orderNo,
-          jobNo: first.jobNo,
-          type: first.type,
-          color: first.color,
-          dressPart: first.dressPart,
-          uom: first.uom,
-          date: ''
+          unitId: first.unitId ?? first.UnitId,
+          buyerId: first.buyerId ?? first.BuyerId,
+          styleId: first.styleId ?? first.StyleId,
+          orderId: first.orderId ?? first.OrderId,
+          jobId: first.jobId ?? first.JobId,
+          unitName: first.unitName || first.UnitName || '',
+          buyerName: first.buyerName || first.BuyerName || '',
+          batchNo: first.batchNo || first.BatchNo || batch,
+          styleName: first.styleName || first.StyleName || '',
+          orderNo: first.orderNo || first.OrderNo || '',
+          jobNo: first.jobNo || first.JobNo || '',
+          type: first.type || first.Type || '',
+          color: first.color || first.Color || '',
+          dressPart: first.dressPart || first.DressPart || '',
+          uom: first.uom || first.UOM || '',
+          date: first.date || first.Date || ''
         };
 
-        // ✅ UNIQUE MACHINE + PROCESS
-        const machineIds = [...new Set(res.map(x => x.machineId))];
-        const processIds = [...new Set(res.map(x => x.processId))];
+        // Extract IDs
+        const machineIds = this.extractUniqueIds(responseData, ['machineId', 'MachineId']);
+        const processIds = this.extractUniqueIds(responseData, ['processId', 'ProcessId']);
 
-        // ✅ IMPORTANT: wait dropdown load
-        setTimeout(() => {
-          this.Model.machineList = machineIds;
-          this.Model.processList = processIds;
+        this.pendingSelections = { machineIds, processIds };
 
-          this.allSelectedMachine = this.isAllSelectedMachine();
-          this.allSelectedProcess = this.isAllSelectedProcess();
-        });
+        if (this.machineList.length > 0) {
+          this.applyMachineSelection(machineIds);
+        }
+        if (this.processList.length > 0) {
+          this.applyProcessSelection(processIds);
+        }
 
-        // ✅ SET OPERATION LIST
-        this.operationList = res;
-        
-        // ✅ APPLY SMART DATE/TIME LOGIC BASED ON CONDITIONS
-        this.applySmartDateTimeLogic();
+        if (this.machineList.length === 0 || this.processList.length === 0) {
+          this.loadProcessDDL();
+          this.loadMachineDDL();
+        }
 
-        console.log('Selected Machines:', this.Model.machineList);
-        console.log('Selected Processes:', this.Model.processList);
+        // Load Operation History
+        this.loadOperationHistory(batch);
       },
 
-      error: () => {
+      error: (err) => {
+        console.error('Error loading batch:', err);
         this.toastr.error('Failed to load batch data');
+        this.operationList = [];
+        this.determineDateTimeFromHistory();
       }
     });
   }
 
-  // ================= HELPER: Convert 24hr to 12hr AM/PM =================
+  private extractUniqueIds(data: any[], fields: string[]): number[] {
+    const ids = new Set<number>();
+    
+    data.forEach((item: any) => {
+      fields.forEach(field => {
+        const val = item[field];
+        if (val !== null && val !== undefined && val !== '') {
+          const parts = String(val).split(',').map((s: string) => s.trim());
+          parts.forEach((part: string) => {
+            const num = Number(part);
+            if (!isNaN(num) && num > 0) {
+              ids.add(num);
+            }
+          });
+        }
+      });
+    });
+    
+    return Array.from(ids);
+  }
+
+  private applyMachineSelection(ids: number[]) {
+    if (this.machineList.length === 0) {
+      this.pendingSelections.machineIds = ids;
+      return;
+    }
+
+    const validIds = ids.filter(id => 
+      this.machineList.some(m => Number(m.value) === Number(id))
+    );
+    
+    this.Model.machineList = validIds;
+    this.allSelectedMachine = this.isAllSelectedMachine();
+    this.cdr.detectChanges();
+  }
+
+  private applyProcessSelection(ids: number[]) {
+    if (this.processList.length === 0) {
+      this.pendingSelections.processIds = ids;
+      return;
+    }
+
+    const validIds = ids.filter(id => 
+      this.processList.some(p => Number(p.value) === Number(id))
+    );
+    
+    this.Model.processList = validIds;
+    this.allSelectedProcess = this.isAllSelectedProcess();
+    this.cdr.detectChanges();
+  }
+
+  private loadOperationHistory(batch: string) {
+    this.service.getStartEndOperationData(batch).subscribe({
+      next: (historyRes: any) => {
+        const historyData = Array.isArray(historyRes) ? historyRes : (historyRes?.data || []);
+        
+        if (historyData && historyData.length > 0) {
+          this.operationList = historyData.map((item: any) => ({
+            id: item.id || item.ID,
+            operation: item.operation || item.Operation || 'Wash',
+            processNames: item.processNames || item.ProcessNames || '',
+            machineNames: item.machineNames || item.MachineNames || '',
+            startDate: item.startDate || item.StartDate,
+            startTime: item.startTime || item.StartTime,
+            endDate: item.endDate || item.EndDate || null,
+            endTime: item.endTime || item.EndTime || null,
+            unitId: item.unitId || item.UnitId,
+            buyerId: item.buyerId || item.BuyerId,
+            jobId: item.jobId || item.JobId,
+            styleId: item.styleId || item.StyleId,
+            orderId: item.orderId || item.OrderId,
+            machineId: item.machineId || item.MachineId,
+            processId: item.processId || item.ProcessId
+          }));
+        } else {
+          this.operationList = [];
+        }
+        
+        // After loading history, determine what dates/times to show
+        this.determineDateTimeFromHistory();
+      },
+      error: (err) => {
+        console.error('Error loading history:', err);
+        this.operationList = [];
+        this.determineDateTimeFromHistory();
+      }
+    });
+  }
+
+  // ================= HELPER =================
   convertTo12Hour(time: string): string | null {
     if (!time) return null;
-    
     const [hourStr, minuteStr] = time.split(':');
+    if (!hourStr || !minuteStr) return null;
     let hour = parseInt(hourStr, 10);
     const minutes = minuteStr;
     const ampm = hour >= 12 ? 'PM' : 'AM';
-    
     hour = hour % 12;
-    hour = hour ? hour : 12; // 0 should become 12
-    
-    const hourFormatted = hour.toString().padStart(2, '0');
-    
-    return `${hourFormatted}:${minutes} ${ampm}`; // e.g. "05:55 AM"
+    hour = hour ? hour : 12;
+    return `${hour.toString().padStart(2, '0')}:${minutes} ${ampm}`;
   }
 
   // ================= SUBMIT =================
   onSubmit() {
-
-    // ================= VALIDATION =================
     if (!this.batchNo?.trim()) {
       this.toastr.warning('Batch No is required');
       return;
@@ -361,50 +610,56 @@ export class WashOperationStartEndComponent {
       return;
     }
 
-    // ================= BUILD PAYLOAD =================
+    if (!this.startDate && !this.endDate) {
+      this.toastr.warning('Please enter either Start or End Date/Time');
+      return;
+    }
+
     const payload = {
-      rows: [
-        {
-          unitId: this.Model.UnitId ?? 0,
-          buyerId: this.Model.BuyerId ?? 0,
-          batchNo: this.batchNo.trim(),
-
-          processId: this.Model.processList.join(','),
-          machineId: this.Model.machineList.join(','),
-
-          startDate: this.startDate ? new Date(this.startDate).toISOString() : null,
-          endDate: this.endDate ? new Date(this.endDate).toISOString() : null,
-
-          startTime: this.convertTo12Hour(this.startTime),
-          endTime: this.convertTo12Hour(this.endTime),
-
-          createdBy: 'SYSTEM'
-        }
-      ]
+      rows: [{
+        unitId: this.Model.UnitId ?? 0,
+        buyerId: this.Model.BuyerId ?? 0,
+        batchNo: this.batchNo.trim(),
+        processId: this.Model.processList.join(','),
+        machineId: this.Model.machineList.join(','),
+        startDate: this.startDate ? new Date(this.startDate).toISOString() : null,
+        endDate: this.endDate ? new Date(this.endDate).toISOString() : null,
+        startTime: this.convertTo12Hour(this.startTime),
+        endTime: this.convertTo12Hour(this.endTime),
+        createdBy: 'SYSTEM'
+      }]
     };
 
-    console.log('FINAL PAYLOAD:', payload);
-
-    // ================= API CALL =================
     this.service.saveWashStartEnd(payload).subscribe({
       next: (res: any) => {
-
         if (res?.isSuccess) {
-
-          // ✅ SUCCESS MESSAGE
-          this.toastr.success(res.message || 'Saved successfully');
-
-          // ✅ UPDATE TABLE (IMPORTANT)
-          this.operationList = res.data || [];
-
-          // ✅ RE-APPLY DATE TIME LOGIC AFTER SAVE FOR NEXT OPERATION
-          this.applySmartDateTimeLogic();
-
+          this.toastr.success('Saved successfully');
+          if (res.data && Array.isArray(res.data)) {
+            this.operationList = res.data.map((item: any) => ({
+              id: item.id || item.ID,
+              operation: item.operation || item.Operation || 'Wash',
+              processNames: item.processNames || item.ProcessNames || '',
+              machineNames: item.machineNames || item.MachineNames || '',
+              startDate: item.startDate || item.StartDate,
+              startTime: item.startTime || item.StartTime,
+              endDate: item.endDate || item.EndDate || null,
+              endTime: item.endTime || item.EndTime || null,
+              unitId: item.unitId || item.UnitId,
+              buyerId: item.buyerId || item.BuyerId,
+              jobId: item.jobId || item.JobId,
+              styleId: item.styleId || item.StyleId,
+              orderId: item.orderId || item.OrderId,
+              machineId: item.machineId || item.MachineId,
+              processId: item.processId || item.ProcessId
+            }));
+            this.determineDateTimeFromHistory();
+          } else {
+            this.loadOperationHistory(this.batchNo);
+          }
         } else {
           this.toastr.warning(res?.message || 'Save failed');
         }
       },
-
       error: (err) => {
         console.error(err);
         this.toastr.error('Server error occurred');
@@ -429,17 +684,29 @@ export class WashOperationStartEndComponent {
     this.batchNo = '';
     this.allSelectedMachine = false;
     this.allSelectedProcess = false;
-    
-    // Clear operation list
     this.operationList = [];
+    this.pendingSelections = { machineIds: [], processIds: [] };
     
-    // Reset to Page Load condition: Start = NOW, End = NULL
-    this.setPageLoadDateTime();
-
+    this.batchHeader = {
+      unitName: '',
+      buyerName: '',
+      batchNo: '',
+      styleName: '',
+      orderNo: '',
+      jobNo: '',
+      type: '',
+      color: '',
+      dressPart: '',
+      uom: '',
+      date: ''
+    };
+    
+    this.setInitialDateTime();
     this.toastr.info('Form cleared');
 
     setTimeout(() => {
       this.batchInput?.nativeElement.focus();
+      this.batchInput?.nativeElement.select();
     }, 100);
   }
 }
