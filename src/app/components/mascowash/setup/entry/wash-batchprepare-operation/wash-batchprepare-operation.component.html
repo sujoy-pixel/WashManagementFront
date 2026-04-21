@@ -233,10 +233,7 @@
   </div>
 </p-card>
 
-<!-- ================= SIZE POPUP ================= -->
-<!-- <div class="modal-backdrop fade show" *ngIf="sizePopupVisible"></div> -->
-<!-- <size-quantity visible="sizePopupVisible" [title]="'Size Wise Quantity'" (onClose)="sizePopupVisible=false"
-  (onConfirm)="confirmSizeQty()" /> -->
+
 
 <app-size-quantity 
   *ngIf="sizePopupVisible"
@@ -247,70 +244,3 @@
 >
 </app-size-quantity>
 
-<!-- <div class="modal fade show d-block" *ngIf="sizePopupVisible" tabindex="-1">
-  <div class="modal-dialog modal-dialog-centered modal-md">
-    <div class="modal-content shadow-lg border-0 rounded-3">
-
-      <div class="modal-header bg-primary text-white py-2">
-        <h6 class="mb-0 fw-semibold">
-          <i class="fa fa-ruler-combined me-6"></i>
-          Size Wise Quantity
-        </h6>
-        <button type="button" class="btn-close btn-close-white" (click)="sizePopupVisible=false">
-        </button>
-      </div>
-
-      <div class="modal-body px-4 py-3">
-
-        <table class="table table-sm table-bordered align-middle text-center mb-3">
-          <thead class="table-light">
-            <tr>
-              <th style="width: 30%">SizeId</th>
-              <th style="width: 50%">Size</th>
-              <th style="width: 50%">Quantity</th>
-            </tr>
-          </thead>
-
-          <tbody>
-            <tr *ngFor="let s of sizeList; let i = index">
-              <td class="fw-semibold text-muted">
-                {{ s.sizeId }}
-              </td>
-
-              <td class="fw-semibold">
-                {{ s.size }}
-              </td>
-
-              <td>
-                <input type="number" class="form-control form-control-sm text-end fw-semibold" [(ngModel)]="s.qty"
-                  (input)="calculateTotal()" min="0">
-              </td>
-            </tr>
-           
-          </tbody>
-        </table>
-
-        <div class="d-flex justify-content-between align-items-center
-                    bg-light rounded px-3 py-2">
-          <span class="fw-semibold text-muted">Total Quantity</span>
-          <span class="fw-bold fs-5 text-primary">
-            {{ totalSizeQty }}
-          </span>
-        </div>
-
-      </div>
-
-      <div class="modal-footer py-2">
-        <button class="btn btn-sm btn-outline-secondary" (click)="sizePopupVisible=false">
-          Cancel
-        </button>
-
-        <button class="btn btn-sm btn-primary px-4" (click)="confirmSizeQty()">
-          <i class="fa fa-check me-1"></i>
-          Confirm
-        </button>
-      </div>
-
-    </div>
-  </div>
-</div> -->

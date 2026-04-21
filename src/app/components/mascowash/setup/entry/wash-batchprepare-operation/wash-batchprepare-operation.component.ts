@@ -404,23 +404,7 @@ debugger;
     return Array.from(map.values());
   }
 
-  /* ===================== SIZE POPUP ===================== */
-  // openSizePopup(row: WashBatchRow): void {
-  //   this.selectedRow = row;
-  //   this.sizeList = JSON.parse(JSON.stringify(row.sizeDetails));
-  //   this.calculateTotal();
-  //   this.sizePopupVisible = true;
-  // }
 
-  // calculateTotal(): void {
-  //   this.totalSizeQty = this.sizeList.reduce((s, x) => s + (+x.qty || 0), 0);
-  // }
-
-  // confirmSizeQty(): void {
-  //   this.selectedRow.sizeDetails = [...this.sizeList];
-  //   this.selectedRow.totalQty = this.totalSizeQty;
-  //   this.sizePopupVisible = false;
-  // }
 
  openSizePopup(row: any) {
 
@@ -450,13 +434,7 @@ debugger;
 
     this.sizePopupVisible = true;
   }
-  // openSizePopup(row: any) {
-  //   this.selectedRow = row;
-  //   this.sizeList = JSON.parse(JSON.stringify(row.sizeDetails));
-  //   console.log('Selected Row for Size Popup:', this.sizeList);
-  //   this.calculateTotal();
-  //   this.sizePopupVisible = true;
-  // }
+
 
   calculateTotal() {
     this.totalSizeQty = this.sizeList.reduce((s, x) => s + (+x.qty || 0), 0);
