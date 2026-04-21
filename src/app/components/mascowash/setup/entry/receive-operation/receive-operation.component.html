@@ -79,7 +79,7 @@
         <thead class="custom-table-header">
           <tr>
             <th class="custom-table-th">SL</th>
-            <th>Master ID</th>
+            <th style="display: none;">Master ID</th>
             <th>Receive No</th>
             <th>Received By</th>
             <th>Receive Date</th>
@@ -91,7 +91,7 @@
           <tr *ngFor="let row of searchList; let i = index" class="text-center">
 
             <td>{{ i + 1 }}</td>
-            <td>{{ row.masterId }}</td>
+            <td style="display: none;">{{ row.masterId }}</td>
             <td>{{ row.receiveNo }}</td>
             <td>{{ row.receivedBy }}</td>
             <td>{{ row.receiveDate | date:'dd-MM-yyyy' }}</td>
@@ -222,7 +222,7 @@
             <th>GSM</th>
             <th class="larger-column">Color</th>
             <th>Dress Part</th>
-            <th>Operation Types</th>
+            <!-- <th>Operation Types</th> -->
             <th>UOM</th>
             <th>Size</th>
             <th>Total Qty</th>

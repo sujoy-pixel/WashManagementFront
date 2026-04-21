@@ -23,12 +23,13 @@ export class WashPrepareActionComponent implements OnInit {
 
   Model: any = {
     processList: [],
-    machineList: []
+    machineList: [],
+    activeStatus: true
   };
 
   processList: any[] = [];
   machineList: any[] = [];
-
+ 
   allSelectedProcess = false;
   allSelectedMachine = false;
 
@@ -90,8 +91,12 @@ export class WashPrepareActionComponent implements OnInit {
     this.loadProcessDDL();
     this.loadMachineDDL();
     this.loadDataFromParent();
-   
+  
+   this.Model.activeStatus = true;
+
   }
+
+
 
 onlyNumber(event: any) {
   const input = event.target.value;
@@ -124,16 +129,19 @@ debugger;
   }
 
 }
-  // onChangeActiveStatus(event: any) {
-  //   this.Model.activeStatus = event.target.checked;
-  // }
+ onChangeActiveStatus(event: any) {
+    this.Model.activeStatus = event.target.checked;
+  }
   loadProcessDDL() {
+    debugger;
+  
     this.service.GetProcessNameDDL().subscribe(res => {
       this.processList = res.map((x: any) => ({
         label: x.displayName ?? x.DisplayName,
         value: x.id ?? x.ID
       }));
     });
+    console.log('Process List:', this.processList);
   }
 
   loadMachineDDL() {
@@ -574,11 +582,13 @@ onSubmit(): void {
   
 //   });
 // }
-onShadeChange() {
-  this.Model.shade = this.Model.shade ? 1 : 0;
+// onShadeChange() {
+//   this.Model.shade = this.Model.shade ? 1 : 0;
+// }
+
+onShadeChange(event: any) {
+  this.Model.shade = event.target.checked ? 1 : 0;
 }
-
-
   ReportUrlTab:any;
   printReport(ReportType,GenerateNumber)
   {

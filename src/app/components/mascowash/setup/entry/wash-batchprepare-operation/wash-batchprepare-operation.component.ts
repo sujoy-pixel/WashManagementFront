@@ -109,43 +109,72 @@ export class WashBatchPrepareOperationComponent implements OnInit {
     private router: Router
   ) {}
 
-  ngOnInit(): void {
-    this.loadDropdowns();
-  }
+//   ngOnInit(): void {
+//     this.loadDropdowns();
 
-  /* ===================== LOAD UNIT & BUYER ===================== */
-  loadDropdowns(): void {
+//   }
 
+//   loadDropdowns(): void {
+
+//   this.service.GetUnitName().subscribe(res => {
+//     this.UnitList = res.map((x: any) => ({
+//       label: x.DisplayName ?? x.displayName,
+//       value: x.ID ?? x.id
+//     }));
+
+//     const found = this.UnitList.find(x => x.value === 60);
+//       if (found) {
+//         this.Model.UnitId = 60;
+//       }
+
+//   });
+
+
+//   this.service.GetBuyerNameDDL().subscribe(res => {
+//     this.buyerList = res.map((x: any) => ({
+//       label: x.DisplayName ?? x.displayName ?? x.BuyerName,
+//       value: x.ID ?? x.id ?? x.BuyerNo
+//     }));
+
+//     // ✅ AUTO SELECT BUYER
+//     if (this.buyerList.length === 1) {
+// this.Model.BuyerId = Number(this.buyerList[0].value);
+//       this.onBuyerChange(); // 🔥 auto trigger
+//     }
+//   });
+// }
+
+ngOnInit(): void {
+  this.loadUnits();
+}
+
+/* ===================== LOAD UNIT ===================== */
+loadUnits(): void {
   this.service.GetUnitName().subscribe(res => {
+
     this.UnitList = res.map((x: any) => ({
       label: x.DisplayName ?? x.displayName,
       value: x.ID ?? x.id
     }));
 
-
-
-    
     // ✅ AUTO SELECT UNIT
-    // if (this.UnitList.length === 1) {
-    //   this.Model.UnitId = this.UnitList[0].value;
-    // }
-
     const found = this.UnitList.find(x => x.value === 60);
-      if (found) {
-        this.Model.UnitId = 60;
-      }
+    if (found) {
+      this.Model.UnitId = found.value;
 
+      // 🔥 IMPORTANT: trigger change manually
+      this.onUnitChange();
+    }
   });
 
-// const found = this.UnitList.find(x => x.value === 60);
-//       if (found) {
-//         this.Model.UnitId = 60;
-//       }
+  
+}
+onUnitChange(): void {
 
-
-
+  if (!this.Model.UnitId) return;
 
   this.service.GetBuyerNameDDL().subscribe(res => {
+
     this.buyerList = res.map((x: any) => ({
       label: x.DisplayName ?? x.displayName ?? x.BuyerName,
       value: x.ID ?? x.id ?? x.BuyerNo
@@ -153,13 +182,13 @@ export class WashBatchPrepareOperationComponent implements OnInit {
 
     // ✅ AUTO SELECT BUYER
     if (this.buyerList.length === 1) {
-this.Model.BuyerId = Number(this.buyerList[0].value);
-      this.onBuyerChange(); // 🔥 auto trigger
+      this.Model.BuyerId = Number(this.buyerList[0].value);
+
+      // 🔥 trigger next dependency
+      this.onBuyerChange();
     }
   });
 }
-
-
   /* ===================== BUYER CHANGE → LOAD JOB ===================== */
   onBuyerChange(): void {
 

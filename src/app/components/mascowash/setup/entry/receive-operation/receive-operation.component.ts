@@ -250,6 +250,7 @@ loadDropdowns() {
       const found = this.UnitList.find(x => x.value === 60);
       if (found) {
         this.Model.UnitId = 60;
+        this.review.UnitId = 60;
       }
     });
   
@@ -306,7 +307,7 @@ loadDropdowns() {
   // ================= GRID BINDING For Tracking (GROUPING LOGIC) =================
   bindDetailRows(rows: any[]) {
 
-
+debugger;
     const map = new Map<string, any>();
 
     rows.forEach(r => {
@@ -324,7 +325,8 @@ loadDropdowns() {
       if (!map.has(key)) {
         map.set(key, {
           trackingNo: r.trackingNo,
-          fromUnitId: r.fromUnitId,
+            fromUnitId: r.fromUnitId,
+             fromUnitName: r.fromUnitName, // ✅ FIX HERE
           receiveDate: r.receiveDate ? new Date(r.receiveDate) : null,
 
           buyerNo: r.buyerNo,
@@ -391,6 +393,7 @@ loadDropdowns() {
     this.detailList = Array.from(map.values());
 
     // ===== Populate dependent dropdowns (unique) =====
+    this.fromUnitList = this.unique(this.detailList, 'fromUnitId', 'fromUnitName');
     this.jobList = this.unique(this.detailList, 'jobId', 'jobInfo');
     this.buyerList = this.unique(this.detailList, 'buyerNo', 'buyerName');
     this.styleList = this.unique(this.detailList, 'styleNo', 'styleName');
@@ -432,7 +435,7 @@ loadDropdowns() {
     this.sizeList = Object.values(grouped);
 
     console.log('Unique Size List:', this.sizeList);
-
+debugger;
     this.calculateTotal();
 
     this.sizePopupVisible = true;
@@ -732,6 +735,7 @@ loadDropdowns() {
     console.log('GRID + DROPDOWN DATA (AS IS FROM DB)', this.detailList);
 
     // ===== DROPDOWNS USE SAME LIST (NO UNIQUE) =====
+  
     this.jobList = this.unique(this.detailList, 'jobId', 'jobInfo');
     this.buyerList = this.unique(this.detailList, 'buyerNo', 'buyerName');
     this.styleList = this.unique(this.detailList, 'styleNo', 'styleName');
