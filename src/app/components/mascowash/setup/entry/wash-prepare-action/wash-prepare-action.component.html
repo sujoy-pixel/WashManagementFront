@@ -4,7 +4,7 @@
   </div>
 
   <div class="card-body px-4 py-4">
- 
+
     <!-- //New Design -->
     <div class="row g-3">
 
@@ -30,7 +30,7 @@
               <td>{{ batch.orderNo }}</td>
             </tr>
 
-          
+
           </table>
         </div>
 
@@ -51,86 +51,72 @@
             </tr>
           </table>
           <table class="table info-table text-center mt-3">
-  <thead>
-    <tr class="table-light">
-      <th colspan="3">Batch Quantity</th>
-    </tr>
+            <thead>
+              <tr class="table-light">
+                <th colspan="3">Batch Quantity</th>
+              </tr>
 
-    <tr class="buyer-row">
-      <!-- ✅ CLICK TO TOGGLE -->
-      <th (click)="toggleSizeView()" style="cursor:pointer">
-        Size {{ showSizeDetails ? '🔽' : '▶' }}
-      </th>
+              <tr class="buyer-row">
+                <!-- ✅ CLICK TO TOGGLE -->
+                <th (click)="toggleSizeView()" style="cursor:pointer">
+                  Size {{ showSizeDetails ? '🔽' : '▶' }}
+                </th>
 
-      <!-- ✅ CHECKBOX IN PCS HEADER -->
-      <th>
-        Pcs 
-        <input type="checkbox"
-               [(ngModel)]="applyToAll"
-               (change)="applyFirstValueToAll()" 
-               [disabled]="!showSizeDetails" />
-              
-      </th>
+                <!-- ✅ CHECKBOX IN PCS HEADER -->
+                <th>
+                  Pcs
+                  <input type="checkbox" [(ngModel)]="applyToAll" (change)="applyFirstValueToAll()"
+                    [disabled]="!showSizeDetails" />
 
-      <th>Kg</th>
-    </tr>
-  </thead>
+                </th>
 
-  <tbody>
+                <th>Kg</th>
+              </tr>
+            </thead>
 
-    <!-- ✅ HIDE/SHOW SIZE ROWS -->
-    <ng-container *ngIf="showSizeDetails">
-      <tr *ngFor="let s of sizeQty; let i = index">
-        <td>{{ s.size }}</td>
+            <tbody>
 
-        <td>
-          <input type="number"
-                 class="form-control form-control-sm text-center"
-                 [(ngModel)]="s.pcs"
-                 (ngModelChange)="calculateTotals(); applyToAll && applyFirstValueToAll()"
-                 min="0" />
-        </td>
+              <!-- ✅ HIDE/SHOW SIZE ROWS -->
+              <ng-container *ngIf="showSizeDetails">
+                <tr *ngFor="let s of sizeQty; let i = index">
+                  <td>{{ s.size }}</td>
 
-        <td>
-          <input type="number"
-                 class="form-control form-control-sm text-center"
-                 [(ngModel)]="s.kg"
-                 (ngModelChange)="calculateTotals()" />
-        </td>
-      </tr>
-    </ng-container>
+                  <td>
+                    <input type="number" class="form-control form-control-sm text-center" [(ngModel)]="s.pcs"
+                      (ngModelChange)="calculateTotals(); applyToAll && applyFirstValueToAll()" min="0" />
+                  </td>
 
-    <!-- ✅ ALWAYS SHOW TOTAL -->
- <tr class="fw-bold table-light">
-  <td>
-    Total 
-    <input type="checkbox" [(ngModel)]="isTotalEditable">
-  </td>
+                  <td>
+                    <input type="number" class="form-control form-control-sm text-center" [(ngModel)]="s.kg"
+                      (ngModelChange)="calculateTotals()" />
+                  </td>
+                </tr>
+              </ng-container>
 
-  <!-- ✅ PCS -->
-  <td>
-    <input type="text"
-       class="form-control form-control-sm text-center fw-bold"
-       [(ngModel)]="totalPcs"
-       (input)="onlyNumber($event)"
-       (blur)="onTotalPcsChange()"
-       [readonly]="!isTotalEditable"
-       maxlength="10">
-  </td>
+              <!-- ✅ ALWAYS SHOW TOTAL -->
+              <tr class="fw-bold table-light">
+                <td>
+                  Total
+                  <input type="checkbox" [(ngModel)]="isTotalEditable">
+                </td>
 
-  <!-- ✅ KG -->
-  <td>
-    <input type="number"
-           class="form-control form-control-sm text-center fw-bold"
-           [(ngModel)]="totalKg"
-           (input)="Number($event)"
-           [readonly]="!isTotalEditable">
-  </td>
-</tr>
+                <!-- ✅ PCS -->
+                <td>
+                  <input type="text" class="form-control form-control-sm text-center fw-bold" [(ngModel)]="totalPcs"
+                    (input)="onlyNumber($event)" (blur)="onTotalPcsChange()" [readonly]="!isTotalEditable"
+                    maxlength="10">
+                </td>
 
-  </tbody>
-</table>
-         
+                <!-- ✅ KG -->
+                <td>
+                  <input type="number" class="form-control form-control-sm text-center fw-bold" [(ngModel)]="totalKg"
+                    (input)="Number($event)" [readonly]="!isTotalEditable">
+                </td>
+              </tr>
+
+            </tbody>
+          </table>
+
         </div>
 
       </div>
@@ -197,8 +183,8 @@
             <tr>
               <th>Machine No</th>
               <td>
-                
-           
+
+
                 <mat-form-field appearance="outline">
                   <mat-label>Machine No</mat-label>
                   <mat-select [(value)]="Model.machineList" (selectionChange)="onSelectionChangeMachine($event)"
@@ -220,7 +206,7 @@
             <tr>
               <th>Process</th>
               <td>
-                
+
                 <mat-form-field appearance="outline">
                   <mat-label>Process</mat-label>
                   <mat-select [(value)]="Model.processList" multiple
@@ -239,38 +225,43 @@
 
               </td>
             </tr>
-            
+
           </table>
           <div>
+            <label class="switch">
+  <input type="checkbox"
+         [(ngModel)]="Model.shade "
+         [ngModelOptions]="{standalone: true}"
+         class="success" />
+  <span class="slider round"></span>
+</label>
+            <!-- <div class="input-group-prepend paheight col-3">
+              <span class="col-12 form-label text-dark">Shade</span>
+            </div>
+
+            <label class="switch">
+              <input type="checkbox" [(ngModel)]="Model.activeStatus" class="success"
+                (change)="onChangeActiveStatus($event)" />
+              <span class="slider round"></span>
+            </label> -->
 
 
-<div class="input-group-prepend paheight col-3">
-  <span class="col-12 form-label text-dark">Shade</span>
-</div>
+          </div>
 
-<label class="switch">
-                  <input type="checkbox" [(ngModel)]="Model.activeStatus" class="success"
-                    (change)="onChangeActiveStatus($event)" />
-                  <span class="slider round"></span>
-                </label>
-
+        </div>
 
       </div>
 
+
+      <div class="text-right mt-3">
+        <button type="button" class="btn btn-primary" (click)="onSubmit()">
+          <i class="fa fa-database" aria-hidden="true"></i>
+          {{ saveButtonTitle }}
+        </button>
+        &nbsp;
+        <button class="btn btn-danger" type="button" (click)="clearAll()">
+          <i class="fa fa-refresh" aria-hidden="true"></i> Clear
+        </button>
+        &nbsp; &nbsp;
+      </div>
     </div>
-    
-  </div>
-
-
-  <div class="text-right mt-3">
-    <button type="button" class="btn btn-primary" (click)="onSubmit()">
-      <i class="fa fa-database" aria-hidden="true"></i>
-      {{ saveButtonTitle }}
-    </button>
-    &nbsp;
-    <button class="btn btn-danger" type="button" (click)="clearAll()">
-      <i class="fa fa-refresh" aria-hidden="true"></i> Clear
-    </button>
-    &nbsp; &nbsp;
-  </div>
-</div>

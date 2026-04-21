@@ -466,7 +466,7 @@ debugger;
     //     this.review = {
     //   receiveNo: this.review.receiveNo
     // };
-    this.Model.UnitId = 0;
+
     this.isEditMode = false;
     this.review.receiveNo = '';
   }

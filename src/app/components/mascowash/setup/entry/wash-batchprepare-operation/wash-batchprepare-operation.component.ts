@@ -504,6 +504,34 @@ if (row.totalQty==row.alreadyPreparedQty) {
   );
 
   window.open(url, '_blank', 'noopener');
+   this.resetForm();
+   this.loadUnits();
 }
+resetForm(): void {
 
+  // ===== CLEAR MODEL =====
+  this.Model = {
+    UnitId: null,
+    BuyerId: null,
+    JobId: null,
+    StyleId: null,
+    OrderId: null
+  };
+
+  // ===== CLEAR DROPDOWNS =====
+  this.buyerList = [];
+  this.jobList = [];
+  this.styleList = [];
+  this.orderList = [];
+
+  // (Optional: keep UnitList if static)
+  // this.UnitList = [];
+
+  // ===== CLEAR GRID =====
+  this.detailList = [];
+
+  // ===== CLEAR EXTRA =====
+  this.sizeList = [];
+  this.sizePopupVisible = false;
+}
 }

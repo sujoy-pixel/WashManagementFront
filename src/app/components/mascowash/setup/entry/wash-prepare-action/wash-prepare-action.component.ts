@@ -24,7 +24,7 @@ export class WashPrepareActionComponent implements OnInit {
   Model: any = {
     processList: [],
     machineList: [],
-    activeStatus: true
+    shade: true
   };
 
   processList: any[] = [];
@@ -89,10 +89,8 @@ export class WashPrepareActionComponent implements OnInit {
   ngOnInit(): void {
     debugger;
     this.loadProcessDDL();
-    this.loadMachineDDL();
-    this.loadDataFromParent();
-  
-   this.Model.activeStatus = true;
+    this.loadMachineDDL(); // ✅ initially true
+  this.loadDataFromParent();   
 
   }
 
@@ -129,9 +127,7 @@ debugger;
   }
 
 }
- onChangeActiveStatus(event: any) {
-    this.Model.activeStatus = event.target.checked;
-  }
+
   loadProcessDDL() {
     debugger;
   
@@ -248,8 +244,7 @@ this.initialTotalPcs = this.totalPcs ?? 0;
     this.batch.jobNo = data.jobNo ?? '';
     this.batch.styleNo = data.styleNo ?? '';
     this.batch.orderNo = data.orderNo ?? '';
-    this.batch.batchNo = data.batchNo ?? '';
-    this.batch.documentNo = data.documentNo ?? '';
+    this.batch.documentNo = 'CKL-Wash-024';
     this.batch.effectiveDate = new Date();
     this.batch.revisionDate = data.revisionDate ?? '';
     this.batch.revisionNo = data.revisionNo ?? '';
@@ -300,7 +295,7 @@ clearAll(): void {
   this.Model = {
     processList: [],
     machineList: [],
-    shade: false
+    shade: true
   };
 
   // ================= BATCH INFO =================
@@ -405,7 +400,7 @@ onSubmit(): void {
 
     batchNo: this.batch.batchNo ?? '',
     type: this.batch.type ?? '',
-    documentNo: this.batch.documentNo ?? '',
+    documentNo: this.batch.documentNo = 'CKL-Wash-024',
 
     effectiveDate: formatDate(this.batch.effectiveDate),
     revisionDate: formatDate(this.batch.revisionDate),
@@ -431,7 +426,7 @@ onSubmit(): void {
     totalKg: safeTotalKg,
 
     IsManualTotal: !!this.isTotalEditable,
-    shade: !!this.Model.shade
+  shade: this.Model.shade ? 1 : 0
   };
 
   /* ================= SIZE DETAILS ================= */
