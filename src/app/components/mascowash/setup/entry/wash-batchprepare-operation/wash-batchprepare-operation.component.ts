@@ -4,7 +4,7 @@ import { WashSetupService } from '../../../services/washsetup.service';
 import { de, tr } from 'date-fns/locale';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
-import {SizeQuantityComponent} from '../../../../advanced-ui/modals/size-quantity/size-quantity.component';
+import { SizeQuantityComponent } from '../../../../advanced-ui/modals/size-quantity/size-quantity.component';
 import { FormsModule } from '@angular/forms';
 import { NgSelectModule } from '@ng-select/ng-select';
 import { BsDatepickerModule } from 'ngx-bootstrap/datepicker';
@@ -48,7 +48,7 @@ interface WashBatchRow {
 
   dressPartId: number;
   dressPartName: string;
- receiveNo: string;
+  receiveNo: string;
   uomId: number;
   uomName: string;
 
@@ -58,11 +58,11 @@ interface WashBatchRow {
   alreadyPreparedQty: number;
   remainingQty: number;
   totalQty: number;
-iszid:number;
-gsm:string;
-trackingNo:string;
+  iszid: number;
+  gsm: string;
+  trackingNo: string;
 
-gsmId:number;
+  gsmId: number;
   sizeDetails: SizeDetail[];
 }
 @Component({
@@ -74,20 +74,20 @@ gsmId:number;
 })
 export class WashBatchPrepareOperationComponent implements OnInit {
 
-  
- Model = {
+
+  Model = {
     UnitId: null as number | null,
     BuyerId: null as number | null,
     JobId: null as number | null,
     StyleId: null as number | null,
     OrderId: null as number | null
   };
-   /* ===================== GRID ===================== */
+  /* ===================== GRID ===================== */
   detailList: WashBatchRow[] = [];
 
   UnitList: any[] = [];
 
-/* ===================== DROPDOWNS ===================== */
+  /* ===================== DROPDOWNS ===================== */
   buyerList: DropdownItem[] = [];
   jobList: DropdownItem[] = [];
   styleList: DropdownItem[] = [];
@@ -107,188 +107,188 @@ export class WashBatchPrepareOperationComponent implements OnInit {
     private service: WashSetupService,
     private toastr: ToastrService,
     private router: Router
-  ) {}
+  ) { }
 
-//   ngOnInit(): void {
-//     this.loadDropdowns();
+  //   ngOnInit(): void {
+  //     this.loadDropdowns();
 
-//   }
+  //   }
 
-//   loadDropdowns(): void {
+  //   loadDropdowns(): void {
 
-//   this.service.GetUnitName().subscribe(res => {
-//     this.UnitList = res.map((x: any) => ({
-//       label: x.DisplayName ?? x.displayName,
-//       value: x.ID ?? x.id
-//     }));
+  //   this.service.GetUnitName().subscribe(res => {
+  //     this.UnitList = res.map((x: any) => ({
+  //       label: x.DisplayName ?? x.displayName,
+  //       value: x.ID ?? x.id
+  //     }));
 
-//     const found = this.UnitList.find(x => x.value === 60);
-//       if (found) {
-//         this.Model.UnitId = 60;
-//       }
+  //     const found = this.UnitList.find(x => x.value === 60);
+  //       if (found) {
+  //         this.Model.UnitId = 60;
+  //       }
 
-//   });
+  //   });
 
 
-//   this.service.GetBuyerNameDDL().subscribe(res => {
-//     this.buyerList = res.map((x: any) => ({
-//       label: x.DisplayName ?? x.displayName ?? x.BuyerName,
-//       value: x.ID ?? x.id ?? x.BuyerNo
-//     }));
+  //   this.service.GetBuyerNameDDL().subscribe(res => {
+  //     this.buyerList = res.map((x: any) => ({
+  //       label: x.DisplayName ?? x.displayName ?? x.BuyerName,
+  //       value: x.ID ?? x.id ?? x.BuyerNo
+  //     }));
 
-//     // ✅ AUTO SELECT BUYER
-//     if (this.buyerList.length === 1) {
-// this.Model.BuyerId = Number(this.buyerList[0].value);
-//       this.onBuyerChange(); // 🔥 auto trigger
-//     }
-//   });
-// }
+  //     // ✅ AUTO SELECT BUYER
+  //     if (this.buyerList.length === 1) {
+  // this.Model.BuyerId = Number(this.buyerList[0].value);
+  //       this.onBuyerChange(); // 🔥 auto trigger
+  //     }
+  //   });
+  // }
 
-ngOnInit(): void {
-  this.loadUnits();
-}
+  ngOnInit(): void {
+    this.loadUnits();
+  }
 
-/* ===================== LOAD UNIT ===================== */
-loadUnits(): void {
-  this.service.GetUnitName().subscribe(res => {
+  /* ===================== LOAD UNIT ===================== */
+  loadUnits(): void {
+    this.service.GetUnitName().subscribe(res => {
 
-    this.UnitList = res.map((x: any) => ({
-      label: x.DisplayName ?? x.displayName,
-      value: x.ID ?? x.id
-    }));
+      this.UnitList = res.map((x: any) => ({
+        label: x.DisplayName ?? x.displayName,
+        value: x.ID ?? x.id
+      }));
 
-    // ✅ AUTO SELECT UNIT
-    const found = this.UnitList.find(x => x.value === 60);
-    if (found) {
-      this.Model.UnitId = found.value;
+      // ✅ AUTO SELECT UNIT
+      const found = this.UnitList.find(x => x.value === 60);
+      if (found) {
+        this.Model.UnitId = found.value;
 
-      // 🔥 IMPORTANT: trigger change manually
-      this.onUnitChange();
-    }
-  });
+        // 🔥 IMPORTANT: trigger change manually
+        this.onUnitChange();
+      }
+    });
 
-  
-}
-onUnitChange(): void {
 
-  if (!this.Model.UnitId) return;
+  }
+  onUnitChange(): void {
 
-  this.service.GetBuyerNameDDL().subscribe(res => {
+    if (!this.Model.UnitId) return;
 
-    this.buyerList = res.map((x: any) => ({
-      label: x.DisplayName ?? x.displayName ?? x.BuyerName,
-      value: x.ID ?? x.id ?? x.BuyerNo
-    }));
+    this.service.GetBuyerNameDDL().subscribe(res => {
 
-    // ✅ AUTO SELECT BUYER
-    if (this.buyerList.length === 1) {
-      this.Model.BuyerId = Number(this.buyerList[0].value);
+      this.buyerList = res.map((x: any) => ({
+        label: x.DisplayName ?? x.displayName ?? x.BuyerName,
+        value: x.ID ?? x.id ?? x.BuyerNo
+      }));
 
-      // 🔥 trigger next dependency
-      this.onBuyerChange();
-    }
-  });
-}
+      // ✅ AUTO SELECT BUYER
+      if (this.buyerList.length === 1) {
+        this.Model.BuyerId = Number(this.buyerList[0].value);
+
+        // 🔥 trigger next dependency
+        this.onBuyerChange();
+      }
+    });
+  }
   /* ===================== BUYER CHANGE → LOAD JOB ===================== */
   onBuyerChange(): void {
 
-  this.jobList = [];
-  this.styleList = [];
-  this.orderList = [];
+    this.jobList = [];
+    this.styleList = [];
+    this.orderList = [];
 
-  this.Model.JobId = null;
-  this.Model.StyleId = null;
-  this.Model.OrderId = null;
+    this.Model.JobId = null;
+    this.Model.StyleId = null;
+    this.Model.OrderId = null;
 
-  if (!this.Model.UnitId || !this.Model.BuyerId) {
-    return;
-  }
-
-  this.service.GetJobNoWithParameterDDL({
-    unitId: this.Model.UnitId,
-    buyerId: this.Model.BuyerId
-  }).subscribe(res => {
-
-    this.jobList = res.map((x: any) => ({
-      label: x.DisplayName ?? x.displayName ?? x.jobInfo,
-      value: x.ID ?? x.id ?? x.JobId
-    }));
-
-    // ✅ AUTO SELECT JOB
-    if (this.jobList.length === 1) {
-      this.Model.JobId = Number(this.jobList[0].value);
-      this.onJobChange();
+    if (!this.Model.UnitId || !this.Model.BuyerId) {
+      return;
     }
-  });
-}
+
+    this.service.GetJobNoWithParameterDDL({
+      unitId: this.Model.UnitId,
+      buyerId: this.Model.BuyerId
+    }).subscribe(res => {
+
+      this.jobList = res.map((x: any) => ({
+        label: x.DisplayName ?? x.displayName ?? x.jobInfo,
+        value: x.ID ?? x.id ?? x.JobId
+      }));
+
+      // ✅ AUTO SELECT JOB
+      if (this.jobList.length === 1) {
+        this.Model.JobId = Number(this.jobList[0].value);
+        this.onJobChange();
+      }
+    });
+  }
 
 
   /* ===================== JOB CHANGE → LOAD STYLE ===================== */
   onJobChange(): void {
 
-  this.styleList = [];
-  this.orderList = [];
+    this.styleList = [];
+    this.orderList = [];
 
-  this.Model.StyleId = null;
-  this.Model.OrderId = null;
+    this.Model.StyleId = null;
+    this.Model.OrderId = null;
 
-  if (!this.Model.UnitId || !this.Model.BuyerId || !this.Model.JobId) {
-    return;
-  }
-
-  this.service.GetStyleNoWithParameterDDL({
-    unitId: this.Model.UnitId,
-    buyerId: this.Model.BuyerId,
-    jobId: this.Model.JobId
-  }).subscribe(res => {
-
-    this.styleList = res.map((x: any) => ({
-      label: x.DisplayName ?? x.displayName,
-      value: x.ID ?? x.id ?? x.StyleId
-    }));
-
-    // ✅ AUTO SELECT STYLE
-    if (this.styleList.length === 1) {
-      this.Model.StyleId = Number(this.styleList[0].value);
-      this.onStyleChange();
+    if (!this.Model.UnitId || !this.Model.BuyerId || !this.Model.JobId) {
+      return;
     }
-  });
-}
+
+    this.service.GetStyleNoWithParameterDDL({
+      unitId: this.Model.UnitId,
+      buyerId: this.Model.BuyerId,
+      jobId: this.Model.JobId
+    }).subscribe(res => {
+
+      this.styleList = res.map((x: any) => ({
+        label: x.DisplayName ?? x.displayName,
+        value: x.ID ?? x.id ?? x.StyleId
+      }));
+
+      // ✅ AUTO SELECT STYLE
+      if (this.styleList.length === 1) {
+        this.Model.StyleId = Number(this.styleList[0].value);
+        this.onStyleChange();
+      }
+    });
+  }
 
   /* ===================== STYLE CHANGE → LOAD ORDER ===================== */
   onStyleChange(): void {
 
-  this.orderList = [];
-  this.Model.OrderId = null;
+    this.orderList = [];
+    this.Model.OrderId = null;
 
-  if (!this.Model.UnitId || !this.Model.BuyerId || !this.Model.JobId || !this.Model.StyleId) {
-    return;
+    if (!this.Model.UnitId || !this.Model.BuyerId || !this.Model.JobId || !this.Model.StyleId) {
+      return;
+    }
+
+    this.service.GetOrderNoWithParameterDDL({
+      unitId: this.Model.UnitId,
+      buyerId: this.Model.BuyerId,
+      jobId: this.Model.JobId,
+      styleId: this.Model.StyleId
+    }).subscribe(res => {
+
+      this.orderList = res.map((x: any) => ({
+        label: x.DisplayName ?? x.displayName,
+        value: x.ID ?? x.id ?? x.OrderId
+      }));
+
+      // ✅ AUTO SELECT ORDER
+      if (this.orderList.length === 1) {
+        this.Model.OrderId = Number(this.orderList[0].value);
+      }
+    });
   }
 
-  this.service.GetOrderNoWithParameterDDL({
-    unitId: this.Model.UnitId,
-    buyerId: this.Model.BuyerId,
-    jobId: this.Model.JobId,
-    styleId: this.Model.StyleId
-  }).subscribe(res => {
 
-    this.orderList = res.map((x: any) => ({
-      label: x.DisplayName ?? x.displayName,
-      value: x.ID ?? x.id ?? x.OrderId
-    }));
-
-    // ✅ AUTO SELECT ORDER
-    if (this.orderList.length === 1) {
-      this.Model.OrderId = Number(this.orderList[0].value);
-    }
-  });
-}
- 
-
-   /* ===================== SEARCH ===================== */
+  /* ===================== SEARCH ===================== */
   onSearch(): void {
     if (!this.Model.UnitId || !this.Model.BuyerId || !this.Model.JobId ||
-        !this.Model.StyleId || !this.Model.OrderId) {
+      !this.Model.StyleId || !this.Model.OrderId) {
       this.toastr.warning('Please select all fields before searching');
       return;
     }
@@ -301,26 +301,36 @@ onUnitChange(): void {
       orderId: this.Model.OrderId
     };
 
-    
+
 
     this.service.getWashBatchPrepareGrid(params).subscribe({
-      
-  next: (res: any[]) => {
-    debugger;
-    console.log('WashBatchPrepareGrid Response:', res); // 👈 see DB data
-    this.bindDetailRows(res);
-  },
-  error: (err) => {
-    console.error('WashBatchPrepareGrid Error:', err);
-    this.toastr.error('Failed to load grid data');
-  }
-});
 
+      next: (res: any[]) => {
+        debugger;
+        console.log('WashBatchPrepareGrid Response:', res); // 👈 see DB data
+        this.bindDetailRows(res);
+ // ✅ Only reset model selections, keep all dropdown lists intact
+      this.Model.BuyerId = null;
+      this.Model.JobId = null;
+      this.Model.StyleId = null;
+      this.Model.OrderId = null;
+
+      // 🔥 Auto-select unit 60 and reload buyers only
+      this.loadUnits();
+      },
+     
+      
+      error: (err) => {
+        console.error('WashBatchPrepareGrid Error:', err);
+        this.toastr.error('Failed to load grid data');
+      }
+    });
+    
   }
 
   /* ===================== GRID BIND ===================== */
   bindDetailRows(rows: any[]): void {
-debugger;
+    debugger;
     const map = new Map<string, WashBatchRow>();
 
     rows.forEach(r => {
@@ -353,7 +363,7 @@ debugger;
 
           fabricationId: r.fabricationId,
           fabricationName: r.fabricationName,
-          composition:r.composition,
+          composition: r.composition,
           colorId: r.icleid,
           colorName: r.color,
 
@@ -374,8 +384,8 @@ debugger;
           totalQty: 0,
           iszid: r.iszid,
           gsm: r.gsm,
-          gsmId:r.gsmId,
-          trackingNo:r.trackingNo
+          gsmId: r.gsmId,
+          trackingNo: r.trackingNo
         });
       }
       const row = map.get(key)!;
@@ -396,6 +406,8 @@ debugger;
     this.dressPartList = this.unique(this.detailList, 'dressPartId', 'dressPartName');
     this.uomList = this.unique(this.detailList, 'uomId', 'uomName');
     console.log("Binded Detail List:", this.detailList);
+
+   
   }
 
   unique(arr: any[], value: string, label: string): DropdownItem[] {
@@ -406,7 +418,7 @@ debugger;
 
 
 
- openSizePopup(row: any) {
+  openSizePopup(row: any) {
 
     this.selectedRow = row;
 
@@ -441,9 +453,9 @@ debugger;
   }
 
   confirmSizeQty() {
-     this.selectedRow.totalQty = this.totalSizeQty;
+    this.selectedRow.totalQty = this.totalSizeQty;
     this.selectedRow.sizeDetails = [...this.sizeList];
-   
+
     this.sizePopupVisible = false;
   }
 
@@ -452,86 +464,88 @@ debugger;
 
   /* ===================== ACTIONS ===================== */
 
-openPrepareTab(row: WashBatchRow): void {
-debugger;
-if (row.totalQty==row.alreadyPreparedQty) {
-  this.toastr.warning('All quantity already prepared for this batch.');
-  return;
-}
-  if (!row?.orderId) return;
+  openPrepareTab(row: WashBatchRow): void {
+    debugger;
+    if (row.totalQty == row.alreadyPreparedQty) {
+      this.toastr.warning('All quantity already prepared for this batch.');
+      return;
+    }
+    if (!row?.orderId) return;
 
-  const navState = {
+    const navState = {
 
-    // ===== MASTER IDS =====
-    buyerId: row.buyerNo,
-    jobId: row.jobId,
-    styleId: row.styleNo,
-    orderId: row.orderId,
-    fabricationId: row.fabricationId,
-    colorId: row.colorId,
-    dressPartId: row.dressPartId,
-    uomId: row.uomId,
-    fromUnitId: row.fromUnitId,
-    iszid:row.iszid,
-    
-    // ===== DISPLAY =====
-    buyer: row.buyerName ?? '',
-    jobNo: row.jobInfo ?? '',
-    styleNo: row.styleName ?? '',
-    orderNo: row.orderNo ?? '',
-    documentNo: row.receiveNo ?? '',
-    fabrication: row.fabricationName ?? '',
-    composition: row.composition ?? '',
-    color: row.colorName ?? '',
-    gsm:row.gsm,
-    date: new Date().toISOString().split('T')[0],
-    trackingNo: row.trackingNo ?? '',
-    type:row.type ?? '',
-    // ===== CHILD =====
-    sizeDetails: row.sizeDetails ?? [],
-    totalQty: (row.remainingQty ?? 0) === 0 ? row.totalQty : row.remainingQty
-  };
+      // ===== MASTER IDS =====
+      buyerId: row.buyerNo,
+      jobId: row.jobId,
+      styleId: row.styleNo,
+      orderId: row.orderId,
+      fabricationId: row.fabricationId,
+      colorId: row.colorId,
+      dressPartId: row.dressPartId,
+      uomId: row.uomId,
+      fromUnitId: row.fromUnitId,
+      iszid: row.iszid,
 
-  localStorage.setItem(
-    'WASH_PREPARE_NAV_STATE',
-    JSON.stringify(navState)
-  );
+      // ===== DISPLAY =====
+      buyer: row.buyerName ?? '',
+      jobNo: row.jobInfo ?? '',
+      styleNo: row.styleName ?? '',
+      orderNo: row.orderNo ?? '',
+      documentNo: row.receiveNo ?? '',
+      fabrication: row.fabricationName ?? '',
+      composition: row.composition ?? '',
+      color: row.colorName ?? '',
+      gsm: row.gsm,
+      date: new Date().toISOString().split('T')[0],
+      trackingNo: row.trackingNo ?? '',
+      type: row.type ?? '',
+      // ===== CHILD =====
+      sizeDetails: row.sizeDetails ?? [],
+      totalQty: (row.remainingQty ?? 0) === 0 ? row.totalQty : row.remainingQty
+    };
 
-  const url = this.router.serializeUrl(
-    this.router.createUrlTree([
-      '/mascowash/setup/entry/wash-prepare-action'
-    ])
-  );
+    localStorage.setItem(
+      'WASH_PREPARE_NAV_STATE',
+      JSON.stringify(navState)
+    );
 
-  window.open(url, '_blank', 'noopener');
-   this.resetForm();
-   this.loadUnits();
-}
-resetForm(): void {
+    const url = this.router.serializeUrl(
+      this.router.createUrlTree([
+        '/mascowash/setup/entry/wash-prepare-action'
+      ])
+    );
 
-  // ===== CLEAR MODEL =====
-  this.Model = {
-    UnitId: null,
-    BuyerId: null,
-    JobId: null,
-    StyleId: null,
-    OrderId: null
-  };
+    window.open(url, '_blank', 'noopener');
+    this.resetForm();
+    this.loadUnits();
+  }
+  resetForm(): void {
 
-  // ===== CLEAR DROPDOWNS =====
-  this.buyerList = [];
-  this.jobList = [];
-  this.styleList = [];
-  this.orderList = [];
+    // ===== CLEAR MODEL =====
+    this.Model = {
+      UnitId: null,
+      BuyerId: null,
+      JobId: null,
+      StyleId: null,
+      OrderId: null
+    };
 
-  // (Optional: keep UnitList if static)
-  // this.UnitList = [];
+    // ===== CLEAR DROPDOWNS =====
+    this.buyerList = [];
+    this.jobList = [];
+    this.styleList = [];
+    this.orderList = [];
 
-  // ===== CLEAR GRID =====
-  this.detailList = [];
+    // (Optional: keep UnitList if static)
+    // this.UnitList = [];
 
-  // ===== CLEAR EXTRA =====
-  this.sizeList = [];
-  this.sizePopupVisible = false;
-}
+    // ===== CLEAR GRID =====
+    this.detailList = [];
+
+    // ===== CLEAR EXTRA =====
+    this.sizeList = [];
+    this.sizePopupVisible = false;
+  }
+
+
 }
