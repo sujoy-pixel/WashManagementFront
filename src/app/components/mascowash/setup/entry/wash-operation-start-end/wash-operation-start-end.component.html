@@ -79,7 +79,7 @@
   </div>
 
   <!-- MACHINE -->
-  <div class="col-md-4">
+  <!-- <div class="col-md-4">
     <mat-form-field appearance="outline" class="w-100">
       <mat-label>Machine No</mat-label>
 
@@ -99,8 +99,19 @@
 
       </mat-select>
     </mat-form-field>
+  </div> -->
+ <div class="col-md-4">
+    <label class="form-label fw-semibold">
+      Machine No <span class="text-danger">*</span>
+    </label>
+    <div class="form-control common-border">
+      <ng-select [(ngModel)]="Model.MachineId" placeholder="Machine No">
+        <ng-option *ngFor="let u of machineList" [value]="u.value">
+          {{ u.label }}
+        </ng-option>
+      </ng-select>
+    </div>
   </div>
-
   <!-- PROCESS -->
   <div class="col-md-4">
     <mat-form-field appearance="outline" class="w-100">

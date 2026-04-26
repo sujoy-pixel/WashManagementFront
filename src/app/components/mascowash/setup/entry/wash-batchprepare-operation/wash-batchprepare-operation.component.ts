@@ -407,7 +407,8 @@ export class WashBatchPrepareOperationComponent implements OnInit {
     this.uomList = this.unique(this.detailList, 'uomId', 'uomName');
     console.log("Binded Detail List:", this.detailList);
 
-   
+
+
   }
 
   unique(arr: any[], value: string, label: string): DropdownItem[] {

@@ -569,4 +569,22 @@ export class WashSetupService {
     );
   }
 
+ GetMachineByProcess(processIds: string) {
+    debugger;
+    const params = new HttpParams()
+      .set('processIds', processIds);
+
+    return this.http.get<any[]>(
+      this.baseUrl_ + 'Common/GetMachineByProcessData',
+      {
+        headers: this.token.headerToken(),
+        params
+      }
+    );
+  }
+
+
+
 }
+
+

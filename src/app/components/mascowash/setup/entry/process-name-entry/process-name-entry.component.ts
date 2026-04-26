@@ -1,15 +1,11 @@
 import {
   Component,
   ChangeDetectorRef,
-  ViewChild,
-  ElementRef,
+  NgZone
 } from '@angular/core';
-import { NgSelectComponent } from '@ng-select/ng-select';
 import { ToastrService } from 'ngx-toastr';
-import { FormBuilder, FormGroup, FormArray, Validators } from '@angular/forms';
 import { WashSetupService } from '../../../services/washsetup.service';
 import { CommonServiceService } from '../../../services/common-service';
-import { NgZone } from '@angular/core';
 import Swal from 'sweetalert2';
 
 @Component({
@@ -18,171 +14,102 @@ import Swal from 'sweetalert2';
   styleUrls: ['./process-name-entry.component.scss'],
 })
 export class ProcessNameEntryComponent {
-  CompanyBankInfoForm: FormGroup | any;
-  title: string | any;
-  spinnerName = 'createGroup';
-  noResult: boolean = false;
-  model: any = null;
-  // toastr: any;
-  numbers: number[] = [];
+
   saveButtonTitle = 'Save';
   currentFocus: string | null = null;
 
-  UnitList: any = [];
-  BankList: any = [];
-  BranchList: any = [];
+  UnitList: any[] = [];
+  OperationList: any[] = [];
   priorityList: number[] = [];
+
   dataList: any[] = [];
   allDataList: any[] = [];
+
   isEdit = false;
   isSubmitting = false;
 
-  getCompanyBankList: any;
-  getCompanyBankListDataKey: any;
-  getProcessNameEntryList: any;
-  getProcessNameEntryListDataKey: any;
   first: number = 0;
   rows: number = 10;
   totalRecords: number = 0;
 
+  Model: any = {
+    processId: 0,
+    unitId: null,
+    operationId: null,
+    processName: '',
+    priority: null,
+    activeStatus: true
+  };
 
   constructor(
     private service: WashSetupService,
     public commonService: CommonServiceService,
     private toastr: ToastrService,
     private ngZone: NgZone,
-    public fb: FormBuilder,
     private cdr: ChangeDetectorRef
-  ) {
-    // this.bsConfig = {
-    //   dateInputFormat: 'YYYY-MM-DD', // Your desired date format
-    // };
-  }
+  ) {}
 
-  Model: any = {
-    unitId: null,
-    activeStatus: true,
-    processName: null,
-    priority: null,
-    processId: null,
-  };
-
-  async ngOnInit() {
+  ngOnInit() {
     this.LoadUnit();
+    this.loadOperations();
     this.loadData();
-    this.Model.activeStatus = true;
     this.priorityList = Array.from({ length: 50 }, (_, i) => i + 1);
   }
 
+  // ================= LOAD =================
 
-  onChangeActiveStatus(event: any) {
-    this.Model.activeStatus = event.target.checked;
-  }
-
-  //////////////////////////Load Dropdown Start//////////////////////
   LoadUnit() {
     this.UnitList = [];
-    this.service.GetUnitName().subscribe(
-      (data: any[]) => {
-        console.log('UnitId;', data);
-        this.UnitList.push({ label: '--- Select ---', value: null });
-        for (var i = 0; i < data.length; i++) {
-          this.UnitList.push({
-            label: data[i].displayName,
-            value: data[i].id,
-          });
-        }
-      },
-      (error) => { }
-    );
-  }
-  onUnitChange(event) {
-    console.log('==', event);
+    this.service.GetUnitName().subscribe((data: any[]) => {
+      this.UnitList.push({ label: '--- Select ---', value: null });
+      data.forEach(x => {
+        this.UnitList.push({
+          label: x.displayName,
+          value: x.id
+        });
+      });
+    });
   }
 
-  /////////////////////Change Event End/////////////////
-  onSubmit() {
-    console.log('submit show model', this.Model);
-
-    // VALIDATIONS (Clean format)
-    if (!this.Model.unitId || !this.Model.unitId.value) {
-      this.toastr.warning('Please Select Unit Name', 'Warning');
-      return;
-    }
-
-    if (!this.Model.processName?.trim()) {
-      this.toastr.warning('Please Enter Proper Process Name', 'Warning');
-      return;
-    }
-
-    if (!this.Model.priority || this.Model.priority === 0) {
-      this.toastr.warning('Please Enter Priority', 'Warning');
-      return;
-    }
-
-    this.isSubmitting = true;
-
-    // INSERT OR UPDATE logic (clean style)
-    this.isEdit = !(
-      this.Model.processId === 0 || this.Model.processId === null
-    );
-
-    const payload = {
-      operation: this.isEdit ? 'UPDATE' : 'INSERT',
-      ProcessId: this.Model.processId ?? 0,
-      UnitId: this.Model.unitId.value,
-      ProcessName: this.Model.processName.trim(),
-      Priority: this.Model.priority,
-      IsActive: this.Model.activeStatus ? 1 : 0,
-    };
-
-    console.log('payload', payload);
-
-    this.service.saveProcessNameEntryData(payload).subscribe({
-      next: (res: any) => {
-        console.log('API Response:', res);
-
-        const resultCode = res[0]?.resultCode ?? res?.resultCode;
-
-        if (resultCode === -1 || resultCode === '-1') {
-          this.toastr.warning('Duplicate Data Found', 'Process Name Entry');
-          this.isSubmitting = false;
-          return;
-        }
-
-        this.toastr.success(
-          this.isEdit ? 'Updated Successfully' : 'Submitted Successfully',
-          'Process Name Entry'
-        );
-
-        this.onClear();
-        this.loadData();
-
-        this.isSubmitting = false;
-        this.cdr.detectChanges();
-      },
-
-      error: () => {
-        this.toastr.error('Submission Error', 'Process Name Entry');
-        this.isSubmitting = false;
-      },
+  loadOperations() {
+    this.OperationList = [];
+    this.service.GetOperationNameDDLs().subscribe(res => {
+      this.OperationList.push({ label: '-- Select --', value: null });
+      res.forEach(x => {
+        this.OperationList.push({
+          label: x.DisplayName ?? x.displayName,
+          value: x.ID ?? x.id
+        });
+      });
     });
   }
 
   loadData() {
-    this.service.GetProcessNameEntryList().subscribe({
-      next: (res: any) => {
-        console.log('dataList:', res);
-        this.allDataList = res ?? [];
-        this.totalRecords = this.allDataList.length;
+  this.service.GetProcessNameEntryList().subscribe({
+    next: (res: any) => {
 
-        this.dataList = this.allDataList.slice(0, this.rows);
-      },
-      error: () => {
-        this.toastr.error('Failed to load Type of Inspection data');
-      },
-    });
-  }
+      this.allDataList = res ?? [];
+
+      // optional safety mapping (prevents UI break)
+      this.allDataList = this.allDataList.map(x => ({
+        processId: x.processId,
+        unitId: x.unitId,
+        operationId: x.operationId,
+        unitName: x.unitName,
+        operationName: x.operationName,
+        processName: x.processName,
+        priority: x.priority,
+        isActive: x.isActive
+      }));
+
+      this.totalRecords = this.allDataList.length;
+      this.dataList = this.allDataList.slice(0, this.rows);
+    },
+    error: () => {
+      this.toastr.error('Failed to load data');
+    }
+  });
+}
 
   onPageChange(event: any) {
     this.first = event.first ?? 0;
@@ -190,40 +117,68 @@ export class ProcessNameEntryComponent {
     this.dataList = this.allDataList.slice(this.first, this.first + this.rows);
   }
 
-  setFocus(field: string): void {
-    setTimeout(() => {
-      this.currentFocus = field;
+  // ================= SUBMIT =================
 
-      const element = document.querySelector(
-        `input[ng-reflect-name="${field}"]`
-      );
-      if (element) {
-        (element as HTMLInputElement).focus();
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-      }
+  onSubmit() {
 
-      // After focus, force change detection if necessary
-      this.cdr.detectChanges();
-    }, 0);
-  }
-  // Method to clear the current focus
-  clearFocus(): void {
-    this.currentFocus = null;
-  }
+    if (!this.Model.unitId || !this.Model.unitId.value) {
+      this.toastr.warning('Please Select Unit Name');
+      return;
+    }
 
-  onClear() {
-    this.Model = {
-      processId: 0, // reset for new entry
-      unitId: null,
-      processName: '',
-      priority: null,
-      activeStatus: true,
+    if (!this.Model.operationId) {
+      this.toastr.warning('Please Select Operation');
+      return;
+    }
+
+    if (!this.Model.processName?.trim()) {
+      this.toastr.warning('Please Enter Process Name');
+      return;
+    }
+
+    if (!this.Model.priority) {
+      this.toastr.warning('Please Select Priority');
+      return;
+    }
+
+    this.isSubmitting = true;
+
+    const payload = {
+      operation: this.isEdit ? 'UPDATE' : 'INSERT',
+      ProcessId: this.Model.processId,
+      UnitId: this.Model.unitId.value,
+      OperationId: this.Model.operationId,
+      ProcessName: this.Model.processName.trim(),
+      Priority: this.Model.priority,
+      IsActive: this.Model.activeStatus ? 1 : 0
     };
 
-    this.saveButtonTitle = 'Save';
-    this.isEdit = false; // in case edit mode was active
-    this.cdr.detectChanges();
+    this.service.saveProcessNameEntryData(payload).subscribe({
+      next: (res: any) => {
+
+        const resultCode = res[0]?.resultCode ?? res?.resultCode;
+
+        if (resultCode == -1) {
+          this.toastr.warning('Duplicate Data Found');
+          this.isSubmitting = false;
+          return;
+        }
+
+        this.toastr.success(this.isEdit ? 'Updated Successfully' : 'Saved Successfully');
+
+        this.onClear();
+        this.loadData();
+        this.isSubmitting = false;
+        this.cdr.detectChanges();
+      },
+      error: () => {
+        this.toastr.error('Error occurred');
+        this.isSubmitting = false;
+      }
+    });
   }
+
+  // ================= EDIT =================
 
   edit(item: any) {
     this.isEdit = true;
@@ -231,43 +186,77 @@ export class ProcessNameEntryComponent {
 
     this.Model = {
       processId: item.processId,
-      unitId: this.UnitList.find((u) => u.value === item.unitId),
+      unitId: this.UnitList.find(x => x.value === item.unitId),
+      operationId: item.operationId,
       processName: item.processName,
       priority: item.priority,
-      activeStatus: item.isActive == 1,
+      activeStatus: item.isActive == 1
     };
 
     this.cdr.detectChanges();
   }
 
+  // ================= DELETE =================
+
   delete(item: any) {
     Swal.fire({
       title: 'Are you sure?',
-      text: 'Do you want to delete this item?',
       icon: 'warning',
-      showCancelButton: true,
-      confirmButtonText: 'Yes, delete it',
-    }).then((result) => {
+      showCancelButton: true
+    }).then(result => {
       if (result.isConfirmed) {
+
         const payload = {
           operation: 'DELETE',
-          ProcessId: item.processId,
+          ProcessId: item.processId
         };
 
         this.service.deleteProcessNameEntry(payload).subscribe({
           next: (res: any) => {
-            if (res?.resultCode === '1') {
+            if (res?.resultCode == '1') {
               this.toastr.success('Deleted successfully');
               this.loadData();
             } else {
               this.toastr.error('Delete failed');
             }
-          },
-          error: () => {
-            this.toastr.error('Delete failed');
-          },
+          }
         });
       }
     });
+  }
+
+  // ================= CLEAR =================
+
+  onClear() {
+    this.Model = {
+      processId: 0,
+      unitId: null,
+      operationId: null,
+      processName: '',
+      priority: null,
+      activeStatus: true
+    };
+
+    this.saveButtonTitle = 'Save';
+    this.isEdit = false;
+    this.cdr.detectChanges();
+  }
+
+  // ================= EXTRA (FIX ERRORS) =================
+
+  setFocus(field: string) {
+    this.currentFocus = field;
+  }
+
+  clearFocus() {
+    this.currentFocus = null;
+  }
+
+  onUnitChange(event: any) {
+    console.log(event);
+  }
+
+  onChangeActiveStatus(event: any) {
+    this.Model.activeStatus = event.target.checked;
   }
 }

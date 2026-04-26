@@ -180,6 +180,46 @@
               <th>Color</th>
               <td>{{ batch.color }}</td>
             </tr>
+             <!-- <tr>
+              <th>Process</th>
+              <td>
+
+                <mat-form-field appearance="outline">
+                  <mat-label>Process</mat-label>
+                  <mat-select [(value)]="Model.processList" multiple
+                    (selectionChange)="onSelectionChangeProcess($event.value)">
+                    
+                    <mat-option (click)="toggleAllSelectionProcess()" [value]="null">
+                      <strong>
+                        {{ isAllSelectedProcess()
+                        ? 'Unselect All'
+                        : 'Select All' }}
+                      </strong>
+                    </mat-option>
+                    <mat-option *ngFor="let process of processList" [value]="process"> {{ process.label }}</mat-option>
+                  </mat-select>
+                </mat-form-field>
+
+              </td>
+            </tr> -->
+            <mat-form-field appearance="outline">
+  <mat-label>Process</mat-label>
+
+  <mat-select
+    [(ngModel)]="Model.processList"
+    multiple
+    (selectionChange)="onSelectionChangeProcess($event)">
+
+    <mat-option
+      *ngFor="let process of processList"
+      [value]="process.value">
+
+      {{ process.label }}
+
+    </mat-option>
+
+  </mat-select>
+</mat-form-field>
             <tr>
               <th>Machine No</th>
               <td>
@@ -203,37 +243,16 @@
 
               </td>
             </tr>
-            <tr>
-              <th>Process</th>
-              <td>
-
-                <mat-form-field appearance="outline">
-                  <mat-label>Process</mat-label>
-                  <mat-select [(value)]="Model.processList" multiple
-                    (selectionChange)="onSelectionChangeProcess($event)">
-                    <!-- Select All Option -->
-                    <mat-option (click)="toggleAllSelectionProcess()" [value]="null">
-                      <strong>
-                        {{ isAllSelectedProcess()
-                        ? 'Unselect All'
-                        : 'Select All' }}
-                      </strong>
-                    </mat-option>
-                    <mat-option *ngFor="let process of processList" [value]="process"> {{ process.label }}</mat-option>
-                  </mat-select>
-                </mat-form-field>
-
-              </td>
-            </tr>
+           
 
           </table>
-          <div>
+          <div style="display: none;">
             <label class="switch">
   <input type="checkbox"
          [(ngModel)]="Model.shade "
          [ngModelOptions]="{standalone: true}"
          class="success" />
-  <span class="slider round"></span>
+  <span s class="slider round"></span>
 </label>
             <!-- <div class="input-group-prepend paheight col-3">
               <span class="col-12 form-label text-dark">Shade</span>

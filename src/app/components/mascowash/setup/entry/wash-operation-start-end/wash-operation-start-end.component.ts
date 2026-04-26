@@ -30,6 +30,7 @@ interface BatchHeaderModel {
   dressPart: string;
   uom: string;
   date: string;
+  machineId?: number | string;
 }
 
 interface OperationHistory {
@@ -106,6 +107,7 @@ export class WashOperationStartEndComponent {
     OrderId: null as number | null,
     trackingNo: '' as string,
     batchNo: '' as string,
+    MachineId: null as number | null,
 
     processList: [] as number[],
     machineList: [] as number[]
@@ -309,28 +311,28 @@ export class WashOperationStartEndComponent {
     });
   }
 
-  loadMachineDDL(callback?: () => void) {
-    this.service.GetMachineNoDDL().subscribe({
-      next: (res: any) => {
-        this.machineList = res.map((x: any) => ({
-          label: x.displayName || x.DisplayName || x.machineName || x.MachineName,
-          value: Number(x.id || x.ID || x.machineId || x.MachineId)
-        })).filter((x: any) => x.value > 0);
+  // loadMachineDDL(callback?: () => void) {
+  //   this.service.GetMachineNoDDL().subscribe({
+  //     next: (res: any) => {
+  //       this.machineList = res.map((x: any) => ({
+  //         label: x.displayName || x.DisplayName || x.machineName || x.MachineName,
+  //         value: Number(x.id || x.ID || x.machineId || x.MachineId)
+  //       })).filter((x: any) => x.value > 0);
         
-        if (this.pendingSelections.machineIds.length > 0) {
-          this.applyMachineSelection(this.pendingSelections.machineIds);
-          this.pendingSelections.machineIds = [];
-        }
+  //       if (this.pendingSelections.machineIds.length > 0) {
+  //         this.applyMachineSelection(this.pendingSelections.machineIds);
+  //         this.pendingSelections.machineIds = [];
+  //       }
         
-        if (callback) callback();
-        this.cdr.detectChanges();
-      },
-      error: (err) => {
-        console.error('Error loading Machine DDL:', err);
-        if (callback) callback();
-      }
-    });
-  }
+  //       if (callback) callback();
+  //       this.cdr.detectChanges();
+  //     },
+  //     error: (err) => {
+  //       console.error('Error loading Machine DDL:', err);
+  //       if (callback) callback();
+  //     }
+  //   });
+  // }
 
   loadUnitList() {
     this.service.GetUnitName().subscribe(res => {
@@ -341,6 +343,18 @@ export class WashOperationStartEndComponent {
 
       const found = this.UnitList.find(x => x.value === 60);
       if (found) this.Model.UnitId = 60;
+    });
+  }
+  loadMachineDDL() {
+    this.service.GetMachineNoDDL().subscribe(res => {
+      this.machineList = res.map((x: any) => ({
+        label: x.DisplayName || x.displayName || x.MachineName,
+        value: Number(x.ID || x.id || x.MachineId)
+      }));
+
+      if (this.buyerList.length === 1) {
+        this.Model.BuyerId = Number(this.buyerList[0].value);
+      }
     });
   }
 
@@ -621,7 +635,7 @@ export class WashOperationStartEndComponent {
         buyerId: this.Model.BuyerId ?? 0,
         batchNo: this.batchNo.trim(),
         processId: this.Model.processList.join(','),
-        machineId: this.Model.machineList.join(','),
+        machineId: this.Model.MachineId,
         startDate: this.startDate ? new Date(this.startDate).toISOString() : null,
         endDate: this.endDate ? new Date(this.endDate).toISOString() : null,
         startTime: this.convertTo12Hour(this.startTime),
@@ -675,6 +689,7 @@ export class WashOperationStartEndComponent {
       JobId: null,
       StyleId: null,
       OrderId: null,
+      MachineId: null,
       trackingNo: '',
       batchNo: '',
       processList: [],

@@ -2,14 +2,15 @@ import { Component, OnInit } from '@angular/core';
 import { ToastrService } from 'ngx-toastr';
 import { WashSetupService } from '../../../services/washsetup.service';
 import { Router } from '@angular/router';
-import { is, th } from 'date-fns/locale';
+import { de, is, th } from 'date-fns/locale';
 import { T } from '@angular/cdk/keycodes';
 import { SafeResourceUrl, DomSanitizer } from "@angular/platform-browser";
 import { BsDatepickerConfig } from 'ngx-bootstrap/datepicker';
 import { environment } from 'src/environments/environment';
 import { HttpClient,HttpHeaders } from '@angular/common/http';
 import { FormControl } from '@angular/forms';
-
+import { ChangeDetectorRef } from '@angular/core';
+import { MatSelectChange } from '@angular/material/select';
 @Component({
   selector: 'app-wash-prepare-action',
   templateUrl: './wash-prepare-action.component.html',
@@ -78,7 +79,8 @@ export class WashPrepareActionComponent implements OnInit {
     private router: Router,
     private _dom: DomSanitizer,
     private http: HttpClient,
-    private route: Router
+    private route: Router,
+     private cdr: ChangeDetectorRef
   )
      {
        this.bsConfig = { dateInputFormat: 'DD-MMM-YYYY' };
@@ -89,13 +91,61 @@ export class WashPrepareActionComponent implements OnInit {
   ngOnInit(): void {
     debugger;
     this.loadProcessDDL();
-    this.loadMachineDDL(); // ✅ initially true
+    // this.loadMachineDDL(); // ✅ initially true
   this.loadDataFromParent();   
 
   }
 
+onSelectionChangeProcess(event: MatSelectChange) {
+  debugger;
 
+  const selectedIds: number[] = event.value || [];
 
+  // ✅ store only IDs
+  this.Model.processList = selectedIds;
+
+  console.log('Process IDs ARRAY:', selectedIds);
+
+  if (selectedIds.length === 0) {
+    this.machineList = [];
+    this.Model.machineList = [];
+    return;
+  }
+
+  // ✅ convert to comma-separated string
+  const processIds = selectedIds.join(',');
+
+  console.log('Process IDs STRING:', processIds);
+
+  this.service.GetMachineByProcess(processIds).subscribe({
+    next: (res: any) => {
+      debugger;
+
+      // ✅ normalize response
+      const data = Array.isArray(res) ? res : res?.data || res?.result || [];
+
+      console.log('Machine API Data:', data);
+
+      // ✅ simple mapping (NO Map needed unless duplicate exists)
+      this.machineList = data.map((x: any) => ({
+        label: x.displayName ?? x.DisplayName ?? x.machineName ?? x.MachineName,
+        value: x.id ?? x.ID ?? x.machineDetailId ?? x.MachineDetailId
+      }));
+
+      // ✅ reset selected machines
+      this.Model.machineList = [];
+
+      // ✅ force UI update (if needed)
+      this.cdr.detectChanges();
+    },
+
+    error: (err: any) => {
+      console.error('API ERROR:', err);
+      this.machineList = [];
+      this.Model.machineList = [];
+    }
+  });
+}
 onlyNumber(event: any) {
   const input = event.target.value;
 
@@ -150,9 +200,9 @@ debugger;
   }
 
   /* ================= PROCESS ================= */
-  onSelectionChangeProcess(event: any) {
-    this.Model.processList = this.Model.processList?.filter((x: any) => x !== null);
-  }
+  // onSelectionChangeProcess(event: any) {
+  //   this.Model.processList = this.Model.processList?.filter((x: any) => x !== null);
+  // }
 
   toggleAllSelectionProcess() {
     this.allSelectedProcess = !this.allSelectedProcess;
@@ -418,8 +468,8 @@ onSubmit(): void {
     dressPartId: this.batchIds.dressPartId ?? null,
     uomId: this.batchIds.uomId ?? null,
     iszId: this.batchIds.iszid ?? null,
-
-    processIds: (this.Model.processList || []).map((x: any) => x.value).join(','),
+    processIds: (this.Model.processList || []).join(','),
+    // processIds: (this.Model.processList || []).map((x: any) => x.value).join(','),
     machineIds: (this.Model.machineList || []).map((x: any) => x.value).join(','),
 
     totalPcs: safeTotalPcs,
