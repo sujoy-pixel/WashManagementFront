@@ -569,7 +569,7 @@ export class WashSetupService {
     );
   }
 
- GetMachineByProcess(processIds: string) {
+  GetMachineByProcess(processIds: string) {
     debugger;
     const params = new HttpParams()
       .set('processIds', processIds);
@@ -582,9 +582,45 @@ export class WashSetupService {
       }
     );
   }
+  getWashBatchPrepareGridEdit(data: any) {
 
+    const params = new HttpParams()
+      .set('unitId', data.unitId)
+      .set('buyerId', data.buyerId)
+      .set('jobId', data.jobId)
+      .set('styleId', data.styleId)
+      .set('orderId', data.orderId);
 
+    return this.http.get<any[]>(
+      this.baseUrl_ + 'Setup/getWashBatchPrepareGridEdit',
+      {
+        headers: this.token.headerToken(),
+        params
+      }
+    );
+  }
 
+  getBatchWishShadeData(batchNo: string) {
+    debugger;
+    const params = new HttpParams()
+      .set('batchNo', batchNo);
+
+    return this.http.get<any[]>(
+      this.baseUrl_ + 'Setup/getBatchWishShadeData',
+      {
+        headers: this.token.headerToken(),
+        params
+      }
+    );
+  }
+
+  saveBatchWiseShadeStatus(data: any) {
+  return this.http.post(
+    this.baseUrl_ + 'Setup/SaveBatchWiseShadeStatus', // ✅ your API endpoint
+    data,
+    { headers: this.token.headerToken() }
+  );
+}
 }
 
 

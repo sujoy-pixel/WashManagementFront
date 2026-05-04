@@ -26,6 +26,8 @@ import { BatchWisePrioritySetComponent } from './setup/entry/batch-wise-priority
 import { ReportViewComponent } from './report/report-view/report-view.component';
 import { QcOperationComponent } from './setup/entry/qc-operation/qc-operation.component';
 import { WashOperationStartEndComponent } from './setup/entry/wash-operation-start-end/wash-operation-start-end.component';
+import { BatchCardModificationComponent } from './setup/entry/batch-card-modification/batch-card-modification.component';
+import { BatchWiseShadeStatusComponent } from './setup/entry/batch-wise-shade-status/batch-wise-shade-status.component';
 const routes: Routes = [
   {
     path: 'mascowash',
@@ -119,6 +121,16 @@ const routes: Routes = [
         component: WashOperationStartEndComponent,
         runGuardsAndResolvers: 'always',
       },
+       {
+        path: 'setup/entry/batch-card-modification',
+        component: BatchCardModificationComponent,
+        runGuardsAndResolvers: 'always',
+      },
+      {
+        path: 'setup/entry/batch-wise-shade-status',
+        component: BatchWiseShadeStatusComponent,
+        runGuardsAndResolvers: 'always',
+      }
     ],
   },
 ];

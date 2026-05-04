@@ -7,242 +7,155 @@
 
     <div class="row g-3">
 
-  <!-- ===== ROW 1 ===== -->
-  <!-- UNIT -->
-  <div class="col-md-4">
-    <label class="form-label fw-semibold">
-      Unit <span class="text-danger">*</span>
-    </label>
-    <div class="form-control common-border">
-      <ng-select [(ngModel)]="Model.UnitId"
-                 [items]="UnitList"
-                 bindLabel="label"
-                 bindValue="value"
-                 placeholder="Select Unit">
-      </ng-select>
-    </div>
-  </div>
+      <!-- UNIT -->
+      <div class="col-md-4">
+        <label class="form-label fw-semibold">Unit *</label>
+        <div class="form-control common-border">
+          <ng-select [(ngModel)]="Model.UnitId"
+                     [items]="UnitList"
+                     bindLabel="label"
+                     bindValue="value">
+          </ng-select>
+        </div>
+      </div>
 
-  <!-- BATCH -->
-  <div class="col-md-4">
-    <label class="form-label fw-semibold">
-      Tracking / Batch No <span class="text-danger">*</span>
-    </label>
-    <input #batchInput type="text"
-           class="form-control"
-           [(ngModel)]="batchNo"
-           (keyup.enter)="loadBatchData()"
-           (blur)="loadBatchData()"
-           placeholder="Scan or Enter Batch No" />
-  </div>
+      <!-- BATCH -->
+      <div class="col-md-4">
+        <label class="form-label fw-semibold">Tracking / Batch No *</label>
+        <input #batchInput type="text"
+               class="form-control"
+               [(ngModel)]="batchNo"
+               (keyup.enter)="loadBatchData()"
+               (blur)="loadBatchData()" />
+      </div>
 
-  <!-- BUYER -->
-  <div class="col-md-4">
-    <label class="form-label fw-semibold">
-      Buyer <span class="text-danger">*</span>
-    </label>
-    <div class="form-control common-border">
-      <ng-select [(ngModel)]="Model.BuyerId" placeholder="Buyer">
-        <ng-option *ngFor="let u of buyerList" [value]="u.value">
-          {{ u.label }}
-        </ng-option>
-      </ng-select>
-    </div>
-  </div>
+      <!-- BUYER -->
+      <div class="col-md-4">
+        <label class="form-label fw-semibold">Buyer *</label>
+        <div class="form-control common-border">
+          <ng-select [(ngModel)]="Model.BuyerId">
+            <ng-option *ngFor="let u of buyerList" [value]="u.value">
+              {{u.label}}
+            </ng-option>
+          </ng-select>
+        </div>
+      </div>
 
+      <!-- JOB -->
+      <div class="col-md-4">
+        <label class="form-label fw-semibold">Job No</label>
+        <input class="form-control" [(ngModel)]="batchHeader.jobNo" readonly>
+      </div>
 
-  <!-- ===== ROW 2 ===== -->
-  <!-- JOB -->
-  <div class="col-md-4">
-    <label class="form-label fw-semibold">Job No</label>
-    <input type="text" class="form-control" [(ngModel)]="batchHeader.jobNo" readonly>
-  </div>
+      <!-- STYLE -->
+      <div class="col-md-4">
+        <label class="form-label fw-semibold">Style</label>
+        <input class="form-control" [(ngModel)]="batchHeader.styleName" readonly>
+      </div>
 
-  <!-- STYLE -->
-  <div class="col-md-4">
-    <label class="form-label fw-semibold">Style</label>
-    <input type="text" class="form-control" [(ngModel)]="batchHeader.styleName" readonly>
-  </div>
+      <!-- ORDER -->
+      <div class="col-md-4">
+        <label class="form-label fw-semibold">Order</label>
+        <input class="form-control" [(ngModel)]="batchHeader.orderNo" readonly>
+      </div>
 
-  <!-- ORDER -->
-  <div class="col-md-4">
-    <label class="form-label fw-semibold">Order</label>
-    <input type="text" class="form-control" [(ngModel)]="batchHeader.orderNo" readonly>
-  </div>
+      <!-- COLOR -->
+      <div class="col-md-4">
+        <label class="form-label fw-semibold">Color</label>
+        <input class="form-control" [(ngModel)]="batchHeader.color" readonly>
+      </div>
 
-
-  <!-- ===== ROW 3 ===== -->
-  <!-- COLOR -->
-  <div class="col-md-4">
-    <label class="form-label fw-semibold">Color</label>
-    <input type="text" class="form-control" [(ngModel)]="batchHeader.color" readonly>
-  </div>
-
-  <!-- MACHINE -->
-  <!-- <div class="col-md-4">
-    <mat-form-field appearance="outline" class="w-100">
-      <mat-label>Machine No</mat-label>
-
-      <mat-select  [(ngModel)]="Model.machineList"
-                  (selectionChange)="onSelectionChangeMachine()"
-                  multiple>
-
-        <mat-option (click)="toggleAllSelectionMachine()" [value]="0">
-          <strong>
-            {{ isAllSelectedMachine() ? 'Unselect All' : 'Select All' }}
-          </strong>
-        </mat-option>
-
-        <mat-option *ngFor="let machine of machineList" [value]="machine.value">
-          {{ machine.label }}
-        </mat-option>
-
-      </mat-select>
-    </mat-form-field>
-  </div> -->
- <div class="col-md-4">
-    <label class="form-label fw-semibold">
-      Machine No <span class="text-danger">*</span>
-    </label>
-    <div class="form-control common-border">
-      <ng-select [(ngModel)]="Model.MachineId" placeholder="Machine No">
-        <ng-option *ngFor="let u of machineList" [value]="u.value">
-          {{ u.label }}
-        </ng-option>
-      </ng-select>
-    </div>
-  </div>
-  <!-- PROCESS -->
-  <div class="col-md-4">
-    <mat-form-field appearance="outline" class="w-100">
-      <mat-label>Process</mat-label>
-
-      <mat-select [(ngModel)]="Model.processList"
-                  (selectionChange)="onSelectionChangeProcess()"
-                  multiple>
-
-        <mat-option (click)="toggleAllSelectionProcess()" [value]="0">
-          <strong>
-            {{ isAllSelectedProcess() ? 'Unselect All' : 'Select All' }}
-          </strong>
-        </mat-option>
-
-        <mat-option *ngFor="let process of processList" [value]="process.value">
-          {{ process.label }}
-        </mat-option>
-
-      </mat-select>
-    </mat-form-field>
-  </div>
-
-
-  <!-- ===== ROW 4 ===== -->
-  <!-- START -->
-  <div class="col-md-4">
-    <label class="form-label fw-semibold">Batch Start</label>
-    <div class="d-flex gap-2">
-      <input type="text" class="form-control" bsDatepicker [(ngModel)]="startDate">
-      <input type="time" class="form-control" [(ngModel)]="startTime">
-    </div>
-  </div>
-
-  <!-- END -->
-  <div class="col-md-4">
-    <label class="form-label fw-semibold">Batch End</label>
-    <div class="d-flex gap-2">
-      <input type="text" class="form-control" bsDatepicker [(ngModel)]="endDate">
-      <input type="time" class="form-control" [(ngModel)]="endTime">
-    </div>
-  </div>
-
+      <!-- PROCESS -->
+       <div class="col-md-4">
+        <label class="form-label fw-semibold">PROCESS *</label>
+        <div class="form-control common-border"> 
+      <ng-select
+  [(ngModel)]="Model.ProcessId"
+  [items]="processList"
+  bindLabel="label"
+  bindValue="value"
+  (ngModelChange)="onSelectionChangeProcess($event)">
+</ng-select>
 </div>
+      </div>
+      <!-- MACHINE -->
+      <div class="col-md-4">
+        <label class="form-label fw-semibold">Machine *</label>
+        <div class="form-control common-border"> 
+        <ng-select
+          [(ngModel)]="Model.MachineId"
+          [items]="machineList"
+          bindLabel="label"
+          bindValue="value">
+        </ng-select>
+      </div>
+      </div>
 
-  <!-- ================= OPERATION HISTORY TABLE ================= -->
-  <div class="row mt-4">
-    <div class="col-12">
+      <!-- WEIGHT -->
+      <div class="col-md-4">
+        <label class="form-label fw-semibold">Weight (Kg)</label>
+        <input type="text"
+               class="form-control"
+               [(ngModel)]="batchHeader.weight"
+              
+               >
+      </div>
+ <!-- (input)="onlyNumber($event)" -->
+      <!-- START -->
+      <div class="col-md-4">
+        <label class="form-label fw-semibold">Batch Start</label>
+        <div class="d-flex gap-2">
+          <input type="text" class="form-control" bsDatepicker [(ngModel)]="startDate">
+          <input type="time" class="form-control" [(ngModel)]="startTime">
+        </div>
+      </div>
 
-      <h6 class="fw-bold text-primary mb-2">
-        Operation History
-      </h6>
+      <!-- END -->
+      <div class="col-md-4">
+        <label class="form-label fw-semibold">Batch End</label>
+        <div class="d-flex gap-2">
+          <input type="text" class="form-control" bsDatepicker [(ngModel)]="endDate">
+          <input type="time" class="form-control" [(ngModel)]="endTime">
+        </div>
+      </div>
 
-      <div class="table-responsive">
-        <table class="table table-bordered table-hover table-sm align-middle text-center">
+    </div>
 
-          <thead class="table-light">
+    <!-- TABLE -->
+    <div class="row mt-4">
+      <div class="col-12">
+        <table class="table table-bordered text-center">
+          <thead>
             <tr>
               <th>#</th>
               <th>Operation</th>
               <th>Process</th>
               <th>Machine</th>
-              <th>Start Date</th>
-              <th>Start Time</th>
-              <th>End Date</th>
-              <th>End Time</th>
+              <th>Weight (Kg)</th>
+              <th>Start</th>
+              <th>End</th>
             </tr>
           </thead>
 
           <tbody>
             <tr *ngFor="let row of operationList; let i = index">
-              <td>{{ i + 1 }}</td>
-              <td>
-                <span class="badge bg-info">
-                  {{ row.operation }}
-                </span>
-              </td>
-
-              <td>{{ row.processNames }}</td>
-              <td>{{ row.machineNames }}</td>
-
-              <td>{{ row.startDate | date:'dd-MMM-yyyy' }}</td>
-              <td>{{ row.startTime }}</td>
-
-              <td>
-                <span *ngIf="row.endDate; else noEnd">
-                  {{ row.endDate | date:'dd-MMM-yyyy' }}
-                </span>
-                <ng-template #noEnd>
-                  <span class="text-muted">--</span>
-                </ng-template>
-              </td>
-
-              <td>
-                <span *ngIf="row.endTime; else noEndTime">
-                  {{ row.endTime }}
-                </span>
-                <ng-template #noEndTime>
-                  <span class="text-muted">--</span>
-                </ng-template>
-              </td>
+              <td>{{i+1}}</td>
+              <td>{{row.operation}}</td>
+              <td>{{row.processNames}}</td>
+              <td>{{row.machineNames}}</td>
+              <td>{{row.weight}}</td>
+              <td>{{row.startDate | date:'dd-MMM-yyyy'}} {{row.startTime}}</td>
+              <td>{{row.endDate | date:'dd-MMM-yyyy'}} {{row.endTime}}</td>
             </tr>
-
-            <!-- EMPTY STATE -->
-            <tr *ngIf="!operationList || operationList.length === 0">
-              <td colspan="8" class="text-muted text-center">
-                No operation data found
-              </td>
-            </tr>
-
           </tbody>
         </table>
       </div>
-
     </div>
+
   </div>
-</div>
 
-<!-- BUTTONS -->
-<div class="text-end mt-3">
-
-  <button class="btn btn-success px-3" (click)="onSubmit()">
-    <i class="fa fa-save me-2"></i> Save
-  </button>
-
-  <button class="btn btn-warning mx-2" (click)="onClear()">
-    Refresh
-  </button>
-
-  <button class="btn btn-danger" (click)="onClear()">
-    Close
-  </button>
-
+  <div class="text-end p-3">
+    <button class="btn btn-success" (click)="onSubmit()">Save</button>
+    <button class="btn btn-warning mx-2" (click)="onClear()">Refresh</button>
+  </div>
 </div>

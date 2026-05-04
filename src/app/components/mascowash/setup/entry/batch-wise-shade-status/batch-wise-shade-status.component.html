@@ -1,0 +1,110 @@
+<div class="card custom-card shadow-sm rounded-4">
+    <div class="card-header">
+        <h5 class="card-title">Wash Operation Start End</h5>
+    </div>
+
+    <div class="card-body px-4 py-4">
+
+        <div class="row g-3">
+
+            <!-- UNIT -->
+            <div class="col-md-4">
+                <label class="form-label fw-semibold">Unit *</label>
+                <div class="form-control common-border">
+                    <ng-select [(ngModel)]="Model.UnitId" [items]="UnitList" bindLabel="label" bindValue="value">
+                    </ng-select>
+                </div>
+            </div>
+
+            <!-- BATCH -->
+            <div class="col-md-4">
+                <label class="form-label fw-semibold">Tracking / Batch No *</label>
+                <input #batchInput type="text" class="form-control" [(ngModel)]="batchNo"
+                    (keyup.enter)="loadBatchData()" (blur)="loadBatchData()" />
+            </div>
+
+            <!-- BUYER -->
+            <div class="col-md-4">
+                <label class="form-label fw-semibold">Buyer *</label>
+                <div class="form-control common-border">
+                    <ng-select [(ngModel)]="Model.BuyerId">
+                        <ng-option *ngFor="let u of buyerList" [value]="u.value">
+                            {{u.label}}
+                        </ng-option>
+                    </ng-select>
+                </div>
+            </div>
+
+            <!-- JOB -->
+            <div class="col-md-4">
+                <label class="form-label fw-semibold">Job No</label>
+                <input class="form-control" [(ngModel)]="batchHeader.jobNo" readonly>
+            </div>
+
+            <!-- STYLE -->
+            <div class="col-md-4">
+                <label class="form-label fw-semibold">Style</label>
+                <input class="form-control" [(ngModel)]="batchHeader.styleName" readonly>
+            </div>
+
+            <!-- ORDER -->
+            <div class="col-md-4">
+                <label class="form-label fw-semibold">Order</label>
+                <input class="form-control" [(ngModel)]="batchHeader.orderNo" readonly>
+            </div>
+
+            <!-- COLOR -->
+            <div class="col-md-4">
+                <label class="form-label fw-semibold">Color</label>
+                <input class="form-control" [(ngModel)]="batchHeader.color" readonly>
+            </div>
+
+
+
+            <!-- WEIGHT -->
+            <div class="col-md-4">
+                <label class="form-label fw-semibold">Weight (Kg)</label>
+                <input class="form-control" [(ngModel)]="batchHeader.weight" readonly>
+            </div>
+
+
+            <div class="col-md-4">
+                <label class="form-label fw-semibold">Operation Time *</label>
+
+                <ng-select [(ngModel)]="Model.OperationTime" [items]="operationList" bindLabel="label" bindValue="value"
+                  (change)="onOperationChange(Model.OperationTime)">
+                </ng-select>
+            </div>
+          
+
+        </div>
+        <div class="row my-2">
+            <div class="col-md-12">
+                <div class="row">
+                    <div class="input-group mb-1">
+                        <div class="input-group-prepend paheight col-3">
+                            <span class="col-12 form-label text-dark">Active Status</span>
+                        </div>
+                        <label class="switch">
+                            <input type="checkbox" [(ngModel)]="Model.activeStatus" class="success"
+                                (change)="onChangeActiveStatus($event)" />
+                            <span class="slider round"></span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- <div class="col-md-4">
+            <label class="form-label fw-semibold">Previous Weight</label>
+            <input class="form-control" [value]="Model.PreviousWeight" readonly>
+        </div> -->
+
+        <!-- <div class="col-md-4">
+  <label class="form-label fw-semibold">Previous Shade Status</label>
+  <input class="form-control" [value]="Model.PreviousShade ? 'YES' : 'NO'" readonly>
+</div> -->
+        <div class="text-end p-3">
+            <button class="btn btn-success" (click)="onSubmit()">Save</button>
+            <button class="btn btn-warning mx-2" (click)="onClear()">Refresh</button>
+        </div>
+    </div>

@@ -88,7 +88,7 @@
 
                   <td>
                     <input type="number" class="form-control form-control-sm text-center" [(ngModel)]="s.kg"
-                      (ngModelChange)="calculateTotals()" />
+                      (ngModelChange)="calculateTotalsKG()" />
                   </td>
                 </tr>
               </ng-container>
@@ -180,7 +180,7 @@
               <th>Color</th>
               <td>{{ batch.color }}</td>
             </tr>
-             <!-- <tr>
+            <!-- <tr>
               <th>Process</th>
               <td>
 
@@ -203,23 +203,18 @@
               </td>
             </tr> -->
             <mat-form-field appearance="outline">
-  <mat-label>Process</mat-label>
+              <mat-label>Process</mat-label>
 
-  <mat-select
-    [(ngModel)]="Model.processList"
-    multiple
-    (selectionChange)="onSelectionChangeProcess($event)">
+              <mat-select [(ngModel)]="Model.processList" multiple (selectionChange)="onSelectionChangeProcess($event)">
 
-    <mat-option
-      *ngFor="let process of processList"
-      [value]="process.value">
+                <mat-option *ngFor="let process of processList" [value]="process.value">
 
-      {{ process.label }}
+                  {{ process.label }}
 
-    </mat-option>
+                </mat-option>
 
-  </mat-select>
-</mat-form-field>
+              </mat-select>
+            </mat-form-field>
             <tr>
               <th>Machine No</th>
               <td>
@@ -243,17 +238,14 @@
 
               </td>
             </tr>
-           
+
 
           </table>
           <div style="display: none;">
             <label class="switch">
-  <input type="checkbox"
-         [(ngModel)]="Model.shade "
-         [ngModelOptions]="{standalone: true}"
-         class="success" />
-  <span s class="slider round"></span>
-</label>
+              <input type="checkbox" [(ngModel)]="Model.shade " [ngModelOptions]="{standalone: true}" class="success" />
+              <span s class="slider round"></span>
+            </label>
             <!-- <div class="input-group-prepend paheight col-3">
               <span class="col-12 form-label text-dark">Shade</span>
             </div>
@@ -273,14 +265,24 @@
 
 
       <div class="text-right mt-3">
-        <button type="button" class="btn btn-primary" (click)="onSubmit()">
+        <!-- <button type="button" class="btn btn-primary" (click)="onSubmit()">
           <i class="fa fa-database" aria-hidden="true"></i>
           {{ saveButtonTitle }}
-        </button>
+        </button> -->
+        <button 
+  type="button" 
+  class="btn"
+  [ngClass]="saveButtonTitle === 'Update' ? 'btn-warning' : 'btn-primary'"
+  (click)="onSubmit()">
+
+  <i class="fa fa-database"></i>
+  {{ saveButtonTitle }}
+</button>
         &nbsp;
         <button class="btn btn-danger" type="button" (click)="clearAll()">
           <i class="fa fa-refresh" aria-hidden="true"></i> Clear
         </button>
         &nbsp; &nbsp;
       </div>
+      
     </div>

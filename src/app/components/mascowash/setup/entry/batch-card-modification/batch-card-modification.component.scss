@@ -1,0 +1,85 @@
+.custom-card {
+  border: 1px solid #e6e9ef;
+}
+
+.info-box {
+  background: #ffffff;
+  border: 1px solid #e6e9ef;
+  border-radius: 12px;
+  padding: 12px;
+}
+
+.info-table {
+  margin-bottom: 0;
+  font-size: 14px;
+
+  th {
+    width: 45%;
+    background: #f8f9fc;
+    color: #495057;
+    font-weight: 600;
+  }
+
+  td {
+    background: #ffffff;
+    color: #212529;
+  }
+
+  th, td {
+    padding: 8px 12px;
+    border: 1px solid #e6e9ef;
+    vertical-align: middle;
+  }
+}
+
+/* ng-select match bootstrap */
+.ng-select .ng-select-container {
+  min-height: 36px;
+  border-radius: 8px;
+  border: 1px solid #ced4da;
+}
+
+.ng-select.ng-select-focused .ng-select-container {
+  border-color: #0d6efd;
+  box-shadow: 0 0 0 .15rem rgba(13,110,253,.15);
+}
+
+/* Buttons */
+.btn-outline-primary {
+  border-radius: 8px;
+}
+
+.btn-primary {
+  border-radius: 8px;
+}
+
+.info-table tr.buyer-row th,
+.info-table tr.buyer-row td {
+  padding-top: 15px !important;
+  padding-bottom: 15px !important;
+}
+.compact-field {
+  margin: 0 !important;
+}
+
+/* outer wrapper padding remove */
+
+
+/* main content vertical padding কমানো */
+.compact-field .mat-form-field-infix {
+  padding: 6px 0 !important;
+  border-top: 0 !important;
+}
+
+/* height ছোট করা */
+.compact-field .mat-form-field-flex {
+  height: 38px;
+  align-items: center;
+}
+::ng-deep .mat-form-field-wrapper {
+  padding-bottom: 0 !important;
+}
+/* outline gap fix */
+.compact-field .mat-form-field-outline {
+  top: 0 !important;
+}

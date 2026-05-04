@@ -30,7 +30,7 @@ export class WashPrepareActionComponent implements OnInit {
 
   processList: any[] = [];
   machineList: any[] = [];
- 
+ MasterId: number = 0;
   allSelectedProcess = false;
   allSelectedMachine = false;
 
@@ -252,6 +252,7 @@ applyFirstValueToAll() {
   });
 
   this.calculateTotals();
+  this.calculateTotalsKG();
 }
   private loadDataFromParent(): void {
 debugger;
@@ -263,6 +264,7 @@ debugger;
     }
    
     const data = JSON.parse(navState);
+    console.log('✅ Loaded Navigation State:', data);
      const today = new Date();
    // ✅ DIRECT TOTAL FROM DB (NO SIZE DEPENDENCY)
   this.totalPcs = data.totalQty ?? 0;
@@ -270,6 +272,7 @@ debugger;
 
   // ✅ STORE ORIGINAL VALUE (VERY IMPORTANT)
 this.initialTotalPcs = this.totalPcs ?? 0;
+this.MasterId = data.MasterId ?? 0;
 
 
 
@@ -305,6 +308,9 @@ this.initialTotalPcs = this.totalPcs ?? 0;
     this.batch.gsm = data.gsm ?? '';
     this.batch.type = data.type ?? '';
     this.batch.trackingNo = data.trackingNo ?? '';
+    this.batch.batchNo = data.batchNo ?? '';
+    this.batch.AutoBatchNo = data.AutoBatchNo ?? '';
+    this.totalKg = data.totalKg ?? 0;
     /* ================= SIZE DETAILS (MERGE + ID) ================= */
     this.showSizeDetails = false; // ✅ default hidden
     if (Array.isArray(data.sizeDetails)) {
@@ -329,15 +335,24 @@ console.log('✅ Merged Size Map:', sizeMap);
       this.sizeQty = Array.from(sizeMap.values());
       // this.calculateTotals();
       
+
+      // ✅ KEY LOGIC
+  if (this.batch.AutoBatchNo && this.batch.AutoBatchNo.trim() !== '') {
+    this.saveButtonTitle = 'Update';
+  } else {
+    this.saveButtonTitle = 'Save';
+  }
     }
   }
 
   calculateTotals(): void {
     this.totalPcs = this.sizeQty.reduce((s, x) => s + (+x.pcs || 0), 0);
-    this.totalKg = this.sizeQty.reduce((s, x) => s + (+x.kg|| ''), '');
+    // this.totalKg = this.sizeQty.reduce((s, x) => s + (+x.kg|| ''), '');
 
   }
-
+calculateTotalsKG(): void {
+  this.totalKg = this.sizeQty.reduce((sum, x) => sum + (+x.kg || 0), 0);
+}
 
 clearAll(): void {
 
@@ -368,6 +383,7 @@ clearAll(): void {
     type: '',
     trackingNo: '',
     AutoBatchNo: ''
+    
   };
 
   // ================= IDS =================
@@ -441,9 +457,10 @@ onSubmit(): void {
 
   /* ================= MASTER ================= */
   const master = {
+  
     operation: "INSERT",
     createdBy: "SYSTEM",
-    masterId: 0,
+    masterId: this.MasterId ?? 0,
 
     unitId: this.batchIds.fromUnitId,
     trackingNo: this.batch.trackingNo ?? '',
@@ -688,5 +705,8 @@ onShadeChange(event: any) {
          this.isLoading=false;
        }
        );
+       
   }
+
+  
 }
