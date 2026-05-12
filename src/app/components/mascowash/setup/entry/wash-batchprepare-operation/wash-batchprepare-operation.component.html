@@ -100,10 +100,10 @@
           <th>Total Qty</th>
           <th>Already Prepared Qty</th>
           <th>Remaining Qty</th>
-          <th>Shipment Date</th>
-          <th>Probable Delivery</th>
+          <!-- <th>Shipment Date</th>
+          <th>Probable Delivery</th> -->
           <th>Receive form</th>
-          <th>TrackingBatchNo</th>
+          <!-- <th>TrackingBatchNo</th> -->
 
         </tr>
       </thead>
@@ -127,7 +127,8 @@
 
           <!-- BUYER -->
           <td>
-            <ng-select [(ngModel)]="row.buyerNo" [items]="buyerList" bindLabel="label" bindValue="value" appendTo="body">
+            <ng-select [(ngModel)]="row.buyerNo" [items]="buyerList" bindLabel="label" bindValue="value"
+              appendTo="body">
             </ng-select>
           </td>
 
@@ -139,13 +140,15 @@
 
           <!-- STYLE -->
           <td>
-            <ng-select [(ngModel)]="row.styleNo" [items]="styleList" bindLabel="label" bindValue="value" appendTo="body">
+            <ng-select [(ngModel)]="row.styleNo" [items]="styleList" bindLabel="label" bindValue="value"
+              appendTo="body">
             </ng-select>
           </td>
 
           <!-- ORDER -->
           <td>
-            <ng-select [(ngModel)]="row.orderId" [items]="orderList" bindLabel="label" bindValue="value" appendTo="body">
+            <ng-select [(ngModel)]="row.orderId" [items]="orderList" bindLabel="label" bindValue="value"
+              appendTo="body">
             </ng-select>
           </td>
 
@@ -160,27 +163,29 @@
 
           <!-- FABRICATION -->
           <td>
-            <ng-select [(ngModel)]="row.fabricationId" [items]="fabricationList" bindLabel="label" bindValue="value"
+            <ng-select [(ngModel)]="row.fabricationId" [items]="row.fabricationList" bindLabel="label" bindValue="value"
               appendTo="body">
             </ng-select>
           </td>
 
           <!-- COLOR -->
           <td>
-            <ng-select [(ngModel)]="row.colorId" [items]="colorList" bindLabel="label" bindValue="value" appendTo="body">
+            <ng-select [(ngModel)]="row.icleid" [items]="row.colorList" bindLabel="label" bindValue="value"
+              appendTo="body">
             </ng-select>
           </td>
 
           <!-- DRESS PART -->
           <td>
-            <ng-select [(ngModel)]="row.dressPartId" [items]="dressPartList" bindLabel="label" bindValue="value"
+            <ng-select [(ngModel)]="row.dressPartId" [items]="row.dressPartList" bindLabel="label" bindValue="value"
               appendTo="body">
             </ng-select>
           </td>
 
           <!-- UOM -->
           <td>
-            <ng-select [(ngModel)]="row.uomId" [items]="uomList" bindLabel="label" bindValue="value" appendTo="body">
+            <ng-select [(ngModel)]="row.uomDetailsId" [items]="row.uomList" bindLabel="label" bindValue="value"
+              appendTo="body">
             </ng-select>
           </td>
 
@@ -207,22 +212,22 @@
           </td>
 
           <!-- SHIPMENT DATE -->
-          <td>
+          <!-- <td>
             <input class="form-control form-control-sm" bsDatepicker [(ngModel)]="row.shipmentDate">
-          </td>
+          </td> -->
 
           <!-- PROBABLE DELIVERY -->
-          <td>
+          <!-- <td>
             <input class="form-control form-control-sm" bsDatepicker [(ngModel)]="row.probableDeliveryDate">
-          </td>
+          </td> -->
 
           <!-- RECEIVE FROM -->
           <td class="text-center">
             {{ row.fromUnitName }}
           </td>
-          <td class="text-center">
+          <!-- <td class="text-center">
             {{ row.trackingNo}}
-          </td>
+          </td> -->
         </tr>
       </tbody>
 
@@ -235,12 +240,6 @@
 
 
 
-<app-size-quantity 
-  *ngIf="sizePopupVisible"
-  [(visible)]="sizePopupVisible" 
-  (confirm)="confirmSizeQty()"  
-  [sizeList]="sizeList"
-  (totalCal)="calculateTotal()"
->
+<app-size-quantity *ngIf="sizePopupVisible" [(visible)]="sizePopupVisible" (confirm)="confirmSizeQty()"
+  [sizeList]="sizeList" (totalCal)="calculateTotal()">
 </app-size-quantity>
-

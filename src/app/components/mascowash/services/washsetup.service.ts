@@ -615,12 +615,28 @@ export class WashSetupService {
   }
 
   saveBatchWiseShadeStatus(data: any) {
-  return this.http.post(
-    this.baseUrl_ + 'Setup/SaveBatchWiseShadeStatus', // ✅ your API endpoint
-    data,
-    { headers: this.token.headerToken() }
-  );
-}
+    return this.http.post(
+      this.baseUrl_ + 'Setup/SaveBatchWiseShadeStatus', // ✅ your API endpoint
+      data,
+      { headers: this.token.headerToken() }
+    );
+
+
+
+  }
+   getBatchWishAsidPrepareData(batchNo: string) {
+    debugger;
+    const params = new HttpParams()
+      .set('batchNo', batchNo);
+
+    return this.http.get<any[]>(
+      this.baseUrl_ + 'Setup/getBatchWishAsidPrepareData',
+      {
+        headers: this.token.headerToken(),
+        params
+      }
+    );
+  }
 }
 
 

@@ -66,7 +66,7 @@ export class WashOperationStartEndComponent {
 
   @ViewChild('batchInput') batchInput!: ElementRef;
 
- processList: any[] = [];
+  processList: any[] = [];
   machineList: any[] = [];
   buyerList: DropdownItem[] = [];
   UnitList: DropdownItem[] = [];
@@ -110,9 +110,9 @@ export class WashOperationStartEndComponent {
     trackingNo: '',
     batchNo: '',
     // ✅ ADD THESE
-  TotalKg: 0,
-  UsedWeight: 0,
-  RemainingWeight: 0
+    TotalKg: 0,
+    UsedWeight: 0,
+    RemainingWeight: 0
 
   };
 
@@ -121,7 +121,7 @@ export class WashOperationStartEndComponent {
     private toastr: ToastrService,
     private router: Router,
     private cdr: ChangeDetectorRef
-  ) {}
+  ) { }
 
   // ngOnInit(): void {
   //   this.loadBuyerList();
@@ -193,41 +193,41 @@ export class WashOperationStartEndComponent {
   }
 
   // ================= PROCESS =================
-onSelectionChangeProcess(processId: number) {
+  onSelectionChangeProcess(processId: number) {
 
-  console.log('Process ID:', processId);
+    console.log('Process ID:', processId);
 
-  // ✅ reset machine
-  this.machineList = [];
-  this.Model.MachineId = null;
+    // ✅ reset machine
+    this.machineList = [];
+    this.Model.MachineId = null;
 
-  if (!processId) return;
+    if (!processId) return;
 
-  // ✅ convert to string (your API style)
-  const processIds = processId.toString();
+    // ✅ convert to string (your API style)
+    const processIds = processId.toString();
 
-  this.service.GetMachineByProcess(processIds).subscribe({
-    next: (res: any) => {
+    this.service.GetMachineByProcess(processIds).subscribe({
+      next: (res: any) => {
 
-      const data = Array.isArray(res) ? res : res?.data || res?.result || [];
+        const data = Array.isArray(res) ? res : res?.data || res?.result || [];
 
-      this.machineList = data.map((x: any) => ({
-        label: x.displayName ?? x.DisplayName ?? x.machineName ?? x.MachineName,
-        value: x.id ?? x.ID ?? x.machineDetailId ?? x.MachineDetailId
-      }));
+        this.machineList = data.map((x: any) => ({
+          label: x.displayName ?? x.DisplayName ?? x.machineName ?? x.MachineName,
+          value: x.id ?? x.ID ?? x.machineDetailId ?? x.MachineDetailId
+        }));
 
-      // optional: auto select first machine
-      // this.Model.MachineId = this.machineList[0]?.value || null;
+        // optional: auto select first machine
+        // this.Model.MachineId = this.machineList[0]?.value || null;
 
-      this.cdr.detectChanges();
-    },
+        this.cdr.detectChanges();
+      },
 
-    error: () => {
-      this.machineList = [];
-      this.Model.MachineId = null;
-    }
-  });
-}
+      error: () => {
+        this.machineList = [];
+        this.Model.MachineId = null;
+      }
+    });
+  }
   onlyNumber(event: any) {
     const val = event.target.value;
     event.target.value = val.replace(/[^0-9.]/g, '');
@@ -243,19 +243,19 @@ onSelectionChangeProcess(processId: number) {
     }
 
     this.service.getBatchWishStartEndData(this.batchNo).subscribe({
-   
+
       next: (res: any) => {
         const data = Array.isArray(res) ? res : res.data;
-          debugger;
+
         if (!data || data.length === 0) {
           this.toastr.warning('No data found');
           return;
         }
-console.log('Batch Data:', data);
+        console.log('Batch Data:', data);
         const first = data[0];
-
+        debugger
         // Header Bind
-         this.batchHeader = {
+        this.batchHeader = {
           unitName: first.unitName || '',
           buyerName: first.buyerName || '',
           batchNo: first.batchNo || '',
@@ -267,7 +267,7 @@ console.log('Batch Data:', data);
           dressPart: first.dressPart || '',
           uom: first.uom || '',
           date: first.date || '',
-         weight: first.remainingWeight || null   // optional (header display)
+          weight: first.weight || null   // optional (header display)
         };
 
         this.Model.UnitId = first.unitId || null;
@@ -281,99 +281,61 @@ console.log('Batch Data:', data);
     });
   }
 
-  // ================= HISTORY LOGIC (IMPORTANT FIX) =================
-//   loadOperationHistory(batch: string) {
 
-//     this.service.getStartEndOperationData(batch).subscribe((res: any) => {
+  loadOperationHistory(batch: string) {
+    this.service.getStartEndOperationData(batch).subscribe((res: any) => {
 
-//   const data: OperationHistory[] =
-//     Array.isArray(res)
-//       ? res
-//       : Array.isArray(res?.data)
-//         ? res.data
-//         : [];
+      const data: OperationHistory[] =
+        Array.isArray(res) ? res :
+          Array.isArray(res?.data) ? res.data : [];
 
-//   this.operationList = data;
+      // ✅ Always show latest row FIRST in grid (DESC by id)
+      this.operationList = [...data].sort((a, b) => (b.id ?? 0) - (a.id ?? 0));
 
-//   const last = data[data.length - 1];
-//   const now = new Date();
+      // ✅ Pick the LATEST row by id (not array position)
+      const latest = this.operationList[0];
+      const now = new Date();
 
-//   if (!last) {
-//     this.startDate = now;
-//     this.startTime = this.formatTime(now);
-//     this.endDate = null;
-//     this.endTime = '';
-//     return;
-//   }
+      if (!latest) {
+        // No history at all → fresh start
+        this.startDate = now;
+        this.startTime = this.formatTime(now);
+        this.endDate = null;
+        this.endTime = '';
+        return;
+      }
 
-//   if (!last.endDate) {
-//     this.startDate = null;
-//     this.startTime = '';
-//     this.endDate = now;
-//     this.endTime = this.formatTime(now);
-//     return;
-//   }
+      // ✅ Robust null/empty/default-date check
+      const hasEnd = this.isValidDate(latest.endDate) && !!latest.endTime?.trim();
 
-//   this.startDate = now;
-//   this.startTime = this.formatTime(now);
-//   this.endDate = null;
-//   this.endTime = '';
-// });
-//   }
-loadOperationHistory(batch: string) {
-  this.service.getStartEndOperationData(batch).subscribe((res: any) => {
+      if (!hasEnd) {
+        // ⏳ Latest row is OPEN (no end) → show END date/time as current
+        this.startDate = null;
+        this.startTime = '';
+        this.endDate = now;
+        this.endTime = this.formatTime(now);
+      } else {
+        // ✅ Latest row is CLOSED → ready for NEW operation → show START
+        this.startDate = now;
+        this.startTime = this.formatTime(now);
+        this.endDate = null;
+        this.endTime = '';
+      }
+    });
+  }
 
-    const data: OperationHistory[] =
-      Array.isArray(res) ? res :
-      Array.isArray(res?.data) ? res.data : [];
-
-    // ✅ Always show latest row FIRST in grid (DESC by id)
-    this.operationList = [...data].sort((a, b) => (b.id ?? 0) - (a.id ?? 0));
-
-    // ✅ Pick the LATEST row by id (not array position)
-    const latest = this.operationList[0];
-    const now = new Date();
-
-    if (!latest) {
-      // No history at all → fresh start
-      this.startDate = now;
-      this.startTime = this.formatTime(now);
-      this.endDate   = null;
-      this.endTime   = '';
-      return;
-    }
-
-    // ✅ Robust null/empty/default-date check
-    const hasEnd = this.isValidDate(latest.endDate) && !!latest.endTime?.trim();
-
-    if (!hasEnd) {
-      // ⏳ Latest row is OPEN (no end) → show END date/time as current
-      this.startDate = null;
-      this.startTime = '';
-      this.endDate   = now;
-      this.endTime   = this.formatTime(now);
-    } else {
-      // ✅ Latest row is CLOSED → ready for NEW operation → show START
-      this.startDate = now;
-      this.startTime = this.formatTime(now);
-      this.endDate   = null;
-      this.endTime   = '';
-    }
-  });
-}
-
-// ✅ ADD this helper — handles null, '', '0001-01-01', invalid dates
-private isValidDate(val: string | Date | null | undefined): boolean {
-  if (!val) return false;
-  const str = val.toString().trim();
-  if (str === '' || str.startsWith('0001-01-01')) return false;
-  const d = new Date(str);
-  return !isNaN(d.getTime());
-}
+  // ✅ ADD this helper — handles null, '', '0001-01-01', invalid dates
+  private isValidDate(val: string | Date | null | undefined): boolean {
+    if (!val) return false;
+    const str = val.toString().trim();
+    if (str === '' || str.startsWith('0001-01-01')) return false;
+    const d = new Date(str);
+    return !isNaN(d.getTime());
+  }
   // ================= SAVE =================
   onSubmit() {
 
-  if (!this.batchNo) {
+    if (!this.batchNo) {
       this.toastr.warning('Batch required');
       return;
     }
@@ -387,7 +349,10 @@ private isValidDate(val: string | Date | null | undefined): boolean {
       this.toastr.warning('Select Machine');
       return;
     }
-
+    // if (!this.Model.Weight) {
+    //   this.toastr.warning('Input Weight');
+    //   return;
+    // }
     const payload = {
       rows: [{
         unitId: this.Model.UnitId,
@@ -416,7 +381,7 @@ private isValidDate(val: string | Date | null | undefined): boolean {
     this.operationList = [];
     this.Model.ProcessId = null;
     this.Model.MachineId = null;
-    this.Model.Weight = null;
+
 
     this.setCurrentDateTime();
   }

@@ -1,6 +1,6 @@
 <div class="card custom-card shadow-sm rounded-4">
     <div class="card-header">
-        <h5 class="card-title">Wash Operation Start End</h5>
+        <h5 class="card-title">Batch Wise Shade Status</h5>
     </div>
 
     <div class="card-body px-4 py-4">
@@ -72,10 +72,10 @@
                 <label class="form-label fw-semibold">Operation Time *</label>
 
                 <ng-select [(ngModel)]="Model.OperationTime" [items]="operationList" bindLabel="label" bindValue="value"
-                  (change)="onOperationChange(Model.OperationTime)">
+                    (change)="onOperationChange(Model.OperationTime)">
                 </ng-select>
             </div>
-          
+
 
         </div>
         <div class="row my-2">

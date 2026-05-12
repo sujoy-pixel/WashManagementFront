@@ -44,7 +44,8 @@ interface WashBatchRow {
   composition: string;
 
   colorId: number;
-  colorName: string;
+  color: string;
+  icleid: number;
 
   dressPartId: number;
   dressPartName: string;
@@ -64,6 +65,11 @@ interface WashBatchRow {
 
   gsmId: number;
   sizeDetails: SizeDetail[];
+  colorList: any[];
+  fabricationList: any[];
+  dressPartList: any[];
+  uomList: any[];
+  uomDetailsId: number;
 }
 @Component({
   standalone: true,
@@ -309,107 +315,116 @@ export class WashBatchPrepareOperationComponent implements OnInit {
         debugger;
         console.log('WashBatchPrepareGrid Response:', res); // 👈 see DB data
         this.bindDetailRows(res);
- // ✅ Only reset model selections, keep all dropdown lists intact
-      this.Model.BuyerId = null;
-      this.Model.JobId = null;
-      this.Model.StyleId = null;
-      this.Model.OrderId = null;
+        // ✅ Only reset model selections, keep all dropdown lists intact
+        this.Model.BuyerId = null;
+        this.Model.JobId = null;
+        this.Model.StyleId = null;
+        this.Model.OrderId = null;
 
-      // 🔥 Auto-select unit 60 and reload buyers only
-      this.loadUnits();
+        // 🔥 Auto-select unit 60 and reload buyers only
+        this.loadUnits();
       },
-     
-      
+
+
       error: (err) => {
         console.error('WashBatchPrepareGrid Error:', err);
         this.toastr.error('Failed to load grid data');
       }
     });
-    
+
   }
 
   /* ===================== GRID BIND ===================== */
   bindDetailRows(rows: any[]): void {
-    debugger;
-    const map = new Map<string, WashBatchRow>();
 
-    rows.forEach(r => {
+    const map = new Map<string, any>();
 
+    rows.forEach(item => {
+
+      // ✅ GROUP KEY (IMPORTANT)
       const key = [
-        r.fromUnitId,
-        r.buyerNo,
-        r.jobId,
-        r.styleNo,
-        r.orderId,
-        r.colorId,
-        r.dressPartId
+        item.buyerNo,
+        item.jobId,
+        item.styleNo,
+        item.orderId,
+        item.icleid
       ].join('|');
 
+      // ✅ FIRST TIME CREATE
       if (!map.has(key)) {
         map.set(key, {
-          buyerNo: r.buyerNo,
-          buyerName: r.buyerName,
+          ...item,
 
-          jobId: r.jobId,
-          jobInfo: r.jobInfo,
-
-          styleNo: r.styleNo,
-          styleName: r.styleName,
-
-          orderId: r.orderId,
-          orderNo: r.orderNo,
-
-          type: r.type,
-
-          fabricationId: r.fabricationId,
-          fabricationName: r.fabricationName,
-          composition: r.composition,
-          colorId: r.icleid,
-          colorName: r.color,
-
-          dressPartId: r.dressPartId,
-          dressPartName: r.dressPart,
-
-          uomId: r.uomDetailsId,
-          uomName: r.uom,
-          alreadyPreparedQty: r.alreadyPreparedQty || 0,
-          remainingQty: r.remainingQty || 0,
-
-          shipmentDate: r.shipmentDate ? new Date(r.shipmentDate) : null,
-          probableDeliveryDate: r.probableDeliveryDate ? new Date(r.probableDeliveryDate) : null,
-          fromUnitId: r.fromUnitId,
-          fromUnitName: r.fromUnitName,
-          receiveNo: r.receiveNo,
-          sizeDetails: [],
+          // reset values for accumulation
           totalQty: 0,
-          iszid: r.iszid,
-          gsm: r.gsm,
-          gsmId: r.gsmId,
-          trackingNo: r.trackingNo
+          remainingQty: 0,
+
+          sizeDetails: [],
+
+          // dropdowns
+          colorList: [{ value: item.icleid, label: item.color }],
+          fabricationList: [{ value: item.fabricationId, label: item.fabricationName }],
+          dressPartList: [{ value: item.dressPartId, label: item.dressPart }],
+          uomList: [{ value: item.uomDetailsId, label: item.uom }]
         });
       }
-      const row = map.get(key)!;
 
-      row.sizeDetails.push({ sizeId: r.iszid, size: r.size, qty: r.qty });
-      row.totalQty += r.qty;
+      const row = map.get(key);
+
+      // ✅ CUMULATIVE SUM
+      row.totalQty += Number(item.qty || 0);
+      row.remainingQty += Number(item.remainingQty || 0);
+
+      // ✅ SIZE ADD (important for popup)
+      row.sizeDetails.push({
+        sizeId: item.iszid,
+        size: item.size,
+        qty: Number(item.qty || 0)
+      });
+
     });
 
+    // ✅ FINAL LIST (ONLY GROUPED ROWS)
     this.detailList = Array.from(map.values());
 
-    /* ===== Populate dropdowns ===== */
+    /* ===== Dropdowns ===== */
     this.buyerList = this.unique(this.detailList, 'buyerNo', 'buyerName');
     this.jobList = this.unique(this.detailList, 'jobId', 'jobInfo');
     this.styleList = this.unique(this.detailList, 'styleNo', 'styleName');
     this.orderList = this.unique(this.detailList, 'orderId', 'orderNo');
-    this.fabricationList = this.unique(this.detailList, 'fabricationId', 'fabricationName');
-    this.colorList = this.unique(this.detailList, 'colorId', 'colorName');
-    this.dressPartList = this.unique(this.detailList, 'dressPartId', 'dressPartName');
-    this.uomList = this.unique(this.detailList, 'uomId', 'uomName');
-    console.log("Binded Detail List:", this.detailList);
+    this.colorList = this.unique(this.detailList, 'icleid', 'color');
 
-
-
+    console.log("✅ FINAL GROUPED LIST:", this.detailList);
   }
+  // bindDetailRows(rows: any[]): void {
+  //   debugger;
+  //   const map = new Map<string, WashBatchRow>();
+
+
+
+  //   this.detailList = rows.map((item) => ({
+  //     ...item,
+  //     colorList: [{ value: item.icleid, label: item.color }],
+  //     fabricationList: [{ value: item.fabricationId, label: item.fabricationName }],
+  //     dressPartList: [{ value: item.dressPartId, label: item.dressPart }],
+  //     uomList: [{ value: item.uomDetailsId, label: item.uom }]
+
+  //   }));
+
+  //   /* ===== Populate dropdowns ===== */
+  //   this.buyerList = this.unique(this.detailList, 'buyerNo', 'buyerName');
+  //   this.jobList = this.unique(this.detailList, 'jobId', 'jobInfo'); ``
+  //   this.styleList = this.unique(this.detailList, 'styleNo', 'styleName');
+  //   this.orderList = this.unique(this.detailList, 'orderId', 'orderNo');
+  //   // this.fabricationList = this.unique(this.detailList, 'fabricationId', 'fabricationName');
+  //   this.colorList = this.unique(this.detailList, 'icleid', 'color');
+  //   // this.dressPartList = this.unique(this.detailList, 'dressPartId', 'dressPart');
+  //   // this.uomList = this.unique(this.detailList, 'uomDetailsId', 'uom');
+  //   console.log("Binded Detail List:", this.detailList);
+
+
+
+  // }
 
   unique(arr: any[], value: string, label: string): DropdownItem[] {
     const map = new Map<any, DropdownItem>();
@@ -466,12 +481,14 @@ export class WashBatchPrepareOperationComponent implements OnInit {
   /* ===================== ACTIONS ===================== */
 
   openPrepareTab(row: WashBatchRow): void {
-    debugger;
     if (row.totalQty == row.alreadyPreparedQty) {
       this.toastr.warning('All quantity already prepared for this batch.');
       return;
     }
     if (!row?.orderId) return;
+
+    // ✅ Calculate sum from size details
+    const sizeSum = (row.sizeDetails || []).reduce((acc, curr) => acc + (Number(curr.qty) || 0), 0);
 
     const navState = {
 
@@ -481,7 +498,7 @@ export class WashBatchPrepareOperationComponent implements OnInit {
       styleId: row.styleNo,
       orderId: row.orderId,
       fabricationId: row.fabricationId,
-      colorId: row.colorId,
+      colorId: row.icleid,
       dressPartId: row.dressPartId,
       uomId: row.uomId,
       fromUnitId: row.fromUnitId,
@@ -495,14 +512,16 @@ export class WashBatchPrepareOperationComponent implements OnInit {
       documentNo: row.receiveNo ?? '',
       fabrication: row.fabricationName ?? '',
       composition: row.composition ?? '',
-      color: row.colorName ?? '',
+      color: row.color ?? '',
       gsm: row.gsm,
       date: new Date().toISOString().split('T')[0],
       trackingNo: row.trackingNo ?? '',
       type: row.type ?? '',
+
       // ===== CHILD =====
       sizeDetails: row.sizeDetails ?? [],
-      totalQty: (row.remainingQty ?? 0) === 0 ? row.totalQty : row.remainingQty
+      // ✅ Use sum of sizes if available, otherwise fallback to existing logic
+      totalQty: sizeSum > 0 ? sizeSum : ((row.remainingQty ?? 0) === 0 ? row.totalQty : row.remainingQty)
     };
 
     localStorage.setItem(

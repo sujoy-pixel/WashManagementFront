@@ -202,24 +202,26 @@
 
               </td>
             </tr> -->
-            <mat-form-field appearance="outline">
-              <mat-label>Process</mat-label>
-
-              <mat-select [(ngModel)]="Model.processList" multiple (selectionChange)="onSelectionChangeProcess($event)">
-
-                <mat-option *ngFor="let process of processList" [value]="process.value">
-
-                  {{ process.label }}
-
-                </mat-option>
-
-              </mat-select>
-            </mat-form-field>
             <tr>
-              <th>Machine No</th>
               <td>
+                <mat-form-field appearance="outline">
+                  <mat-label>Process</mat-label>
+
+                  <mat-select [(ngModel)]="Model.processList" multiple
+                    (selectionChange)="onSelectionChangeProcess($event)">
+
+                    <mat-option *ngFor="let process of processList" [value]="process.value">
+
+                      {{ process.label }}
+
+                    </mat-option>
+
+                  </mat-select>
+                </mat-form-field>
 
 
+              </td>
+              <td>
                 <mat-form-field appearance="outline">
                   <mat-label>Machine No</mat-label>
                   <mat-select [(value)]="Model.machineList" (selectionChange)="onSelectionChangeMachine($event)"
@@ -234,9 +236,18 @@
                     <mat-option *ngFor="let machine of machineList" [value]="machine"> {{ machine.label }}</mat-option>
                   </mat-select>
                 </mat-form-field>
-
-
               </td>
+            </tr>
+
+            <tr>
+              <!-- <th>Machine No</th> -->
+              <!-- <td>
+
+
+
+
+
+              </td> -->
             </tr>
 
 
@@ -269,20 +280,17 @@
           <i class="fa fa-database" aria-hidden="true"></i>
           {{ saveButtonTitle }}
         </button> -->
-        <button 
-  type="button" 
-  class="btn"
-  [ngClass]="saveButtonTitle === 'Update' ? 'btn-warning' : 'btn-primary'"
-  (click)="onSubmit()">
+        <button type="button" class="btn" [ngClass]="saveButtonTitle === 'Update' ? 'btn-warning' : 'btn-primary'"
+          (click)="onSubmit()">
 
-  <i class="fa fa-database"></i>
-  {{ saveButtonTitle }}
-</button>
+          <i class="fa fa-database"></i>
+          {{ saveButtonTitle }}
+        </button>
         &nbsp;
         <button class="btn btn-danger" type="button" (click)="clearAll()">
           <i class="fa fa-refresh" aria-hidden="true"></i> Clear
         </button>
         &nbsp; &nbsp;
       </div>
-      
+
     </div>

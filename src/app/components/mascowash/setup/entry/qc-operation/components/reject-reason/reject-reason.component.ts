@@ -35,6 +35,8 @@ export class RejectReasonComponent implements OnInit {
   @Output() confirmReject = new EventEmitter<any[]>();
   @Output() onConfirm = new EventEmitter<any>();
 
+  @Input() groupedDefects: any = {};
+
   items: DefectItem[] = [];
   dataList: any[] = [];
 
@@ -42,7 +44,6 @@ export class RejectReasonComponent implements OnInit {
   isFullScreen: boolean = false;
   isMaximized: boolean = false;
   allSelectedDefects: any[] = [];
-  groupedDefects: { [key: string]: any[] } = {};
   groupCounter = 1;
 
 
@@ -140,6 +141,13 @@ export class RejectReasonComponent implements OnInit {
   }
 
   confirmSelection() {
+    const selectedItems = this.items.filter(x => x.count > 0);
+
+    if (selectedItems.length === 0) {
+      this.toastr.warning('Please select at least one fault name', 'Warning');
+      return;
+    }
+
     const groupKey = this.groupCounter.toString().padStart(4, '0');
     let currentIndex = 0;
 
@@ -152,18 +160,15 @@ export class RejectReasonComponent implements OnInit {
     }
     const groupColor = this.generateColorVariant(currentIndex, this.type as any);
 
-    const newDefects = this.items
-      .filter(x => x.count > 0)
-      .map(x => ({
-        defectId: x.defectId,
-        name: x.name,
-        count: x.count,
-        backgroundColor: groupColor,
-      }));
-    if (newDefects.length) {
-      this.groupedDefects[groupKey] = newDefects;
-      this.groupCounter++;
-    }
+    const newDefects = selectedItems.map(x => ({
+      defectId: x.defectId,
+      name: x.name,
+      count: x.count,
+      backgroundColor: groupColor,
+    }));
+
+    this.groupedDefects[groupKey] = newDefects;
+    this.groupCounter++;
 
     this.items.forEach(x => {
       x.count = 0;

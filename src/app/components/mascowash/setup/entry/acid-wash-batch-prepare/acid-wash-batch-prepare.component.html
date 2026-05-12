@@ -1,0 +1,244 @@
+<div class="card custom-card shadow-sm rounded-4 mb-4">
+  <div class="card-header">
+    <h5 class="card-title">Acid Wash Batch Prepare</h5>
+  </div>
+
+  <div class="card-body px-4 py-4">
+    <!-- TOP SECTION -->
+    <div class="row g-3 mb-4">
+      <!-- Wash Batch No -->
+      <div class="col-md-3">
+        <label class="form-label fw-semibold">Wash Batch No *</label>
+        <input #batchInput type="text" class="form-control" [(ngModel)]="washBatchNo" (keyup.enter)="loadBatchData()"
+          placeholder="Scan to Load" />
+      </div>
+
+      <!-- Batch Qty -->
+      <div class="col-md-3">
+        <label class="form-label fw-semibold">Batch Qty (Pcs / Kg)</label>
+        <div class="input-group shadow-sm">
+          <input type="text" class="form-control text-center fw-bold bg-light" [(ngModel)]="batchQtyPcs"
+            placeholder="Pcs" readonly>
+          <span class="input-group-text bg-white small text-muted px-2">Pcs</span>
+          <input type="text" class="form-control text-center fw-bold bg-light" [(ngModel)]="batchQtyKg" placeholder="Kg"
+            readonly>
+          <span class="input-group-text bg-white small text-muted px-2">Kg</span>
+        </div>
+      </div>
+
+      <!-- Prepare Date -->
+      <div class="col-md-3">
+        <label class="form-label fw-semibold">Prepare Date</label>
+        <input type="text" class="form-control" bsDatepicker [(ngModel)]="batchHeader.prepareDate"
+          [bsConfig]="{ dateInputFormat: 'YYYY-MM-DD' }">
+      </div>
+
+      <!-- Prepare By -->
+      <!-- <div class="col-md-3">
+        <label class="form-label fw-semibold">Prepare By</label>
+        <input type="text" class="form-control" [(ngModel)]="batchHeader.prepareBy" readonly>
+      </div> -->
+
+      <!-- Revision No & Date -->
+      <!-- <div class="col-md-3">
+        <label class="form-label fw-semibold">Revision No / Date</label>
+        <div class="d-flex gap-2">
+          <input type="text" class="form-control" [(ngModel)]="batchHeader.revisionNo">
+          <input type="text" class="form-control" bsDatepicker [(ngModel)]="batchHeader.revisionDate"
+            [bsConfig]="{ dateInputFormat: 'YYYY-MM-DD' }" placeholder="Date">
+        </div>
+      </div> -->
+
+      <!-- Buyer -->
+      <div class="col-md-3">
+        <label class="form-label fw-semibold">Buyer</label>
+        <input class="form-control" [(ngModel)]="batchHeader.buyer" readonly>
+      </div>
+
+      <!-- Job No -->
+      <div class="col-md-3">
+        <label class="form-label fw-semibold">Job No</label>
+        <input class="form-control" [(ngModel)]="batchHeader.jobNo" readonly>
+      </div>
+
+      <!-- Style -->
+      <div class="col-md-3">
+        <label class="form-label fw-semibold">Style</label>
+        <input class="form-control" [(ngModel)]="batchHeader.styleNo" readonly>
+      </div>
+
+      <!-- Order -->
+      <div class="col-md-3">
+        <label class="form-label fw-semibold">Order</label>
+        <input class="form-control" [(ngModel)]="batchHeader.orderNo" readonly>
+      </div>
+
+      <!-- Item Type -->
+      <!-- <div class="col-md-3">
+        <label class="form-label fw-semibold">Item Type</label>
+        <input class="form-control" [(ngModel)]="batchHeader.itemType" readonly>
+      </div> -->
+
+      <!-- Composition -->
+      <!-- <div class="col-md-3">
+        <label class="form-label fw-semibold">Composition</label>
+        <input class="form-control" [(ngModel)]="batchHeader.composition" readonly>
+      </div> -->
+
+      <!-- GSM -->
+      <!-- <div class="col-md-3">
+        <label class="form-label fw-semibold">GSM</label>
+        <input class="form-control" [(ngModel)]="batchHeader.gsm" readonly>
+      </div> -->
+
+      <!-- Color -->
+      <div class="col-md-3">
+        <label class="form-label fw-semibold">Color</label>
+        <input class="form-control" [(ngModel)]="batchHeader.color" readonly>
+      </div>
+
+      <div class="col-md-3">
+
+        <label class="form-label fw-semibold">Acid Batch No</label>
+        <input class="form-control" [(ngModel)]="acidBatchNo" readonly>
+
+      </div>
+    </div>
+
+
+    <!-- MIDDLE SECTION -->
+
+
+
+    <!-- BOTTOM SECTION: TABLE -->
+    <div class="row mb-4">
+      <div class="col-12">
+        <h6 class="fw-bold mb-3">Acid Wash Qty</h6>
+        <div class="info-box">
+          <table class="table info-table text-center mt-3">
+            <thead>
+              <tr class="table-light">
+                <th rowspan="2" class="align-middle" (click)="toggleSizeView()" style="cursor:pointer">
+                  Size {{ showSizeDetails ? '🔽' : '▶' }}
+                </th>
+                <th colspan="2">Acid Wash Qty</th>
+                <th colspan="2">Prepared Qty</th>
+              </tr>
+              <tr class="table-light">
+                <th>
+                  Pcs
+                  <input type="checkbox" [(ngModel)]="applyToAll" (change)="applyFirstValueToAll()"
+                    [disabled]="!showSizeDetails" class="ms-1" />
+                </th>
+                <th>Kg</th>
+                <th>Pcs</th>
+                <th>Kg</th>
+              </tr>
+            </thead>
+
+            <tbody>
+
+              <!-- ✅ HIDE/SHOW SIZE ROWS -->
+              <ng-container *ngIf="showSizeDetails">
+                <tr *ngFor="let s of sizeQty; let i = index">
+                  <td class="align-middle">{{ s.size }}</td>
+
+                  <td>
+                    <input type="number" class="form-control form-control-sm text-center" [(ngModel)]="s.preparePcs"
+                      (ngModelChange)="calculateTotals(); applyToAll && applyFirstValueToAll()" min="0" />
+                  </td>
+
+                  <td>
+                    <input type="number" class="form-control form-control-sm text-center" [(ngModel)]="s.prepareKg"
+                      (ngModelChange)="calculateTotals()" />
+                  </td>
+
+                  <td><input type="text" class="form-control form-control-sm text-center bg-light"
+                      [value]="s.preparedPcs" readonly></td>
+                  <td><input type="text" class="form-control form-control-sm text-center bg-light"
+                      [value]="s.preparedKg" readonly></td>
+                </tr>
+              </ng-container>
+
+              <!-- ✅ ALWAYS SHOW TOTAL -->
+              <tr class="fw-bold table-light">
+                <td class="align-middle">
+                  Total
+                  <input type="checkbox" [(ngModel)]="isTotalEditable" class="ms-2">
+                </td>
+
+                <!-- ✅ PCS (Acid Wash) -->
+                <td>
+                  <input type="text" class="form-control form-control-sm text-center fw-bold"
+                    [(ngModel)]="totalPreparePcs" (input)="onlyNumber($event)" (blur)="onTotalPcsChange()"
+                    [readonly]="!isTotalEditable" maxlength="10">
+                </td>
+
+                <!-- ✅ KG (Acid Wash) -->
+                <td>
+                  <input type="number" class="form-control form-control-sm text-center fw-bold"
+                    [(ngModel)]="totalPrepareKg" (input)="Number($event)" [readonly]="!isTotalEditable">
+                </td>
+
+                <!-- Prepared Qty Totals -->
+                <td>
+                  <input type="text" class="form-control form-control-sm text-center fw-bold bg-light"
+                    [value]="totalPreparedPcs" readonly>
+                </td>
+                <td>
+                  <input type="text" class="form-control form-control-sm text-center fw-bold bg-light"
+                    [value]="totalPreparedKg" readonly>
+                </td>
+              </tr>
+
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- PROCESS & MACHINE MULTI SELECT -->
+    <div class="row mt-4 g-3">
+      <div class="col-md-6">
+        <label class="form-label fw-semibold">Process Name *</label>
+        <mat-form-field appearance="outline" class="w-100">
+          <mat-label>Process</mat-label>
+          <mat-select [(ngModel)]="Model.processList" multiple (selectionChange)="onSelectionChangeProcess($event)">
+            <mat-option *ngFor="let process of processList" [value]="process.value">
+              {{ process.label }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+
+      <div class="col-md-6">
+        <label class="form-label fw-semibold">Machine No. *</label>
+        <mat-form-field appearance="outline" class="w-100">
+          <mat-label>Machine No</mat-label>
+          <mat-select [(ngModel)]="Model.machineList" multiple>
+            <mat-option *ngFor="let machine of machineList" [value]="machine.value">
+              {{ machine.label }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ACTION BUTTONS -->
+  <div class="card-footer text-end p-3">
+    <button class="btn btn-primary px-4 me-2" (click)="onSubmit()">
+      <i class="fa fa-database"></i> Save
+    </button>
+    <button class="btn btn-warning px-4 me-2" (click)="onClear()">
+      <i class="fa fa-refresh"></i> Refresh
+    </button>
+    <button class="btn btn-info px-4 me-2">
+      <i class="fa fa-print"></i> Preview
+    </button>
+    <button class="btn btn-danger px-4">
+      <i class="fa fa-times"></i> Close
+    </button>
+  </div>
+</div>

@@ -32,7 +32,7 @@ export class InspectionTypeEntryComponent implements OnInit {
     public commonService: CommonServiceService,
     private toastr: ToastrService,
     private cdr: ChangeDetectorRef
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.loadData();
@@ -128,7 +128,7 @@ export class InspectionTypeEntryComponent implements OnInit {
         const payload = {
           operation: 'DELETE',
           TypeofInspectionId: item.typeofInspectionId,
-          
+
           // typeofInspectionId: item.TypeofInspectionId
         };
 
@@ -137,7 +137,7 @@ export class InspectionTypeEntryComponent implements OnInit {
             //console.log('resDelete', res);
             if (res?.resultCode === "1") {
               this.toastr.success('Deleted successfully', 'Success');
-             this.loadData();
+              this.loadData();
             } else {
               this.toastr.error('Delete failed', 'Error');
             }

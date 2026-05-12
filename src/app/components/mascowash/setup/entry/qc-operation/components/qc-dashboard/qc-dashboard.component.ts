@@ -15,15 +15,19 @@ interface BatchHeaderModel {
   jobId?: number;
   dressPartId?: number;
   uomId?: number;
+  fabricationId?: number;
+  colorId?: number;
 
   unitName: string;
   buyerName: string;
+  trackingNo: string;
   batchNo: string;
   styleName: string;
   orderNo: string;
   jobNo: string;
 
   type: string;
+  fabricationName: string;
   color: string;
   dressPart: string;
   uom: string;
@@ -44,11 +48,13 @@ export class QcDashboardComponent {
   batchHeader: BatchHeaderModel = {
     unitName: '',
     buyerName: '',
+    trackingNo: '',
     batchNo: '',
     styleName: '',
     orderNo: '',
     jobNo: '',
     type: '',
+    fabricationName: '',
     color: '',
     dressPart: '',
     uom: '',
@@ -74,8 +80,8 @@ export class QcDashboardComponent {
 
   loading = false;
 
-  repairableDefects: any[] = [];
-  rejectDefects: any[] = [];
+  repairableDefects: Record<string, any[]> = {};
+  rejectDefects: Record<string, any[]> = {};
 
   constructor(
     private service: WashSetupService,
@@ -113,18 +119,22 @@ export class QcDashboardComponent {
             jobId: data.jobId,
             dressPartId: data.dressPartId,
             uomId: data.uomId,
+            fabricationId: data.fabricationId,
+            colorId: data.colorId,
 
             unitName: data.unitName ?? '',
             buyerName: data.buyerName ?? '',
+            trackingNo: data.trackingNo ?? '',
             batchNo: data.batchNo ?? '',
             styleName: data.styleName ?? '',
             orderNo: data.orderNo ?? '',
             jobNo: data.jobNo ?? '',
             type: data.type ?? '',
+            fabricationName: data.fabricationName ?? '',
             color: data.color ?? '',
             dressPart: data.dressPart ?? '',
             uom: data.uom ?? '',
-            date: data.date ?? ''
+            date: data.prepareDate ?? ''
           };
 
           // 🔥 BASE + CURRENT
@@ -161,7 +171,7 @@ export class QcDashboardComponent {
   // 🔥 CORE LOGIC (SUPER CLEAN)
   private recalculateGood() {
     this.goodGarments =
-      this.baseGoodGarments - (this.rejectLength + this.repairableLength);
+      this.baseGoodGarments - (this.reject + this.repairable);
 
     if (this.goodGarments < 0) {
       this.goodGarments = 0;
@@ -191,79 +201,60 @@ export class QcDashboardComponent {
   }
 
   // 🔹 REPAIRABLE
-  handleReparableData(data: any[]) {
-    console.log('Received Repairable Data:', data);
+  handleReparableData(data: any) {
     this.repairableDefects = data;
-
-    // this.repairableLength = data?.length || 0;
-
-
-    // this.repairableCount = data?.length
-    //   ? data.reduce((sum, x) => sum + (x.count || 0), 0)
-    //   : 0;
-
     this.repairable = Object.keys(this.repairableDefects).length;
 
-    // // 🔥 UPDATE GOOD
-     this.recalculateGood();
-
-     this.isShowRepairableDialog = false;
-
-     this.cdr.detectChanges();
+    this.recalculateGood();
+    this.isShowRepairableDialog = false;
+    this.cdr.detectChanges();
   }
 
   // 🔹 REJECT
-  handleRejectionData(data: any[]) {
+  handleRejectionData(data: any) {
     this.rejectDefects = data;
-
     this.reject = Object.keys(this.rejectDefects).length;
 
-    // this.rejectDefects = data;
-
-    // this.rejectLength = data?.length || 0;
-
-    // this.rejectCount = data?.length
-    //   ? data.reduce((sum, x) => sum + (x.count || 0), 0)
-    //   : 0;
-
-    // this.reject = this.rejectLength;
-
-    // // 🔥 UPDATE GOOD
-     this.recalculateGood();
-
-     this.isShowRejectionDialog = false;
-
-     this.cdr.detectChanges();
+    this.recalculateGood();
+    this.isShowRejectionDialog = false;
+    this.cdr.detectChanges();
   }
-  removeDefect(groupKey: string, index: number) {
-    this.repairableDefects[groupKey].splice(index, 1);
 
-    if (this.repairableDefects[groupKey].length === 0) {
-      delete this.repairableDefects[groupKey];
+  removeDefect(groupKey: any, index: number) {
+    const key = groupKey as string;
+    this.repairableDefects[key].splice(index, 1);
+
+    if (this.repairableDefects[key].length === 0) {
+      delete this.repairableDefects[key];
     }
 
     this.repairableDefects = { ...this.repairableDefects };
     this.repairable = Object.keys(this.repairableDefects).length;
+    this.recalculateGood();
   }
-  removeReject(groupKey: string, index: number) {
-    this.rejectDefects[groupKey].splice(index, 1);
 
-    if (this.rejectDefects[groupKey].length === 0) {
-      delete this.rejectDefects[groupKey];
+  removeReject(groupKey: any, index: number) {
+    const key = groupKey as string;
+    this.rejectDefects[key].splice(index, 1);
+
+    if (this.rejectDefects[key].length === 0) {
+      delete this.rejectDefects[key];
     }
 
     this.rejectDefects = { ...this.rejectDefects };
     this.reject = Object.keys(this.rejectDefects).length;
+    this.recalculateGood();
   }
   // 🔥 SAVE
   saveQCData() {
-
+    debugger;
     if (!this.batchHeader.batchNo) {
       this.toastr.warning('Batch No required!');
       return;
     }
 
     const master = {
+      createdBy: 'Admin',
       unitId: this.batchHeader.unitId,
       buyerId: this.batchHeader.buyerId,
       styleId: this.batchHeader.styleId,
@@ -272,26 +263,50 @@ export class QcDashboardComponent {
       dressPartId: this.batchHeader.dressPartId,
       uomId: this.batchHeader.uomId,
 
+      trackingNo: this.batchHeader.trackingNo,
       batchNo: this.batchHeader.batchNo,
       type: this.batchHeader.type,
       color: this.batchHeader.color,
+      colorId: this.batchHeader.colorId,
       date: this.batchHeader.date,
 
       goodGarments: this.goodGarments,
       repairable: this.repairable,
-      reject: this.reject
+      reject: this.reject,
+
+      machineIds: '',
+      processIds: ''
     };
 
-    const repairableDetails = this.repairableDefects.map(x => ({
-      defectId: x.defectId,
-      qty: x.count || 0,
-      backgroundColor: x.backgroundColor
+    const repairableMap = new Map<number, number>();
+    for (const key in this.repairableDefects) {
+      if (this.repairableDefects.hasOwnProperty(key)) {
+        for (const x of this.repairableDefects[key]) {
+          const currentQty = repairableMap.get(x.defectId) || 0;
+          repairableMap.set(x.defectId, currentQty + (x.count || 0));
+        }
+      }
+    }
+
+    const repairableDetails = Array.from(repairableMap.entries()).map(([id, qty]) => ({
+      defectId: id,
+      qty: qty
     }));
 
-    const rejectDetails = this.rejectDefects.map(x => ({
-      defectId: x.defectId,
-      qty: x.count || 0,
-      backgroundColor: x.backgroundColor
+    const rejectMap = new Map<number, number>();
+    for (const key in this.rejectDefects) {
+      if (this.rejectDefects.hasOwnProperty(key)) {
+        for (const x of this.rejectDefects[key]) {
+          const currentQty = rejectMap.get(x.defectId) || 0;
+          rejectMap.set(x.defectId, currentQty + (x.count || 0));
+        }
+      }
+    }
+
+    const rejectDetails = Array.from(rejectMap.entries()).map(([id, qty]) => ({
+      rejectId: id,
+      defectId: id,
+      qty: qty
     }));
 
     const payload = {
@@ -300,18 +315,22 @@ export class QcDashboardComponent {
       rejectDetails
     };
 
-    console.log('FINAL SAVE:', payload);
-    this.toastr.success('Saved Successfully');
-    this.resetValues();
-    // this.service.saveQCData(payload).subscribe({
-    //   next: () => {
-    //     this.toastr.success('Saved Successfully');
-    //     this.resetValues();
-    //   },
-    //   error: () => {
-    //     this.toastr.error('Save Failed');
-    //   }
-    // });
+    console.log('Saving QC Data:', payload);
+
+    this.service.saveQCData(payload).subscribe({
+      next: (res: any) => {
+        if (res?.isSuccess) {
+          this.toastr.success(res.message || 'Data saved successfully');
+          this.resetValues();
+        } else {
+          this.toastr.error(res?.message || 'Failed to save data');
+        }
+      },
+      error: (err) => {
+        console.error(err);
+        this.toastr.error('Error occurred while saving');
+      }
+    });
   }
 
   resetValues() {
@@ -320,11 +339,13 @@ export class QcDashboardComponent {
     this.batchHeader = {
       unitName: '',
       buyerName: '',
+      trackingNo: '',
       batchNo: '',
       styleName: '',
       orderNo: '',
       jobNo: '',
       type: '',
+      fabricationName: '',
       color: '',
       dressPart: '',
       uom: '',
@@ -348,8 +369,8 @@ export class QcDashboardComponent {
     this.rejectCount = 0;
 
     // 🔹 Lists Reset
-    this.repairableDefects = [];
-    this.rejectDefects = [];
+    this.repairableDefects = {};
+    this.rejectDefects = {};
 
     // 🔹 Dialog Close
     this.isShowRejectionDialog = false;

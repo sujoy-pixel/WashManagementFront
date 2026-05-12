@@ -28,6 +28,8 @@ import { QcOperationComponent } from './setup/entry/qc-operation/qc-operation.co
 import { WashOperationStartEndComponent } from './setup/entry/wash-operation-start-end/wash-operation-start-end.component';
 import { BatchCardModificationComponent } from './setup/entry/batch-card-modification/batch-card-modification.component';
 import { BatchWiseShadeStatusComponent } from './setup/entry/batch-wise-shade-status/batch-wise-shade-status.component';
+import { AcidWashBatchPrepareComponent } from './setup/entry/acid-wash-batch-prepare/acid-wash-batch-prepare.component';
+
 const routes: Routes = [
   {
     path: 'mascowash',
@@ -121,7 +123,7 @@ const routes: Routes = [
         component: WashOperationStartEndComponent,
         runGuardsAndResolvers: 'always',
       },
-       {
+      {
         path: 'setup/entry/batch-card-modification',
         component: BatchCardModificationComponent,
         runGuardsAndResolvers: 'always',
@@ -129,6 +131,11 @@ const routes: Routes = [
       {
         path: 'setup/entry/batch-wise-shade-status',
         component: BatchWiseShadeStatusComponent,
+        runGuardsAndResolvers: 'always',
+      },
+      {
+        path: 'setup/entry/acid-wash-batch-prepare',
+        component: AcidWashBatchPrepareComponent,
         runGuardsAndResolvers: 'always',
       }
     ],

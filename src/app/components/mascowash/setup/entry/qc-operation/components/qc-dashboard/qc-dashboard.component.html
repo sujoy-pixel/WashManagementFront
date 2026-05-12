@@ -12,6 +12,10 @@
                 {{ batchHeader.buyerName }}
             </span>
 
+            <span><strong>Tracking No:</strong>
+                {{ batchHeader.trackingNo }}
+            </span>
+
             <span><strong>Batch No:</strong>
                 {{ batchHeader.batchNo }}
             </span>
@@ -101,7 +105,7 @@
                                     <div class="defect-item" [ngStyle]="{'background': item.backgroundColor}">
 
                                         <i class="pi pi-times text-red-500 mr-2 cursor-pointer"
-                                            (click)="removeDefect(group.key, i)">
+                                            (click)="removeDefect($any(group.key), i)">
                                         </i>
 
                                         {{ item.name }} ({{ item.count }})
@@ -133,7 +137,7 @@
                                     <div class="defect-item" [ngStyle]="{'background': item.backgroundColor}">
 
                                         <i class="pi pi-times text-red-500 mr-2 cursor-pointer"
-                                           (click)="removeReject(group.key, i)">
+                                           (click)="removeReject($any(group.key), i)">
                                         </i>
 
                                         {{ item.name }} ({{ item.count }})
@@ -210,10 +214,12 @@
     </div>
 
     <app-reject-reason type="repairable" title="Repairable Defects" [visible]="isShowRepairableDialog"
+        [groupedDefects]="repairableDefects"
         (visibleChange)="isShowRepairableDialog = $event" (onConfirm)="handleReparableData($event)">
     </app-reject-reason>
 
     <app-reject-reason type="reject" title="Rejected Defects" [visible]="isShowRejectionDialog"
+        [groupedDefects]="rejectDefects"
         (visibleChange)="isShowRejectionDialog = $event" (onConfirm)="handleRejectionData($event)">
     </app-reject-reason>
    

@@ -2,7 +2,7 @@ import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { ToastrService } from 'ngx-toastr';
 import { WashSetupService } from '../../../services/washsetup.service';
 //import { SizeQuantityComponent } from 'src/app/components/advanced-ui/modals/size-quantity/size-quantity.component';
-import {SizeQuantityComponent} from '../../../../advanced-ui/modals/size-quantity/size-quantity.component';
+import { SizeQuantityComponent } from '../../../../advanced-ui/modals/size-quantity/size-quantity.component';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { NgSelectModule } from '@ng-select/ng-select';
@@ -241,7 +241,7 @@ export class ReceiveOperationComponent implements OnInit {
   //     this.fromUnitList = [...this.UnitList];
   //   });
 
-loadDropdowns() {
+  loadDropdowns() {
     this.service.GetUnitName().subscribe(res => {
       this.UnitList = res.map((x: any) => ({
         label: x.DisplayName ?? x.displayName,
@@ -253,7 +253,7 @@ loadDropdowns() {
         this.review.UnitId = 60;
       }
     });
-  
+
 
 
 
@@ -307,7 +307,7 @@ loadDropdowns() {
   // ================= GRID BINDING For Tracking (GROUPING LOGIC) =================
   bindDetailRows(rows: any[]) {
 
-debugger;
+    debugger;
     const map = new Map<string, any>();
 
     rows.forEach(r => {
@@ -325,8 +325,8 @@ debugger;
       if (!map.has(key)) {
         map.set(key, {
           trackingNo: r.trackingNo,
-            fromUnitId: r.fromUnitId,
-             fromUnitName: r.fromUnitName, // ✅ FIX HERE
+          fromUnitId: r.fromUnitId,
+          fromUnitName: r.fromUnitName, // ✅ FIX HERE
           receiveDate: r.receiveDate ? new Date(r.receiveDate) : null,
 
           buyerNo: r.buyerNo,
@@ -435,7 +435,7 @@ debugger;
     this.sizeList = Object.values(grouped);
 
     console.log('Unique Size List:', this.sizeList);
-debugger;
+    debugger;
     this.calculateTotal();
 
     this.sizePopupVisible = true;
@@ -453,9 +453,9 @@ debugger;
   }
 
   confirmSizeQty() {
-     this.selectedRow.totalQty = this.totalSizeQty;
+    this.selectedRow.totalQty = this.totalSizeQty;
     this.selectedRow.sizeDetails = [...this.sizeList];
-   
+
     this.sizePopupVisible = false;
   }
 
@@ -542,6 +542,7 @@ debugger;
     //     });
     // }
     this.service.saveReceiveOperation(payload)
+
       .subscribe({
         next: (res: any) => {
 
@@ -735,7 +736,7 @@ debugger;
     console.log('GRID + DROPDOWN DATA (AS IS FROM DB)', this.detailList);
 
     // ===== DROPDOWNS USE SAME LIST (NO UNIQUE) =====
-  
+
     this.jobList = this.unique(this.detailList, 'jobId', 'jobInfo');
     this.buyerList = this.unique(this.detailList, 'buyerNo', 'buyerName');
     this.styleList = this.unique(this.detailList, 'styleNo', 'styleName');
