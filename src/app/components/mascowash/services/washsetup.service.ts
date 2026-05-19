@@ -624,7 +624,7 @@ export class WashSetupService {
 
 
   }
-   getBatchWishAsidPrepareData(batchNo: string) {
+  getBatchWishAsidPrepareData(batchNo: string) {
     debugger;
     const params = new HttpParams()
       .set('batchNo', batchNo);
@@ -635,6 +635,21 @@ export class WashSetupService {
         headers: this.token.headerToken(),
         params
       }
+    );
+  }
+
+  // SaveAcidWashBatchPrepare(payload: any): Observable<any> {
+  //   debugger;
+  //   return this.http.post(`${this.baseUrl}/AcidWashBatchPrepare/Save`, payload);
+  // }
+
+  SaveAcidWashBatchPrepare(model: any) {
+    debugger;
+    return this.http.post(
+      
+      this.baseUrl_ + 'Setup/SaveAcidWashBatchPrepare',
+      model,
+      { headers: this.token.headerToken() }
     );
   }
 }

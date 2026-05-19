@@ -177,7 +177,7 @@
                 <!-- ✅ KG (Acid Wash) -->
                 <td>
                   <input type="number" class="form-control form-control-sm text-center fw-bold"
-                    [(ngModel)]="totalPrepareKg" (input)="Number($event)" [readonly]="!isTotalEditable">
+                    [(ngModel)]="totalPrepareKg" (input)="onlyNumber($event)" [readonly]="!isTotalEditable">
                 </td>
 
                 <!-- Prepared Qty Totals -->

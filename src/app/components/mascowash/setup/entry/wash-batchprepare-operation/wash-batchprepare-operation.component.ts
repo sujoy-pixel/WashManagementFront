@@ -336,7 +336,7 @@ export class WashBatchPrepareOperationComponent implements OnInit {
 
   /* ===================== GRID BIND ===================== */
   bindDetailRows(rows: any[]): void {
-
+debugger;
     const map = new Map<string, any>();
 
     rows.forEach(item => {
@@ -347,7 +347,8 @@ export class WashBatchPrepareOperationComponent implements OnInit {
         item.jobId,
         item.styleNo,
         item.orderId,
-        item.icleid
+        item.icleid,
+        item.dressPartId,
       ].join('|');
 
       // ✅ FIRST TIME CREATE
@@ -356,9 +357,11 @@ export class WashBatchPrepareOperationComponent implements OnInit {
           ...item,
 
           // reset values for accumulation
-          totalQty: 0,
-          remainingQty: 0,
-
+          // totalQty: 0,
+          // remainingQty: 0,
+         totalQty: Number(item.totalQty || 0),
+        remainingQty: Number(item.remainingQty || 0),
+        alreadyPreparedQty: Number(item.alreadyPreparedQty || 0),
           sizeDetails: [],
 
           // dropdowns
@@ -370,10 +373,10 @@ export class WashBatchPrepareOperationComponent implements OnInit {
       }
 
       const row = map.get(key);
-
+      
       // ✅ CUMULATIVE SUM
-      row.totalQty += Number(item.qty || 0);
-      row.remainingQty += Number(item.remainingQty || 0);
+      // row.totalQty += Number(item.qty || 0);
+     // row.remainingQty += Number(item.remainingQty || 0);
 
       // ✅ SIZE ADD (important for popup)
       row.sizeDetails.push({
@@ -393,6 +396,7 @@ export class WashBatchPrepareOperationComponent implements OnInit {
     this.styleList = this.unique(this.detailList, 'styleNo', 'styleName');
     this.orderList = this.unique(this.detailList, 'orderId', 'orderNo');
     this.colorList = this.unique(this.detailList, 'icleid', 'color');
+    this.dressPartList = this.unique(this.detailList, 'dressPartId', 'dressPart');
 
     console.log("✅ FINAL GROUPED LIST:", this.detailList);
   }
@@ -485,6 +489,7 @@ export class WashBatchPrepareOperationComponent implements OnInit {
       this.toastr.warning('All quantity already prepared for this batch.');
       return;
     }
+    debugger;
     if (!row?.orderId) return;
 
     // ✅ Calculate sum from size details
@@ -517,11 +522,13 @@ export class WashBatchPrepareOperationComponent implements OnInit {
       date: new Date().toISOString().split('T')[0],
       trackingNo: row.trackingNo ?? '',
       type: row.type ?? '',
-
+      RemainingQty: row.remainingQty ?? 0,
+     
       // ===== CHILD =====
       sizeDetails: row.sizeDetails ?? [],
       // ✅ Use sum of sizes if available, otherwise fallback to existing logic
-      totalQty: sizeSum > 0 ? sizeSum : ((row.remainingQty ?? 0) === 0 ? row.totalQty : row.remainingQty)
+      totalQty: row.totalQty - row.alreadyPreparedQty
+      // sizeSum > 0 ? sizeSum : ((row.remainingQty ?? 0) === 0 ? row.totalQty : row.remainingQty)
     };
 
     localStorage.setItem(

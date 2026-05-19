@@ -11,6 +11,7 @@ import { CardModule } from 'primeng/card';
 import { HttpClient } from '@angular/common/http';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { environment } from 'src/environments/environment';
+import { de } from 'date-fns/locale';
 
 /* ===================== INTERFACES ===================== */
 interface DropdownItem {
@@ -22,64 +23,69 @@ interface SizeDetail {
   sizeId?: number | null;
   size: string;
   qty: number;
+  kg: number;
 }
 
 interface WashBatchRow {
-  masterId: number;
-  trackingNo: string;
-  batchNo: string;
-  documentNo: string;
+  masterId:     number;
+  trackingNo:   string;
+  batchNo:      string;
+  documentNo:   string;
+  loadunload:   string;
 
-  buyerId: number;
-  buyerName: string;
+  buyerId:      number;
+  buyerName:    string;
 
-  jobId: number;
-  jobInfo: string;
+  jobId:        number;
+  jobInfo:      string;
 
-  styleId: number;
-  styleName: string;
+  styleId:      number;
+  styleName:    string;
 
-  orderId: number;
-  orderNo: string;
+  orderId:      number;
+  orderNo:      string;
 
-  type: string;
-  shade: string;
-  totalPcs: number;
-  totalKg: number;
+  type:         string;
+  shade:        any;
 
-  processIds: string;
-  machineIds: string;
+  // ✅ SP returns MasterTotalPcs / MasterTotalKg
+  totalPcs:     number;
+  totalKg:      number;
 
-  fabricationId: number;
+  processIds:   string;
+  machineIds:   string;
+
+  fabricationId:   number;
   fabricationName: string;
 
-  icleid: number;
-  color: string;
+  icleid:       number;
+  color:        string;
 
-  dressPartId: number;
-  dressPart: string;
+  dressPartId:  number;
+  dressPart:    string;
 
   uomDetailsId: number;
-  uom: string;
+  uom:          string;
 
-  gsmId: number;
-  gsm: string;
-  loadunload: string;
+  gsmId:        number;
+  gsm:          string;
 
-  fromUnitId: number;
+  fromUnitId:   number;
   fromUnitName: string;
 
   alreadyPreparedQty: number;
-  alreadyPreparedKg: number;
-  remainingQty: number;
-  remainingKg: number;
-  sizeTotalQty: number;
-  sizeTotalKg: number;
+  alreadyPreparedKg:  number;
+  remainingQty:       number;
+  remainingKg:        number;
+  sizeTotalQty:       number;
+  sizeTotalKg:        number;
 
-  shipmentDate: Date | null;
+  shipmentDate:         Date | null;
   probableDeliveryDate: Date | null;
 
   sizeDetails: SizeDetail[];
+
+  // ✅ Computed from sizeDetails sum (or masterTotalPcs if no sizes)
   totalQty: number;
 }
 
@@ -101,45 +107,45 @@ export class BatchCardModificationComponent implements OnInit {
 
   /* ===================== FILTER MODEL ===================== */
   Model = {
-    UnitId: null as number | null,
+    UnitId:  null as number | null,
     BuyerId: null as number | null,
-    JobId: null as number | null,
+    JobId:   null as number | null,
     StyleId: null as number | null,
     OrderId: null as number | null
   };
 
   /* ===================== GRID ===================== */
   detailList: WashBatchRow[] = [];
-  UnitList: any[] = [];
+  UnitList:   any[]          = [];
 
   /* ===================== DROPDOWNS ===================== */
-  buyerList: DropdownItem[] = [];
-  jobList: DropdownItem[] = [];
-  styleList: DropdownItem[] = [];
-  orderList: DropdownItem[] = [];
+  buyerList:       DropdownItem[] = [];
+  jobList:         DropdownItem[] = [];
+  styleList:       DropdownItem[] = [];
+  orderList:       DropdownItem[] = [];
   fabricationList: DropdownItem[] = [];
-  colorList: DropdownItem[] = [];
-  dressPartList: DropdownItem[] = [];
-  uomList: DropdownItem[] = [];
+  colorList:       DropdownItem[] = [];
+  dressPartList:   DropdownItem[] = [];
+  uomList:         DropdownItem[] = [];
 
   /* ===================== SIZE POPUP ===================== */
   sizePopupVisible = false;
-  selectedRow!: WashBatchRow;
-  sizeList: SizeDetail[] = [];
-  totalSizeQty = 0;
+  selectedRow!:    WashBatchRow;
+  sizeList:        SizeDetail[] = [];
+  totalSizeQty     = 0;
 
   /* ===================== PRINT / REPORT ===================== */
   isLoading = false;
   ReportUrl: SafeResourceUrl;
-  baseUrl = environment.apiUrl;
+  baseUrl  = environment.apiUrl;
   baseUrl_ = this.baseUrl.replace(/[?&]$/, '');
 
   constructor(
     private service: WashSetupService,
-    private toastr: ToastrService,
-    private router: Router,
-    private http: HttpClient,
-    private _dom: DomSanitizer
+    private toastr:  ToastrService,
+    private router:  Router,
+    private http:    HttpClient,
+    private _dom:    DomSanitizer
   ) {
     this.ReportUrl = this._dom.bypassSecurityTrustResourceUrl('');
   }
@@ -154,7 +160,7 @@ export class BatchCardModificationComponent implements OnInit {
     this.service.GetUnitName().subscribe(res => {
       this.UnitList = res.map((x: any) => ({
         label: x.DisplayName ?? x.displayName,
-        value: x.ID ?? x.id
+        value: x.ID         ?? x.id
       }));
 
       const found = this.UnitList.find(x => x.value === 60);
@@ -172,7 +178,7 @@ export class BatchCardModificationComponent implements OnInit {
     this.service.GetBuyerNameDDL().subscribe(res => {
       this.buyerList = res.map((x: any) => ({
         label: x.DisplayName ?? x.displayName ?? x.BuyerName,
-        value: x.ID ?? x.id ?? x.BuyerNo
+        value: x.ID          ?? x.id          ?? x.BuyerNo
       }));
 
       if (this.buyerList.length === 1) {
@@ -194,12 +200,12 @@ export class BatchCardModificationComponent implements OnInit {
     if (!this.Model.UnitId || !this.Model.BuyerId) return;
 
     this.service.GetJobNoWithParameterDDL({
-      unitId: this.Model.UnitId,
+      unitId:  this.Model.UnitId,
       buyerId: this.Model.BuyerId
     }).subscribe(res => {
       this.jobList = res.map((x: any) => ({
         label: x.DisplayName ?? x.displayName ?? x.jobInfo,
-        value: x.ID ?? x.id ?? x.JobId
+        value: x.ID          ?? x.id          ?? x.JobId
       }));
 
       if (this.jobList.length === 1) {
@@ -219,13 +225,13 @@ export class BatchCardModificationComponent implements OnInit {
     if (!this.Model.UnitId || !this.Model.BuyerId || !this.Model.JobId) return;
 
     this.service.GetStyleNoWithParameterDDL({
-      unitId: this.Model.UnitId,
+      unitId:  this.Model.UnitId,
       buyerId: this.Model.BuyerId,
-      jobId: this.Model.JobId
+      jobId:   this.Model.JobId
     }).subscribe(res => {
       this.styleList = res.map((x: any) => ({
         label: x.DisplayName ?? x.displayName,
-        value: x.ID ?? x.id ?? x.StyleId
+        value: x.ID          ?? x.id ?? x.StyleId
       }));
 
       if (this.styleList.length === 1) {
@@ -243,14 +249,14 @@ export class BatchCardModificationComponent implements OnInit {
     if (!this.Model.UnitId || !this.Model.BuyerId || !this.Model.JobId || !this.Model.StyleId) return;
 
     this.service.GetOrderNoWithParameterDDL({
-      unitId: this.Model.UnitId,
+      unitId:  this.Model.UnitId,
       buyerId: this.Model.BuyerId,
-      jobId: this.Model.JobId,
+      jobId:   this.Model.JobId,
       styleId: this.Model.StyleId
     }).subscribe(res => {
       this.orderList = res.map((x: any) => ({
         label: x.DisplayName ?? x.displayName,
-        value: x.ID ?? x.id ?? x.OrderId
+        value: x.ID          ?? x.id ?? x.OrderId
       }));
 
       if (this.orderList.length === 1) {
@@ -261,26 +267,25 @@ export class BatchCardModificationComponent implements OnInit {
 
   /* ===================== SEARCH ===================== */
   onSearch(): void {
-    if (!this.Model.UnitId || !this.Model.BuyerId || !this.Model.JobId ||
-        !this.Model.StyleId || !this.Model.OrderId) {
+    if (!this.Model.UnitId  || !this.Model.BuyerId ||
+        !this.Model.JobId   || !this.Model.StyleId  || !this.Model.OrderId) {
       this.toastr.warning('Please select all fields before searching');
       return;
     }
 
     const params = {
-      unitId:   this.Model.UnitId,
-      buyerId:  this.Model.BuyerId,
-      jobId:    this.Model.JobId,
-      styleId:  this.Model.StyleId,
-      orderId:  this.Model.OrderId
+      unitId:  this.Model.UnitId,
+      buyerId: this.Model.BuyerId,
+      jobId:   this.Model.JobId,
+      styleId: this.Model.StyleId,
+      orderId: this.Model.OrderId
     };
 
     this.service.getWashBatchPrepareGridEdit(params).subscribe({
       next: (res: any[]) => {
-        console.log('✅ WashBatchPrepareGrid Response:', res);
+        console.log('✅ Edit Grid Response:', res);
         this.bindDetailRows(res);
 
-        // Reset filter selections after search
         this.Model.BuyerId = null;
         this.Model.JobId   = null;
         this.Model.StyleId = null;
@@ -288,69 +293,70 @@ export class BatchCardModificationComponent implements OnInit {
         this.loadUnits();
       },
       error: (err) => {
-        console.error('❌ WashBatchPrepareGrid Error:', err);
+        console.error('❌ Edit Grid Error:', err);
         this.toastr.error('Failed to load grid data');
       }
     });
   }
 
-  /* ===================== BIND GRID (BatchNo-wise) ===================== */
+  /* ===================== BIND GRID ===================== */
   bindDetailRows(rows: any[]): void {
+    debugger;
     const map = new Map<string, WashBatchRow>();
 
     rows.forEach(r => {
-debugger;
-      // ✅ Group ONLY by BatchNo — SP already returns BatchNo-wise data
-      const key = r.batchNo ?? r.BatchNo ?? '';
+
+      // ✅ SP returns AutoBatchNo as BatchNo — use masterId as safest unique key
+      const key = String(r.masterId ?? r.MasterId ?? r.batchNo ?? r.BatchNo ?? r.autoBatchNo ?? r.AutoBatchNo ?? '');
 
       if (!map.has(key)) {
         map.set(key, {
-          masterId:           r.masterId           ?? r.MasterId          ?? 0,
-          trackingNo:         r.trackingNo         ?? r.TrackingNo        ?? '',
-          batchNo:            r.batchNo            ?? r.BatchNo           ?? '',
-          loadunload:         r.loadUnload         ?? r.LoadUnload        ?? '',
-          documentNo:         r.documentNo         ?? r.DocumentNo        ?? '',
+          masterId:    r.masterId    ?? r.MasterId    ?? 0,
+          trackingNo:  r.trackingNo  ?? r.TrackingNo  ?? '',
+          batchNo:     r.batchNo     ?? r.BatchNo     ?? r.autoBatchNo ?? r.AutoBatchNo ?? '',
+          loadunload:  r.loadUnload  ?? r.LoadUnload  ?? r.loadunload  ?? '',
+          documentNo:  r.documentNo  ?? r.DocumentNo  ?? '',
 
-          // ✅ Fixed: SP returns BuyerId not BuyerNo
-          buyerId:            r.buyerId            ?? r.BuyerId           ?? 0,
-          buyerName:          r.buyerName          ?? r.BuyerName         ?? '',
+          buyerId:     r.buyerId     ?? r.BuyerId     ?? 0,
+          buyerName:   r.buyerName   ?? r.BuyerName   ?? '',
 
-          jobId:              r.jobId              ?? r.JobId             ?? 0,
-          jobInfo:            r.jobInfo            ?? r.JobInfo           ?? '',
+          jobId:       r.jobId       ?? r.JobId       ?? 0,
+          jobInfo:     r.jobInfo     ?? r.JobInfo      ?? '',
 
-          // ✅ Fixed: SP returns StyleId not StyleNo
-          styleId:            r.styleId            ?? r.StyleId           ?? 0,
-          styleName:          r.styleName          ?? r.StyleName         ?? '',
+          styleId:     r.styleId     ?? r.StyleId     ?? 0,
+          styleName:   r.styleName   ?? r.StyleName   ?? '',
 
-          orderId:            r.orderId            ?? r.OrderId           ?? 0,
-          orderNo:            r.orderNo            ?? r.OrderNo           ?? '',
+          orderId:     r.orderId     ?? r.OrderId     ?? 0,
+          orderNo:     r.orderNo     ?? r.OrderNo     ?? '',
 
-          type:               r.type               ?? r.Type              ?? '',
-          shade:              r.shade              ?? r.Shade             ?? '',
-          totalPcs:           r.totalPcs           ?? r.TotalPcs          ?? 0,
-          totalKg:            r.totalKg            ?? r.TotalKg           ?? 0,
+          type:        r.type        ?? r.Type        ?? '',
+          shade:       r.shade       ?? r.Shade       ?? false,
 
-          processIds:         r.processIds         ?? r.ProcessIds        ?? '',
-          machineIds:         r.machineIds         ?? r.MachineIds        ?? '',
+          // ✅ SP column names: MasterTotalPcs / MasterTotalKg
+          totalPcs:    r.masterTotalPcs ?? r.MasterTotalPcs ?? r.totalPcs ?? r.TotalPcs ?? 0,
+          totalKg:     r.masterTotalKg  ?? r.MasterTotalKg  ?? r.totalKg  ?? r.TotalKg  ?? 0,
 
-          fabricationId:      r.fabricationId      ?? r.FabricationId     ?? 0,
-          fabricationName:    r.fabricationName    ?? r.FabricationName   ?? '',
+          // ✅ Comma-separated strings from SP
+          processIds:  r.processIds  ?? r.ProcessIds  ?? '',
+          machineIds:  r.machineIds  ?? r.MachineIds  ?? '',
 
-          icleid:             r.icleid             ?? r.ICLEID            ?? 0,
-          color:              r.color              ?? r.Color             ?? '',
+          fabricationId:   r.fabricationId   ?? r.FabricationId   ?? 0,
+          fabricationName: r.fabricationName ?? r.FabricationName ?? '',
 
-          dressPartId:        r.dressPartId        ?? r.DressPartId       ?? 0,
-          dressPart:          r.dressPart          ?? r.DressPart         ?? '',
+          icleid:      r.icleid      ?? r.ICLEID      ?? 0,
+          color:       r.color       ?? r.Color       ?? '',
 
-          uomDetailsId:       r.uomDetailsId       ?? r.UOMDetailsId      ?? 0,
-          uom:                r.uom                ?? r.UOM               ?? '',
+          dressPartId: r.dressPartId ?? r.DressPartId ?? 0,
+          dressPart:   r.dressPart   ?? r.DressPart   ?? '',
 
-          gsmId:              r.gsmId              ?? r.GsmId             ?? 0,
-          gsm:                r.gsm                ?? r.GSM               ?? '',
+          uomDetailsId: r.uomDetailsId ?? r.UOMDetailsId ?? 0,
+          uom:          r.uom          ?? r.UOM          ?? '',
 
-      
-          fromUnitId:         r.fromUnitId         ?? r.FromUnitId        ?? 0,
-          fromUnitName:       r.fromUnitName       ?? r.FromUnitName      ?? '',
+          gsmId: r.gsmId ?? r.GsmId ?? 0,
+          gsm:   r.gsm   ?? r.GSM   ?? '',
+
+          fromUnitId:   r.fromUnitId   ?? r.FromUnitId   ?? 0,
+          fromUnitName: r.fromUnitName ?? r.FromUnitName ?? '',
 
           alreadyPreparedQty: r.alreadyPreparedQty ?? r.AlreadyPreparedQty ?? 0,
           alreadyPreparedKg:  r.alreadyPreparedKg  ?? r.AlreadyPreparedKg  ?? 0,
@@ -363,35 +369,44 @@ debugger;
           probableDeliveryDate: r.probableDeliveryDate ? new Date(r.probableDeliveryDate) : null,
 
           sizeDetails: [],
-          totalQty:    0
+          totalQty: Number(r.totalQty ?? r.TotalQty ?? r.masterTotalPcs ?? r.MasterTotalPcs ?? 0)
+         // will be accumulated below
         });
       }
 
       const row = map.get(key)!;
 
-      // ✅ Only push size row if SizeId exists (SP can return NULL DetailId)
-      const sizeId = r.sizeId ?? r.SizeId;
-      if (sizeId) {
-        row.sizeDetails.push({
-          sizeId: sizeId,
-          size:   r.size ?? r.Size ?? '',
-          qty:    r.qty  ?? r.Qty  ?? 0
-        });
-        row.totalQty += (r.qty ?? r.Qty ?? 0);
+      // ✅ SP returns ISZID for size — check all casing variants
+      const sizeId = r.iszid ?? r.ISZID ?? r.sizeId ?? r.SizeId ?? null;
+      const qty    = Number(r.qty ?? r.Qty ?? 0);
+      const kg     = Number(r.kg  ?? r.Kg  ?? 0);
+      const size   = r.size ?? r.Size ?? '';
+
+      if (sizeId != null) {
+        // ✅ Size-wise row: push into sizeDetails and accumulate totalQty
+        row.sizeDetails.push({ sizeId, size, qty, kg });
+        //row.totalQty += qty + row.remainingQty;
+      }
+    });
+
+    // ✅ If no size rows came, fall back to masterTotalPcs
+    Array.from(map.values()).forEach(row => {
+      if (row.sizeDetails.length === 0) {
+        row.totalQty = row.totalQty || 0;
       }
     });
 
     this.detailList = Array.from(map.values());
 
-    // ✅ Populate inline dropdowns from bound data (fixed field names)
-    this.buyerList       = this.unique(this.detailList, 'buyerId',      'buyerName');
-    this.jobList         = this.unique(this.detailList, 'jobId',        'jobInfo');
-    this.styleList       = this.unique(this.detailList, 'styleId',      'styleName');
-    this.orderList       = this.unique(this.detailList, 'orderId',      'orderNo');
-    this.fabricationList = this.unique(this.detailList, 'fabricationId','fabricationName');
-    this.colorList       = this.unique(this.detailList, 'icleid',       'color');
-    this.dressPartList   = this.unique(this.detailList, 'dressPartId',  'dressPart');
-    this.uomList         = this.unique(this.detailList, 'uomDetailsId', 'uom');
+    // ✅ Populate all dropdowns from bound data
+    this.buyerList       = this.unique(this.detailList, 'buyerId',       'buyerName');
+    this.jobList         = this.unique(this.detailList, 'jobId',         'jobInfo');
+    this.styleList       = this.unique(this.detailList, 'styleId',       'styleName');
+    this.orderList       = this.unique(this.detailList, 'orderId',       'orderNo');
+    this.fabricationList = this.unique(this.detailList, 'fabricationId', 'fabricationName');
+    this.colorList       = this.unique(this.detailList, 'icleid',        'color');
+    this.dressPartList   = this.unique(this.detailList, 'dressPartId',   'dressPart');
+    this.uomList         = this.unique(this.detailList, 'uomDetailsId',  'uom');
 
     console.log('✅ Bound Detail List:', this.detailList);
   }
@@ -411,15 +426,34 @@ debugger;
   openSizePopup(row: WashBatchRow): void {
     this.selectedRow = row;
 
-    const grouped = row.sizeDetails.reduce((acc: any, item: any) => {
-      if (!acc[item.sizeId]) {
-        acc[item.sizeId] = { sizeId: item.sizeId, size: item.size, qty: 0 };
-      }
-      acc[item.sizeId].qty += Number(item.qty);
-      return acc;
-    }, {});
+    if (row.sizeDetails && row.sizeDetails.length > 0) {
+      // ✅ Size-wise data exists: group by sizeId (deduplicate if needed)
+      const grouped = new Map<any, SizeDetail>();
+      row.sizeDetails.forEach(item => {
+        const id = item.sizeId ?? item.size;
+        if (!grouped.has(id)) {
+          grouped.set(id, {
+            sizeId: item.sizeId,
+            size:   item.size,
+            qty:    Number(item.qty || 0),
+            kg:     Number((item as any).kg || 0)
+          });
+        } else {
+          grouped.get(id)!.qty += Number(item.qty || 0);
+        }
+      });
+      this.sizeList = Array.from(grouped.values());
 
-    this.sizeList = Object.values(grouped);
+    } else {
+      // ✅ No size data: show single row with master total
+      this.sizeList = [{
+        sizeId: null,
+        size:   'Total',
+        qty:    row.totalQty ?? row.totalPcs ?? 0,
+        kg:     row.totalKg ?? 0
+      }];
+    }
+
     this.calculateTotal();
     this.sizePopupVisible = true;
   }
@@ -459,17 +493,12 @@ debugger;
       .subscribe({
         next: (response) => {
           this.isLoading = false;
-
           if (response?.url) {
             this.ReportUrl = this._dom.bypassSecurityTrustResourceUrl(response.url);
-
             window.open(
               this.router.serializeUrl(
                 this.router.createUrlTree(['/mascowash/report-view'], {
-                  queryParams: {
-                    url:        response.url,
-                    TrackingNo: batchNo
-                  }
+                  queryParams: { url: response.url, TrackingNo: batchNo }
                 })
               ),
               '_blank'
@@ -486,62 +515,83 @@ debugger;
       });
   }
 
-  /* ===================== OPEN PREPARE TAB ===================== */
-  openPrepareTab(row: WashBatchRow): void {
-debugger;
-    // ✅ Fixed: use remainingQty instead of comparing totalQty === alreadyPreparedQty
-   if (row.loadunload === 'Exist') {
-  this.toastr.warning('Load/Unload already exists for this batch.');
-  return;
-}
-    if (!row?.orderId) return;
+  /* ===================== OPEN PREPARE TAB (EDIT MODE) ===================== */
+  /* ===================== OPEN PREPARE TAB (EDIT MODE) ===================== */
+openPrepareTab(row: WashBatchRow): void {
 
-    const navState = {
-      // IDs
-      buyerId:      row.buyerId,
-      jobId:        row.jobId,
-      styleId:      row.styleId,        // ✅ was row.styleNo
-      orderId:      row.orderId,
-      fabricationId:row.fabricationId,
-      colorId:      row.icleid,
-      dressPartId:  row.dressPartId,
-      uomId:        row.uomDetailsId,
-      fromUnitId:   row.fromUnitId,
-      // BatchNo:        row.batchNo,
-      // Display labels
-      buyer:        row.buyerName     ?? '',
-      jobNo:        row.jobInfo       ?? '',
-      styleNo:      row.styleName     ?? '',
-      orderNo:      row.orderNo       ?? '',
-      documentNo:   row.documentNo    ?? '',  // ✅ was receiveNo
-      fabrication:  row.fabricationName ?? '',
-      color:        row.color         ?? '',
-      gsm:          row.gsm           ?? '',
-      type:         row.type          ?? '',
-      shade:        row.shade         ?? '',
-
-      // Tracking
-      trackingNo:   row.trackingNo    ?? '',
-      AutoBatchNo:      row.batchNo       ?? '',
-
-      // Qty
-      sizeDetails:  row.sizeDetails   ?? [],
-      totalQty:     row.alreadyPreparedQty  > 0 ? row.alreadyPreparedQty : row.totalQty,
-      totalKg:      row.alreadyPreparedKg  > 0 ? row.alreadyPreparedKg : row.totalKg     ?? 0,
-      MasterId:      row.masterId       ?? 0
-    };
-
-    localStorage.setItem('WASH_PREPARE_NAV_STATE', JSON.stringify(navState));
-
-    const url = this.router.serializeUrl(
-      this.router.createUrlTree(['/mascowash/setup/entry/wash-prepare-action'])
-    );
-
-    window.open(url, '_blank', 'noopener');
-    this.resetForm();
-    this.loadUnits();
+  // ✅ Block if Load/Unload already exists
+  if (row.loadunload === 'Exist') {
+    this.toastr.warning('Load/Unload already exists(Start-End) for this batch.');
+    return;
   }
 
+  if (!row?.orderId) return;
+
+  const navState = {
+
+    // ===== MASTER IDs — same keys as mother page =====
+    buyerId:      row.buyerId,        // action page reads: data.buyerId
+    jobId:        row.jobId,
+    styleId:      row.styleId,
+    orderId:      row.orderId,
+    fabricationId:row.fabricationId,
+    colorId:      row.icleid,         // action page reads: data.colorId
+    dressPartId:  row.dressPartId,
+    uomId:        row.uomDetailsId,   // action page reads: data.uomId
+    fromUnitId:   row.fromUnitId,
+    iszid:        row.gsmId ?? null,  // action page reads: data.iszid → batchIds.iszid
+
+    // ===== DISPLAY — same keys as mother page =====
+    buyer:        row.buyerName      ?? '',
+    jobNo:        row.jobInfo        ?? '',
+    styleNo:      row.styleName      ?? '',
+    orderNo:      row.orderNo        ?? '',
+    documentNo:   row.documentNo     ?? '',
+    fabrication:  row.fabricationName ?? '',
+    composition:  '',                  // not available in edit SP — send empty
+    color:        row.color          ?? '',
+    gsm:          row.gsm            ?? '',
+    type:         row.type           ?? '',
+    shade:        row.shade,
+    date:         new Date().toISOString().split('T')[0],  // ✅ same as mother page
+
+    // ===== TRACKING =====
+    trackingNo:   row.trackingNo     ?? '',
+    AutoBatchNo:  row.batchNo        ?? '',   // ✅ non-empty → triggers Update mode
+    MasterId:     row.masterId       ?? 0,
+
+    // ===== PROCESS / MACHINE — extra for edit mode =====
+    processIds:   row.processIds     ?? '',   // comma string → action page splits
+    machineIds:   row.machineIds     ?? '',   // comma string → action page splits
+
+    // ===== QTY — same logic as mother page =====
+    // mother: totalQty: row.totalQty - row.alreadyPreparedQty
+    // edit:   totalPcs IS the already-saved qty (what was prepared in this batch)
+    //totalQty:     row.totalPcs       ?? 0,    // ✅ master saved pcs → pre-fills action page total
+     totalKg:      row.alreadyPreparedKg        ?? 0,
+
+    // ✅ same key as mother page
+    RemainingQty: row.remainingQty   ?? 0,
+     totalQty: row.alreadyPreparedQty,
+    // ===== SIZE DETAILS — same key as mother page =====
+    sizeDetails:  row.sizeDetails    ?? []    // [{sizeId, size, qty, kg}]
+  };
+
+
+
+
+
+  console.log('✅ navState to action page (edit):', navState);
+  localStorage.setItem('WASH_PREPARE_NAV_STATE', JSON.stringify(navState));
+
+  const url = this.router.serializeUrl(
+    this.router.createUrlTree(['/mascowash/setup/entry/wash-prepare-action'])
+  );
+
+  window.open(url, '_blank', 'noopener');
+  this.resetForm();
+  this.loadUnits();
+}
   /* ===================== RESET ===================== */
   resetForm(): void {
     this.Model = {

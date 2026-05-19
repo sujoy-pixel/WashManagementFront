@@ -102,8 +102,8 @@
           <th class="custom-table-th">Total Qty</th>
           <th class="custom-table-th">Already Prepared Qty</th>
           <th class="custom-table-th">Remaining Qty</th>
-          <th class="custom-table-th">Shipment Date</th>
-          <th class="custom-table-th">Probable Delivery</th>
+          <!-- <th class="custom-table-th">Shipment Date</th>
+          <th class="custom-table-th">Probable Delivery</th> -->
           <th class="custom-table-th">Receive From</th>
           <th class="custom-table-th">Tracking Batch No</th>
           <th class="custom-table-th">AlreadyPreparedKg</th>
@@ -114,11 +114,20 @@
         <tr *ngFor="let row of detailList; let i = index">
 
           <!-- ✅ FIX 5+8: Edit td is NOW FIRST — matches thead -->
-          <td class="text-center">
+          <!-- <td class="text-center">
             <button class="btn btn-sm btn-outline-primary" (click)="openPrepareTab(row)">
               Edit
             </button>
-          </td>
+          </td> -->
+          <td class="text-center">
+  <button 
+    class="btn btn-sm btn-outline-primary"
+    [disabled]="row.loadunload === 'Exist'"
+    [title]="row.loadunload === 'Exist' ? 'Load/Unload already exists' : 'Edit'"
+    (click)="openPrepareTab(row)">
+    Edit
+  </button>
+</td>
 
           <!-- BATCH NO -->
           <td class="text-center">
@@ -219,15 +228,15 @@
             {{ row.remainingQty || 0 }}
           </td>
 
-          <!-- SHIPMENT DATE -->
-          <td>
+      
+          <!-- <td>
             <input class="form-control form-control-sm" bsDatepicker [(ngModel)]="row.shipmentDate">
           </td>
 
-          <!-- PROBABLE DELIVERY -->
+
           <td>
             <input class="form-control form-control-sm" bsDatepicker [(ngModel)]="row.probableDeliveryDate">
-          </td>
+          </td> -->
 
           <!-- RECEIVE FROM -->
           <td class="text-center">
