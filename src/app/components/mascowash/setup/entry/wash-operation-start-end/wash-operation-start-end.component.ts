@@ -175,13 +175,31 @@ export class WashOperationStartEndComponent {
   }
 
   loadUnitList() {
-    this.service.GetUnitName().subscribe(res => {
+    // this.service.GetUnitName().subscribe(res => {
+    //   this.UnitList = res.map((x: any) => ({
+    //     label: x.DisplayName || x.displayName,
+    //     value: Number(x.ID || x.id)
+    //   }));
+    // });
+
+
+ this.service.GetUnitName().subscribe(res => {
       this.UnitList = res.map((x: any) => ({
-        label: x.DisplayName || x.displayName,
-        value: Number(x.ID || x.id)
+        label: x.DisplayName ?? x.displayName,
+        value: x.ID ?? x.id
       }));
+      const found = this.UnitList.find(x => x.value === 60);
+      if (found) {
+        this.Model.UnitId = 60;
+        // this.Model.UnitId = 60;
+        // this.review.UnitId = 60;
+      }
     });
+
+
   }
+
+
 
   loadBuyerList() {
     this.service.GetBuyerNameDDL().subscribe(res => {

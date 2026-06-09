@@ -520,17 +520,35 @@ export class WashSetupService {
       }
     );
   }
-  saveQCData(data: any) {
+// saveQCData(model: any) {
+//   const url = this.baseUrl_ + 'Setup/SaveQCData';
+
+//   // ✅ Force Content-Type so ASP.NET binds [FromBody] correctly
+//   const headers = this.token.headerToken()
+//     .set('Content-Type', 'application/json');
+
+//   console.log('POST URL:', url);
+//   console.log('Headers:', headers);
+
+//   return this.http.post(url, model, { headers });
+// }
+// saveQCData(model: any) {
+//   const headers = this.token.headerToken();
+//   const url = this.baseUrl_ + 'Setup/SaveQCData';
+
+//   console.log('POST URL:', url);
+//   console.log('Headers:', headers);
+
+//   return this.http.post(url, model, { headers });
+// }
+  saveQCData(model: any) {
     debugger;
     return this.http.post(
-      this.baseUrl_ + 'Setup/SaveQCData',   // 👉 API endpoint (adjust if needed)
-      data,
+      this.baseUrl_ + 'Setup/SaveQCData',
+      model,
       { headers: this.token.headerToken() }
     );
-
   }
-
-
   getBatchWishStartEndData(batchNo: string) {
     debugger;
     const params = new HttpParams()
@@ -646,12 +664,94 @@ export class WashSetupService {
   SaveAcidWashBatchPrepare(model: any) {
     debugger;
     return this.http.post(
-      
+
       this.baseUrl_ + 'Setup/SaveAcidWashBatchPrepare',
       model,
       { headers: this.token.headerToken() }
     );
   }
+  GetReportNameDDL() {
+    return this.http.get<any[]>(
+      this.baseUrl_ + 'Common/GetReportNameDDL',
+      { headers: this.token.headerToken() }
+    );
+  }
+  GetShiftNameDDL() {
+    return this.http.get<any[]>(
+      this.baseUrl_ + 'Common/GetShiftNameDDL',
+      { headers: this.token.headerToken() }
+    );
+  }
+  GetBatchNoDDL() {
+    return this.http.get<any[]>(
+      this.baseUrl_ + 'Setup/GetBatchNoDDL',
+      { headers: this.token.headerToken() }
+    );
+
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 }
 
 

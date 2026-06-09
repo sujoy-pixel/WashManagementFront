@@ -32,6 +32,8 @@ interface BatchHeaderModel {
   dressPart: string;
   uom: string;
   date: string;
+  
+
 }
 
 @Component({
@@ -79,7 +81,8 @@ export class QcDashboardComponent {
   isShowRepairableDialog = false;
 
   loading = false;
-
+  
+  isSaving = false;
   repairableDefects: Record<string, any[]> = {};
   rejectDefects: Record<string, any[]> = {};
 
@@ -246,92 +249,270 @@ export class QcDashboardComponent {
     this.recalculateGood();
   }
   // 🔥 SAVE
-  saveQCData() {
-    debugger;
-    if (!this.batchHeader.batchNo) {
-      this.toastr.warning('Batch No required!');
-      return;
+
+saveQCData() {
+debugger;
+  // ── Validation ──────────────────────────────
+  if (!this.batchHeader.batchNo) {
+    this.toastr.warning('Please load a batch first!');
+    return;
+  }
+
+  if (this.goodGarments < 0) {
+    this.toastr.warning('Good garments cannot be negative!');
+    return;
+  }
+
+  this.isSaving = true;
+
+  // ── Master ──────────────────────────────────
+  const master = {
+    createdBy:    'Admin',
+    unitId:       this.batchHeader.unitId      ?? 0,
+    buyerId:      this.batchHeader.buyerId     ?? 0,
+    styleId:      this.batchHeader.styleId     ?? 0,
+    orderId:      this.batchHeader.orderId     ?? 0,
+    jobId:        this.batchHeader.jobId       ?? 0,
+    dressPartId:  this.batchHeader.dressPartId ?? 0,
+    uomId:        this.batchHeader.uomId       ?? 0,
+    trackingNo:   this.batchHeader.trackingNo  ?? '',
+    batchNo:      this.batchHeader.batchNo,
+    type:         this.batchHeader.type        ?? '',
+    color:        this.batchHeader.color       ?? '',
+    colorId:      this.batchHeader.colorId     ?? null,
+    date:         this.batchHeader.date        ?? new Date().toISOString(),
+    goodGarments: this.goodGarments,
+    repairable:   this.repairable,
+    reject:       this.reject,
+    machineIds:   '0',
+    processIds:   '0'
+  };
+
+  // ── Repairable Details ───────────────────────
+  const repairableDetails: any[] = [];
+
+  for (const groupId in this.repairableDefects) {
+    if (!this.repairableDefects.hasOwnProperty(groupId)) continue;
+
+    const qtyMap = new Map<number, number>();
+
+    for (const item of this.repairableDefects[groupId]) {
+      const existing = qtyMap.get(item.defectId) || 0;
+      qtyMap.set(item.defectId, existing + (item.count || 0));
     }
 
-    const master = {
-      createdBy: 'Admin',
-      unitId: this.batchHeader.unitId,
-      buyerId: this.batchHeader.buyerId,
-      styleId: this.batchHeader.styleId,
-      orderId: this.batchHeader.orderId,
-      jobId: this.batchHeader.jobId,
-      dressPartId: this.batchHeader.dressPartId,
-      uomId: this.batchHeader.uomId,
-
-      trackingNo: this.batchHeader.trackingNo,
-      batchNo: this.batchHeader.batchNo,
-      type: this.batchHeader.type,
-      color: this.batchHeader.color,
-      colorId: this.batchHeader.colorId,
-      date: this.batchHeader.date,
-
-      goodGarments: this.goodGarments,
-      repairable: this.repairable,
-      reject: this.reject,
-
-      machineIds: '',
-      processIds: ''
-    };
-
-    const repairableMap = new Map<number, number>();
-    for (const key in this.repairableDefects) {
-      if (this.repairableDefects.hasOwnProperty(key)) {
-        for (const x of this.repairableDefects[key]) {
-          const currentQty = repairableMap.get(x.defectId) || 0;
-          repairableMap.set(x.defectId, currentQty + (x.count || 0));
-        }
-      }
-    }
-
-    const repairableDetails = Array.from(repairableMap.entries()).map(([id, qty]) => ({
-      defectId: id,
-      qty: qty
-    }));
-
-    const rejectMap = new Map<number, number>();
-    for (const key in this.rejectDefects) {
-      if (this.rejectDefects.hasOwnProperty(key)) {
-        for (const x of this.rejectDefects[key]) {
-          const currentQty = rejectMap.get(x.defectId) || 0;
-          rejectMap.set(x.defectId, currentQty + (x.count || 0));
-        }
-      }
-    }
-
-    const rejectDetails = Array.from(rejectMap.entries()).map(([id, qty]) => ({
-      rejectId: id,
-      defectId: id,
-      qty: qty
-    }));
-
-    const payload = {
-      master,
-      repairableDetails,
-      rejectDetails
-    };
-
-    console.log('Saving QC Data:', payload);
-
-    this.service.saveQCData(payload).subscribe({
-      next: (res: any) => {
-        if (res?.isSuccess) {
-          this.toastr.success(res.message || 'Data saved successfully');
-          this.resetValues();
-        } else {
-          this.toastr.error(res?.message || 'Failed to save data');
-        }
-      },
-      error: (err) => {
-        console.error(err);
-        this.toastr.error('Error occurred while saving');
-      }
+    qtyMap.forEach((qty, defectId) => {
+      repairableDetails.push({
+        groupId:  parseInt(groupId, 10),
+        defectId: defectId,
+        qty:      qty
+      });
     });
   }
+
+  // ── Reject Details ───────────────────────────
+  const rejectDetails: any[] = [];
+
+  for (const groupId in this.rejectDefects) {
+    if (!this.rejectDefects.hasOwnProperty(groupId)) continue;
+
+    const qtyMap = new Map<number, number>();
+
+    for (const item of this.rejectDefects[groupId]) {
+      const existing = qtyMap.get(item.defectId) || 0;
+      qtyMap.set(item.defectId, existing + (item.count || 0));
+    }
+
+    qtyMap.forEach((qty, defectId) => {
+      rejectDetails.push({
+        groupId:  parseInt(groupId, 10),
+        rejectId: defectId,
+        qty:      qty
+      });
+    });
+  }
+
+  // ── Final Payload ────────────────────────────
+  const payload = {
+    master:           master,
+    repairableDetails: repairableDetails,
+    rejectDetails:     rejectDetails
+  };
+
+  console.log('QC Payload:', JSON.stringify(payload, null, 2));
+
+  // ── HTTP Call ────────────────────────────────
+  this.service.saveQCData(payload).subscribe({
+    next: (res: any) => {
+      this.isSaving = false;
+      if (res?.isSuccess) {
+        this.toastr.success(res.message || 'Saved successfully');
+        this.resetValues();
+      } else {
+        this.toastr.error(res?.message || 'Failed to save');
+      }
+    },
+    error: (err) => {
+      this.isSaving = false;
+      console.error('Save error:', err);
+      this.toastr.error('Error occurred. Check console.');
+    }
+  });
+}
+ 
+
+//   saveQCData() {
+//     debugger;
+//     if (!this.batchHeader.batchNo) {
+//       this.toastr.warning('Batch No required!');
+//       return;
+//     }
+
+//     const master = {
+//       createdBy: 'Admin',
+//       unitId: this.batchHeader.unitId,
+//       buyerId: this.batchHeader.buyerId,
+//       styleId: this.batchHeader.styleId,
+//       orderId: this.batchHeader.orderId,
+//       jobId: this.batchHeader.jobId,
+//       dressPartId: this.batchHeader.dressPartId,
+//       uomId: this.batchHeader.uomId,
+
+//       trackingNo: this.batchHeader.trackingNo,
+//       batchNo: this.batchHeader.batchNo,
+//       type: this.batchHeader.type,
+//       color: this.batchHeader.color,
+//       colorId: this.batchHeader.colorId,
+//       date: this.batchHeader.date,
+
+//       goodGarments: this.goodGarments,
+//       repairable: this.repairable,
+//       reject: this.reject,
+
+//       machineIds: '',
+//       processIds: ''
+//     };
+
+//     // const repairableMap = new Map<number, number>();
+//     // for (const key in this.repairableDefects) {
+//     //   if (this.repairableDefects.hasOwnProperty(key)) {
+//     //     for (const x of this.repairableDefects[key]) {
+//     //       const currentQty = repairableMap.get(x.defectId) || 0;
+//     //       repairableMap.set(x.defectId, currentQty + (x.count || 0));
+//     //     }
+//     //   }
+//     // }
+
+//     // const repairableDetails = Array.from(repairableMap.entries()).map(([id, qty]) => ({
+//     //   defectId: id,
+//     //   qty: qty
+//     // }));
+//     const repairableDetails: any[] = [];
+
+// for (const groupId in this.repairableDefects) {
+
+//   if (this.repairableDefects.hasOwnProperty(groupId)) {
+
+//     // Group-wise defect quantity map
+//     const repairableMap = new Map<number, number>();
+
+//     for (const item of this.repairableDefects[groupId]) {
+
+//       const currentQty = repairableMap.get(item.defectId) || 0;
+
+//       repairableMap.set(
+//         item.defectId,
+//         currentQty + (item.count || 0)
+//       );
+//     }
+
+//     // Convert map to array with GroupId
+//     repairableMap.forEach((qty, defectId) => {
+
+//       repairableDetails.push({
+//         groupId: groupId, // 0001 / 0002 / 0003
+//         defectId: defectId,
+//         qty: qty
+//       });
+
+//     });
+//   }
+// }
+
+// console.log(repairableDetails);
+// const rejectDetails: any[] = [];
+
+// for (const groupId in this.rejectDefects) {
+
+//   if (this.rejectDefects.hasOwnProperty(groupId)) {
+
+//     // Group-wise reject defect quantity map
+//     const rejectMap = new Map<number, number>();
+
+//     for (const item of this.rejectDefects[groupId]) {
+
+//       const currentQty = rejectMap.get(item.defectId) || 0;
+
+//       rejectMap.set(
+//         item.defectId,
+//         currentQty + (item.count || 0)
+//       );
+//     }
+
+//     // Convert map to array with GroupId
+//     rejectMap.forEach((qty, defectId) => {
+
+//       rejectDetails.push({
+//         groupId: (groupId), // 0001 / 0002 / 0003
+//         rejectId: defectId,
+//         //defectId: defectId,
+//         qty: qty
+//       });
+
+//     });
+//   }
+// }
+
+// console.log(rejectDetails);
+//     // const rejectMap = new Map<number, number>();
+//     // for (const key in this.rejectDefects) {
+//     //   if (this.rejectDefects.hasOwnProperty(key)) {
+//     //     for (const x of this.rejectDefects[key]) {
+//     //       const currentQty = rejectMap.get(x.defectId) || 0;
+//     //       rejectMap.set(x.defectId, currentQty + (x.count || 0));
+//     //     }
+//     //   }
+//     // }
+
+//     // const rejectDetails = Array.from(rejectMap.entries()).map(([id, qty]) => ({
+//     //   rejectId: id,
+//     //   defectId: id,
+//     //   qty: qty
+//     // }));
+
+//     const payload = {
+//       master,
+//       repairableDetails,
+//       rejectDetails
+//     };
+
+//     console.log('Saving QC Data:', payload);
+
+//     this.service.saveQCData(payload).subscribe({
+//       next: (res: any) => {
+//         if (res?.isSuccess) {
+//           this.toastr.success(res.message || 'Data saved successfully');
+//           this.resetValues();
+//         } else {
+//           this.toastr.error(res?.message || 'Failed to save data');
+//         }
+//       },
+//       // error: (err) => {
+//       //   console.error(err);
+//       //   this.toastr.error('Error occurred while saving');
+//       // }
+//     });
+//   }
 
   resetValues() {
 
