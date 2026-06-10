@@ -277,37 +277,81 @@ export class QcDashboardComponent {
       machineIds: '',
       processIds: ''
     };
+// ✅ Repairable Details
+  const repairableDetails: any[] = [];
 
-    const repairableMap = new Map<number, number>();
-    for (const key in this.repairableDefects) {
-      if (this.repairableDefects.hasOwnProperty(key)) {
-        for (const x of this.repairableDefects[key]) {
-          const currentQty = repairableMap.get(x.defectId) || 0;
-          repairableMap.set(x.defectId, currentQty + (x.count || 0));
-        }
+  for (const groupId in this.repairableDefects) {
+    if (this.repairableDefects.hasOwnProperty(groupId)) {
+
+      const repairableMap = new Map<number, number>();
+
+      for (const item of this.repairableDefects[groupId]) {
+        const currentQty = repairableMap.get(item.defectId) || 0;
+        repairableMap.set(item.defectId, currentQty + (item.count || 0));
       }
+
+      repairableMap.forEach((qty, defectId) => {
+        repairableDetails.push({
+          groupId: parseInt(groupId, 10),  // ✅ "0001" → 1
+          defectId: defectId,
+          qty: qty
+        });
+      });
     }
+  }
 
-    const repairableDetails = Array.from(repairableMap.entries()).map(([id, qty]) => ({
-      defectId: id,
-      qty: qty
-    }));
+  // ✅ Reject Details
+  const rejectDetails: any[] = [];
 
-    const rejectMap = new Map<number, number>();
-    for (const key in this.rejectDefects) {
-      if (this.rejectDefects.hasOwnProperty(key)) {
-        for (const x of this.rejectDefects[key]) {
-          const currentQty = rejectMap.get(x.defectId) || 0;
-          rejectMap.set(x.defectId, currentQty + (x.count || 0));
-        }
+  for (const groupId in this.rejectDefects) {
+    if (this.rejectDefects.hasOwnProperty(groupId)) {
+
+      const rejectMap = new Map<number, number>();
+
+      for (const item of this.rejectDefects[groupId]) {
+        const currentQty = rejectMap.get(item.defectId) || 0;
+        rejectMap.set(item.defectId, currentQty + (item.count || 0));
       }
-    }
 
-    const rejectDetails = Array.from(rejectMap.entries()).map(([id, qty]) => ({
-      rejectId: id,
-      defectId: id,
-      qty: qty
-    }));
+      rejectMap.forEach((qty, defectId) => {
+        rejectDetails.push({
+          groupId: parseInt(groupId, 10),  // ✅ "0001" → 1
+          rejectId: defectId,
+          qty: qty
+        });
+      });
+    }
+  }
+    // const repairableMap = new Map<number, number>();
+    // for (const key in this.repairableDefects) {
+    //   if (this.repairableDefects.hasOwnProperty(key)) {
+    //     for (const x of this.repairableDefects[key]) {
+    //       const currentQty = repairableMap.get(x.defectId) || 0;
+    //       repairableMap.set(x.defectId, currentQty + (x.count || 0));
+    //     }
+    //   }
+    // }
+
+    // const repairableDetails = Array.from(repairableMap.entries()).map(([id, qty]) => ({
+    //   defectId: id,
+    //   qty: qty
+    // }));
+
+    // const rejectMap = new Map<number, number>();
+    // for (const key in this.rejectDefects) {
+    //   if (this.rejectDefects.hasOwnProperty(key)) {
+    //     for (const x of this.rejectDefects[key]) {
+    //       const currentQty = rejectMap.get(x.defectId) || 0;
+    //       rejectMap.set(x.defectId, currentQty + (x.count || 0));
+    //     }
+    //   }
+    // }
+
+    // const rejectDetails = Array.from(rejectMap.entries()).map(([id, qty]) => ({
+    //   rejectId: id,
+    //   defectId: id,
+    //   qty: qty
+    // }));
 
     const payload = {
       master,
