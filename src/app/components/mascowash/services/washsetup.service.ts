@@ -688,6 +688,9 @@ export class WashSetupService {
       { headers: this.token.headerToken() }
     );
 
+
+
+
   }
 
 

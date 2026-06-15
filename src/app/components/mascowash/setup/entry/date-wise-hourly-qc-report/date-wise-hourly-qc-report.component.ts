@@ -6,6 +6,10 @@ import { BsDatepickerModule } from 'ngx-bootstrap/datepicker';
 import { CardModule } from 'primeng/card';
 import { WashSetupService } from '../../../services/washsetup.service';
 import { ToastrService } from 'ngx-toastr';
+import { HttpClient } from '@angular/common/http';
+import { Router } from '@angular/router';
+import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-date-wise-hourly-qc-report',
@@ -31,6 +35,12 @@ export class DateWiseHourlyQcReportComponent implements OnInit {
   batchList: any[] = [];
   shiftList: any[] = [];
 
+  /* ===================== ADDED MISSING PROPERTIES ===================== */
+  isLoading  = false;
+  ReportUrl: SafeResourceUrl;
+  baseUrl  = environment.apiUrl;
+  baseUrl_ = this.baseUrl.replace(/[?&]$/, '');
+
   Model = {
     UnitId: null as number | null,
     BuyerId: null as number | null,
@@ -40,140 +50,261 @@ export class DateWiseHourlyQcReportComponent implements OnInit {
     ReportId: null as number | null,
     BatchNo: null as string | null,
     ShiftId: null as number | null,
-    QcName: 'SYSTEM', // Load QC User Name
+    QcName: 'SYSTEM',
     Date: new Date()
   };
 
   constructor(
     private service: WashSetupService,
-    private toastr: ToastrService
-  ) { }
-
-  ngOnInit(): void {
-    this.loadUnitList();
-    this.loadBuyerList();
-    this.loadStyleList();
-    this.loadOrderList();
-    this.loadJobList();
-    this.LoadReportList();
-    // this.batchList();
-    this.LoadShiftList();
-    
-    // Mock Data for Missing Endpoints
-    // this.reportList = [
-    //   { label: 'Daily QC Report', value: 1 }, 
-    //   { label: 'Hourly QC Report', value: 2 }
-    // ];
-    // this.shiftList = [
-    //   { label: 'Morning Shift', value: 1 }, 
-    //   { label: 'Evening Shift', value: 2 }
-    // ];
-    // this.batchList = [
-    //   { label: 'B-001', value: 'B-001' }, 
-    //   { label: 'B-002', value: 'B-002' }
-    // ];
+    private toastr: ToastrService,
+    /* ===================== ADDED MISSING INJECTIONS ===================== */
+    private http:   HttpClient,
+    private router: Router,
+    private _dom:   DomSanitizer
+  ) {
+    this.ReportUrl = this._dom.bypassSecurityTrustResourceUrl('');
   }
 
-  loadUnitList() {
+  ngOnInit(): void {
+    this.loadUnits();
+  }
+
+  /* ===================== LOAD UNIT ===================== */
+  loadUnits(): void {
     this.service.GetUnitName().subscribe(res => {
+
       this.UnitList = res.map((x: any) => ({
         label: x.DisplayName ?? x.displayName,
         value: x.ID ?? x.id
       }));
+
       const found = this.UnitList.find(x => x.value === 60);
       if (found) {
-        this.Model.UnitId = 60;
+        this.Model.UnitId = found.value;
+        this.onUnitChange();
       }
     });
   }
 
-  loadBuyerList() {
+  onUnitChange(): void {
+
+    if (!this.Model.UnitId) return;
+
     this.service.GetBuyerNameDDL().subscribe(res => {
+
       this.buyerList = res.map((x: any) => ({
-        label: x.DisplayName || x.displayName,
-        value: Number(x.ID || x.id)
+        label: x.DisplayName ?? x.displayName ?? x.BuyerName,
+        value: x.ID ?? x.id ?? x.BuyerNo
       }));
-    });
-  }
-  
-  loadStyleList() {
-    this.service.GetStyleNoDDL().subscribe(res => {
-      this.styleList = res.map((x: any) => ({
-        label: x.DisplayName || x.displayName,
-        value: Number(x.ID || x.id)
-      }));
+
+      if (this.buyerList.length === 1) {
+        this.Model.BuyerId = Number(this.buyerList[0].value);
+        this.onBuyerChange();
+      }
     });
   }
 
-  loadOrderList() {
-    this.service.GetOrderNoDDL().subscribe(res => {
-      this.orderList = res.map((x: any) => ({
-        label: x.DisplayName || x.displayName,
-        value: Number(x.ID || x.id)
-      }));
-    });
-  }
+  /* ===================== BUYER CHANGE → LOAD JOB ===================== */
+  onBuyerChange(): void {
 
-  loadJobList() {
-    this.service.GetJobNoDDL().subscribe(res => {
+    this.jobList = [];
+    this.styleList = [];
+    this.orderList = [];
+
+    this.Model.JobId = null;
+    this.Model.StyleId = null;
+    this.Model.OrderId = null;
+
+    if (!this.Model.UnitId || !this.Model.BuyerId) {
+      return;
+    }
+
+    this.service.GetJobNoWithParameterDDL({
+      unitId: this.Model.UnitId,
+      buyerId: this.Model.BuyerId
+    }).subscribe(res => {
+
       this.jobList = res.map((x: any) => ({
-        label: x.DisplayName || x.displayName,
-        value: Number(x.ID || x.id)
+        label: x.DisplayName ?? x.displayName ?? x.jobInfo,
+        value: x.ID ?? x.id ?? x.JobId
       }));
-    });
-  }
-  
-    LoadReportList() {
-    this.service.GetReportNameDDL().subscribe(res => {
-      this.reportList = res.map((x: any) => ({
-        label: x.DisplayName || x.displayName,
-        value: Number(x.ID || x.id)
-      }));
+
+      if (this.jobList.length === 1) {
+        this.Model.JobId = Number(this.jobList[0].value);
+        this.onJobChange();
+      }
     });
   }
 
- LoadShiftList() {
-    this.service.GetShiftNameDDL().subscribe(res => {
-      this.shiftList = res.map((x: any) => ({
-        label: x.DisplayName || x.displayName,
-        value: Number(x.ID || x.id)
+  /* ===================== JOB CHANGE → LOAD STYLE ===================== */
+  onJobChange(): void {
+
+    this.styleList = [];
+    this.orderList = [];
+
+    this.Model.StyleId = null;
+    this.Model.OrderId = null;
+
+    if (!this.Model.UnitId || !this.Model.BuyerId || !this.Model.JobId) {
+      return;
+    }
+
+    this.service.GetStyleNoWithParameterDDL({
+      unitId: this.Model.UnitId,
+      buyerId: this.Model.BuyerId,
+      jobId: this.Model.JobId
+    }).subscribe(res => {
+
+      this.styleList = res.map((x: any) => ({
+        label: x.DisplayName ?? x.displayName,
+        value: x.ID ?? x.id ?? x.StyleId
       }));
+
+      if (this.styleList.length === 1) {
+        this.Model.StyleId = Number(this.styleList[0].value);
+        this.onStyleChange();
+      }
     });
   }
 
-LoadBatchList() {
-    this.service.GetBatchNoDDL().subscribe(res => {
-      this.batchList = res.map((x: any) => ({
-        label: x.DisplayName || x.displayName,
-        value: x.ID || x.id
+  /* ===================== STYLE CHANGE → LOAD ORDER ===================== */
+  onStyleChange(): void {
+
+    this.orderList = [];
+    this.Model.OrderId = null;
+
+    if (!this.Model.UnitId || !this.Model.BuyerId || !this.Model.JobId || !this.Model.StyleId) {
+      return;
+    }
+
+    this.service.GetOrderNoWithParameterDDL({
+      unitId: this.Model.UnitId,
+      buyerId: this.Model.BuyerId,
+      jobId: this.Model.JobId,
+      styleId: this.Model.StyleId
+    }).subscribe(res => {
+
+      this.orderList = res.map((x: any) => ({
+        label: x.DisplayName ?? x.displayName,
+        value: x.ID ?? x.id ?? x.OrderId
       }));
+
+      if (this.orderList.length === 1) {
+        this.Model.OrderId = Number(this.orderList[0].value);
+      }
     });
   }
-  onBuyerChange() {
-    // Add logic here to filter Style/Order/Job based on Buyer if required
+
+  /* ===================== VALIDATION ===================== */
+  private isFormValid(): boolean {
+    if (!this.Model.UnitId) {
+      this.toastr.warning('Please select a Unit.');
+      return false;
+    }
+    if (!this.Model.BuyerId) {
+      this.toastr.warning('Please select a Buyer.');
+      return false;
+    }
+    if (!this.Model.StyleId) {
+      this.toastr.warning('Please select a Style.');
+      return false;
+    }
+    if (!this.Model.Date) {
+      this.toastr.warning('Please select a Date.');
+      return false;
+    }
+    return true;
   }
 
-  onStyleChange() {
-    // When user selects Style Based on Unit, Buyer, auto select Order and Job
-    if (this.Model.StyleId) {
-       // Mock logic: user can implement exact API filter to populate Order and Job
+  /* ===================== SEARCH → SHOW REPORT ===================== */
+  onSearch(): void {
+    if (!this.isFormValid()) return;
+    this.printReport();
+  }
+
+  printReport(): void {
+    this.isLoading = true;
+
+    const token   = localStorage.getItem('token');
+    const headers = { Authorization: `Bearer ${token}` };
+
+    const dateStr = this.formatDate(this.Model.Date);
+
+    const objparam = {
+      ReportName: 'Date Wise Hourly QC Report',
+      Type:       'PDF',
+      UnitId:     this.Model.UnitId,
+      BuyerId:    this.Model.BuyerId,
+      StyleId:    this.Model.StyleId,
+      Date:       dateStr,
+      OrderId:    this.Model.OrderId  ?? null,
+      JobId:      this.Model.JobId    ?? null,
+      BatchNo:    this.Model.BatchNo  ?? null,
+      ShiftId:    this.Model.ShiftId  ?? null
+    };
+
+    this.http.post<any>(`${this.baseUrl_}Report/ShowReport`, objparam, { headers })
+      .subscribe({
+        next: (response) => {
+          this.isLoading = false;
+
+          if (response?.url) {
+            this.ReportUrl = this._dom.bypassSecurityTrustResourceUrl(response.url);
+
+            window.open(
+              this.router.serializeUrl(
+                this.router.createUrlTree(['/mascowash/report-view'], {
+                  queryParams: {
+                    url:        response.url,
+                    TrackingNo: this.Model.BatchNo ?? dateStr
+                  }
+                })
+              ),
+              '_blank'
+            );
+          } else {
+            this.toastr.warning('No report URL returned from server.');
+          }
+        },
+        error: (err) => {
+          this.isLoading = false;
+          console.error('Report error:', err);
+          this.toastr.error(err?.error ?? 'Failed to load report.');
+        }
+      });
+  }
+
+  /* ===================== RESET HELPERS ===================== */
+  private resetFrom(level: 'unit' | 'buyer' | 'job' | 'style'): void {
+    const levels = ['unit', 'buyer', 'job', 'style'];
+    const idx    = levels.indexOf(level);
+
+    if (idx <= 0) {
+      this.buyerList     = [];
+      this.Model.BuyerId = null;
+    }
+    if (idx <= 1) {
+      this.jobList     = [];
+      this.Model.JobId = null;
+    }
+    if (idx <= 2) {
+      this.styleList     = [];
+      this.Model.StyleId = null;
+    }
+    if (idx <= 3) {
+      this.orderList     = [];
+      this.Model.OrderId = null;
+      this.batchList     = [];
+      this.Model.BatchNo = null;
     }
   }
 
-  onOrderChange() {
-    // When user selects Order, auto select Buyer, Style, and Job
-    if (this.Model.OrderId) {
-       // Mock logic: user can implement exact API filter to populate Buyer, Style, and Job
-    }
-  }
-
-  onSearch() {
-    if (!this.Model.UnitId) { this.toastr.warning('Unit is required'); return; }
-    if (!this.Model.BuyerId) { this.toastr.warning('Buyer is required'); return; }
-    if (!this.Model.StyleId) { this.toastr.warning('Style is required'); return; }
-    if (!this.Model.ReportId) { this.toastr.warning('Report is required'); return; }
-    if (!this.Model.Date) { this.toastr.warning('Date is required'); return; }
-
-    this.toastr.success('Search action triggered');
+  /* ===================== DATE FORMAT HELPER ===================== */
+  private formatDate(date: Date): string {
+    const d    = new Date(date);
+    const yyyy = d.getFullYear();
+    const mm   = String(d.getMonth() + 1).padStart(2, '0');
+    const dd   = String(d.getDate()).padStart(2, '0');
+    return `${yyyy}-${mm}-${dd}`;
   }
 }
