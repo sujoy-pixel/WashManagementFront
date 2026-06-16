@@ -15,7 +15,23 @@
                                 (click)="increase(item)">
                                 <i class="pi pi-plus"></i>
                             </button>
-                            <span>{{ item.count }}</span>
+                            <!-- <span>{{ item.count }} </span> -->
+                            <!-- <span (dblclick)="enableEdit(item)" *ngIf="!item.isEdit">{{ item.count }} </span>
+                             <div *ngIf="item.isEdit" style="display: flex; align-items: center;">
+                                 <input type="number" [(ngModel)]="item.count" (blur)="saveCount(item, $event)" (keydown.enter)="saveCount(item, $event)" />
+                             </div> -->
+                            <div style="display:flex; align-items:center; justify-content:center;">
+                                <ng-container *ngIf="!item.isEdit; else editTpl">
+                                    <span (dblclick)="item.isEdit = true" style="min-width:40px; text-align:center;">
+                                        {{ item.count }}
+                                    </span>
+                                </ng-container>
+
+                                <ng-template #editTpl>
+                                    <input type="number" [(ngModel)]="item.count" (blur)="saveCount(item, $event)"
+                                        (keydown.enter)="saveCount(item, $event)" style="width:60px; text-align:center;" />
+                                </ng-template>
+                            </div>
                             <button type="button" style="width: 30px; height: 30px;"
                                 class="btn btn-danger d-flex align-items-center justify-content-center"
                                 (click)="decrease(item)">
@@ -33,7 +49,23 @@
                                 (click)="increase(item)">
                                 <i class="pi pi-plus"></i>
                             </button>
-                            <span>{{ item.count }}</span>
+                            <!-- <span>{{ item.count }}</span> -->
+                            <!-- <span (dblclick)="enableEdit(item)" *ngIf="!item.isEdit">{{ item.count }} </span>
+                              <div *ngIf="item.isEdit" style="display: flex; align-items: center;">
+                                <input type="number" [(ngModel)]="item.count" (blur)="saveCount(item, $event)" (keydown.enter)="saveCount(item, $event)" />
+                            </div> -->
+                            <div style="display:flex; align-items:center; justify-content:center;">
+                                <ng-container *ngIf="!item.isEdit; else editTpl">
+                                    <span (dblclick)="item.isEdit = true" style="min-width:40px; text-align:center;">
+                                        {{ item.count }}
+                                    </span>
+                                </ng-container>
+
+                                <ng-template #editTpl>
+                                    <input type="number" [(ngModel)]="item.count" (blur)="saveCount(item, $event)"
+                                        (keydown.enter)="saveCount(item, $event)" style="width:60px; text-align:center;" />
+                                </ng-template>
+                            </div>
                             <button type="button" style="width: 30px; height: 30px;"
                                 class="btn btn-danger d-flex align-items-center justify-content-center"
                                 (click)="decrease(item)">
