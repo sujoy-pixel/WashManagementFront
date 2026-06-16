@@ -15,6 +15,7 @@ interface DefectItem {
   name: string;
   count: number;
   isFlipped: boolean;
+  isEdit: boolean;
 }
 
 @Component({
@@ -57,7 +58,20 @@ export class RejectReasonComponent implements OnInit {
     this.loadData();
   }
 
+enableEdit(item: any) {
+  console.log('Enabling edit for item:', item);
+  item.isEdit = true;
+}
 
+saveCount(item: any, event: any) {
+  const value = Number(event.target.value);
+
+  if (!isNaN(value)) {
+    item.count = value;
+  }
+
+  item.isEdit = false;
+}
   // 🔹 Load Fault Name from API
   loadData() {
     debugger;
@@ -69,7 +83,8 @@ export class RejectReasonComponent implements OnInit {
           defectId: x.faultNameId || x.FaultNameId,
           name: x.faultName || x.FaultName,
           count: 0,
-          isFlipped: false
+          isFlipped: false,
+          isEdit: false
         }));
       },
       error: (err) => {
