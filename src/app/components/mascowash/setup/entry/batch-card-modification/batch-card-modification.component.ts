@@ -82,7 +82,9 @@ interface WashBatchRow {
 
   shipmentDate:         Date | null;
   probableDeliveryDate: Date | null;
-
+  sourceTable:          string;
+  qty:                  number; // for size popup binding
+  kg:                   number; // for size popup binding
   sizeDetails: SizeDetail[];
 
   // ✅ Computed from sizeDetails sum (or masterTotalPcs if no sizes)
@@ -367,8 +369,11 @@ export class BatchCardModificationComponent implements OnInit {
 
           shipmentDate:         r.shipmentDate         ? new Date(r.shipmentDate)         : null,
           probableDeliveryDate: r.probableDeliveryDate ? new Date(r.probableDeliveryDate) : null,
-
+          sourceTable:          r.sourceTable          ?? r.SourceTable          ?? '',
           sizeDetails: [],
+          qty: Number(r.qty ?? r.Qty ?? 0), // for size popup binding
+          kg: Number(r.kg ?? r.Kg ?? 0), // for size popup binding
+
           totalQty: Number(r.totalQty ?? r.TotalQty ?? r.masterTotalPcs ?? r.MasterTotalPcs ?? 0)
          // will be accumulated below
         });
@@ -517,8 +522,161 @@ export class BatchCardModificationComponent implements OnInit {
 
   /* ===================== OPEN PREPARE TAB (EDIT MODE) ===================== */
   /* ===================== OPEN PREPARE TAB (EDIT MODE) ===================== */
-openPrepareTab(row: WashBatchRow): void {
+// openPrepareTab(row: WashBatchRow): void {
+// debugger;
+// console.log('Edit button clicked for row:', row);
 
+//   if (row.loadunload === 'Exist') {
+//     this.toastr.warning('Load/Unload already exists(Start-End) for this batch.');
+//     return;
+//   }
+
+//   if (!row?.orderId) return;
+
+//   const navState = {
+
+   
+//     buyerId:      row.buyerId,       
+//     jobId:        row.jobId,
+//     styleId:      row.styleId,
+//     orderId:      row.orderId,
+//     fabricationId:row.fabricationId,
+//     colorId:      row.icleid,        
+//     dressPartId:  row.dressPartId,
+//     uomId:        row.uomDetailsId,   
+//     fromUnitId:   row.fromUnitId,
+//     iszid:        row.gsmId ?? null, 
+
+
+//     buyer:        row.buyerName      ?? '',
+//     jobNo:        row.jobInfo        ?? '',
+//     styleNo:      row.styleName      ?? '',
+//     orderNo:      row.orderNo        ?? '',
+//     documentNo:   row.documentNo     ?? '',
+//     fabrication:  row.fabricationName ?? '',
+//     composition:  '',                  
+//     color:        row.color          ?? '',
+//     gsm:          row.gsm            ?? '',
+//     type:         row.type           ?? '',
+//     shade:        row.shade,
+//     date:         new Date().toISOString().split('T')[0],  
+
+
+//     trackingNo:   row.trackingNo     ?? '',
+//     AutoBatchNo:  row.batchNo        ?? '',  
+//     MasterId:     row.masterId       ?? 0,
+
+
+//     processIds:   row.processIds     ?? '',   
+//     machineIds:   row.machineIds     ?? '',   
+
+ 
+//      totalKg:      row.alreadyPreparedKg        ?? 0,
+
+   
+//     RemainingQty: row.remainingQty   ?? 0,
+//      totalQty: row.alreadyPreparedQty,
+   
+//     sizeDetails:  row.sizeDetails    ?? []    
+//   };
+
+
+
+
+
+//   console.log('✅ navState to action page (edit):', navState);
+//   localStorage.setItem('WASH_PREPARE_NAV_STATE', JSON.stringify(navState));
+
+//   const url = this.router.serializeUrl(
+//     this.router.createUrlTree(['/mascowash/setup/entry/wash-prepare-action'])
+//   );
+
+//   window.open(url, '_blank', 'noopener');
+//   this.resetForm();
+//   this.loadUnits();
+// }
+
+// openPrepareTab(row: WashBatchRow): void {
+//   debugger;
+  
+//   // ✅ Block if Load/Unload already exists
+//   if (row.loadunload === 'Exist') {
+//     this.toastr.warning('Load/Unload already exists(Start-End) for this batch.');
+//     return;
+//   }
+
+//   if (!row?.orderId) return;
+
+//   // ✅ Check the SourceTable column from SP to know if it's Acid or Wash
+//   const isAcidBatch = row.sourceTable === 'Acid';
+
+//   const navState = {
+//     // ===== MASTER IDs — same keys as mother page =====
+//     buyerId:      row.buyerId,
+//     jobId:        row.jobId,
+//     styleId:      row.styleId,
+//     orderId:      row.orderId,
+//     fabricationId:row.fabricationId,
+//     colorId:      row.icleid,         // action page reads: data.colorId
+//     dressPartId:  row.dressPartId,
+//     uomId:        row.uomDetailsId,   // action page reads: data.uomId
+//     fromUnitId:   row.fromUnitId,
+//     iszid:        row.gsmId ?? null,  // action page reads: data.iszid → batchIds.iszid
+
+//     // ===== DISPLAY — same keys as mother page =====
+//     buyer:        row.buyerName      ?? '',
+//     jobNo:        row.jobInfo        ?? '',
+//     styleNo:      row.styleName      ?? '',
+//     orderNo:      row.orderNo        ?? '',
+//     documentNo:   row.documentNo     ?? '',
+//     fabrication:  row.fabricationName ?? '',
+//     composition:  '',                  // not available in edit SP — send empty
+//     color:        row.color          ?? '',
+//     gsm:          row.gsm            ?? '',
+//     type:         row.type           ?? '',
+//     shade:        row.shade,
+//     date:         new Date().toISOString().split('T')[0],  // ✅ same as mother page
+
+//     // ===== TRACKING =====
+//     trackingNo:   row.trackingNo     ?? '',
+//     AutoBatchNo:  row.batchNo        ?? '',   // For Acid: WBN-...(A1), For Wash: WBN-...
+//     MasterId:     row.masterId       ?? 0,
+
+//     // ===== PROCESS / MACHINE — extra for edit mode =====
+//     processIds:   row.processIds     ?? '',   
+//     machineIds:   row.machineIds     ?? '',   
+
+//     // ===== QTY — same logic as mother page =====
+//     totalKg:      row.alreadyPreparedKg ?? 0,
+//     RemainingQty: row.remainingQty   ?? 0,
+//     totalQty:     row.alreadyPreparedQty,
+//     Kg:           row.kg ?? 0, // for size popup binding
+//     qty:          row.qty ?? 0, // for size popup binding
+
+//     // ===== SIZE DETAILS — same key as mother page =====
+//     sizeDetails:  row.sizeDetails    ?? []    
+//   };
+
+//   console.log('✅ navState to action page (edit):', navState);
+//   localStorage.setItem('WASH_PREPARE_NAV_STATE', JSON.stringify(navState));
+
+//   // ✅ Route condition: Go to Acid page if SourceTable is 'Acid', else Wash page
+//   const routeUrl = isAcidBatch 
+//     ? '/mascowash/setup/entry/acid-wash-batch-prepare' 
+//     : '/mascowash/setup/entry/wash-prepare-action';
+
+//   const url = this.router.serializeUrl(
+//     this.router.createUrlTree([routeUrl])
+//   );
+
+//   window.open(url, '_blank', 'noopener');
+//   this.resetForm();
+//   this.loadUnits();
+// }
+
+openPrepareTab(row: WashBatchRow): void {
+  debugger;
+  
   // ✅ Block if Load/Unload already exists
   if (row.loadunload === 'Exist') {
     this.toastr.warning('Load/Unload already exists(Start-End) for this batch.');
@@ -527,65 +685,69 @@ openPrepareTab(row: WashBatchRow): void {
 
   if (!row?.orderId) return;
 
+  // ✅ Check the SourceTable column from SP to know if it's Acid or Wash
+  const isAcidBatch = row.sourceTable === 'Acid';
+
   const navState = {
+    // ===== MASTER IDs =====
+    buyerId:       row.buyerId,
+    jobId:         row.jobId,
+    styleId:       row.styleId,
+    orderId:       row.orderId,
+    fabricationId: row.fabricationId,
+    colorId:       row.icleid,           // Maps to colorId
+    dressPartId:   row.dressPartId,
+    uomId:         row.uomDetailsId,     // Maps to uomId
+    fromUnitId:    row.fromUnitId,
+    iszid:         row.gsmId ?? null,    // Maps to iszid
 
-    // ===== MASTER IDs — same keys as mother page =====
-    buyerId:      row.buyerId,        // action page reads: data.buyerId
-    jobId:        row.jobId,
-    styleId:      row.styleId,
-    orderId:      row.orderId,
-    fabricationId:row.fabricationId,
-    colorId:      row.icleid,         // action page reads: data.colorId
-    dressPartId:  row.dressPartId,
-    uomId:        row.uomDetailsId,   // action page reads: data.uomId
-    fromUnitId:   row.fromUnitId,
-    iszid:        row.gsmId ?? null,  // action page reads: data.iszid → batchIds.iszid
-
-    // ===== DISPLAY — same keys as mother page =====
-    buyer:        row.buyerName      ?? '',
-    jobNo:        row.jobInfo        ?? '',
-    styleNo:      row.styleName      ?? '',
-    orderNo:      row.orderNo        ?? '',
-    documentNo:   row.documentNo     ?? '',
+    // ===== DISPLAY =====
+    buyer:        row.buyerName       ?? '',
+    jobNo:        row.jobInfo         ?? '',
+    styleNo:      row.styleName       ?? '',
+    orderNo:      row.orderNo         ?? '',
+    documentNo:   row.documentNo      ?? '',
     fabrication:  row.fabricationName ?? '',
-    composition:  '',                  // not available in edit SP — send empty
-    color:        row.color          ?? '',
-    gsm:          row.gsm            ?? '',
-    type:         row.type           ?? '',
+    composition:  '',                  // Not available in SP
+    color:        row.color           ?? '',
+    gsm:          row.gsm             ?? '',
+    type:         row.type            ?? '',
     shade:        row.shade,
-    date:         new Date().toISOString().split('T')[0],  // ✅ same as mother page
+    date:         new Date().toISOString().split('T')[0],  
 
     // ===== TRACKING =====
-    trackingNo:   row.trackingNo     ?? '',
-    AutoBatchNo:  row.batchNo        ?? '',   // ✅ non-empty → triggers Update mode
-    MasterId:     row.masterId       ?? 0,
+    trackingNo:   row.trackingNo      ?? '',
+    AutoBatchNo:  row.batchNo         ?? '',   // For Acid: WBN-...(A1), For Wash: WBN-...
+    MasterId:     row.masterId        ?? 0,
 
-    // ===== PROCESS / MACHINE — extra for edit mode =====
-    processIds:   row.processIds     ?? '',   // comma string → action page splits
-    machineIds:   row.machineIds     ?? '',   // comma string → action page splits
+    // ===== PROCESS / MACHINE =====
+    processIds:   row.processIds      ?? '',   
+    machineIds:   row.machineIds      ?? '',   
 
-    // ===== QTY — same logic as mother page =====
-    // mother: totalQty: row.totalQty - row.alreadyPreparedQty
-    // edit:   totalPcs IS the already-saved qty (what was prepared in this batch)
-    //totalQty:     row.totalPcs       ?? 0,    // ✅ master saved pcs → pre-fills action page total
-     totalKg:      row.alreadyPreparedKg        ?? 0,
+    // ===== QTY & TOTALS =====
+    totalQty:            row.totalQty            ?? 0,  // Order Total Qty (10348)
+    totalKg:             row.totalKg             ?? 0,  
+    alreadyPreparedQty:  row.alreadyPreparedQty  ?? 0,  // Cumulative prepared
+    alreadyPreparedKg:   row.alreadyPreparedKg   ?? 0,  // Cumulative prepared Kg
+    RemainingQty:        row.remainingQty        ?? 0,  // Cumulative remaining
+    RemainingKg:         row.remainingKg         ?? 0,  // Cumulative remaining Kg
+    qty:                 row.qty                 ?? 0,  // Row specific size qty
+    Kg:                  row.kg                  ?? 0,  // Row specific size kg
 
-    // ✅ same key as mother page
-    RemainingQty: row.remainingQty   ?? 0,
-     totalQty: row.alreadyPreparedQty,
-    // ===== SIZE DETAILS — same key as mother page =====
-    sizeDetails:  row.sizeDetails    ?? []    // [{sizeId, size, qty, kg}]
+    // ===== SIZE DETAILS =====
+    sizeDetails:  row.sizeDetails     ?? []    
   };
-
-
-
-
 
   console.log('✅ navState to action page (edit):', navState);
   localStorage.setItem('WASH_PREPARE_NAV_STATE', JSON.stringify(navState));
 
+  // ✅ Route condition: Go to Acid page if SourceTable is 'Acid', else Wash page
+  const routeUrl = isAcidBatch 
+    ? '/mascowash/setup/entry/acid-wash-batch-prepare' 
+    : '/mascowash/setup/entry/wash-prepare-action';
+
   const url = this.router.serializeUrl(
-    this.router.createUrlTree(['/mascowash/setup/entry/wash-prepare-action'])
+    this.router.createUrlTree([routeUrl])
   );
 
   window.open(url, '_blank', 'noopener');
@@ -613,4 +775,5 @@ openPrepareTab(row: WashBatchRow): void {
     this.sizeList        = [];
     this.sizePopupVisible = false;
   }
+
 }

@@ -29,7 +29,7 @@
 
                                 <ng-template #editTpl>
                                     <input type="number" [(ngModel)]="item.count" (blur)="saveCount(item, $event)"
-                                        (keydown.enter)="saveCount(item, $event)" style="width:60px; text-align:center;" />
+                                        (keydown.enter)="saveCount(item, $event)" style="width:60px; text-align:center; border: 1px solid #ccc;" />
                                 </ng-template>
                             </div>
                             <button type="button" style="width: 30px; height: 30px;"
@@ -63,7 +63,7 @@
 
                                 <ng-template #editTpl>
                                     <input type="number" [(ngModel)]="item.count" (blur)="saveCount(item, $event)"
-                                        (keydown.enter)="saveCount(item, $event)" style="width:60px; text-align:center;" />
+                                        (keydown.enter)="saveCount(item, $event)" style="width:60px; text-align:center; border: 1px solid #ccc;" />
                                 </ng-template>
                             </div>
                             <button type="button" style="width: 30px; height: 30px;"

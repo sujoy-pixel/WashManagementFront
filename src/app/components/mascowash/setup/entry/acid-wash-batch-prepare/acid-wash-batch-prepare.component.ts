@@ -17,12 +17,13 @@ import { HttpClient } from '@angular/common/http';
    INTERFACES — local grid model
 ───────────────────────────────────────────── */
 interface SizeQtyModel {
-  sizeId?:     number | null;
-  size:        string;
-  preparePcs:  number;
-  prepareKg:   number;
-  preparedPcs: number;
-  preparedKg:  number;
+  id?:          number | null; // ✅ Added ID for Update tracking
+  sizeId?:      number | null;
+  size:         string;
+  preparePcs:   number;
+  prepareKg:    number;
+  preparedPcs:  number;
+  preparedKg:   number;
 }
 
 interface AcidWashBatchPrepareResponse {
@@ -47,12 +48,13 @@ interface AcidWashBatchPrepareResponse {
   alreadyPreparedKg:  number;
   remainingQty:       number;
   remainingKg:        number;
+  qty?:               number; // ✅ For Edit Mode mapping
+  kg?:                number; // ✅ For Edit Mode mapping
+  detailId?:          number; // ✅ To capture ID from API for updates
 }
 
 /* ─────────────────────────────────────────────
    API PAYLOAD INTERFACES
-   — property names match C# camelCase exactly
-     (ASP.NET Core default JSON serialisation)
 ───────────────────────────────────────────── */
 
 /** Maps to AcidWashPrepareMasterDto */
@@ -68,6 +70,7 @@ interface ApiMasterDto {
 
 /** Maps to AcidWashPrepareSizeDto */
 interface ApiSizeDto {
+  id?:        number | null; // ✅ Added for Update
   sizeId:     number | null;
   sizeName:   string;   // ← size
   sizeQty:    number;   // ← preparePcs
@@ -122,6 +125,11 @@ export class AcidWashBatchPrepareComponent implements OnInit {
   batchQtyPcs: number = 0;
   batchQtyKg:  number = 0;
 
+  // ✅ Edit Mode Tracking
+  isEditMode:      boolean = false;
+  MasterId:        number = 0;
+  saveButtonTitle: string = 'Save';
+
   batchHeader = {
     prepareDate:  new Date(),
     revisionNo:   '',
@@ -135,6 +143,10 @@ export class AcidWashBatchPrepareComponent implements OnInit {
     composition:  '',
     gsm:          '',
     color:        ''
+    //  preparePcs: 0,
+    //   prepareKg: 0,
+    //  preparedPcs: 0,
+    //   preparedKg: 0
   };
 
   /* ── Middle Section ── */
@@ -176,7 +188,8 @@ export class AcidWashBatchPrepareComponent implements OnInit {
      LIFECYCLE
   ───────────────────────────────────────────── */
   ngOnInit(): void {
-    this.loadProcessDDL();
+    // ✅ Load process DDL first — THEN load parent data
+    this.loadProcessDDLThenData();
   }
 
   ngAfterViewInit(): void {
@@ -184,26 +197,175 @@ export class AcidWashBatchPrepareComponent implements OnInit {
   }
 
   /* ─────────────────────────────────────────────
+     ✅ LOAD PROCESS DDL → THEN PARENT DATA
+  ───────────────────────────────────────────── */
+  loadProcessDDLThenData(): void {
+    this.service.GetProcessNameDDL().subscribe({
+      next: (res: any) => {
+        this.processList = res.map((x: any) => ({
+          label: x.displayName ?? x.DisplayName,
+          value: x.id          ?? x.ID
+        }));
+        // ✅ NOW safe to load — processList is ready
+        this.loadDataFromParent();
+      },
+      error: (err) => {
+        console.error('❌ Process DDL load error:', err);
+        this.loadDataFromParent();
+      }
+    });
+  }
+
+
+    /* ─────────────────────────────────────────────
+     ✅ LOAD DATA FROM LOCALSTORAGE (EDIT MODE)
+  ───────────────────────────────────────────── */
+  private loadDataFromParent(): void {
+    debugger;
+    const navState = localStorage.getItem('WASH_PREPARE_NAV_STATE');
+    if (!navState) {
+      console.log('🟢 New batch mode — user selects process & machine manually');
+      return;
+    }
+
+    const data = JSON.parse(navState);
+    console.log('✅ Loaded Navigation State:', data);
+
+    /* ===== Edit Mode Detection ===== */
+    this.MasterId   = data.MasterId ?? 0;
+    this.isEditMode = this.MasterId > 0;
+  if (this.MasterId > 0) 
+  {
+    this.saveButtonTitle = this.MasterId ? 'Update' : 'Save';
+  }
+
+  
+    
+    /* ===== Batch No & Headers ===== */
+    // ✅ Strip the Acid portion (e.g., "(A1)", "(A2)", "(A3)") to get the parent Wash Batch
+    let rawBatchNo = data.AutoBatchNo ?? '';
+    this.washBatchNo = rawBatchNo.replace(/\(A.*\)/, '').trim(); 
+    
+    this.batchHeader.buyer = data.buyer   ?? '';
+    this.batchHeader.jobNo   = data.jobNo   ?? '';
+    this.batchHeader.styleNo = data.styleNo ?? '';
+    this.batchHeader.orderNo = data.orderNo ?? '';
+    this.batchHeader.color   = data.color   ?? '';
+    this.acidBatchNo = rawBatchNo; // Keep the original for display and API calls
+    this.batchQtyPcs=data.totalQty;
+    this.batchQtyKg=(data.RemainingKg + data.alreadyPreparedKg);
+
+      this.totalPreparePcs = data.qty;
+      this.totalPrepareKg = data.Kg || 0;
+      this.totalPreparedPcs = data.alreadyPreparedQty || 0;
+      this.totalPreparedKg = data.alreadyPreparedKg || 0;
+    // /* ===== Load Grid Data via API ===== */
+    // if (this.washBatchNo) {
+    //   this.loadBatchData();
+    // }
+
+    /* ===== Process & Machine Pre-Selection ===== */
+    const processIdsStr = data.processIds ?? '';
+    const machineIdsStr = data.machineIds ?? '';
+
+    if (processIdsStr && processIdsStr.trim() !== '') {
+      console.log('🔵 Modification mode — pre-selecting process & machine');
+      this.preSelectProcessAndMachine(processIdsStr, machineIdsStr);
+    } else {
+      this.Model.processList = [];
+      this.Model.machineList = [];
+    }
+  }
+  // private loadDataFromParent(): void {
+  //   debugger;
+  //   const navState = localStorage.getItem('WASH_PREPARE_NAV_STATE');
+  //   if (!navState) {
+  //     console.log('🟢 New batch mode — user selects process & machine manually');
+  //     return;
+  //   }
+
+  //   const data = JSON.parse(navState);
+  //   console.log('✅ Loaded Navigation State:', data);
+
+  //   /* ===== Edit Mode Detection ===== */
+  //   this.MasterId   = data.MasterId ?? 0;
+  //   this.isEditMode = this.MasterId > 0 || (data.AutoBatchNo && data.AutoBatchNo.includes('('));
+  //   this.saveButtonTitle = this.isEditMode ? 'Update' : 'Save';
+
+  //   /* ===== Batch No & Headers ===== */
+  //   this.washBatchNo       = data.washBatchNo ?? '';
+  //   this.batchHeader.buyer = data.buyer   ?? '';
+  //   this.batchHeader.jobNo   = data.jobNo   ?? '';
+  //   this.batchHeader.styleNo = data.styleNo ?? '';
+  //   this.batchHeader.orderNo = data.orderNo ?? '';
+  //   this.batchHeader.color   = data.color   ?? '';
+
+  //   /* ===== Load Grid Data via API ===== */
+  //   if (this.washBatchNo) {
+  //     this.loadBatchData();
+  //   }
+
+  //   /* ===== Process & Machine Pre-Selection ===== */
+  //   const processIdsStr = data.processIds ?? '';
+  //   const machineIdsStr = data.machineIds ?? '';
+
+  //   if (processIdsStr && processIdsStr.trim() !== '') {
+  //     console.log('🔵 Modification mode — pre-selecting process & machine');
+  //     this.preSelectProcessAndMachine(processIdsStr, machineIdsStr);
+  //   } else {
+  //     this.Model.processList = [];
+  //     this.Model.machineList = [];
+  //   }
+  // }
+
+  /* ─────────────────────────────────────────────
+     ✅ PRE-SELECT PROCESS + MACHINE (Modification Only)
+  ───────────────────────────────────────────── */
+  private preSelectProcessAndMachine(processIdsStr: string, machineIdsStr: string): void {
+    const processIdArr: number[] = processIdsStr
+      .split(',')
+      .map((x: string) => Number(x.trim()))
+      .filter(Boolean);
+
+    const machineIdArr: number[] = machineIdsStr
+      ? machineIdsStr.split(',').map((x: string) => Number(x.trim())).filter(Boolean)
+      : [];
+
+    // ✅ Pre-select process
+    this.Model.processList = processIdArr.filter(id =>
+      this.processList.some(p => Number(p.value) === id)
+    );
+
+    if (!machineIdArr.length) return;
+
+    // ✅ Load machines for these processes, then pre-select saved machines
+    this.service.GetMachineByProcess(processIdArr.join(',')).subscribe({
+      next: (res: any) => {
+        const list = Array.isArray(res) ? res : res?.data || res?.result || [];
+
+        this.machineList = list.map((x: any) => ({
+          label: x.displayName     ?? x.DisplayName     ?? x.machineName     ?? x.MachineName,
+          value: x.id              ?? x.ID              ?? x.machineDetailId ?? x.MachineDetailId
+        }));
+
+        // ✅ Pre-select only saved machines that exist in loaded list
+        this.Model.machineList = this.machineList.filter(m =>
+          machineIdArr.includes(Number(m.value))
+        );
+
+        this.cdr.detectChanges();
+      },
+      error: (err: any) => {
+        console.error('❌ Machine load error:', err);
+        this.machineList       = [];
+        this.Model.machineList = [];
+      }
+    });
+  }
+
+  /* ─────────────────────────────────────────────
      DDL LOADERS
   ───────────────────────────────────────────── */
-  loadProcessDDL() {
-    this.service.GetProcessNameDDL().subscribe(res => {
-      this.processList = res.map((x: any) => ({
-        label: x.displayName ?? x.DisplayName,
-        value: x.id          ?? x.ID
-      }));
-    });
-  }
-
-  loadMachineDDL() {
-    this.service.GetMachineNoDDL().subscribe(res => {
-      this.machineList = res.map((x: any) => ({
-        label: x.displayName ?? x.DisplayName,
-        value: x.id          ?? x.ID
-      }));
-    });
-  }
-
   onSelectionChangeProcess(event: MatSelectChange) {
     const selectedIds: number[] = event.value || [];
     this.Model.processList = selectedIds;
@@ -237,7 +399,7 @@ export class AcidWashBatchPrepareComponent implements OnInit {
   /* ─────────────────────────────────────────────
      LOAD BATCH DATA
   ───────────────────────────────────────────── */
-  loadBatchData() {
+    loadBatchData() {
     if (!this.washBatchNo) {
       this.toastr.warning('Enter Wash Batch No');
       return;
@@ -316,22 +478,22 @@ export class AcidWashBatchPrepareComponent implements OnInit {
   onlyNumber(event: any) {
     event.target.value = event.target.value.replace(/[^0-9]/g, '');
     setTimeout(() => {
-      if (this.totalPreparePcs > this.maxQty) {
-        this.totalPreparePcs = this.maxQty;
-        this.toastr.warning(`Max allowed Pcs: ${this.maxQty}`, 'Limit Exceeded');
-      }
-      if (this.totalPrepareKg > this.maxKg) {
-        this.totalPrepareKg = this.maxKg;
-        this.toastr.warning(`Max allowed Kg: ${this.maxKg}`, 'Limit Exceeded');
-      }
+      // if (this.totalPreparePcs > this.maxQty) {
+      //   this.totalPreparePcs = this.maxQty;
+      //   this.toastr.warning(`Max allowed Pcs: ${this.maxQty}`, 'Limit Exceeded');
+      // }
+      // if (this.totalPrepareKg > this.maxKg) {
+      //   this.totalPrepareKg = this.maxKg;
+      //   this.toastr.warning(`Max allowed Kg: ${this.maxKg}`, 'Limit Exceeded');
+      // }
     });
   }
 
   onTotalPcsChange() {
-    if (this.totalPreparePcs > this.maxQty) {
-      this.totalPreparePcs = this.maxQty;
-      this.toastr.warning(`Max allowed Pcs: ${this.maxQty}`, 'Limit Exceeded');
-    }
+    // if (this.totalPreparePcs > this.maxQty) {
+    //   this.totalPreparePcs = this.maxQty;
+    //   this.toastr.warning(`Max allowed Pcs: ${this.maxQty}`, 'Limit Exceeded');
+    // }
   }
 
   /* ─────────────────────────────────────────────
@@ -357,25 +519,26 @@ export class AcidWashBatchPrepareComponent implements OnInit {
       return;
     }
 
-    /* ── Build API Payload ──────────────────────────────────────
-       Property names must match C# AcidWashPrepareMasterDto and
-       AcidWashPrepareSizeDto exactly (ASP.NET camelCase binding)
-    ─────────────────────────────────────────────────────────── */
+    /* ── Build API Payload ────────────────────────────────────── */
     const payload: ApiPayload = {
       master: {
-        operation:  'INSERT',
-        masterId:   0,
-        batchNo:    this.washBatchNo,         // washBatchNo   → BatchNo
-        totalPcs:   this.totalPreparePcs,     // totalPreparePcs → TotalPcs
-        totalKg:    this.totalPrepareKg,      // totalPrepareKg  → TotalKg
-        processIds: (this.Model.processList as number[]).join(','),
-        machineIds: (this.Model.machineList  as number[]).join(',')
+        operation:  this.isEditMode ? 'UPDATE' : 'INSERT', // ✅ Dynamic Operation
+        masterId:   this.MasterId ?? 0,                    // ✅ Use stored MasterId
+        batchNo:    this.washBatchNo,         
+        totalPcs:   this.totalPreparePcs,     
+        totalKg:    this.totalPrepareKg,      
+        processIds: (this.Model.processList || []).join(','),
+        // ✅ Safe mapping in case machineList holds objects
+        machineIds: (this.Model.machineList  || []).map((x: any) => 
+                        typeof x === 'object' ? x.value : x
+                     ).join(',')
       },
       details: this.sizeQty.map(s => ({
+        id:         s.id ?? null,                          // ✅ Include ID for Update
         sizeId:     s.sizeId ?? null,
-        sizeName:   s.size,                   // size       → SizeName
-        sizeQty:    Number(s.preparePcs) || 0, // preparePcs → SizeQty
-        sizeWeight: Number(s.prepareKg)  || 0  // prepareKg  → SizeWeight
+        sizeName:   s.size,                   
+        sizeQty:    Number(s.preparePcs) || 0, 
+        sizeWeight: Number(s.prepareKg)  || 0  
       }))
     };
 
@@ -393,9 +556,8 @@ export class AcidWashBatchPrepareComponent implements OnInit {
           return;
         }
 
-        this.toastr.success('Saved successfully');
+        this.toastr.success(this.isEditMode ? 'Updated successfully' : 'Saved successfully');
 
-        // res.message contains the generated AcidBatchNo on success
         if (res?.message) {
           this.acidBatchNo = res.message;
           this.printReport('Batch Card Preview', this.acidBatchNo);
@@ -419,7 +581,6 @@ export class AcidWashBatchPrepareComponent implements OnInit {
   ReportUrlTab: any;
 
   printReport(ReportType: string, GenerateNumber: string) {
-    debugger;
     this.isLoading = true;
     const token   = localStorage.getItem('token');
     const headers = { Authorization: `Bearer ${token}` };
@@ -469,6 +630,11 @@ export class AcidWashBatchPrepareComponent implements OnInit {
     this.maxKg       = 0;
     this.isSaving    = false;
 
+    // ✅ Reset Edit Mode flags
+    this.isEditMode      = false;
+    this.MasterId        = 0;
+    this.saveButtonTitle = 'Save';
+
     this.Model.processList = [];
     this.Model.machineList = [];
 
@@ -490,13 +656,13 @@ export class AcidWashBatchPrepareComponent implements OnInit {
     this.showSizeDetails  = true;
     this.applyToAll       = false;
     this.isTotalEditable  = false;
-    this.totalPreparePcs  = 0;
-    this.totalPrepareKg   = 0;
-    this.totalPreparedPcs = 0;
-    this.totalPreparedKg  = 0;
-    this.initialTotalPcs  = 0;
-    this.RemainingQty     = 0;
-    this.RemainingKg      = 0;
+    // this.totalPreparePcs  = 0;
+    // this.totalPrepareKg   = 0;
+    // this.totalPreparedPcs = 0;
+    // this.totalPreparedKg  = 0;
+    // this.initialTotalPcs  = 0;
+    // this.RemainingQty     = 0;
+    // this.RemainingKg      = 0;
 
     setTimeout(() => this.batchInput?.nativeElement.focus(), 100);
   }

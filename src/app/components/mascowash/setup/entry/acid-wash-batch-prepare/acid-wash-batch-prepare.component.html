@@ -170,7 +170,8 @@
                 <!-- ✅ PCS (Acid Wash) -->
                 <td>
                   <input type="text" class="form-control form-control-sm text-center fw-bold"
-                    [(ngModel)]="totalPreparePcs" (input)="onlyNumber($event)" (blur)="onTotalPcsChange()"
+                    [(ngModel)]="totalPreparePcs" (input)="onlyNumber($event)" 
+                    (blur)="onTotalPcsChange()"
                     [readonly]="!isTotalEditable" maxlength="10">
                 </td>
 
