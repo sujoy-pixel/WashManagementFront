@@ -1,226 +1,344 @@
 <div class="inspection-dashboard p-3">
-    <div class="header-container mb-3">
-        <div class="header-info-bar text-white flex justify-content-between p-3">
 
-            <span><strong>Unit:</strong>
-                <span class="text-xl font-bold">
-                    {{ batchHeader.unitName }}
-                </span>
+  <!-- HEADER ROW 1 — Title + Size Details Button -->
+  <div class="header-info-bar text-white flex justify-content-between align-items-center p-3 mb-2">
+    <h3 class="m-0">Inspection Dashboard</h3>
+    <button
+      pButton
+      type="button"
+      icon="pi pi-tags"
+      label="Size Details"
+      class="p-button-warning"
+      (click)="showSizePopup()">
+    </button>
+  </div>
+
+  <!-- SIZE DETAILS POPUP -->
+  <p-dialog
+    header="📐 Size Wise Qty & Reject Qty"
+    [(visible)]="sizePopupVisible"
+    [modal]="true"
+    [closable]="true"
+    [draggable]="true"
+    [resizable]="false"
+    [style]="{ width: '680px', borderRadius: '12px' }"
+    styleClass="size-popup-dialog">
+
+    <p-table
+      [value]="sizeList"
+      [scrollable]="true"
+      scrollHeight="380px"
+      styleClass="p-datatable-sm p-datatable-striped size-popup-table">
+
+      <ng-template pTemplate="header">
+        <tr>
+          <th style="width: 40%; text-align: center">
+            <span class="th-content" style="justify-content: center">
+              <i class="pi pi-tag mr-2" style="color: #6366f1"></i> Size
             </span>
-
-            <span><strong>Buyer:</strong>
-                {{ batchHeader.buyerName }}
+          </th>
+          <th style="width: 30%; text-align: center">
+            <span class="th-content" style="justify-content: center">
+              <i class="pi pi-box mr-2" style="color: #22c55e"></i> Qty
             </span>
-
-            <span><strong>Tracking No:</strong>
-                {{ batchHeader.trackingNo }}
+          </th>
+          <th style="width: 30%; text-align: center">
+            <span class="th-content" style="justify-content: center">
+              <i class="pi pi-times-circle mr-2" style="color: #ef4444"></i> Reject Qty
             </span>
+          </th>
+        </tr>
+      </ng-template>
 
-            <span><strong>Batch No:</strong>
-                {{ batchHeader.batchNo }}
+      <ng-template pTemplate="body" let-row>
+        <tr class="size-row">
+          <td style="text-align: center">
+            <span class="size-badge">{{ row.sizeName }}</span>
+          </td>
+          <td style="text-align: center">
+            <span class="qty-value">{{ row.qty }}</span>
+          </td>
+          <td style="text-align: center">
+            <input
+  pInputText
+  type="number"
+  min="0"
+  [max]="row.qty"
+  [(ngModel)]="row.rejectQty"
+  (ngModelChange)="onSizeRejectChange(row)"
+  class="reject-input"
+  [class.has-value]="row.rejectQty > 0"
+  [class.over-limit]="row.rejectQty > row.qty"
+  placeholder="0" />
+            <!-- <input
+              pInputText
+              type="number"
+              min="0"
+              [(ngModel)]="row.rejectQty"
+              class="reject-input"
+              [class.has-value]="row.rejectQty > 0"
+              placeholder="0" /> -->
+          </td>
+        </tr>
+      </ng-template>
+
+      <ng-template pTemplate="emptymessage">
+        <tr>
+          <td colspan="3">
+            <div class="empty-state">
+              <i class="pi pi-inbox empty-icon"></i>
+              <p class="empty-text">No size data available for this batch.</p>
+            </div>
+          </td>
+        </tr>
+      </ng-template>
+
+      <ng-template pTemplate="footer">
+        <tr class="totals-row">
+          <td style="text-align: center">
+            <span class="total-label" style="justify-content: center">
+              <i class="pi pi-calculator mr-2"></i> Total
             </span>
+          </td>
+          <td style="text-align: center">
+            <span class="total-value green">{{ totalQty }}</span>
+          </td>
+          <td style="text-align: center">
+            <span class="total-value red">{{ totalRejectQty }}</span>
+          </td>
+        </tr>
+      </ng-template>
 
-            <span><strong>Style:</strong>
-                {{ batchHeader.styleName }}
-            </span>
+    </p-table>
 
-            <span><strong>Order:</strong>
-                {{ batchHeader.orderNo }}
-            </span>
-
-            <span><strong>Job No:</strong>
-                {{ batchHeader.jobNo }}
-            </span>
-
+    <ng-template pTemplate="footer">
+      <div class="popup-footer">
+        <div class="summary-chips">
+          <span class="chip green">
+            <i class="pi pi-check-circle mr-1"></i>
+            Total Qty: <strong>{{ totalQty }}</strong>
+          </span>
+          <span class="chip red">
+            <i class="pi pi-times-circle mr-1"></i>
+            Total Reject: <strong>{{ totalRejectQty }}</strong>
+          </span>
         </div>
-        <div class="header-info-bar text-white flex justify-content-between p-3 mt-2">
-            <span><strong>Type:</strong> {{ batchHeader.type }}</span>
-            <span><strong>Color:</strong> {{ batchHeader.color }}</span>
-            <span class="d-flex align-items-center gap-2">
-                <strong class="mb-0">Batch No:</strong>
-                <input type="text" class="form-control flex-grow-1" [(ngModel)]="batchNo"
-                    (keyup.enter)="loadBatchData()" (blur)="loadBatchData()" placeholder="Scan or Enter Batch No"
-                    autofocus />
-            </span>
-            <span><strong>Dress Part:</strong> {{ batchHeader.dressPart }}</span>
-
-            <span><strong>UOM:</strong> {{ batchHeader.uom }}</span>
-            <span><strong>Date:</strong> {{ batchHeader.date }}</span>
-            <!-- <span><strong>Machine No:</strong> Target (Australia)</span>
-            <span><strong>Process No:</strong> Target (Australia)</span> -->
-
-            <!-- <span><strong>Bundle No:</strong> 37227OR</span> -->
+        <div class="footer-actions">
+          <button
+            pButton
+            type="button"
+            label="Confirm"
+            icon="pi pi-check"
+            class="p-button-success confirm-btn"
+            (click)="confirmSizeSelection()">
+          </button>
+          <button
+            pButton
+            type="button"
+            label="Close"
+            icon="pi pi-times"
+            class="p-button-outlined p-button-secondary close-btn"
+            (click)="sizePopupVisible = false">
+          </button>
         </div>
+      </div>
+    </ng-template>
+
+  </p-dialog>
+
+  <!-- HEADER ROW 2 — Batch Info Row 1 -->
+  <div class="header-info-bar text-white flex justify-content-between align-items-center p-3 mb-2">
+    <span>
+      <strong>Unit:</strong>
+      <span class="text-xl font-bold"> {{ batchHeader.unitName }}</span>
+    </span>
+    <span><strong>Buyer:</strong> {{ batchHeader.buyerName }}</span>
+    <span><strong>Tracking No:</strong> {{ batchHeader.trackingNo }}</span>
+    <span><strong>Batch No:</strong> {{ batchHeader.batchNo }}</span>
+    <span><strong>Style:</strong> {{ batchHeader.styleName }}</span>
+    <span><strong>Order:</strong> {{ batchHeader.orderNo }}</span>
+    <span><strong>Job No:</strong> {{ batchHeader.jobNo }}</span>
+  </div>
+
+  <!-- HEADER ROW 3 — Batch Info Row 2 + Scan Input -->
+  <div class="header-info-bar text-white flex justify-content-between align-items-center p-3 mb-2">
+    <span><strong>Type:</strong> {{ batchHeader.type }}</span>
+    <span><strong>Color:</strong> {{ batchHeader.color }}</span>
+    <span class="flex align-items-center gap-2">
+      <strong>Batch No:</strong>
+      <input
+        type="text"
+        class="form-control"
+        style="width: 200px"
+        [(ngModel)]="batchNo"
+        (keyup.enter)="loadBatchData()"
+        (blur)="loadBatchData()"
+        placeholder="Scan or Enter Batch No"
+        autofocus />
+    </span>
+    <span><strong>Dress Part:</strong> {{ batchHeader.dressPart }}</span>
+    <span><strong>UOM:</strong> {{ batchHeader.uom }}</span>
+    <span><strong>Date:</strong> {{ batchHeader.date }}</span>
+  </div>
+
+  <!-- MAIN DASHBOARD GRID -->
+  <div class="grid grid-nogutter gap-3 dashboard-grid flex-grow-1 mt-2">
+
+    <!-- GOOD GARMENTS -->
+    <div class="col card-section green-section">
+      <button class="action-btn" (click)="increaseGood()">
+        <i class="pi pi-plus-circle"></i>
+      </button>
+      <div class="label-title">Good Garments</div>
+      <div class="counter-value">{{ goodGarments }}</div>
+      <button class="action-btn" (click)="decreaseGood()">
+        <i class="pi pi-minus-circle"></i>
+      </button>
     </div>
 
-    <div class="grid grid-nogutter gap-3 dashboard-grid flex-grow-1">
-        <div class="col card-section green-section">
-            <button class="action-btn" (click)="increaseGood()"><i class="pi pi-plus-circle"></i></button>
-            <div class="label-title">Good Garments</div>
-            <div class="counter-value">{{ goodGarments }}</div>
-            <button class="action-btn" (click)="decreaseGood()"><i class="pi pi-minus-circle"></i></button>
-        </div>
-
-
-
-        <div (click)="showRepairableDialog()"
-            class="col card-section yellow-section flex flex-column align-items-center justify-content-center">
-            <div class="counter-circle-container mb-3">
-                <div class="counter-value">{{ repairable }}</div>
-            </div>
-            <div class="label-title">Repairable</div>
-        </div>
-
-        <div (click)="showRejectionDialog()"
-            class="col card-section red-section flex flex-column align-items-center justify-content-center cursor-pointer">
-            <div class="counter-circle-container mb-3">
-                <div class="counter-value">{{ reject }}</div>
-            </div>
-            <div class="label-title">Reject</div>
-        </div>
-
-
-        <div class="col-12 lg:col-4 defect-section p-3">
-            <div class="grid">
-
-                <!-- Repairable Section -->
-                <div class="col-6 pr-2">
-                    <div class="defect-card repairable">
-                        <div class="defect-header">
-                            Repairable Defect
-                        </div>
-
-                        <!-- <div class="defect-list">
-                            <div *ngFor="let item of repairableDefects">
-                                <div class="defect-item" [ngStyle]="{'background': item.backgroundColor}">
-                                    <i class="pi pi-times text-red-500 mr-2"></i>
-                                    {{ item.name }} ({{ item.count }})
-                                </div>
-                            </div>
-                        </div> -->
-                        <div class="defect-list">
-                            <ng-container *ngFor="let group of repairableDefects | keyvalue">
-
-                                <div *ngFor="let item of group.value; let i = index">
-                                    <div class="defect-item" [ngStyle]="{'background': item.backgroundColor}">
-
-                                        <i class="pi pi-times text-red-500 mr-2 cursor-pointer"
-                                            (click)="removeDefect($any(group.key), i)">
-                                        </i>
-
-                                        {{ item.name }} ({{ item.count }})
-                                    </div>
-                                </div>
-
-                            </ng-container>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Reject Section -->
-                <div class="col-6 pl-2">
-                    <div class="defect-card reject">
-                        <div class="defect-header">
-                            Reject
-                        </div>
-
-                        <!-- <div class="defect-list">
-                            <div class="defect-item reject-bg" *ngFor="let item of rejectDefects">
-                                <i class="pi pi-times text-red-600 mr-2"></i>
-                                {{ item.name }} ({{ item.count }})
-                            </div>
-                        </div> -->
-                        <div class="defect-list">
-                            <ng-container *ngFor="let group of rejectDefects | keyvalue">
-
-                                <div *ngFor="let item of group.value; let i = index">
-                                    <div class="defect-item" [ngStyle]="{'background': item.backgroundColor}">
-
-                                        <i class="pi pi-times text-red-500 mr-2 cursor-pointer"
-                                           (click)="removeReject($any(group.key), i)">
-                                        </i>
-
-                                        {{ item.name }} ({{ item.count }})
-                                    </div>
-                                </div>
-
-                            </ng-container>
-                        </div>
-                    </div>
-                </div>
-
-            </div>
-        </div>
+    <!-- REPAIRABLE -->
+    <div
+      (click)="showRepairableDialog()"
+      class="col card-section yellow-section flex flex-column align-items-center justify-content-center cursor-pointer">
+      <div class="counter-circle-container mb-3">
+        <div class="counter-value">{{ repairable }}</div>
+      </div>
+      <div class="label-title">Repairable</div>
     </div>
 
-    <div class="footer-bar flex align-items-center justify-content-between p-3 mt-3">
-        <div class="user-info flex align-items-center gap-3">
-            <img src="assets/images/users/profile_image.PNG" class="footer-avatar" alt="User">
-            <div class="flex flex-column">
-                <span class="user-name">Ahmed Eid</span>
-                <span class="user-role">Manager</span>
-            </div>
-        </div>
-
-        <div class="stats-summary align-items-center gap-4 text-white font-medium">
-            <span>Total Inspected: <span class="text-xl font-bold">31</span></span>
-            <div class="flex gap-3 align-items-center">
-                <div class="flex align-items-center gap-2">
-                    <i class="pi pi-circle-fill text-green-500"></i>
-                    <span>Good: 1 (ed)</span>
-                </div>
-                <div class="flex align-items-center gap-2">
-                    <i class="pi pi-circle-fill text-orange-500"></i>
-                    <span>Repairable: 1 (ed)</span>
-                </div>
-                <div class="flex align-items-center gap-2">
-                    <i class="pi pi-circle-fill text-red-500"></i>
-                    <span>Reject: 1 (ed)</span>
-                </div>
-            </div>
-        </div>
-        <div class="stats-summary align-items-center gap-4 text-white font-medium">
-            <div class="flex align-items-center gap-2">
-                <span>Start Time: <span>10:15 AM</span></span>
-            </div>
-            <div class="flex align-items-center gap-2">
-                <span>Processing Time: <span>00 hour 02 minutes</span></span>
-            </div>
-        </div>
-        <!-- 🔥 ACTION BUTTONS -->
-        <div class="action-buttons flex gap-2">
-
-            <!-- ✅ SAVE -->
-            <button pButton type="button" label="SAVE" icon="pi pi-check" class="p-button-success btn-custom save-btn"
-                (click)="saveQCData()">
-            </button>
-
-            <!-- ❌ CANCEL -->
-            <button pButton type="button" label="CANCEL" icon="pi pi-times"
-                class="p-button-danger btn-custom cancel-btn" (click)="resetValues()">
-            </button>
-
-            <!-- 🔄 REFRESH -->
-            <button pButton type="button" label="REFRESH" icon="pi pi-refresh"
-                class="p-button-info p-button-outlined btn-custom refresh-btn" (click)="resetValues()">
-            </button>
-
-        </div>
-        <!-- <div class="action-buttons flex gap-2">
-            <button pButton label="SAVE" class="p-button-success btn-custom save-btn"></button>
-            <button pButton label="CANCEL" class="p-button-danger btn-custom cancel-btn"></button>
-            <button pButton label="REFRESH" class="p-button-info p-button-outlined btn-custom refresh-btn"></button>
-        </div> -->
+    <!-- REJECT -->
+    <div
+      (click)="showRejectionDialog()"
+      class="col card-section red-section flex flex-column align-items-center justify-content-center cursor-pointer">
+      <div class="counter-circle-container mb-3">
+        <div class="counter-value">{{ reject }}</div>
+      </div>
+      <div class="label-title">Reject</div>
     </div>
 
-    <app-reject-reason type="repairable" title="Repairable Defects" [visible]="isShowRepairableDialog"
-        [groupedDefects]="repairableDefects"
-        (visibleChange)="isShowRepairableDialog = $event" (onConfirm)="handleReparableData($event)">
-    </app-reject-reason>
+    <!-- DEFECT LISTS -->
+    <div class="col-12 lg:col-4 defect-section p-3">
+      <div class="grid">
 
-    <app-reject-reason type="reject" title="Rejected Defects" [visible]="isShowRejectionDialog"
-        [groupedDefects]="rejectDefects"
-        (visibleChange)="isShowRejectionDialog = $event" (onConfirm)="handleRejectionData($event)">
-    </app-reject-reason>
-   
+        <!-- Repairable Defects -->
+        <div class="col-6 pr-2">
+          <div class="defect-card repairable">
+            <div class="defect-header">Repairable Defect</div>
+            <div class="defect-list">
+              <ng-container *ngFor="let group of repairableDefects | keyvalue">
+                <div *ngFor="let item of group.value; let i = index">
+                  <div class="defect-item" [ngStyle]="{ background: item.backgroundColor }">
+                    <i
+                      class="pi pi-times text-red-500 mr-2 cursor-pointer"
+                      (click)="removeDefect($any(group.key), i)">
+                    </i>
+                    {{ item.name }} ({{ item.count }})
+                  </div>
+                </div>
+              </ng-container>
+            </div>
+          </div>
+        </div>
+
+        <!-- Reject Defects -->
+        <div class="col-6 pl-2">
+          <div class="defect-card reject">
+            <div class="defect-header">Reject</div>
+            <div class="defect-list">
+              <ng-container *ngFor="let group of rejectDefects | keyvalue">
+                <div *ngFor="let item of group.value; let i = index">
+                  <div class="defect-item" [ngStyle]="{ background: item.backgroundColor }">
+                    <i
+                      class="pi pi-times text-red-500 mr-2 cursor-pointer"
+                      (click)="removeReject($any(group.key), i)">
+                    </i>
+                    {{ item.name }} ({{ item.count }})
+                  </div>
+                </div>
+              </ng-container>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- FOOTER — Action Buttons -->
+  <div class="footer-bar flex align-items-center justify-content-between p-3 mt-3">
+    <div class="stats-summary"></div>
+    <div class="action-buttons flex gap-2">
+      <button
+        pButton
+        type="button"
+        label="SAVE"
+        icon="pi pi-check"
+        class="p-button-success btn-custom save-btn"
+        [loading]="isSaving"
+        (click)="saveQCData()">
+      </button>
+      <button
+        pButton
+        type="button"
+        label="CANCEL"
+        icon="pi pi-times"
+        class="p-button-danger btn-custom cancel-btn"
+        (click)="resetValues()">
+      </button>
+      <button
+        pButton
+        type="button"
+        label="REFRESH"
+        icon="pi pi-refresh"
+        class="p-button-info p-button-outlined btn-custom refresh-btn"
+        (click)="resetValues()">
+      </button>
+    </div>
+  </div>
+
+  <!-- CHILD DIALOGS -->
+  <app-reject-reason
+    type="repairable"
+    title="Repairable Defects"
+    [visible]="isShowRepairableDialog"
+    [groupedDefects]="repairableDefects"
+    (visibleChange)="isShowRepairableDialog = $event"
+    (onConfirm)="handleReparableData($event)"
+    (totalCountChange)="onRepairableTotalChange($event)">
+  </app-reject-reason>
+
+  <app-reject-reason
+    type="reject"
+    title="Rejected Defects"
+    [visible]="isShowRejectionDialog"
+    [groupedDefects]="rejectDefects"
+    (visibleChange)="isShowRejectionDialog = $event"
+    (onConfirm)="handleRejectionData($event)"
+    (totalCountChange)="onRejectTotalChange($event)">
+  </app-reject-reason>
+
+</div>
+
+<!-- LOADER OVERLAY -->
+<div class="loader-overlay" *ngIf="loading">
+  <div class="loader-box">
+    <div class="orbit-wrapper">
+      <div class="orbit ring-1"></div>
+      <div class="orbit ring-2"></div>
+      <div class="orbit ring-3"></div>
+      <div class="orbit-core">
+        <i class="pi pi-spin pi-cog core-icon"></i>
+      </div>
+    </div>
+    <div class="loader-text">
+      <span class="loader-title">Loading Batch</span>
+      <div class="dot-wave">
+        <span></span><span></span><span></span><span></span>
+      </div>
+    </div>
+    <div class="loader-sub">Fetching data, please wait...</div>
+    <div class="progress-bar-track">
+      <div class="progress-bar-fill"></div>
+    </div>
+  </div>
 </div>

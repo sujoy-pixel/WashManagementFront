@@ -507,19 +507,32 @@ export class WashSetupService {
       { headers: this.token.headerToken() }
     );
   }
-  getBatchWishQCDataList(batchNo: string) {
-    debugger;
-    const params = new HttpParams()
-      .set('batchNo', batchNo);
+  // getBatchWishQCDataList(batchNo: string) {
+  //   debugger;
+  //   const params = new HttpParams()
+  //     .set('batchNo', batchNo);
 
-    return this.http.get<any[]>(
-      this.baseUrl_ + 'Setup/getBatchWishQCDataList',
-      {
-        headers: this.token.headerToken(),
-        params
-      }
-    );
-  }
+  //   return this.http.get<any[]>(
+  //     this.baseUrl_ + 'Setup/getBatchWishQCDataList',
+  //     {
+  //       headers: this.token.headerToken(),
+  //       params
+  //     }
+  //   );
+  // }
+
+  getBatchWishQCDataList(batchNo: string) {
+  const params = new HttpParams()
+    .set('batchNo', batchNo);
+
+  return this.http.get<any>(
+    this.baseUrl_ + 'Setup/getBatchWishQCDataList',
+    {
+      headers: this.token.headerToken(),
+      params
+    }
+  );
+}
 // saveQCData(model: any) {
 //   const url = this.baseUrl_ + 'Setup/SaveQCData';
 

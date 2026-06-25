@@ -106,6 +106,32 @@
 ::ng-deep .p-dialog-mask {
     padding: 0 !important;
 }
+.custom-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+}
+
+.left-title {
+    font-weight: bold;
+    flex: 1;
+}
+
+.center-input {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+}
+
+.center-input input {
+    width: 150px;
+}
+
+.right-space {
+    flex: 1;
+}
+
 
 /* Wrapper table */
 /* Wrapper table */

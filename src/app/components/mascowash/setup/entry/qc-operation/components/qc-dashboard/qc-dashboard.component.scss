@@ -209,3 +209,403 @@
 .reject-bg {
   background: #f7b191;
 }
+
+// ── Dialog Global Override ───────────────────────────────
+::ng-deep .size-popup-dialog {
+
+  .p-dialog-header {
+    background: linear-gradient(135deg, #1e1b4b 0%, #3730a3 100%);
+    color: #fff;
+    padding: 1.2rem 1.5rem;
+    border-radius: 12px 12px 0 0;
+    
+    .p-dialog-title {
+      font-size: 36px;
+      font-weight: 700;
+      letter-spacing: 0.3px;
+    }
+
+    .p-dialog-header-icon {
+      color: #fff;
+      &:hover { background: rgba(255,255,255,0.15); }
+    }
+  }
+
+  .p-dialog-content {
+    padding: 0;
+    background: #f8fafc;
+  }
+
+  .p-dialog-footer {
+    padding: 0;
+    border-top: 1px solid #e2e8f0;
+    background: #f8fafc;
+    border-radius: 0 0 12px 12px;
+  }
+}
+
+// ── Table ────────────────────────────────────────────────
+::ng-deep .size-popup-table {
+
+  .p-datatable-thead > tr > th {
+    background: #1e1b4b;
+    color: #fff;
+    font-size: 0.82rem;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    padding: 0.85rem 1rem;
+    border: none;
+
+    .th-content {
+      display: flex;
+      align-items: center;
+    }
+  }
+
+  .p-datatable-tbody > tr {
+    transition: background 0.15s ease;
+
+    &:hover { background: #ede9fe !important; }
+
+    td {
+      padding: 0.65rem 1rem;
+      font-size: 0.9rem;
+      border-bottom: 1px solid #e2e8f0;
+      color: #1e293b;
+    }
+  }
+
+  // Striped rows
+  .p-datatable-tbody > tr:nth-child(even) {
+    background: #f1f5f9;
+  }
+
+  .p-datatable-tfoot > tr {
+    background: #1e1b4b !important;
+    td { border: none; }
+  }
+}
+
+// ── Size Badge ───────────────────────────────────────────
+.size-badge {
+  display: inline-block;
+  background: linear-gradient(135deg, #6366f1, #8b5cf6);
+  color: #fff;
+  padding: 0.25rem 0.75rem;
+  border-radius: 999px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+}
+
+// ── Qty Value ────────────────────────────────────────────
+.qty-value {
+  font-weight: 700;
+  font-size: 1rem;
+  color: #16a34a;
+}
+
+// ── Reject Input ─────────────────────────────────────────
+.reject-input {
+  width: 90px;
+  text-align: right;
+  border: 1.5px solid #e2e8f0;
+  border-radius: 8px;
+  padding: 0.35rem 0.6rem;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #1e293b;
+  background: #fff;
+  transition: border-color 0.2s, box-shadow 0.2s;
+
+  &:focus {
+    border-color: #6366f1;
+    box-shadow: 0 0 0 3px rgba(99,102,241,0.15);
+    outline: none;
+  }
+
+  &.has-value {
+    border-color: #ef4444;
+    color: #ef4444;
+    background: #fff1f2;
+  }
+}
+
+// ── Totals Row ───────────────────────────────────────────
+.totals-row {
+  .total-label {
+    display: flex;
+    align-items: center;
+    color: #fff;
+    font-weight: 700;
+    font-size: 0.9rem;
+  }
+
+  .total-value {
+    font-weight: 800;
+    font-size: 1.05rem;
+
+    &.green { color: #4ade80; }
+    &.red   { color: #f87171; }
+  }
+}
+
+// ── Empty State ──────────────────────────────────────────
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 2.5rem 1rem;
+
+  .empty-icon {
+    font-size: 2.5rem;
+    color: #cbd5e1;
+    margin-bottom: 0.75rem;
+  }
+
+  .empty-text {
+    color: #94a3b8;
+    font-size: 0.9rem;
+  }
+}
+
+// ── Popup Footer ─────────────────────────────────────────
+.popup-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.85rem 1.25rem;
+  gap: 1rem;
+
+  .summary-chips {
+    display: flex;
+    gap: 0.6rem;
+    flex-wrap: wrap;
+
+    .chip {
+      display: inline-flex;
+      align-items: center;
+      padding: 0.3rem 0.85rem;
+      border-radius: 999px;
+      font-size: 0.78rem;
+      font-weight: 600;
+
+      &.green {
+        background: #dcfce7;
+        color: #15803d;
+        border: 1px solid #bbf7d0;
+      }
+
+      &.red {
+        background: #fee2e2;
+        color: #b91c1c;
+        border: 1px solid #fecaca;
+      }
+    }
+  }
+
+  .footer-actions {
+    display: flex;
+    gap: 0.5rem;
+
+    .confirm-btn {
+      background: linear-gradient(135deg, #16a34a, #15803d);
+      border: none;
+      border-radius: 8px;
+      font-weight: 600;
+      padding: 0.5rem 1.2rem;
+      transition: opacity 0.2s;
+      &:hover { opacity: 0.9; }
+    }
+
+    .close-btn {
+      border-radius: 8px;
+      font-weight: 600;
+      padding: 0.5rem 1.2rem;
+    }
+  }
+}
+
+
+
+
+
+
+// ═══════════════════════════════════════════
+// WORLD CLASS LOADER
+// ═══════════════════════════════════════════
+
+.loader-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  background: rgba(10, 10, 30, 0.75);
+  backdrop-filter: blur(6px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: fadeIn 0.2s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+.loader-box {
+  background: linear-gradient(145deg, #1e1b4b, #2d2a6e);
+  border: 1px solid rgba(99, 102, 241, 0.4);
+  border-radius: 24px;
+  padding: 2.5rem 3rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.2rem;
+  box-shadow:
+    0 0 0 1px rgba(139, 92, 246, 0.2),
+    0 25px 60px rgba(0, 0, 0, 0.5),
+    0 0 80px rgba(99, 102, 241, 0.15);
+  min-width: 280px;
+  animation: popIn 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes popIn {
+  from { transform: scale(0.8); opacity: 0; }
+  to   { transform: scale(1);   opacity: 1; }
+}
+
+// ── Orbital Rings ──────────────────────────
+.orbit-wrapper {
+  position: relative;
+  width: 90px;
+  height: 90px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.orbit {
+  position: absolute;
+  border-radius: 50%;
+  border: 2px solid transparent;
+}
+
+.ring-1 {
+  width: 90px;
+  height: 90px;
+  border-top-color: #6366f1;
+  border-right-color: #6366f1;
+  animation: spin 1.2s linear infinite;
+}
+
+.ring-2 {
+  width: 68px;
+  height: 68px;
+  border-bottom-color: #a78bfa;
+  border-left-color: #a78bfa;
+  animation: spin 0.9s linear infinite reverse;
+}
+
+.ring-3 {
+  width: 46px;
+  height: 46px;
+  border-top-color: #e879f9;
+  border-right-color: #e879f9;
+  animation: spin 1.5s linear infinite;
+}
+
+.orbit-core {
+  position: relative;
+  z-index: 2;
+  width: 30px;
+  height: 30px;
+  background: linear-gradient(135deg, #6366f1, #a78bfa);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 0 20px rgba(99, 102, 241, 0.6);
+
+  .core-icon {
+    font-size: 0.85rem;
+    color: #fff;
+    animation: spin 2s linear infinite;
+  }
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+// ── Text ───────────────────────────────────
+.loader-text {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.loader-title {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #e2e8f0;
+  letter-spacing: 0.5px;
+}
+
+// ── Dot Wave ───────────────────────────────
+.dot-wave {
+  display: flex;
+  gap: 4px;
+  align-items: flex-end;
+  height: 20px;
+
+  span {
+    display: block;
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: #a78bfa;
+    animation: wave 1.2s ease-in-out infinite;
+
+    &:nth-child(1) { animation-delay: 0s;    }
+    &:nth-child(2) { animation-delay: 0.15s; }
+    &:nth-child(3) { animation-delay: 0.3s;  }
+    &:nth-child(4) { animation-delay: 0.45s; }
+  }
+}
+
+@keyframes wave {
+  0%, 60%, 100% { transform: translateY(0);    opacity: 0.4; }
+  30%            { transform: translateY(-8px); opacity: 1;   }
+}
+
+// ── Sub text ───────────────────────────────
+.loader-sub {
+  font-size: 0.78rem;
+  color: #94a3b8;
+  letter-spacing: 0.3px;
+}
+
+// ── Progress Bar ───────────────────────────
+.progress-bar-track {
+  width: 200px;
+  height: 4px;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.progress-bar-fill {
+  height: 100%;
+  width: 40%;
+  border-radius: 999px;
+  background: linear-gradient(90deg, #6366f1, #a78bfa, #e879f9);
+  background-size: 200% 100%;
+  animation: shimmer 1.4s ease-in-out infinite;
+}
+
+@keyframes shimmer {
+  0%   { background-position: 200% center; width: 20%;  }
+  50%  { background-position: 0%   center; width: 70%;  }
+  100% { background-position: 200% center; width: 20%;  }
+}

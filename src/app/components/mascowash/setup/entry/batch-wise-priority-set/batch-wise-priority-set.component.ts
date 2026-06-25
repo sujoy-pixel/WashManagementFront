@@ -74,18 +74,35 @@ export class BatchWisePrioritySetComponent implements OnInit {
         label: x.DisplayName ?? x.displayName,
         value: x.ID ?? x.id
       }));
+       const found = this.UnitList.find(x => x.value === 60);
+      if (found) {
+        this.Model.UnitId = 60;
+       
+      }
     });
   }
-
-  // ================= SEARCH =================
+  // loadUnits() {
+  //   this.service.GetUnitName().subscribe(res => {
+  //     this.UnitList = res.map((x: any) => ({
+  //       label: x.DisplayName ?? x.displayName,
+  //       value: x.ID ?? x.id
+  //     }));
+  //     const found = this.UnitList.find(x => x.value === 60);
+  //     if (found) {
+  //       this.Model.UnitId = 60;
+       
+  //     }
+  //   });
+  // // ================= SEARCH =================
   onSearch() {
 
     if (!this.Model.UnitId || !this.Model.date) {
       this.toastr.warning('Select Unit and Date');
       return;
     }
-
+debugger;
     this.service.getBatchPriorityList({
+     
       unitId: this.Model.UnitId,
       date: this.Model.date
     }).subscribe(res => {
@@ -143,7 +160,8 @@ export class BatchWisePrioritySetComponent implements OnInit {
 //   return Array.from(map.values());
 // }
 groupRows(rows: any[]): BatchRecord[] {
-
+debugger;
+console.log(rows);
   const map = new Map<string, BatchRecord>();
 
   rows.forEach(r => {
