@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter, OnInit } from '@angular/core';
+import { Component, Input, Output, EventEmitter, OnInit, output, SimpleChanges } from '@angular/core';
 import { DialogModule } from 'primeng/dialog';
 import { CommonModule } from '@angular/common';
 import { ButtonModule } from 'primeng/button';
@@ -30,6 +30,7 @@ export class RejectReasonComponent implements OnInit {
   @Input() visible: boolean = false;
   @Input() title: string = '';
   @Input() type: string = '';
+  @Input() isResettotalInputValue: boolean = false;
 
   @Output() visibleChange   = new EventEmitter<boolean>();
   @Output() confirmReject   = new EventEmitter<any[]>();
@@ -39,11 +40,11 @@ export class RejectReasonComponent implements OnInit {
   @Output() totalCountChange = new EventEmitter<number>();
 
   @Input() groupedDefects: any = {};
-
+ 
   items: DefectItem[] = [];
   dataList: any[] = [];
 
-  totalInputValue: number = 0; // 🔥 bound to header input
+  totalInputValue: number | undefined =undefined; // 🔥 bound to header input
 
   mainModalVisible: boolean = false;
   isMaximized: boolean = false;
@@ -56,7 +57,19 @@ export class RejectReasonComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
+    console.log('IsResettotalInputValue: '+this.isResettotalInputValue)
     this.loadData();
+  }
+  ngOnChanges(changes: SimpleChanges): void { 
+    if (changes['isResettotalInputValue']) {
+      if (changes['isResettotalInputValue'].currentValue === true) {
+        this.totalInputValue = undefined;
+        this.isResettotalInputValue = false; // Reset the flag after handling
+      }
+      console.log('Current:', changes['isResettotalInputValue'].currentValue);
+      console.log('Previous:', changes['isResettotalInputValue'].previousValue);
+      console.log('Variable:', this.isResettotalInputValue);
+    }
   }
 
   enableEdit(item: any) {

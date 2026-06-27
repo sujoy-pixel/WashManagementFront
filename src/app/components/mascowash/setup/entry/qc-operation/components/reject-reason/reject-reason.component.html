@@ -2,12 +2,14 @@
 <p-dialog [(visible)]="visible" [modal]="true" [maximizable]="true" [draggable]="false"
     [resizable]="false" (onHide)="visibleChange.emit(false)" [contentStyle]="{background: '#fbaeae'}"
     styleClass="custom-dialog">
-    <!-- <ng-template pTemplate="header">
+    <ng-template pTemplate="header">
         <div class="custom-header">
             <div class="left-title">
                 {{ title }}
             </div>
-            <div class="center-input">
+            <!-- <div class="center-input">
+
+                
                <input
                  type="number"
                  class="form-control flex-grow-1"
@@ -15,31 +17,19 @@
                  [(ngModel)]="totalInputValue"
                  (ngModelChange)="onTotalInputChange($event)"
                  autofocus />
-            </div>
+            </div> -->
 
-             
+                <div class="center-input">
+               <input type="text" class="form-control flex-grow-1"
+                     placeholder=" Total {{ title }}"
+                     [(ngModel)]="totalInputValue"
+                     (ngModelChange)="onTotalInputChange($event)"
+                    autofocus  /> 
+            </div>
             <div class="right-space"></div>
         </div>
-    </ng-template> -->
-<ng-template pTemplate="header">
-    <div class="custom-header">
-        <div class="left-title">
-            {{ title }}
-        </div>
-        <div class="center-input">
-           <input
-             type="text"
-             inputmode="numeric"
-             pattern="[0-9]*"
-             class="form-control flex-grow-1"
-             [placeholder]="'Total ' + title"
-             [(ngModel)]="totalInputValue"
-             (ngModelChange)="onTotalInputChange(+$event)"
-             autofocus />
-        </div>
-        <div class="right-space"></div>
-    </div>
-</ng-template>
+    </ng-template>
+
     <div class="dashboard-body" style="margin-top: 15px;">
         <div class="grid">
             <div class="defect-card" *ngFor="let item of items; let i = index" [class.flipped]="item.isFlipped">

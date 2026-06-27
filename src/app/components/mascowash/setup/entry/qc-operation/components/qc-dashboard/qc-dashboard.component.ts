@@ -58,7 +58,7 @@ interface SizeModel {
   styleUrl: './qc-dashboard.component.scss'
 })
 export class QcDashboardComponent {
-
+  isResettotalInputValue=false;
   batchNo: string = '';
 
   batchHeader: BatchHeaderModel = {
@@ -232,7 +232,7 @@ loadBatchData() {
 
       // 🔥 Save batchNo before reset, restore after
       const currentBatchNo = this.batchNo;
-      this.resetValues();
+      //this.resetValues();
       this.batchNo = currentBatchNo;
 
       const data = res?.header;
@@ -444,7 +444,9 @@ loadBatchData() {
         this.isSaving = false;
         if (res?.isSuccess) {
           this.toastr.success(res.message || 'Saved successfully');
+          this.isResettotalInputValue=true;
           this.resetValues();
+           
         } else {
           this.toastr.error(res?.message || 'Failed to save');
         }
@@ -459,6 +461,7 @@ loadBatchData() {
 
   // ── Reset ─────────────────────────────────────
   resetValues(silent: boolean = false) {
+  this.isResettotalInputValue=true;
   this.batchHeader = {
     unitName: '', buyerName: '', trackingNo: '', batchNo: '',
     styleName: '', orderNo: '', jobNo: '', type: '',
@@ -484,7 +487,8 @@ loadBatchData() {
   this.isShowRepairableDialog = false;
   this.sizePopupVisible       = false;
   this.cdr.detectChanges();
-
+  
+  //this.totalInputValue = undefined;
   // 🔥 Only show toastr when user manually resets
   if (!silent) this.toastr.info('Form cleared');
 }

@@ -303,8 +303,10 @@
     [visible]="isShowRepairableDialog"
     [groupedDefects]="repairableDefects"
     (visibleChange)="isShowRepairableDialog = $event"
+    [isResettotalInputValue]="isResettotalInputValue"
     (onConfirm)="handleReparableData($event)"
     (totalCountChange)="onRepairableTotalChange($event)">
+  
   </app-reject-reason>
 
   <app-reject-reason
@@ -313,6 +315,7 @@
     [visible]="isShowRejectionDialog"
     [groupedDefects]="rejectDefects"
     (visibleChange)="isShowRejectionDialog = $event"
+    [isResettotalInputValue]="isResettotalInputValue"
     (onConfirm)="handleRejectionData($event)"
     (totalCountChange)="onRejectTotalChange($event)">
   </app-reject-reason>
