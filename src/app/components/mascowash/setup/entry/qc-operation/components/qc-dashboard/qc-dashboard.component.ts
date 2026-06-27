@@ -114,6 +114,7 @@ export class QcDashboardComponent {
   //   this.sizePopupVisible = false;
   // }
 confirmSizeSelection() {
+  debugger;
   // ── Each size: rejectQty cannot exceed qty ──
   const overLimit = this.sizeList.find(s => s.rejectQty > s.qty);
   if (overLimit) {
@@ -125,13 +126,24 @@ confirmSizeSelection() {
   }
 
   // ── Total size reject must equal total reject input ──
-  if (this.totalRejectQty !== this.rejectTotalInput) {
-    this.toastr.warning(
-      `Total size-wise reject qty (${this.totalRejectQty}) must equal total reject input (${this.rejectTotalInput})`,
-      'Mismatch'
-    );
-    return;
-  }
+
+  const totalRejectQty = Number(this.totalRejectQty);
+const rejectTotalInput = Number(this.rejectTotalInput);
+
+if (totalRejectQty !== rejectTotalInput) {
+  this.toastr.warning(
+    `Total size-wise reject qty (${totalRejectQty}) must equal total reject input (${rejectTotalInput})`,
+    'Mismatch'
+  );
+  return;
+}
+  // if (this.totalRejectQty !== this.rejectTotalInput) {
+  //   this.toastr.warning(
+  //     `Total size-wise reject qty (${this.totalRejectQty}) must equal total reject input (${this.rejectTotalInput})`,
+  //     'Mismatch'
+  //   );
+  //   return;
+  // }
 
   this.toastr.success('Size reject qty confirmed');
   this.sizePopupVisible = false;
@@ -232,7 +244,7 @@ loadBatchData() {
 
       // 🔥 Save batchNo before reset, restore after
       const currentBatchNo = this.batchNo;
-      //this.resetValues();
+      this.resetValuess();
       this.batchNo = currentBatchNo;
 
       const data = res?.header;
@@ -269,13 +281,20 @@ loadBatchData() {
 
       this.baseGoodGarments = data.goodGarments ?? 0;
       this.goodGarments     = this.baseGoodGarments;
-
-      this.sizeList = (res?.sizeList ?? []).map((s: any) => ({
-        sizeId:    s.sizeId    ?? 0,
-        sizeName:  s.sizeName  ?? '',
-        qty:       s.qty       ?? 0,
-        rejectQty: s.rejectQty ?? 0
-      }));
+this.sizeList = (res?.sizeList ?? [])
+  .filter((s: any) => s.sizeId && s.sizeId !== 0)
+  .map((s: any) => ({
+    sizeId: s.sizeId,
+    sizeName: s.sizeName ?? '',
+    qty: s.qty ?? 0,
+    rejectQty: s.rejectQty ?? 0
+  }));
+      // this.sizeList = (res?.sizeList ?? []).map((s: any) => ({
+      //   sizeId:    s.sizeId    ?? 0,
+      //   sizeName:  s.sizeName  ?? '',
+      //   qty:       s.qty       ?? 0,
+      //   rejectQty: s.rejectQty ?? 0
+      // }));
 
       this.cleanTrackingNo();
     },
@@ -490,35 +509,58 @@ loadBatchData() {
   
   //this.totalInputValue = undefined;
   // 🔥 Only show toastr when user manually resets
-  if (!silent) this.toastr.info('Form cleared');
+  //if (!silent) this.toastr.info('Form cleared');
 }
-  // resetValues() {
-  //   this.batchHeader = {
-  //     unitName: '', buyerName: '', trackingNo: '', batchNo: '',
-  //     styleName: '', orderNo: '', jobNo: '', type: '',
-  //     fabricationName: '', color: '', dressPart: '', uom: '', date: ''
-  //   };
+ resetValuess(): void {
+  // Header
+  this.batchHeader = {
+    unitName: '',
+    buyerName: '',
+    trackingNo: '',
+    batchNo: '',
+    styleName: '',
+    orderNo: '',
+    jobNo: '',
+    type: '',
+    fabricationName: '',
+    color: '',
+    dressPart: '',
+    uom: '',
+    date: ''
+  };
 
-  //   this.batchNo              = '';
-  //   this.goodGarments         = 0;
-  //   this.baseGoodGarments     = 0;
-  //   this.repairable           = 0;
-  //   this.reject               = 0;
-  //   this.repairableLength     = 0;
-  //   this.rejectLength         = 0;
-  //   this.repairableCount      = 0;
-  //   this.rejectCount          = 0;
-  //   this.repairableTotalInput = 0;
-  //   this.rejectTotalInput     = 0;
-  //   this.repairableDefects    = {};
-  //   this.rejectDefects        = {};
-  //   this.sizeList             = [];
+  // Batch Information
+  this.batchNo = '';
 
-  //   this.isShowRejectionDialog  = false;
-  //   this.isShowRepairableDialog = false;
-  //   this.sizePopupVisible       = false;
+  // Garments
+  this.goodGarments = 0;
+  this.baseGoodGarments = 0;
 
-  //   this.cdr.detectChanges();
-  //   this.toastr.info('Form cleared');
-  // }
+  // Repairable
+  this.repairable = 0;
+  this.repairableLength = 0;
+  this.repairableCount = 0;
+  this.repairableTotalInput = 0;
+
+  // Reject
+  this.reject = 0;
+  this.rejectLength = 0;
+  this.rejectCount = 0;
+  this.rejectTotalInput = 0;
+
+  // Defect Objects
+  this.repairableDefects = {};
+  this.rejectDefects = {};
+
+  // Size List
+  this.sizeList = [];
+
+  // Dialogs
+  this.isShowRejectionDialog = false;
+  this.isShowRepairableDialog = false;
+  this.sizePopupVisible = false;
+
+  // Refresh UI
+  this.cdr.detectChanges();
+}
 }
