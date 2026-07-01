@@ -58,6 +58,7 @@ interface SizeModel {
   styleUrl: './qc-dashboard.component.scss'
 })
 export class QcDashboardComponent {
+  debugger;
   isResettotalInputValue=false;
   batchNo: string = '';
 
@@ -91,7 +92,10 @@ export class QcDashboardComponent {
 
   repairableDefects: Record<string, any[]> = {};
   rejectDefects:     Record<string, any[]> = {};
-
+// ── QC Confirm Dialog ─────────────────────────
+qcConfirmVisible    = false;
+pendingBatchRes: any = null;   // holds the API response while user decides
+qcLastSavedInfo     = '';      // shown as subtitle in the dialog
   // ── Size List ────────────────────────────────
   sizeList: SizeModel[] = [];
 
@@ -171,142 +175,185 @@ onSizeRejectChange(row: SizeModel) {
   }
 
   // ── Load Batch Data ──────────────────────────
-  // loadBatchData() {
-   
-  //   if (!this.batchNo?.trim()) return;
-
-  //   this.loading = true;
-
-  //   this.service.getBatchWishQCDataList(this.batchNo).subscribe({
-  //     next: (res: any) => {
-
-  //       const data = res?.header;
-
-  //       if (!data) {
-  //         this.resetValues();
-  //         this.toastr.warning('No data found!');
-  //         return;
-  //       }
-
-  //       this.batchHeader = {
-  //         unitId:          data.unitId,
-  //         buyerId:         data.buyerId,
-  //         styleId:         data.styleId,
-  //         orderId:         data.orderId,
-  //         jobId:           data.jobId,
-  //         dressPartId:     data.dressPartId,
-  //         uomId:           data.uomId,
-  //         fabricationId:   data.fabricationId,
-  //         colorId:         data.colorId,
-  //         unitName:        data.unitName        ?? '',
-  //         buyerName:       data.buyerName       ?? '',
-  //         trackingNo:      data.trackingNo      ?? '',
-  //         batchNo:         data.batchNo         ?? '',
-  //         styleName:       data.styleName       ?? '',
-  //         orderNo:         data.orderNo         ?? '',
-  //         jobNo:           data.jobNo           ?? '',
-  //         type:            data.type            ?? '',
-  //         fabricationName: data.fabricationName ?? '',
-  //         color:           data.color           ?? '',
-  //         dressPart:       data.dressPart       ?? '',
-  //         uom:             data.uom             ?? '',
-  //         date:            data.prepareDate     ?? ''
-  //       };
-
-  //       this.baseGoodGarments = data.goodGarments ?? 0;
-  //       this.goodGarments     = this.baseGoodGarments;
-
-  //       this.sizeList = (res?.sizeList ?? []).map((s: any) => ({
-  //         sizeId:    s.sizeId    ?? 0,
-  //         sizeName:  s.sizeName  ?? '',
-  //         qty:       s.qty       ?? 0,
-  //         rejectQty: s.rejectQty ?? 0
-  //       }));
-
-  //       this.cleanTrackingNo();
-  //     },
-  //     error: () => {
-  //       this.toastr.error('Failed to load batch data');
-  //       this.resetValues();
-  //     },
-  //     complete: () => {
-  //       this.loading = false;
-  //     }
-  //   });
-  // }
 loadBatchData() {
+  debugger;
   if (!this.batchNo?.trim()) return;
 
   this.loading = true;
+  const currentBatchNo = this.batchNo;
 
   this.service.getBatchWishQCDataList(this.batchNo).subscribe({
     next: (res: any) => {
-
-      // 🔥 Save batchNo before reset, restore after
-      const currentBatchNo = this.batchNo;
       this.resetValuess();
       this.batchNo = currentBatchNo;
-
+      // this.isResettotalInputValue=true;
       const data = res?.header;
-
       if (!data) {
         this.toastr.warning('No data found!');
+        this.loading = false;
         return;
       }
 
-      this.batchHeader = {
-        unitId:          data.unitId,
-        buyerId:         data.buyerId,
-        styleId:         data.styleId,
-        orderId:         data.orderId,
-        jobId:           data.jobId,
-        dressPartId:     data.dressPartId,
-        uomId:           data.uomId,
-        fabricationId:   data.fabricationId,
-        colorId:         data.colorId,
-        unitName:        data.unitName        ?? '',
-        buyerName:       data.buyerName       ?? '',
-        trackingNo:      data.trackingNo      ?? '',
-        batchNo:         data.batchNo         ?? '',
-        styleName:       data.styleName       ?? '',
-        orderNo:         data.orderNo         ?? '',
-        jobNo:           data.jobNo           ?? '',
-        type:            data.type            ?? '',
-        fabricationName: data.fabricationName ?? '',
-        color:           data.color           ?? '',
-        dressPart:       data.dressPart       ?? '',
-        uom:             data.uom             ?? '',
-        date:            data.prepareDate     ?? ''
-      };
+      if (data.isQCSaved === true) {
+        // Store response, show custom dialog — no confirm()
+        this.pendingBatchRes  = res;
+        this.qcLastSavedInfo  = data.savedBy
+          ? `Last saved by ${data.savedBy}`
+          : 'QC data has already been recorded for this batch.';
+        this.qcConfirmVisible = true;
+        this.loading = false;
+        return;
+      }
 
-      this.baseGoodGarments = data.goodGarments ?? 0;
-      this.goodGarments     = this.baseGoodGarments;
-this.sizeList = (res?.sizeList ?? [])
-  .filter((s: any) => s.sizeId && s.sizeId !== 0)
-  .map((s: any) => ({
-    sizeId: s.sizeId,
-    sizeName: s.sizeName ?? '',
-    qty: s.qty ?? 0,
-    rejectQty: s.rejectQty ?? 0
-  }));
-      // this.sizeList = (res?.sizeList ?? []).map((s: any) => ({
-      //   sizeId:    s.sizeId    ?? 0,
-      //   sizeName:  s.sizeName  ?? '',
-      //   qty:       s.qty       ?? 0,
-      //   rejectQty: s.rejectQty ?? 0
-      // }));
-
-      this.cleanTrackingNo();
+      this.applyBatchData(res);
     },
     error: () => {
       this.toastr.error('Failed to load batch data');
       this.resetValues();
+      this.loading = false;
     },
     complete: () => {
       this.loading = false;
     }
   });
 }
+
+// Called when user confirms modification, or when isQCSaved is false
+private applyBatchData(res: any) {
+  const data = res?.header;
+
+  this.batchHeader = {
+    unitId:          data.unitId,
+    buyerId:         data.buyerId,
+    styleId:         data.styleId,
+    orderId:         data.orderId,
+    jobId:           data.jobId,
+    dressPartId:     data.dressPartId,
+    uomId:           data.uomId,
+    fabricationId:   data.fabricationId,
+    colorId:         data.colorId,
+    unitName:        data.unitName        ?? '',
+    buyerName:       data.buyerName       ?? '',
+    trackingNo:      data.trackingNo      ?? '',
+    batchNo:         data.batchNo         ?? '',
+    styleName:       data.styleName       ?? '',
+    orderNo:         data.orderNo         ?? '',
+    jobNo:           data.jobNo           ?? '',
+    type:            data.type            ?? '',
+    fabricationName: data.fabricationName ?? '',
+    color:           data.color           ?? '',
+    dressPart:       data.dressPart       ?? '',
+    uom:             data.uom             ?? '',
+    date:            data.prepareDate     ?? ''
+  };
+
+  this.baseGoodGarments = data.goodGarments ?? 0;
+  this.goodGarments     = this.baseGoodGarments;
+
+  this.sizeList = (res?.sizeList ?? [])
+    .filter((s: any) => s.sizeId && s.sizeId !== 0)
+    .map((s: any) => ({
+      sizeId:    s.sizeId,
+      sizeName:  s.sizeName  ?? '',
+      qty:       s.qty       ?? 0,
+      rejectQty: s.rejectQty ?? 0
+    }));
+
+  this.cleanTrackingNo();
+}
+
+// Dialog — user clicks "Modify QC Data"
+onQcConfirmModify() {
+  this.qcConfirmVisible = false;
+  this.applyBatchData(this.pendingBatchRes);
+  this.pendingBatchRes = null;
+}
+
+// Dialog — user clicks "Cancel"
+onQcConfirmCancel() {
+  this.qcConfirmVisible = false;
+  this.pendingBatchRes  = null;
+  this.resetValuess();
+  this.batchNo = '';
+}
+// loadBatchData() {
+//   debugger;
+//   if (!this.batchNo?.trim()) return;
+
+//   this.loading = true;
+
+//   this.service.getBatchWishQCDataList(this.batchNo).subscribe({
+//     next: (res: any) => {
+     
+//       // 🔥 Save batchNo before reset, restore after
+//       const currentBatchNo = this.batchNo;
+//       this.resetValuess();
+//       this.batchNo = currentBatchNo;
+
+//       const data = res?.header;
+
+//       if (!data) {
+//         this.toastr.warning('No data found!');
+//         return;
+//       }
+//       debugger;
+//       if (data.isQCSaved === true) {
+//         const userConfirmed = confirm('QC Data is already added for this batch. Do you want to modify it?');
+        
+//         // If user clicks "Cancel", abort loading
+//         if (!userConfirmed) {
+//           this.resetValuess();
+//           this.batchNo = '';
+//           return;
+//         }
+//       }
+//       this.batchHeader = {
+//         unitId:          data.unitId,
+//         buyerId:         data.buyerId,
+//         styleId:         data.styleId,
+//         orderId:         data.orderId,
+//         jobId:           data.jobId,
+//         dressPartId:     data.dressPartId,
+//         uomId:           data.uomId,
+//         fabricationId:   data.fabricationId,
+//         colorId:         data.colorId,
+//         unitName:        data.unitName        ?? '',
+//         buyerName:       data.buyerName       ?? '',
+//         trackingNo:      data.trackingNo      ?? '',
+//         batchNo:         data.batchNo         ?? '',
+//         styleName:       data.styleName       ?? '',
+//         orderNo:         data.orderNo         ?? '',
+//         jobNo:           data.jobNo           ?? '',
+//         type:            data.type            ?? '',
+//         fabricationName: data.fabricationName ?? '',
+//         color:           data.color           ?? '',
+//         dressPart:       data.dressPart       ?? '',
+//         uom:             data.uom             ?? '',
+//         date:            data.prepareDate     ?? ''
+//       };
+
+//       this.baseGoodGarments = data.goodGarments ?? 0;
+//       this.goodGarments     = this.baseGoodGarments;
+// this.sizeList = (res?.sizeList ?? [])
+//   .filter((s: any) => s.sizeId && s.sizeId !== 0)
+//   .map((s: any) => ({
+//     sizeId: s.sizeId,
+//     sizeName: s.sizeName ?? '',
+//     qty: s.qty ?? 0,
+//     rejectQty: s.rejectQty ?? 0
+//   }));
+
+//       this.cleanTrackingNo();
+//     },
+//     error: () => {
+//       this.toastr.error('Failed to load batch data');
+//       this.resetValues();
+//     },
+//     complete: () => {
+//       this.loading = false;
+//     }
+//   });
+// }
   cleanTrackingNo() {
     this.batchNo = '';
   }
