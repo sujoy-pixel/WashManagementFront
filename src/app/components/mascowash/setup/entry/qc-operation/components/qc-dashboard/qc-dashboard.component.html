@@ -24,6 +24,50 @@
     [style]="{ width: '680px', borderRadius: '12px' }"
     styleClass="size-popup-dialog">
 
+    <!-- ════════════════════════════════════════════════════════════
+         NEW · Total Reject Qty from parent banner
+         Shows the reject total received from the Reject child dialog,
+         the current size-wise reject sum, and a live match indicator.
+    ═════════════════════════════════════════════════════════════ -->
+    <div class="size-parent-reject-banner">
+      <div class="banner-chip">
+        <i class="pi pi-arrow-circle-down"></i>
+        <div class="banner-text">
+          <span class="banner-label">Total Reject (from Parent)</span>
+          <span class="banner-value parent-reject">{{ rejectTotalInput }}</span>
+        </div>
+      </div>
+
+      <div class="banner-divider">
+        <i class="pi pi-arrow-right"></i>
+      </div>
+
+      <div class="banner-chip">
+        <i class="pi pi-arrow-circle-up"></i>
+        <div class="banner-text">
+          <span class="banner-label">Size-wise Reject Sum</span>
+          <span class="banner-value size-reject">{{ totalRejectQty }}</span>
+        </div>
+      </div>
+
+      <div
+        class="banner-status"
+        [class.matched]="totalRejectQty === rejectTotalInput && rejectTotalInput > 0"
+        [class.mismatch]="totalRejectQty !== rejectTotalInput"
+        [class.empty]="rejectTotalInput === 0">
+        <i class="pi"
+           [class.pi-check-circle]="totalRejectQty === rejectTotalInput && rejectTotalInput > 0"
+           [class.pi-exclamation-triangle]="totalRejectQty !== rejectTotalInput"
+           [class.pi-info-circle]="rejectTotalInput === 0"></i>
+        <span *ngIf="rejectTotalInput === 0">No reject entered yet</span>
+        <span *ngIf="rejectTotalInput > 0 && totalRejectQty === rejectTotalInput">Matched — ready to confirm</span>
+        <span *ngIf="rejectTotalInput > 0 && totalRejectQty !== rejectTotalInput">
+          Mismatch ({{ totalRejectQty > rejectTotalInput ? '+' : '' }}{{ totalRejectQty - rejectTotalInput }})
+        </span>
+      </div>
+    </div>
+    <!-- ════════════════════════════════════════════════════════════ -->
+
     <p-table
       [value]="sizeList"
       [scrollable]="true"
@@ -194,6 +238,22 @@
       <button class="action-btn" (click)="decreaseGood()">
         <i class="pi pi-minus-circle"></i>
       </button>
+
+      <!-- ════════════════════════════════════════════════════════
+           NEW · Manual numeric input — click opens keypad popup
+           (placed AFTER existing − button, doesn't change layout)
+      ═════════════════════════════════════════════════════════ -->
+      <div class="manual-input-trigger" (click)="openKeypad()">
+        <input
+          type="text"
+          class="manual-input-field"
+          placeholder="Enter quantity"
+          readonly
+          [value]="keypadInputValue" />
+        <i class="pi pi-th-large manual-input-icon"></i>
+      </div>
+      <!-- ════════════════════════════════════════════════════════ -->
+
     </div>
 
     <!-- REPAIRABLE -->
@@ -226,7 +286,8 @@
             <div class="defect-header">Repairable Defect</div>
             <div class="defect-list">
               <ng-container *ngFor="let group of repairableDefects | keyvalue">
-                <div *ngFor="let item of group.value; let i = index">
+                <!-- FIX · iterate group.value.items (new structure) with fallback to group.value (old array) -->
+                <div *ngFor="let item of (group.value.items || group.value); let i = index">
                   <div class="defect-item" [ngStyle]="{ background: item.backgroundColor }">
                     <i
                       class="pi pi-times text-red-500 mr-2 cursor-pointer"
@@ -246,7 +307,8 @@
             <div class="defect-header">Reject</div>
             <div class="defect-list">
               <ng-container *ngFor="let group of rejectDefects | keyvalue">
-                <div *ngFor="let item of group.value; let i = index">
+                <!-- FIX · iterate group.value.items (new structure) with fallback to group.value (old array) -->
+                <div *ngFor="let item of (group.value.items || group.value); let i = index">
                   <div class="defect-item" [ngStyle]="{ background: item.backgroundColor }">
                     <i
                       class="pi pi-times text-red-500 mr-2 cursor-pointer"
@@ -304,6 +366,7 @@
     [groupedDefects]="repairableDefects"
     (visibleChange)="isShowRepairableDialog = $event"
     [isResettotalInputValue]="isResettotalInputValue"
+    [deductAmount]="repairableDeductAmount"
     (onConfirm)="handleReparableData($event)"
     (totalCountChange)="onRepairableTotalChange($event)">
   
@@ -316,11 +379,84 @@
     [groupedDefects]="rejectDefects"
     (visibleChange)="isShowRejectionDialog = $event"
     [isResettotalInputValue]="isResettotalInputValue"
+    [deductAmount]="rejectDeductAmount"
     (onConfirm)="handleRejectionData($event)"
     (totalCountChange)="onRejectTotalChange($event)">
   </app-reject-reason>
 
 </div>
+
+
+  <!-- ════════════════════════════════════════════════════════════
+       NEW · Total Inspected Garments summary bar
+       (matches reference image — sits below the dashboard grid)
+  ═════════════════════════════════════════════════════════════ -->
+  <div class="total-inspected-bar">
+    <span class="total-inspected-label">
+      <i class="pi pi-clipboard"></i>
+      Total Inspected Garments
+    </span>
+    <span class="total-inspected-value">{{ totalInspected }}</span>
+  </div>
+  <!-- ════════════════════════════════════════════════════════════ -->
+
+  <!-- ════════════════════════════════════════════════════════════
+       NEW · NUMERIC KEYPAD DIALOG  (matches reference image)
+       Light brown window · white keys · CLR / OK / Close
+  ═════════════════════════════════════════════════════════════ -->
+  <p-dialog
+    [(visible)]="keypadVisible"
+    [modal]="true"
+    [closable]="true"
+    [draggable]="true"
+    [resizable]="false"
+    [style]="{ width: '360px', padding: '0' }"
+    [contentStyle]="{ padding: '0' }"
+    styleClass="keypad-dialog">
+
+    <ng-template pTemplate="header">
+      <div class="keypad-dialog-header">
+        <i class="pi pi-th-large"></i>
+        <span>Keyboard</span>
+      </div>
+    </ng-template>
+
+    <ng-template pTemplate="content">
+      <div class="keypad-panel">
+
+        <!-- Display / input area (gray) -->
+        <div class="keypad-display">
+          <span class="keypad-display-value" [class.is-empty]="!keypadInputValue">
+            {{ keypadInputValue || '0' }}
+          </span>
+        </div>
+
+        <!-- Keys grid -->
+        <div class="keypad-grid">
+
+          <button class="kkey num" type="button" (click)="onKeypadKey('1')">1</button>
+          <button class="kkey num" type="button" (click)="onKeypadKey('2')">2</button>
+          <button class="kkey num" type="button" (click)="onKeypadKey('3')">3</button>
+          <button class="kkey num" type="button" (click)="onKeypadKey('4')">4</button>
+
+          <button class="kkey num" type="button" (click)="onKeypadKey('5')">5</button>
+          <button class="kkey num" type="button" (click)="onKeypadKey('6')">6</button>
+          <button class="kkey num" type="button" (click)="onKeypadKey('7')">7</button>
+          <button class="kkey num" type="button" (click)="onKeypadKey('8')">8</button>
+
+          <button class="kkey num" type="button" (click)="onKeypadKey('9')">9</button>
+          <button class="kkey num" type="button" (click)="onKeypadKey('0')">0</button>
+          <button class="kkey clr" type="button" (click)="onKeypadKey('clr')">CLR</button>
+
+          <button class="kkey ok"  type="button" (click)="onKeypadOk()">OK</button>
+          <button class="kkey close" type="button" (click)="onKeypadClose()">Close</button>
+
+        </div>
+
+      </div>
+    </ng-template>
+  </p-dialog>
+  <!-- ════════════════════════════════════════════════════════════ -->
 
 <!-- LOADER OVERLAY -->
 <div class="loader-overlay" *ngIf="loading">
@@ -345,8 +481,7 @@
     </div>
   </div>
 </div>
-<!-- QC ALREADY SAVED — CONFIRM MODIFY DIALOG -->
-<!-- QC ALREADY SAVED — CONFIRM MODIFY DIALOG -->
+
 <p-dialog [(visible)]="qcConfirmVisible" [modal]="true" [closable]="false"
   [draggable]="false" [resizable]="false"
   [style]="{width:'520px',padding:'0',background:'transparent',border:'none',boxShadow:'none'}"

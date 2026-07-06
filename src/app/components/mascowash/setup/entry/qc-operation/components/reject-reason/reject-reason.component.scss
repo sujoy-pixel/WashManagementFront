@@ -260,3 +260,250 @@
 // ::ng-deep .p-dialog-mask {
 //   padding: 0 !important;
 // }
+
+/* ═══════════════════════════════════════════════════════════════
+   APPEND-ONLY additions for single-click edit UX
+   Nothing above this line was changed.
+   ═══════════════════════════════════════════════════════════════ */
+
+/* The count number — looks tappable and gives subtle feedback on hover */
+.count-display {
+  display: inline-block;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+
+.count-display:hover {
+  background: #fff3cd;       /* warm yellow hint */
+  color: #d92d20;
+  outline: 1px dashed #d92d20;
+}
+
+/* Make the in-place edit input feel snappier */
+.card-body input[type="number"] {
+  padding: 2px 4px;
+  border-radius: 4px;
+  outline: none;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+.card-body input[type="number"]:focus {
+  border-color: #18b76a;
+  box-shadow: 0 0 0 2px rgba(24, 183, 106, 0.25);
+}
+
+/* Hide the spin buttons on number inputs — they get in the way of fast typing */
+.card-body input[type="number"]::-webkit-outer-spin-button,
+.card-body input[type="number"]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.card-body input[type="number"] {
+  -moz-appearance: textfield;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   APPEND-ONLY additions for the consolidated footer feature
+   - Removed the top summary bar (Previous Total removed per request)
+   - All summary info now lives in the footer
+   - Card Sum chip shows validation state (exceeds / matched / remaining)
+   ═══════════════════════════════════════════════════════════════ */
+
+/* ── Consolidated footer layout ── */
+.footer-consolidated {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+/* Left side: summary chips group */
+.footer-summary-group {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+/* Right side: running total + buttons */
+.footer-actions-group {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/* ── Individual summary chips ── */
+.footer-chip {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 4px 12px;
+  min-width: 70px;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  transition: all 0.2s ease;
+}
+
+.chip-label {
+  font-size: 9px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: #64748b;
+  margin-bottom: 1px;
+}
+
+.chip-value {
+  font-size: 18px;
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+  color: #1f2937;
+  line-height: 1.1;
+}
+
+.chip-value.added   { color: #d92d20; }
+.chip-value.current { color: #2563eb; }
+
+/* ── Card Sum chip with validation states ── */
+.card-sum-chip {
+  border-width: 2px;
+  border-color: #94a3b8;
+}
+
+/* Invalid: card sum exceeds total input — red highlight */
+.card-sum-chip.invalid {
+  background: #fef2f2;
+  border-color: #dc2626;
+  box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.15);
+  animation: shakeChip 0.4s ease;
+}
+
+.card-sum-chip.invalid .chip-value {
+  color: #dc2626;
+}
+
+/* Matched: card sum exactly equals total input — green highlight */
+.card-sum-chip.matched {
+  background: #f0fdf4;
+  border-color: #16a34a;
+  box-shadow: 0 0 0 3px rgba(22, 163, 74, 0.12);
+}
+
+.card-sum-chip.matched .chip-value {
+  color: #16a34a;
+}
+
+@keyframes shakeChip {
+  0%, 100% { transform: translateX(0); }
+  25%      { transform: translateX(-3px); }
+  75%      { transform: translateX(3px); }
+}
+
+/* Status text under the card sum value */
+.chip-status {
+  font-size: 9px;
+  font-weight: 700;
+  color: #dc2626;
+  margin-top: 1px;
+  display: flex;
+  align-items: center;
+  gap: 2px;
+}
+
+.chip-status.matched   { color: #16a34a; }
+.chip-status.remaining { color: #64748b; font-weight: 600; }
+
+.chip-status i { font-size: 9px; }
+
+/* ── Grand Total chip (emphasized) ── */
+.grand-chip {
+  background: #d92d20;
+  border-color: #b91c1c;
+  min-width: 90px;
+}
+
+.grand-chip .chip-label {
+  color: rgba(255, 255, 255, 0.85);
+}
+
+.grand-chip .grand-val {
+  color: #ffffff;
+  font-size: 22px;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+}
+
+/* ── Running total pill (right side) ── */
+.footer-running-total {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  background: linear-gradient(135deg, #1f2937 0%, #111827 100%);
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.footer-running-total i {
+  color: #fbbf24;
+  font-size: 14px;
+}
+
+.footer-total-label {
+  font-size: 11px;
+  font-weight: 600;
+  color: #d1d5db;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.footer-total-value {
+  font-size: 18px;
+  font-weight: 800;
+  color: #ffffff;
+  font-variant-numeric: tabular-nums;
+  text-shadow: 0 0 8px rgba(251, 191, 36, 0.4);
+}
+
+/* ── Buttons group ── */
+.footer-buttons {
+  display: flex;
+  gap: 8px;
+}
+
+/* ── Digits-only treatment for the header Total input ── */
+.center-input input.form-control {
+  text-align: center;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+.center-input input.form-control:focus {
+  border-color: #d92d20;
+  box-shadow: 0 0 0 2px rgba(217, 45, 32, 0.2);
+  outline: none;
+}
+
+/* ── Responsive: stack footer on small screens ── */
+@media (max-width: 768px) {
+  .footer-consolidated {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 8px;
+  }
+  .footer-summary-group {
+    justify-content: center;
+  }
+  .footer-actions-group {
+    justify-content: space-between;
+    width: 100%;
+  }
+}

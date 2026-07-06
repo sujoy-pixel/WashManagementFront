@@ -90,14 +90,113 @@ export class QcDashboardComponent {
   loading  = false;
   isSaving = false;
 
-  repairableDefects: Record<string, any[]> = {};
-  rejectDefects:     Record<string, any[]> = {};
+  // FIX · Changed type from Record<string, any[]> to Record<string, any>
+  // to support BOTH formats:
+  //   - Old: array of defects  →  group = [ {defectId, name, count, ...}, ... ]
+  //   - New: object with total  →  group = { groupTotal: number, items: [...] }
+  // The Array.isArray() checks in removeDefect/removeReject/saveQCData
+  // handle both formats at runtime.
+  repairableDefects: Record<string, any> = {};
+  rejectDefects:     Record<string, any> = {};
+
+  // ════════════════════════════════════════════════════════════
+  //  NEW · Deduct amounts — when a whole defect group is removed
+  //  (last item X-clicked), the parent sets this to the group's
+  //  total. The child picks it up via ngOnChanges and reduces its
+  //  accumulatedTotal to stay in sync.
+  // ════════════════════════════════════════════════════════════
+  repairableDeductAmount: number = 0;
+  rejectDeductAmount: number = 0;
 // ── QC Confirm Dialog ─────────────────────────
 qcConfirmVisible    = false;
 pendingBatchRes: any = null;   // holds the API response while user decides
 qcLastSavedInfo     = '';      // shown as subtitle in the dialog
   // ── Size List ────────────────────────────────
   sizeList: SizeModel[] = [];
+
+  // ════════════════════════════════════════════════════════════
+  //  NEW · Keypad Feature (matches reference image)
+  //  - Light brown window, white keys, CLR / OK / Close
+  //  - Adds the typed number to Good Garments on OK
+  // ════════════════════════════════════════════════════════════
+  keypadVisible: boolean = false;        // controls keypad dialog visibility
+  keypadInputValue: string = '';         // raw string being typed on keypad
+
+  /** Total inspected = good + repairable + reject (matches reference) */
+  get totalInspected(): number {
+    return this.goodGarments + this.repairable + this.reject;
+  }
+
+  /** Open the keypad popup */
+  openKeypad() {
+    this.keypadInputValue = '';
+    this.keypadVisible = true;
+  }
+
+  /** Handle a single keypad key press */
+  onKeypadKey(key: string) {
+    switch (key) {
+      case 'backspace':
+        this.keypadInputValue = this.keypadInputValue.slice(0, -1);
+        break;
+
+      case 'clr':
+        this.keypadInputValue = '';
+        break;
+
+      case '.':
+        // prevent multiple dots
+        if (this.keypadInputValue.includes('.')) return;
+        // auto-prefix 0 if dot is first
+        this.keypadInputValue = this.keypadInputValue === ''
+          ? '0.'
+          : this.keypadInputValue + '.';
+        break;
+
+      default:
+        // digit
+        // prevent leading zeros like "00" or "01"
+        if (this.keypadInputValue === '0') {
+          this.keypadInputValue = key;
+          return;
+        }
+        // limit to 6 digits before dot
+        const intPart = this.keypadInputValue.split('.')[0];
+        if (intPart.length >= 6) return;
+        this.keypadInputValue += key;
+        break;
+    }
+  }
+
+  /** OK — commit the entered value to Good Garments */
+  onKeypadOk() {
+    const val = parseFloat(this.keypadInputValue);
+
+    if (isNaN(val) || val <= 0) {
+      this.toastr.warning('Please enter a valid number greater than 0', 'Invalid Input');
+      return;
+    }
+
+    // Add to baseGoodGarments and recalc (preserves existing +/- and repair/reject logic)
+    this.baseGoodGarments += val;
+    this.recalculateGood();
+
+    this.toastr.success(
+      `Added ${val} to Good Garments. New total: ${this.goodGarments}`,
+      'Keypad Entry'
+    );
+
+    this.keypadVisible = false;
+    this.keypadInputValue = '';
+    this.cdr.detectChanges();
+  }
+
+  /** Close — discard keypad input */
+  onKeypadClose() {
+    this.keypadVisible = false;
+    this.keypadInputValue = '';
+  }
+  // ════════════════════════════════════════════════════════════
 
   constructor(
     private service: WashSetupService,
@@ -417,19 +516,87 @@ onQcConfirmCancel() {
     this.cdr.detectChanges();
   }
 
-  // ── Remove defect items ──────────────────────
+  // ════════════════════════════════════════════════════════════
+  //  ENHANCED · Remove defect items — now handles group-total deduction.
+  //  When the LAST item in a group is removed (group becomes empty):
+  //  1. Read the group's stored groupTotal
+  //  2. Subtract it from repairableTotalInput
+  //  3. Update repairable counter
+  //  4. Tell the child to reduce its accumulatedTotal (via deductAmount)
+  //  5. Recalculate good garments (adds back to good)
+  //  Also handles backward compat: if group is an array (old format),
+  //  use it directly; if it's {groupTotal, items}, use .items.
+  // ════════════════════════════════════════════════════════════
   removeDefect(groupKey: any, index: number) {
     const key = groupKey as string;
-    this.repairableDefects[key].splice(index, 1);
-    if (this.repairableDefects[key].length === 0) delete this.repairableDefects[key];
+    const group = this.repairableDefects[key];
+    if (!group) return;
+
+    // Backward compat: group may be array (old) or {groupTotal, items} (new)
+    const items = Array.isArray(group) ? group : (group.items || []);
+    items.splice(index, 1);
+
+    if (items.length === 0) {
+      // Group is now empty — read groupTotal and deduct
+      const groupTotal = Array.isArray(group) ? 0 : (group.groupTotal || 0);
+      delete this.repairableDefects[key];
+
+      if (groupTotal > 0) {
+        // Subtract from repairable total
+        this.repairableTotalInput = Math.max(0, this.repairableTotalInput - groupTotal);
+        this.repairable = this.repairableTotalInput;
+
+        // Tell child to reduce its accumulatedTotal
+        this.repairableDeductAmount = groupTotal;
+
+        // Recalculate good garments (will add back)
+        this.recalculateGood();
+
+        // Reset deduct amount asynchronously so next deduction is detected
+        setTimeout(() => {
+          this.repairableDeductAmount = 0;
+        }, 100);
+      }
+    }
+
     this.repairableDefects = { ...this.repairableDefects };
+    this.cdr.detectChanges();
   }
 
   removeReject(groupKey: any, index: number) {
     const key = groupKey as string;
-    this.rejectDefects[key].splice(index, 1);
-    if (this.rejectDefects[key].length === 0) delete this.rejectDefects[key];
+    const group = this.rejectDefects[key];
+    if (!group) return;
+
+    // Backward compat: group may be array (old) or {groupTotal, items} (new)
+    const items = Array.isArray(group) ? group : (group.items || []);
+    items.splice(index, 1);
+
+    if (items.length === 0) {
+      // Group is now empty — read groupTotal and deduct
+      const groupTotal = Array.isArray(group) ? 0 : (group.groupTotal || 0);
+      delete this.rejectDefects[key];
+
+      if (groupTotal > 0) {
+        // Subtract from reject total
+        this.rejectTotalInput = Math.max(0, this.rejectTotalInput - groupTotal);
+        this.reject = this.rejectTotalInput;
+
+        // Tell child to reduce its accumulatedTotal
+        this.rejectDeductAmount = groupTotal;
+
+        // Recalculate good garments (will add back)
+        this.recalculateGood();
+
+        // Reset deduct amount asynchronously so next deduction is detected
+        setTimeout(() => {
+          this.rejectDeductAmount = 0;
+        }, 100);
+      }
+    }
+
     this.rejectDefects = { ...this.rejectDefects };
+    this.cdr.detectChanges();
   }
 
   // ── Save ─────────────────────────────────────
@@ -471,8 +638,11 @@ onQcConfirmCancel() {
     const repairableDetails: any[] = [];
     for (const groupId in this.repairableDefects) {
       if (!this.repairableDefects.hasOwnProperty(groupId)) continue;
+      // FIX · handle new {groupTotal, items} structure (and old array for backward compat)
+      const group = this.repairableDefects[groupId];
+      const items = Array.isArray(group) ? group : (group.items || []);
       const qtyMap = new Map<number, number>();
-      for (const item of this.repairableDefects[groupId]) {
+      for (const item of items) {
         qtyMap.set(item.defectId, (qtyMap.get(item.defectId) || 0) + (item.count || 0));
       }
       qtyMap.forEach((qty, defectId) => {
@@ -483,8 +653,11 @@ onQcConfirmCancel() {
     const rejectDetails: any[] = [];
     for (const groupId in this.rejectDefects) {
       if (!this.rejectDefects.hasOwnProperty(groupId)) continue;
+      // FIX · handle new {groupTotal, items} structure (and old array for backward compat)
+      const group = this.rejectDefects[groupId];
+      const items = Array.isArray(group) ? group : (group.items || []);
       const qtyMap = new Map<number, number>();
-      for (const item of this.rejectDefects[groupId]) {
+      for (const item of items) {
         qtyMap.set(item.defectId, (qtyMap.get(item.defectId) || 0) + (item.count || 0));
       }
       qtyMap.forEach((qty, defectId) => {
@@ -549,11 +722,30 @@ onQcConfirmCancel() {
   this.rejectDefects        = {};
   this.sizeList             = [];
 
+  // NEW · reset deduct amounts
+  this.repairableDeductAmount = 0;
+  this.rejectDeductAmount     = 0;
+  // NEW · reset keypad state
+  this.keypadVisible        = false;
+  this.keypadInputValue     = '';
+
   this.isShowRejectionDialog  = false;
   this.isShowRepairableDialog = false;
   this.sizePopupVisible       = false;
   this.cdr.detectChanges();
-  
+
+  // ════════════════════════════════════════════════════════════
+  //  FIX · Reset the flag back to false AFTER the child has had a
+  //  chance to detect the true→false→true cycle. Without this,
+  //  the flag stays true and subsequent saves/refreshes don't
+  //  trigger ngOnChanges in the child (because true→true is not
+  //  a change). The setTimeout ensures Angular has already
+  //  propagated the `true` to the child before we reset it.
+  // ════════════════════════════════════════════════════════════
+  setTimeout(() => {
+    this.isResettotalInputValue = false;
+  }, 100);
+
   //this.totalInputValue = undefined;
   // 🔥 Only show toastr when user manually resets
   //if (!silent) this.toastr.info('Form cleared');
@@ -599,8 +791,18 @@ onQcConfirmCancel() {
   this.repairableDefects = {};
   this.rejectDefects = {};
 
+  // NEW · reset deduct amounts
+  this.repairableDeductAmount = 0;
+  this.rejectDeductAmount = 0;
+
   // Size List
   this.sizeList = [];
+  // NEW · reset keypad state
+  this.keypadVisible        = false;
+  this.keypadInputValue     = '';
+
+  // NEW · tell child components to reset their accumulated totals
+  this.isResettotalInputValue = true;
 
   // Dialogs
   this.isShowRejectionDialog = false;
@@ -609,5 +811,13 @@ onQcConfirmCancel() {
 
   // Refresh UI
   this.cdr.detectChanges();
+
+  // ════════════════════════════════════════════════════════════
+  //  FIX · Reset the flag back to false AFTER the child detects it.
+  //  Same pattern as resetValues() — see comment there for details.
+  // ════════════════════════════════════════════════════════════
+  setTimeout(() => {
+    this.isResettotalInputValue = false;
+  }, 100);
 }
 }

@@ -244,6 +244,119 @@
   }
 }
 
+// ═══════════════════════════════════════════════════════════════
+// NEW · Total Reject from parent banner — sits at the top of the
+// size popup, shows the parent's rejectTotalInput vs the current
+// size-wise reject sum with a live match/mismatch indicator.
+// ═══════════════════════════════════════════════════════════════
+.size-parent-reject-banner {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 16px;
+  margin: 0;
+  background: linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%);
+  border-bottom: 1px solid #fecaca;
+}
+
+.banner-chip {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 6px 14px;
+  background: #ffffff;
+  border-radius: 10px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.06);
+  flex: 1;
+  min-width: 0;
+}
+
+.banner-chip i {
+  font-size: 22px;
+  flex-shrink: 0;
+}
+
+.banner-chip:first-child i { color: #dc2626; }   // parent reject — red
+.banner-chip:last-of-type i { color: #f59e0b; }  // size sum — amber
+
+.banner-text {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.2;
+  min-width: 0;
+}
+
+.banner-label {
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: #6b7280;
+}
+
+.banner-value {
+  font-size: 22px;
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+}
+
+.banner-value.parent-reject { color: #dc2626; }
+.banner-value.size-reject   { color: #d97706; }
+
+// Arrow divider between the two chips
+.banner-divider {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: #ffffff;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+}
+
+.banner-divider i {
+  font-size: 16px;
+  color: #6b7280;
+}
+
+// Status pill on the right
+.banner-status {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 14px;
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: 700;
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+
+.banner-status i { font-size: 14px; }
+
+// Empty state (no reject entered yet) — gray
+.banner-status.empty {
+  background: #f3f4f6;
+  color: #6b7280;
+  border: 1px solid #e5e7eb;
+}
+
+// Matched — green
+.banner-status.matched {
+  background: #d1fae5;
+  color: #065f46;
+  border: 1px solid #6ee7b7;
+}
+
+// Mismatch — red
+.banner-status.mismatch {
+  background: #fee2e2;
+  color: #991b1b;
+  border: 1px solid #fca5a5;
+}
+
 // ── Table ────────────────────────────────────────────────
 ::ng-deep .size-popup-table {
 
@@ -951,4 +1064,250 @@
 @keyframes qcEntFadeUp {
   from { opacity: 0; transform: translateY(8px); }
   to   { opacity: 1; transform: translateY(0); }
+}
+
+
+/* ═══════════════════════════════════════════════════════════════
+   APPEND-ONLY additions for the new keypad feature.
+   Nothing above this line was changed.
+   ═══════════════════════════════════════════════════════════════ */
+
+/* ── Manual input trigger (inside green Good Garments card) ── */
+.manual-input-trigger {
+  position: relative;
+  width: 80%;
+  margin: 14px auto 4px;
+  cursor: pointer;
+  user-select: none;
+}
+
+.manual-input-field {
+  width: 100%;
+  height: 40px;
+  padding: 0 38px 0 12px;
+  font-size: 15px;
+  font-weight: 600;
+  text-align: center;
+  color: #166534;
+  background: #ffffff;
+  border: 2px solid rgba(34, 197, 94, 0.5);
+  border-radius: 8px;
+  outline: none;
+  cursor: pointer;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.manual-input-field::placeholder {
+  color: #94a3b8;
+  font-weight: 500;
+  font-style: italic;
+}
+
+.manual-input-trigger:hover .manual-input-field {
+  border-color: #22c55e;
+  box-shadow: 0 4px 12px rgba(34, 197, 94, 0.25);
+}
+
+.manual-input-trigger:active .manual-input-field {
+  transform: translateY(1px);
+}
+
+.manual-input-icon {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 15px;
+  color: #22c55e;
+  pointer-events: none;
+  transition: transform 0.2s;
+}
+
+.manual-input-trigger:hover .manual-input-icon {
+  transform: translateY(-50%) scale(1.15);
+}
+
+/* ── Total Inspected Garments summary bar ── */
+.total-inspected-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 12px;
+  padding: 12px 18px;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-left: 4px solid #22c55e;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.total-inspected-label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  color: #334155;
+}
+
+.total-inspected-label i { color: #22c55e; font-size: 16px; }
+
+.total-inspected-value {
+  font-size: 22px;
+  font-weight: 800;
+  color: #166534;
+  font-variant-numeric: tabular-nums;
+}
+
+/* ── Keypad dialog (light brown window + white keys) ── */
+:host ::ng-deep .keypad-dialog {
+  .p-dialog {
+    background: #d4b8a0 !important;
+    border-radius: 10px !important;
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.3) !important;
+    overflow: hidden;
+  }
+
+  .p-dialog-header {
+    background: #b89878 !important;
+    color: #2a1f15 !important;
+    padding: 10px 16px !important;
+    border-bottom: 1px solid #9a7e60 !important;
+  }
+
+  .p-dialog-header .p-dialog-title {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 15px;
+    font-weight: 700;
+    color: #2a1f15 !important;
+  }
+
+  .p-dialog-header .p-dialog-header-icons .p-dialog-header-icon {
+    color: #2a1f15 !important;
+    background: transparent !important;
+  }
+
+  .p-dialog-header .p-dialog-header-icons .p-dialog-header-icon:hover {
+    background: rgba(0, 0, 0, 0.1) !important;
+  }
+
+  .p-dialog-content {
+    background: #d4b8a0 !important;
+    padding: 16px !important;
+    border: none !important;
+  }
+}
+
+.keypad-dialog-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 15px;
+  font-weight: 700;
+  color: #2a1f15;
+}
+
+.keypad-dialog-header i { font-size: 15px; }
+
+.keypad-panel {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.keypad-display {
+  background: #e8e8e8;
+  border: 1px solid #b8b8b8;
+  border-radius: 6px;
+  height: 56px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  padding: 0 16px;
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.keypad-display-value {
+  font-size: 28px;
+  font-weight: 700;
+  color: #1f2937;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.02em;
+}
+
+.keypad-display-value.is-empty {
+  color: #9ca3af;
+}
+
+.keypad-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+}
+
+.kkey {
+  height: 52px;
+  font-size: 18px;
+  font-weight: 700;
+  border: 1px solid #c4c4c4;
+  border-radius: 6px;
+  background: #ffffff;
+  color: #1f2937;
+  cursor: pointer;
+  transition: transform 0.08s, background 0.12s, box-shadow 0.12s;
+  user-select: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.kkey:hover {
+  background: #f1f5f9;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.12);
+}
+
+.kkey:active {
+  transform: translateY(1px) scale(0.98);
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.15);
+  background: #e2e8f0;
+}
+
+.kkey.clr {
+  grid-column: span 2;
+  color: #dc2626;
+}
+
+.kkey.clr:hover {
+  background: #fef2f2;
+  border-color: #dc2626;
+}
+
+.kkey.ok {
+  grid-column: span 2;
+  color: #16a34a;
+}
+
+.kkey.ok:hover {
+  background: #f0fdf4;
+  border-color: #16a34a;
+}
+
+.kkey.close {
+  grid-column: span 2;
+  color: #dc2626;
+}
+
+.kkey.close:hover {
+  background: #fef2f2;
+  border-color: #dc2626;
+}
+
+@media (max-width: 420px) {
+  .keypad-grid { gap: 6px; }
+  .kkey { height: 46px; font-size: 16px; }
+  .keypad-display { height: 48px; }
+  .keypad-display-value { font-size: 24px; }
 }

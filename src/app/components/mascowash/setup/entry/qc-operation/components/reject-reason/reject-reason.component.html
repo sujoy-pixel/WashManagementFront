@@ -1,4 +1,3 @@
-
 <p-dialog [(visible)]="visible" [modal]="true" [maximizable]="true" [draggable]="false"
     [resizable]="false" (onHide)="visibleChange.emit(false)" [contentStyle]="{background: '#fbaeae'}"
     styleClass="custom-dialog">
@@ -20,10 +19,15 @@
             </div> -->
 
                 <div class="center-input">
+               <!-- FIX · Changed [(ngModel)] to [ngModel] (one-way) + (ngModelChange)
+                    Removed (input) handler that was modifying DOM directly and
+                    conflicting with ngModel, causing the backspace bug. -->
                <input type="text" class="form-control flex-grow-1"
                      placeholder=" Total {{ title }}"
-                     [(ngModel)]="totalInputValue"
+                     [ngModel]="totalInputValue ?? ''"
                      (ngModelChange)="onTotalInputChange($event)"
+                     (keydown)="onTotalInputKeydown($event)"
+                     (focus)="onTotalInputFocus($event)"
                     autofocus  /> 
             </div>
             <div class="right-space"></div>
@@ -44,15 +48,31 @@
                             </button>
                             <div style="display:flex; align-items:center; justify-content:center;">
                                 <ng-container *ngIf="!item.isEdit; else editTplFront">
-                                    <span (dblclick)="item.isEdit = true" style="min-width:40px; text-align:center;">
+                                    <!-- ════════════════════════════════════════════════════════
+                                        NEW · single-click (was dblclick) to enter edit mode
+                                        + cursor: pointer + auto-select on input focus
+                                    ═════════════════════════════════════════════════════════ -->
+                                    <span
+                                      (click)="enableEdit(item, 'front')"
+                                      class="count-display"
+                                      style="min-width:40px; text-align:center; cursor: pointer; user-select: none;">
                                         {{ item.count }}
                                     </span>
                                 </ng-container>
                                 <ng-template #editTplFront>
-                                    <input type="number" [(ngModel)]="item.count"
-                                        (blur)="saveCount(item, $event)"
-                                        (keydown.enter)="saveCount(item, $event)"
-                                        style="width:60px; text-align:center; border: 1px solid #ccc;" />
+                                    <!-- FIX · Removed (input) handler that was modifying DOM directly.
+                                         With [ngModel] one-way binding, ngModelChange handles sanitization. -->
+                                    <input
+                                      type="number"
+                                      [attr.data-edit-side]="'front'"
+                                      [attr.data-defect-id]="item.defectId"
+                                      [ngModel]="item.count"
+                                      (ngModelChange)="item.count = $event || 0"
+                                      (blur)="saveCount(item, $event)"
+                                      (keydown.enter)="saveCount(item, $event)"
+                                      (focus)="onCountInputFocus($event)"
+                                      (keydown)="onCountInputKeydown($event)"
+                                      style="width:60px; text-align:center; border: 1px solid #ccc;" />
                                 </ng-template>
                             </div>
                             <button type="button" style="width: 30px; height: 30px;"
@@ -72,15 +92,30 @@
                             </button>
                             <div style="display:flex; align-items:center; justify-content:center;">
                                 <ng-container *ngIf="!item.isEdit; else editTplBack">
-                                    <span (dblclick)="item.isEdit = true" style="min-width:40px; text-align:center;">
+                                    <!-- ════════════════════════════════════════════════════════
+                                        NEW · single-click (was dblclick) to enter edit mode
+                                        + cursor: pointer + auto-select on input focus
+                                    ═════════════════════════════════════════════════════════ -->
+                                    <span
+                                      (click)="enableEdit(item, 'back')"
+                                      class="count-display"
+                                      style="min-width:40px; text-align:center; cursor: pointer; user-select: none;">
                                         {{ item.count }}
                                     </span>
                                 </ng-container>
                                 <ng-template #editTplBack>
-                                    <input type="number" [(ngModel)]="item.count"
-                                        (blur)="saveCount(item, $event)"
-                                        (keydown.enter)="saveCount(item, $event)"
-                                        style="width:60px; text-align:center; border: 1px solid #ccc;" />
+                                    <!-- FIX · Removed (input) handler that was modifying DOM directly. -->
+                                    <input
+                                      type="number"
+                                      [attr.data-edit-side]="'back'"
+                                      [attr.data-defect-id]="item.defectId"
+                                      [ngModel]="item.count"
+                                      (ngModelChange)="item.count = $event || 0"
+                                      (blur)="saveCount(item, $event)"
+                                      (keydown.enter)="saveCount(item, $event)"
+                                      (focus)="onCountInputFocus($event)"
+                                      (keydown)="onCountInputKeydown($event)"
+                                      style="width:60px; text-align:center; border: 1px solid #ccc;" />
                                 </ng-template>
                             </div>
                             <button type="button" style="width: 30px; height: 30px;"
@@ -96,10 +131,73 @@
     </div>
 
     <ng-template pTemplate="footer">
-        <div style="width:100%;display:flex;justify-content:flex-end;gap:8px;">
-            <button type="button" class="btn btn-primary" (click)="confirmSelection()">OK</button>
-            <button type="button" class="btn btn-danger" (click)="closeDialog()">Close</button>
+        <!-- ════════════════════════════════════════════════════════════
+             NEW · Consolidated footer with all summary info + buttons.
+             Removed "Previous Total" per request. Now shows:
+             Last Added | Current Entry | Card Sum (with validation) | Grand Total | Running Total | OK/Close
+        ═════════════════════════════════════════════════════════════ -->
+        <div class="footer-consolidated">
+
+            <!-- Left side: summary chips -->
+            <div class="footer-summary-group">
+
+                <!-- Last Added (only shows after first OK) -->
+                <div class="footer-chip" *ngIf="lastAddedValue > 0">
+                    <span class="chip-label">Last Added</span>
+                    <span class="chip-value added">+{{ lastAddedValue }}</span>
+                </div>
+
+                <!-- Current Entry -->
+                <div class="footer-chip">
+                    <span class="chip-label">Current Entry</span>
+                    <span class="chip-value current">{{ totalInputValue || 0 }}</span>
+                </div>
+
+                <!-- Card Sum with validation indicator -->
+                <div
+                    class="footer-chip card-sum-chip"
+                    [class.invalid]="isCardSumBelowTotal"
+                    [class.matched]="isCardSumMatched"
+                    [class.exceeds]="isCardSumExceedsTotal">
+                    <span class="chip-label">Card Sum</span>
+                    <span class="chip-value">{{ cardSum }}</span>
+                    <!-- INVALID: card sum below total — must match or more -->
+                    <span class="chip-status invalid-status" *ngIf="isCardSumBelowTotal">
+                        <i class="pi pi-exclamation-triangle"></i> Must match or more (short by {{ shortBy }})
+                    </span>
+                    <!-- VALID: exact match -->
+                    <span class="chip-status matched" *ngIf="isCardSumMatched">
+                        <i class="pi pi-check-circle"></i> Matched
+                    </span>
+                    <!-- VALID: exceeds total (allowed) -->
+                    <span class="chip-status exceeds" *ngIf="isCardSumExceedsTotal">
+                        <i class="pi pi-arrow-up"></i> Exceeds by {{ exceedsBy }}
+                    </span>
+                </div>
+
+                <!-- Grand Total (live = accumulated + current) -->
+                <div class="footer-chip grand-chip">
+                    <span class="chip-label">Grand Total</span>
+                    <span class="chip-value grand-val">{{ liveGrandTotal }}</span>
+                </div>
+
+            </div>
+
+            <!-- Right side: Running Total + Buttons -->
+            <div class="footer-actions-group">
+                <div class="footer-running-total">
+                    <i class="pi pi-calculator"></i>
+                    <span class="footer-total-label">Running Total:</span>
+                    <span class="footer-total-value">{{ accumulatedTotal }}</span>
+                </div>
+                <div class="footer-buttons">
+                    <button type="button" class="btn btn-primary" (click)="confirmSelection()">OK</button>
+                    <button type="button" class="btn btn-danger" (click)="closeDialog()">Close</button>
+                </div>
+            </div>
+
         </div>
+        <!-- ════════════════════════════════════════════════════════════ -->
     </ng-template>
 </p-dialog>
 

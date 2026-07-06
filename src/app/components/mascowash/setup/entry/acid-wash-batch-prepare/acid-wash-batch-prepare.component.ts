@@ -400,6 +400,7 @@ export class AcidWashBatchPrepareComponent implements OnInit {
      LOAD BATCH DATA
   ───────────────────────────────────────────── */
     loadBatchData() {
+      debugger;
     if (!this.washBatchNo) {
       this.toastr.warning('Enter Wash Batch No');
       return;
