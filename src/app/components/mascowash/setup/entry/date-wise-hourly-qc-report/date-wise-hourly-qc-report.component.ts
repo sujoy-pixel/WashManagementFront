@@ -33,7 +33,10 @@ export class DateWiseHourlyQcReportComponent implements OnInit {
   jobList: any[] = [];
   reportList: any[] = [];
   batchList: any[] = [];
-  shiftList: any[] = [];
+  shiftList = [
+  { label: 'M', value: 'M' },
+  { label: 'N', value: 'N' }
+];
 
   /* ===================== ADDED MISSING PROPERTIES ===================== */
   isLoading  = false;
@@ -41,19 +44,18 @@ export class DateWiseHourlyQcReportComponent implements OnInit {
   baseUrl  = environment.apiUrl;
   baseUrl_ = this.baseUrl.replace(/[?&]$/, '');
 
-  Model = {
-    UnitId: null as number | null,
-    BuyerId: null as number | null,
-    StyleId: null as number | null,
-    OrderId: null as number | null,
-    JobId: null as number | null,
-    ReportId: null as number | null,
-    BatchNo: null as string | null,
-    ShiftId: null as number | null,
-    QcName: 'SYSTEM',
-    Date: new Date()
-  };
-
+Model = {
+  UnitId: null as number | null,
+  BuyerId: null as number | null,
+  StyleId: null as number | null,
+  OrderId: null as number | null,
+  JobId: null as number | null,
+  ReportId: null as number | null,
+  BatchNo: null as string | null,
+  ShiftId: null as 'M' | 'N' | null,
+  QcName: 'SYSTEM',
+  Date: new Date()
+};
   constructor(
     private service: WashSetupService,
     private toastr: ToastrService,
@@ -64,9 +66,36 @@ export class DateWiseHourlyQcReportComponent implements OnInit {
   ) {
     this.ReportUrl = this._dom.bypassSecurityTrustResourceUrl('');
   }
+private getShiftId(): number | null {
 
+  if (this.Model.ShiftId === 'M') {
+    return 1;
+  }
+
+  if (this.Model.ShiftId === 'N') {
+    return 2;
+  }
+
+  return null;
+}
   ngOnInit(): void {
     this.loadUnits();
+    // this.loadReports();
+  }
+
+  /* ===================== LOAD REPORTS ===================== */
+  loadReports(): void {
+    this.service.GetReportNameDDL('Date Wise Hourly QC Report').subscribe(res => {
+      this.reportList = res.map((x: any) => ({
+        label: x.DisplayName ?? x.displayName,
+        value: x.ID ?? x.id
+      }));
+
+      // Optionally auto-select the first report if needed
+      // if (this.reportList.length > 0) {
+      //   this.Model.ReportId = Number(this.reportList[0].value);
+      // }
+    });
   }
 
   /* ===================== LOAD UNIT ===================== */
@@ -196,25 +225,35 @@ export class DateWiseHourlyQcReportComponent implements OnInit {
   }
 
   /* ===================== VALIDATION ===================== */
-  private isFormValid(): boolean {
-    if (!this.Model.UnitId) {
-      this.toastr.warning('Please select a Unit.');
-      return false;
-    }
-    if (!this.Model.BuyerId) {
-      this.toastr.warning('Please select a Buyer.');
-      return false;
-    }
-    if (!this.Model.StyleId) {
-      this.toastr.warning('Please select a Style.');
-      return false;
-    }
-    if (!this.Model.Date) {
-      this.toastr.warning('Please select a Date.');
-      return false;
-    }
-    return true;
+ private isFormValid(): boolean {
+
+  if (!this.Model.UnitId) {
+    this.toastr.warning('Please select a Unit.');
+    return false;
   }
+
+  if (!this.Model.BuyerId) {
+    this.toastr.warning('Please select a Buyer.');
+    return false;
+  }
+
+  if (!this.Model.StyleId) {
+    this.toastr.warning('Please select a Style.');
+    return false;
+  }
+
+  if (!this.Model.ShiftId) {
+    this.toastr.warning('Please select a Shift.');
+    return false;
+  }
+
+  if (!this.Model.Date) {
+    this.toastr.warning('Please select a Date.');
+    return false;
+  }
+
+  return true;
+}
 
   /* ===================== SEARCH → SHOW REPORT ===================== */
   onSearch(): void {
@@ -230,20 +269,20 @@ export class DateWiseHourlyQcReportComponent implements OnInit {
 
     const dateStr = this.formatDate(this.Model.Date);
 
-    const objparam = {
-      ReportName: 'Date Wise Hourly QC Report',
-      Type:       'PDF',
-      UnitId:     this.Model.UnitId,
-      BuyerId:    this.Model.BuyerId,
-      StyleId:    this.Model.StyleId,
-      Date:       dateStr,
-      OrderId:    this.Model.OrderId  ?? null,
-      JobId:      this.Model.JobId    ?? null,
-      BatchNo:    this.Model.BatchNo  ?? null,
-      ShiftId:    this.Model.ShiftId  ?? null
-    };
+   const objparam = {
+  ReportName: 'Date Wise Hourly QC Report',
+  Type: 'PDF',
+  UnitId: this.Model.UnitId,
+  BuyerId: this.Model.BuyerId,
+  StyleId: this.Model.StyleId,
+  Date: dateStr,
+  OrderId: this.Model.OrderId ?? null,
+  JobId: this.Model.JobId ?? null,
+  BatchNo: this.Model.BatchNo ?? null,
+  ShiftId: this.getShiftId()
+};
 
-    this.http.post<any>(`${this.baseUrl_}Report/ShowReport`, objparam, { headers })
+    this.http.post<any>(`${this.baseUrl_}Report/ShowReportMultiResult`, objparam, { headers })
       .subscribe({
         next: (response) => {
           this.isLoading = false;

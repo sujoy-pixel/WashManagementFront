@@ -1,194 +1,105 @@
 <div class="card custom-card shadow-sm rounded-4">
   <div class="card-header">
-    <h5 class="card-title">Date Wise Hourly QC Report</h5>
+    <h5 class="card-title">
+      <i class="fa fa-chart-line text-primary me-2"></i> Date Wise Hourly QC Report
+    </h5>
   </div>
+
   <div class="card-body px-4 py-4">
-    <div class="row g-3">
-
-      <!--
-      <div class="col-md-3">
-        <label class="form-label fw-semibold">Unit *</label>
-        <div class="form-control common-border">
-          <ng-select [(ngModel)]="Model.UnitId"
-                     [items]="UnitList"
-                     bindLabel="label"
-                     bindValue="value"
-                     [clearable]="false">
-          </ng-select>
-        </div>
+    
+    <!-- Row 1 -->
+    <div class="row align-items-center mb-2">
+      <label class="form-label col-md-1">
+        Unit <span class="text-danger">*</span>
+      </label>
+      <div class="form-control col-md-2 common-border">
+        <ng-select [(ngModel)]="Model.UnitId" placeholder="Select Unit">
+          <ng-option *ngFor="let u of UnitList" [value]="u.value">{{u.label}}</ng-option>
+        </ng-select>
       </div>
 
-
-      <div class="col-md-3">
-        <label class="form-label fw-semibold">Buyer *</label>
-        <div class="form-control common-border">
-          <ng-select [(ngModel)]="Model.BuyerId"
-                     [items]="buyerList"
-                     bindLabel="label"
-                     bindValue="value"
-                     (ngModelChange)="onBuyerChange()">
-          </ng-select>
-        </div>
+      <label class="form-label col-md-1">
+        Buyer <span class="text-danger">*</span>
+      </label>
+      <div class="form-control col-md-2 common-border">
+        <ng-select [(ngModel)]="Model.BuyerId" placeholder="Select Buyer" (ngModelChange)="onBuyerChange()">
+          <ng-option *ngFor="let u of buyerList" [value]="u.value">{{u.label}}</ng-option>
+        </ng-select>
       </div>
 
-      <div class="col-md-3">
-        <label class="form-label fw-semibold">Job</label>
-        <div class="form-control common-border">
-          <ng-select [(ngModel)]="Model.JobId"
-                     [items]="jobList"
-                     bindLabel="label"
-                     bindValue="value">
-          </ng-select>
-        </div>
-      </div>
-      
-  
-      <div class="col-md-3">
-        <label class="form-label fw-semibold">Style</label>
-        <div class="form-control common-border">
-          <ng-select [(ngModel)]="Model.StyleId"
-                     [items]="styleList"
-                     bindLabel="label"
-                     bindValue="value"
-                     (ngModelChange)="onStyleChange()">
-          </ng-select>
-        </div>
+      <label class="form-label col-md-1">
+        Job <span class="text-danger">*</span>
+      </label>
+      <div class="form-control col-md-2 common-border">
+        <ng-select [(ngModel)]="Model.JobId" placeholder="Select Job" (ngModelChange)="onJobChange()">
+          <ng-option *ngFor="let u of jobList" [value]="u.value">{{u.label}}</ng-option>
+        </ng-select>
       </div>
 
+      <label class="form-label col-md-1">
+        Style <span class="text-danger">*</span>
+      </label>
+      <div class="form-control col-md-2 common-border">
+        <ng-select [(ngModel)]="Model.StyleId" placeholder="Select Style" (ngModelChange)="onStyleChange()">
+          <ng-option *ngFor="let u of styleList" [value]="u.value">{{u.label}}</ng-option>
+        </ng-select>
+      </div>
+    </div>
 
-      <div class="col-md-3">
-        <label class="form-label fw-semibold">Order</label>
-        <div class="form-control common-border">
-          <ng-select [(ngModel)]="Model.OrderId"
-                     [items]="orderList"
-                     bindLabel="label"
-                     bindValue="value"
-                     (ngModelChange)="onOrderChange()">
-          </ng-select>
-        </div>
-      </div> -->
-
-      <div class="row align-items-center mb-2">
-
-        <label class="form-label col-md-1">
-          Unit <span class="text-danger">*</span>
-        </label>
-        <div class="form-control col-md-2 common-border">
-          <ng-select [(ngModel)]="Model.UnitId" placeholder="Unit">
-            <ng-option *ngFor="let u of UnitList" [value]="u.value">
-              {{ u.label }}
-            </ng-option>
-          </ng-select>
-        </div>
-
-        <label class="form-label col-md-1">
-          Buyer <span class="text-danger">*</span>
-        </label>
-        <div class="form-control col-md-2 common-border">
-          <ng-select [(ngModel)]="Model.BuyerId" placeholder="Buyer" (ngModelChange)="onBuyerChange()">
-            <ng-option *ngFor="let u of buyerList" [value]="u.value">
-              {{ u.label }}
-            </ng-option>
-          </ng-select>
-        </div>
-
-        <label class="form-label col-md-1">
-          Job <span class="text-danger">*</span>
-        </label>
-        <div class="form-control col-md-2 common-border">
-          <ng-select [(ngModel)]="Model.JobId" placeholder="Select Job" (ngModelChange)="onJobChange()">
-            <ng-option *ngFor="let u of jobList" [value]="u.value">
-              {{ u.label }}
-            </ng-option>
-          </ng-select>
-        </div>
-
-        <label class="form-label col-md-1">
-          Style <span class="text-danger">*</span>
-        </label>
-        <div class="form-control col-md-2 common-border">
-
-          <ng-select [(ngModel)]="Model.StyleId" placeholder="Style" (ngModelChange)="onStyleChange()">
-            <ng-option *ngFor="let u of styleList" [value]="u.value">
-              {{ u.label }}
-            </ng-option>
-          </ng-select>
-        </div>
-
+    <!-- Row 2 -->
+    <div class="row align-items-center mb-2">
+      <label class="form-label col-md-1">
+        Order
+      </label>
+      <div class="form-control col-md-2 common-border">
+        <ng-select [(ngModel)]="Model.OrderId" placeholder="Select Order">
+          <ng-option *ngFor="let u of orderList" [value]="u.value">{{u.label}}</ng-option>
+        </ng-select>
       </div>
 
-      <!-- Order in next row (no space left) -->
-      <div class="row align-items-center mb-2">
-        <label class="form-label col-md-1">
-          Order <span class="text-danger">*</span>
-        </label>
-        <div class="form-control col-md-2 common-border">
-          <ng-select [(ngModel)]="Model.OrderId" placeholder="Order">
-            <ng-option *ngFor="let u of orderList" [value]="u.value">
-              {{ u.label }}
-            </ng-option>
-          </ng-select>
-        </div>
+      <label class="form-label col-md-1">
+        Date
+      </label>
+      <div class="form-control col-md-2 common-border">
+        <input class="form-control" bsDatepicker [(ngModel)]="Model.Date" [bsConfig]="{dateInputFormat:'DD-MMM-YYYY'}">
       </div>
 
-     <!-- Date -->
-      <div class="row align-items-center mb-2">
-        <label class="form-label col-md-1">
-          Date <span class="text-danger">*</span>
-        </label>
-        <div class="form-control col-md-2 common-border">
-          <input type="text" class="form-control" bsDatepicker [(ngModel)]="Model.Date" [bsConfig]="{ dateInputFormat: 'DD-MMM-YYYY' }">
-        </div>
+      <label class="form-label col-md-1">
+        Report
+      </label>
+      <div class="form-control col-md-2 common-border">
+        <ng-select [items]="reportList" bindLabel="label" bindValue="value" [(ngModel)]="Model.ReportId">
+        </ng-select>
       </div>
 
-
-
-      <!-- Report -->
-      <div class="col-md-3">
-        <label class="form-label fw-semibold">Report *</label>
-        <div class="form-control common-border">
-          <ng-select [(ngModel)]="Model.ReportId" [items]="reportList" bindLabel="label" bindValue="value">
-          </ng-select>
-        </div>
+      <label class="form-label col-md-1">
+        Batch No
+      </label>
+      <div class="form-control col-md-2 common-border">
+        <ng-select [items]="batchList" bindLabel="label" bindValue="value" [(ngModel)]="Model.BatchNo">
+        </ng-select>
       </div>
+    </div>
 
-      <!-- Batch No -->
-      <div class="col-md-3">
-        <label class="form-label fw-semibold">Batch No</label>
-        <div class="form-control common-border">
-          <ng-select [(ngModel)]="Model.BatchNo" [items]="batchList" bindLabel="label" bindValue="value">
-          </ng-select>
-        </div>
+    <!-- Row 3 -->
+    <div class="row align-items-center mb-2">
+      <label class="form-label col-md-1">
+        Shift
+      </label>
+      <div class="form-control col-md-2 common-border">
+        <ng-select [items]="shiftList" bindLabel="label" bindValue="value" [(ngModel)]="Model.ShiftId">
+        </ng-select>
       </div>
-
-      <!-- Shift -->
-      <div class="col-md-3">
-        <label class="form-label fw-semibold">Shift</label>
-        <div class="form-control common-border">
-          <ng-select [(ngModel)]="Model.ShiftId" [items]="shiftList" bindLabel="label" bindValue="value">
-          </ng-select>
-        </div>
-      </div>
-
-      <!-- QC Name -->
-      <div class="col-md-3">
-        <label class="form-label fw-semibold">QC Name</label>
-        <input type="text" class="form-control" [(ngModel)]="Model.QcName" readonly>
-      </div>
-
-
-
     </div>
 
     <!-- Search Button -->
-     <div class="row mt-4">
+    <div class="row mt-4">
       <div class="col text-end">
         <button class="btn btn-gradient px-4 py-2" (click)="onSearch()">
-          <i class="fa fa-search me-2"></i> Search
+          <i class="fa fa-search me-2"></i> Search Report
         </button>
       </div>
-    </div> 
-
+    </div>
 
   </div>
 </div>

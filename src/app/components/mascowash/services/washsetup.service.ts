@@ -683,10 +683,14 @@ export class WashSetupService {
       { headers: this.token.headerToken() }
     );
   }
-  GetReportNameDDL() {
+  GetReportNameDDL(itemText: string = '') {
+    let params = new HttpParams();
+    if (itemText) {
+      params = params.set('itemText', itemText);
+    }
     return this.http.get<any[]>(
       this.baseUrl_ + 'Common/GetReportNameDDL',
-      { headers: this.token.headerToken() }
+      { headers: this.token.headerToken(), params: params }
     );
   }
   GetShiftNameDDL() {
