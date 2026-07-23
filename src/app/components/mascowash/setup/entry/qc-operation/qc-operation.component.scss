@@ -5,66 +5,72 @@
   flex-direction: column;
   align-items: center;
   font-family: Arial, sans-serif;
+  padding: 0 15px 40px; /* Side bleed standard fix */
+  box-sizing: border-box;
 }
 
 .header {
   width: 100%;
   background-color: #1a237e;
   color: white;
-  padding: 10px 20px;
+  padding: 12px 20px;
   font-size: 14px;
   font-weight: bold;
+  box-sizing: border-box;
 }
 
+/* 🟢 RESPONSIVE GRID CONFIGURATION */
 .qc-grid {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 100px;
-  margin-top: 50px;
+  /* Flexibly adjusts items without fixed layout breaking */
+  grid-template-columns: repeat(auto-fit, minmax(220px, 300px)); 
+  gap: 40px; /* Reduced gap from 100px to prevent overflow */
+  justify-content: center;
+  width: 100%;
+  max-width: 900px;
+  margin-top: 40px;
 }
 
+/* 🟢 RESPONSIVE CIRCLE CONTAINER */
 .qc-circle {
-  width: 300px;
-  height: 300px;
+  /* Using aspect-ratio makes height match width dynamically */
+  width: 100%;
+  max-width: 260px;
+  aspect-ratio: 1 / 1; 
   border-radius: 50%;
   display: flex;
   justify-content: center;
   align-items: center;
-  font-size: 4rem;
+  font-size: clamp(2.5rem, 5vw, 4rem); /* Dynamic Font Scaling */
   color: white;
   cursor: pointer;
   font-family: 'Times New Roman', serif; 
   box-shadow: 0 10px 20px rgba(0,0,0,0.2);
-  transition: transform 0.2s;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  margin: 0 auto; /* Keeps centered in grid cell */
 }
 
-.qc-circle:hover { transform: scale(1.05); }
+.qc-circle:hover { 
+  transform: scale(1.05); 
+}
 
+/* Color Gradients */
 .blue { background: radial-gradient(circle at 30% 30%, #5c7cfa, #1c3d73); }
 .purple { background: radial-gradient(circle at 30% 30%, #9061f9, #5521b5); }
-.green { background:  radial-gradient(circle at 30% 30%, #a3cf45, #6a8d1d); }
+.green { background: radial-gradient(circle at 30% 30%, #a3cf45, #6a8d1d); }
 .cyan { background: radial-gradient(circle at 30% 30%, #4dd0e1, #00838f); }
 
-
-.custom-input {
-    border: 1px solid #ced4da !important;
-    border-radius: 6px;
-    padding: 10px;
-    
-    &:focus {
-        border-color: #007bff !important;
-        box-shadow: 0 0 0 0.2rem rgba(0,123,255,.25) !important;
-    }
+/* 📱 TABLET & SMALL MOBILE BREAKPOINTS */
+@media (max-width: 768px) {
+  .qc-grid {
+    gap: 25px; /* Smaller gap on tablets & handhelds */
+    margin-top: 30px;
+  }
 }
 
-.login-btn {
-    background-color: #1a237e !important;
-    border: none !important;
-    padding: 12px !important;
-    font-weight: bold;
-    border-radius: 6px;
-}
-
-.field-container {
-    text-align: left;
+@media (max-width: 480px) {
+  .qc-grid {
+    grid-template-columns: repeat(2, 1fr); /* Maintains 2x2 grid on small phones if space allows */
+    gap: 15px;
+  }
 }
