@@ -1,10 +1,11 @@
 <p-dialog header="Quality Inspection Operation" [(visible)]="visible" (onHide)="visibleChange.emit(false)"
     [modal]="true" [style]="{ width: '80vw'}" [contentStyle]="{ height: 'calc(100vh - 60px)' }"
-    [draggable]="false" [resizable]="false" [maximizable]="true"> <ng-template pTemplate="header">
+    [draggable]="false" [resizable]="false" [maximizable]="true"> 
+    <!-- <ng-template pTemplate="header">
         <div class="flex align-items-center justify-content-between w-full">
             <span class="font-bold text-xl"></span>
         </div>
-    </ng-template>
+    </ng-template> -->
     <div class="dashboard-body">
         <app-qc-dashboard></app-qc-dashboard>
     </div>
