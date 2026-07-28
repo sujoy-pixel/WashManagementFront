@@ -368,31 +368,7 @@ export class WashPrepareActionComponent implements OnInit {
     this.totalKg = this.sizeQty.reduce((s, x) => s + (+x.kg || 0), 0);
   }
 
-  // onTotalPcsChange(): void {
-  //   if (!this.totalPcs) {
-  //     this.totalPcs = this.initialTotalPcs;
-  //     return;
-  //   }
-  //   if (this.totalPcs > this.initialTotalPcs) {
-  //     this.toastr.warning(`Max allowed: ${this.initialTotalPcs}`, 'Invalid Total Pcs');
-  //     this.totalPcs = this.initialTotalPcs;
-  //   }
-  // }
-// onTotalPcsChange(): void {
-//   // ✅ Update mode — no restriction, user can change freely
-//   if (this.saveButtonTitle === 'Update') return;
-
- 
-//   if (!this.totalPcs) {
-//     this.totalPcs = this.initialTotalPcs;
-//     return;
-//   }
-
-//   if (this.totalPcs > this.initialTotalPcs) {
-//     this.toastr.warning(`Max allowed: ${this.initialTotalPcs}`, 'Invalid Total Pcs');
-//     this.totalPcs = this.initialTotalPcs;
-//   }
-// }
+  
 onTotalPcsChange(): void {
 debugger;
   // ✅ UPDATE MODE — validate against RemainingQty
@@ -467,7 +443,7 @@ if (this.saveButtonTitle === 'Update') {
 
   /* ===================== SUBMIT ===================== */
   onSubmit(): void {
-debugger;
+    debugger;
     /* ===== VALIDATION ===== */
     if (!this.Model.processList?.length) {
       this.toastr.warning('Please select process');

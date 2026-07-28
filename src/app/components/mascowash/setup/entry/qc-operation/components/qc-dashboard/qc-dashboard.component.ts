@@ -9,6 +9,7 @@ import { WashSetupService } from '../../../../../services/washsetup.service';
 import { CommonServiceService } from '../../../../../services/common-service';
 import { ToastrService } from 'ngx-toastr';
 import { RejectReasonComponent } from '../reject-reason/reject-reason.component';
+import Swal from 'sweetalert2';
 
 interface BatchHeaderModel {
   unitId?: number;
@@ -292,7 +293,7 @@ loadBatchData() {
         this.loading = false;
         return;
       }
-
+      
       if (data.isQCSaved === true) {
         // Store response, show custom dialog — no confirm()
         this.pendingBatchRes  = res;
@@ -303,6 +304,7 @@ loadBatchData() {
         this.loading = false;
         return;
       }
+        
 
       this.applyBatchData(res);
     },
@@ -316,6 +318,9 @@ loadBatchData() {
     }
   });
 }
+  LoadQCData(res: any) {
+    throw new Error('Method not implemented.');
+  }
 
 // Called when user confirms modification, or when isQCSaved is false
 private applyBatchData(res: any) {

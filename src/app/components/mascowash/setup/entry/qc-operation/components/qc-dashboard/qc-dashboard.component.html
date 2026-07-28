@@ -1,7 +1,7 @@
 <div class="inspection-dashboard p-3">
 
   <!-- HEADER ROW 1 — Title + Size Details Button -->
-  <!-- <div class="header-info-bar text-white flex justify-content-between align-items-center p-3 mb-2">
+  <div class="header-info-bar text-white flex justify-content-between align-items-center mb-2">
     <h3 class="m-0">Inspection Dashboard</h3>
     <button
       pButton
@@ -11,11 +11,11 @@
       class="p-button-warning"
       (click)="showSizePopup()">
     </button>
-  </div> -->
+  </div>
 
   <!-- SIZE DETAILS POPUP -->
   <p-dialog
-    header="📐 Size Wise Qty & Reject Qty"
+    header="Size Wise Qty & Reject Qty"
     [(visible)]="sizePopupVisible"
     [modal]="true"
     [closable]="true"
@@ -29,7 +29,7 @@
          Shows the reject total received from the Reject child dialog,
          the current size-wise reject sum, and a live match indicator.
     ═════════════════════════════════════════════════════════════ -->
-    <div class="size-parent-reject-banner">
+    <div class="size-parent-reject-banner" style="display: none;">
       <div class="banner-chip">
         <i class="pi pi-arrow-circle-down"></i>
         <div class="banner-text">
@@ -391,13 +391,13 @@
        NEW · Total Inspected Garments summary bar
        (matches reference image — sits below the dashboard grid)
   ═════════════════════════════════════════════════════════════ -->
-  <div class="total-inspected-bar">
+  <!-- <div class="total-inspected-bar">
     <span class="total-inspected-label">
       <i class="pi pi-clipboard"></i>
       Total Inspected Garments
     </span>
     <span class="total-inspected-value">{{ totalInspected }}</span>
-  </div>
+  </div> -->
   <!-- ════════════════════════════════════════════════════════════ -->
 
   <!-- ════════════════════════════════════════════════════════════
@@ -481,8 +481,41 @@
     </div>
   </div>
 </div>
+<p-dialog
+    [(visible)]="qcConfirmVisible"
+    header="Confirmation"
+    [modal]="true"
+    [closable]="false"
+    [draggable]="false"
+    [resizable]="false"
+    [style]="{ width: '350px' }">
 
-<p-dialog [(visible)]="qcConfirmVisible" [modal]="true" [closable]="false"
+    <p class="mb-3">
+      QC data already exists for this batch.
+    </p>
+    <ng-template pTemplate="footer">
+        <div class="qc-ent-actions">
+            <button
+                pButton
+                type="button"
+                icon="pi pi-times"
+                label="Cancel"
+                class="qc-ent-btn-cancel"
+                (click)="onQcConfirmCancel()">
+            </button>
+
+            <button
+                pButton
+                type="button"
+                icon="pi pi-pencil"
+                label="Modify QC Data"
+                class="qc-ent-btn-primary"
+                (click)="onQcConfirmModify()">
+            </button>
+        </div>
+    </ng-template>
+</p-dialog>
+<!-- <p-dialog [(visible)]="qcConfirmVisible" [modal]="true" [closable]="false"
   [draggable]="false" [resizable]="false"
   [style]="{width:'520px',padding:'0',background:'transparent',border:'none',boxShadow:'none'}"
   [contentStyle]="{padding:'0',background:'transparent',borderRadius:'0',overflow:'visible'}"
@@ -493,7 +526,7 @@
   <ng-template pTemplate="content">
     <div class="qc-ent-dialog">
 
-      <!-- STATUS HEADER BAR -->
+
       <div class="qc-ent-status-bar">
         <span class="qc-ent-dot"></span>
         <i class="pi pi-exclamation-triangle"></i>
@@ -504,7 +537,7 @@
 
       <div class="qc-ent-body">
 
-        <!-- Icon + Title Row -->
+
         <div class="qc-ent-icon-row">
           <div class="qc-ent-shield-wrap">
             <div class="qc-ent-shield-glow"></div>
@@ -526,7 +559,7 @@
           </div>
         </div>
 
-        <!-- Batch Field -->
+      
         <div class="qc-ent-batch-field">
           <div class="qc-ent-batch-icon">
             <i class="pi pi-tag"></i>
@@ -535,29 +568,29 @@
           <span class="qc-ent-batch-value">{{ batchHeader.batchNo || batchNo }}</span>
         </div>
 
-        <!-- Metrics Row -->
+ 
         <div class="qc-ent-metrics">
           <div class="qc-ent-metric good">
             <div class="qc-ent-metric-icon"><i class="pi pi-check-circle"></i></div>
             <div class="qc-ent-metric-value">{{ goodGarments }}</div>
             <div class="qc-ent-metric-label">Good</div>
-            <!-- <div class="qc-ent-metric-bar"><span class="qc-ent-bar-fill good" [style.width.%]="goodPct"></span></div> -->
+   
           </div>
           <div class="qc-ent-metric repair">
             <div class="qc-ent-metric-icon"><i class="pi pi-wrench"></i></div>
             <div class="qc-ent-metric-value">{{ repairable }}</div>
             <div class="qc-ent-metric-label">Repairable</div>
-            <!-- <div class="qc-ent-metric-bar"><span class="qc-ent-bar-fill repair" [style.width.%]="repairPct"></span></div> -->
+  
           </div>
           <div class="qc-ent-metric reject">
             <div class="qc-ent-metric-icon"><i class="pi pi-times-circle"></i></div>
             <div class="qc-ent-metric-value">{{ reject }}</div>
             <div class="qc-ent-metric-label">Reject</div>
-            <!-- <div class="qc-ent-metric-bar"><span class="qc-ent-bar-fill reject" [style.width.%]="rejectPct"></span></div> -->
+     
           </div>
         </div>
 
-        <!-- Warning Callout -->
+
         <div class="qc-ent-callout">
           <i class="pi pi-exclamation-triangle"></i>
           <span class="qc-ent-callout-text">
@@ -566,7 +599,7 @@
           </span>
         </div>
 
-        <!-- Actions -->
+
         <div class="qc-ent-actions">
           <button pButton type="button" icon="pi pi-times" label="Cancel"
             class="qc-ent-btn-cancel"
@@ -576,7 +609,7 @@
             (click)="onQcConfirmModify()"></button>
         </div>
 
-        <!-- Footer -->
+
         <div class="qc-ent-footer">
           <i class="pi pi-lock"></i>
           <span class="qc-ent-footer-text">This action is logged and traceable</span>
@@ -587,4 +620,4 @@
       </div>
     </div>
   </ng-template>
-</p-dialog>
+</p-dialog> -->
