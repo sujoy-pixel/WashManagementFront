@@ -41,7 +41,7 @@ export class WashPrepareActionComponent implements OnInit {
     batchNo:       '',
     documentNo:    '',
     effectiveDate: new Date(),
-    revisionDate:  '',
+    revisionDate:   new Date(),
     revisionNo:    '',
     date:          '',
     fabrication:   '',
@@ -50,7 +50,8 @@ export class WashPrepareActionComponent implements OnInit {
     color:         '',
     type:          '',
     trackingNo:    '',
-    AutoBatchNo:   ''
+    AutoBatchNo:   '',
+    revesionNo:      ''
   };
 
   batchIds: any = {};
@@ -227,7 +228,7 @@ export class WashPrepareActionComponent implements OnInit {
     this.remainingPcs    = data.RemainingQty ?? data.remainingQty ?? 0;
     this.initialTotalPcs = this.totalPcs;
     this.MasterId        = data.MasterId              ?? 0;
-    this.totalKg         = data.totalKg               ?? 0;
+     this.totalKg        = data.kg             ?? data.totalKg ?? 0 //data.totalKg ;  //data.totalKg  
 
     /* ===== IDs ===== */
     this.batchIds = {
@@ -250,8 +251,8 @@ export class WashPrepareActionComponent implements OnInit {
     this.batch.orderNo       = data.orderNo       ?? '';
     this.batch.documentNo    = 'CKL-Wash-024';
     this.batch.effectiveDate = new Date();
-    this.batch.revisionDate  = data.revisionDate  ?? '';
-    this.batch.revisionNo    = data.revisionNo    ?? '';
+    this.batch.revisionDate = new Date();
+    this.batch.revesionNo    = data.revesionNo    ?? '';
     this.batch.date          = data.date          ?? '';
     this.batch.fabrication   = data.fabrication   ?? '';
     this.batch.composition   = data.composition   ?? '';
@@ -423,8 +424,8 @@ if (this.saveButtonTitle === 'Update') {
     this.batch = {
       buyer: '', jobNo: '', styleNo: '', orderNo: '', process: '',
       batchNo: '', documentNo: '', effectiveDate: new Date(),
-      revisionDate: '', revisionNo: '', date: '', fabrication: '',
-      composition: '', gsm: '', color: '', type: '', trackingNo: '', AutoBatchNo: ''
+      revisionDate: new Date(), revisionNo: '', date: '', fabrication: '',
+      composition: '', gsm: '', color: '', type: '', trackingNo: '', AutoBatchNo: '', revesionNo: ''
     };
 
     this.batchIds        = {};
@@ -455,7 +456,7 @@ if (this.saveButtonTitle === 'Update') {
     }
 
     const safeTotalPcs = Number(this.totalPcs) || 0;
-    const safeTotalKg  = Number(this.totalKg)  || 0;
+    const safeTotalKg = Number(this.totalKg) || 0;
 
     const formatDate = (date: any) => date ? new Date(date).toISOString() : null;
 
@@ -473,7 +474,7 @@ if (this.saveButtonTitle === 'Update') {
 
       effectiveDate: formatDate(this.batch.effectiveDate),
       revisionDate:  formatDate(this.batch.revisionDate),
-      revisionNo:    this.batch.revisionNo  ?? '',
+      revisionNo:    this.batch.revesionNo  ?? '',
       date:          formatDate(this.batch.date),
       composition:   this.batch.composition ?? '',
 
@@ -585,4 +586,8 @@ if (this.saveButtonTitle === 'Update') {
         }
       });
   }
+}
+
+function getFormattedDate(arg0: any): any {
+  throw new Error('Function not implemented.');
 }

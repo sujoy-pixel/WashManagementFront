@@ -86,6 +86,9 @@ interface WashBatchRow {
   qty:                  number; // for size popup binding
   kg:                   number; // for size popup binding
   sizeDetails: SizeDetail[];
+  revesionNo?: number | null; 
+  revisionDate?: Date | null;
+
 
   // ✅ Computed from sizeDetails sum (or masterTotalPcs if no sizes)
   totalQty: number;
@@ -287,7 +290,7 @@ export class BatchCardModificationComponent implements OnInit {
       next: (res: any[]) => {
         console.log('✅ Edit Grid Response:', res);
         this.bindDetailRows(res);
-
+debugger;
         this.Model.BuyerId = null;
         this.Model.JobId   = null;
         this.Model.StyleId = null;
@@ -374,7 +377,9 @@ export class BatchCardModificationComponent implements OnInit {
           qty: Number(r.qty ?? r.Qty ?? 0), // for size popup binding
           kg: Number(r.kg ?? r.Kg ?? 0), // for size popup binding
 
-          totalQty: Number(r.totalQty ?? r.TotalQty ?? r.masterTotalPcs ?? r.MasterTotalPcs ?? 0)
+          totalQty: Number(r.totalQty ?? r.TotalQty ?? r.masterTotalPcs ?? r.MasterTotalPcs ?? 0),
+          revesionNo: r.revesionNo ?? r.revisionNo ?? 0, 
+          revisionDate: r.revisionDate   ? new Date(r.shipmentDate)         : null,
          // will be accumulated below
         });
       }
@@ -735,7 +740,9 @@ openPrepareTab(row: WashBatchRow): void {
     Kg:                  row.kg                  ?? 0,  // Row specific size kg
 
     // ===== SIZE DETAILS =====
-    sizeDetails:  row.sizeDetails     ?? []    
+    sizeDetails:  row.sizeDetails     ?? [],    
+    revesionNo:   row.revesionNo      ?? 0,
+    revisionDate: row.revisionDate    ?? null
   };
 
   console.log('✅ navState to action page (edit):', navState);
