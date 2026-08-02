@@ -30,6 +30,7 @@ import { BatchCardModificationComponent } from './setup/entry/batch-card-modific
 import { BatchWiseShadeStatusComponent } from './setup/entry/batch-wise-shade-status/batch-wise-shade-status.component';
 import { AcidWashBatchPrepareComponent } from './setup/entry/acid-wash-batch-prepare/acid-wash-batch-prepare.component';
 import { DateWiseHourlyQcReportComponent } from './setup/entry/date-wise-hourly-qc-report/date-wise-hourly-qc-report.component';
+import { DateWiseMachinePlanComponent } from './setup/entry/date-wise-machine-plan/date-wise-machine-plan.component';
 
 const routes: Routes = [
   {
@@ -142,6 +143,11 @@ const routes: Routes = [
       {
         path: 'setup/entry/date-wise-hourly-qc-report',
         component: DateWiseHourlyQcReportComponent,
+        runGuardsAndResolvers: 'always',
+      },
+      {
+        path: 'setup/entry/date-wise-machine-plan',
+        component: DateWiseMachinePlanComponent,
         runGuardsAndResolvers: 'always',
       }
     ],

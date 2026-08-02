@@ -38,6 +38,7 @@ import { BatchWisePrioritySetComponent } from './setup/entry/batch-wise-priority
 import { ReportViewComponent } from './report/report-view/report-view.component';
 import { TagModule } from 'primeng/tag';
 import { CustomPaginationComponent } from 'src/app/shared/custom-pagination/custom-pagination.component';
+import { DateWiseMachinePlanComponent } from './setup/entry/date-wise-machine-plan/date-wise-machine-plan.component';
 import { CardModule } from 'primeng/card';
 
 @NgModule({
@@ -58,7 +59,8 @@ import { CardModule } from 'primeng/card';
     WashItemDeliveryComponent,
     BatchWisePrioritySetComponent,
     ReportViewComponent,
-    CustomPaginationComponent
+    CustomPaginationComponent,
+    DateWiseMachinePlanComponent
   ],
   imports: [
     MatTabsModule,

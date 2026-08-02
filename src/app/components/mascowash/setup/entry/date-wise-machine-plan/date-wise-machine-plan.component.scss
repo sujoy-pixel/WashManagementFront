@@ -1,0 +1,19 @@
+.btn-purple {
+  background-color: #6f42c1;
+  color: #fff;
+  border: none;
+  &:hover {
+    background-color: #59339d;
+    color: #fff;
+  }
+}
+
+.custom-table {
+  th, td {
+    vertical-align: middle;
+  }
+  
+  .ng-select-container {
+    min-width: 150px;
+  }
+}

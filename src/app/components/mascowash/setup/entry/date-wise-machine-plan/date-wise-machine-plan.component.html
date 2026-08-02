@@ -1,0 +1,171 @@
+<div class="card custom-card">
+  <div class="card-header d-flex justify-content-between align-items-center">
+    <h5 class="card-title mb-0">Date Wise Machine Plan</h5>
+    <button class="btn btn-purple" (click)="goToInfographicView()">
+      <i class="pi pi-chart-bar"></i> Infographic View
+    </button>
+  </div>
+
+  <div class="card-body">
+    <!-- Filter Section -->
+    <!-- Row 1 -->
+    <div class="row align-items-center mb-2">
+      <!-- Unit -->
+      <label class="form-label col-md-1 text-dark">Unit <span class="text-danger">*</span></label>
+      <div class="form-control col-md-2 common-border">
+        <ng-select [items]="unitList" bindLabel="label" bindValue="value" [(ngModel)]="filterModel.unitId" placeholder="Select Unit" (ngModelChange)="onUnitChange()">
+        </ng-select>
+      </div>
+
+      <!-- Buyer -->
+      <label class="form-label col-md-1 text-dark">Buyer <span class="text-danger">*</span></label>
+      <div class="form-control col-md-2 common-border">
+        <ng-select [items]="buyerList" bindLabel="label" bindValue="value" [(ngModel)]="filterModel.buyerId" placeholder="Select Buyer" (ngModelChange)="onBuyerChange()">
+        </ng-select>
+      </div>
+
+      <!-- Job -->
+      <label class="form-label col-md-1 text-dark">Job <span class="text-danger">*</span></label>
+      <div class="form-control col-md-2 common-border">
+        <ng-select [items]="jobList" bindLabel="label" bindValue="value" [(ngModel)]="filterModel.jobId" placeholder="Select Job" (ngModelChange)="onJobChange()">
+        </ng-select>
+      </div>
+
+      <!-- Style -->
+      <label class="form-label col-md-1 text-dark">Style <span class="text-danger">*</span></label>
+      <div class="form-control col-md-2 common-border">
+        <ng-select [items]="styleList" bindLabel="label" bindValue="value" [(ngModel)]="filterModel.styleId" placeholder="Select Style" (ngModelChange)="onStyleChange()">
+        </ng-select>
+      </div>
+    </div>
+
+    <!-- Row 2 -->
+    <div class="row align-items-center mb-2">
+      <!-- Order -->
+      <label class="form-label col-md-1 text-dark">Order</label>
+      <div class="form-control col-md-2 common-border">
+        <ng-select [items]="orderList" bindLabel="label" bindValue="value" [(ngModel)]="filterModel.orderId" placeholder="Select Order">
+        </ng-select>
+      </div>
+
+      <!-- From Date -->
+      <label class="form-label col-md-1 text-dark">From Date <span class="text-danger">*</span></label>
+      <div class="form-control col-md-2 common-border">
+        <input type="text" class="form-control border-0 p-0" bsDatepicker [(ngModel)]="filterModel.fromDate" placeholder="Select From Date" />
+      </div>
+
+      <!-- To Date -->
+      <label class="form-label col-md-1 text-dark">To Date <span class="text-danger">*</span></label>
+      <div class="form-control col-md-2 common-border">
+        <input type="text" class="form-control border-0 p-0" bsDatepicker [(ngModel)]="filterModel.toDate" placeholder="Select To Date" />
+      </div>
+
+      <!-- Search Button -->
+      <div class="col-md-3 text-end">
+        <button class="btn btn-primary" (click)="onSearch()">
+          <i class="pi pi-search"></i> Search
+        </button>
+      </div>
+    </div>
+
+    <hr />
+
+    <!-- Grid Section -->
+    <div class="table-responsive mt-3" style="max-height: 600px;">
+      <table class="table table-bordered table-striped custom-table align-middle">
+        <thead class="custom-table-header" style="position: sticky; top: 0; z-index: 10;">
+          <tr>
+            <th class="text-center" style="min-width: 60px;">Action</th>
+            <th style="min-width: 100px;">Buyer</th>
+            <th style="min-width: 120px;">Job</th>
+            <th style="min-width: 100px;">Style</th>
+            <th style="min-width: 150px;">Order</th>
+            <th style="min-width: 100px;">Type</th>
+            <th style="min-width: 200px;">Fabrication</th>
+            <th style="min-width: 100px;">Color</th>
+            <th style="min-width: 100px;">Dress Part</th>
+            <th style="min-width: 120px;">Req. Del. Date</th>
+            <th style="min-width: 60px;">UoM</th>
+            <th style="min-width: 80px;">Qty</th>
+            <th style="min-width: 100px;">Rem. Qty</th>
+            <!-- Data Entry -->
+            <th style="min-width: 100px;">Plan Qty</th>
+            <th style="min-width: 130px;">Plan Start Date</th>
+            <th style="min-width: 130px;">Plan End Date</th>
+            <th style="min-width: 200px;">Process</th>
+            <th style="min-width: 200px;">Machine</th>
+            <th style="min-width: 150px;">Remarks</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let row of gridData; let i = index">
+            <!-- Action Column -->
+            <td class="text-center">
+              <button *ngIf="!row.isDuplicate" class="btn btn-sm btn-outline-success mx-1" (click)="duplicateRow(i, row)" title="Duplicate Row">
+                <i class="pi pi-plus"></i>
+              </button>
+              <button class="btn btn-sm btn-outline-danger mx-1" [disabled]="!row.isDuplicate" (click)="removeRow(i)" title="Remove Row">
+                <i class="pi pi-minus"></i>
+              </button>
+            </td>
+            
+            <!-- Read Only Columns -->
+            <td>{{ row.buyer }}</td>
+            <td>{{ row.job }}</td>
+            <td>{{ row.style }}</td>
+            <td>{{ row.order }}</td>
+            <td>{{ row.type }}</td>
+            <td>
+              <div class="text-truncate" style="max-width: 200px;" [title]="row.fabrication">
+                {{ row.fabrication }}
+              </div>
+            </td>
+            <td>{{ row.color }}</td>
+            <td>{{ row.dressPart }}</td>
+            <td>{{ row.requiredDeliveryDate }}</td>
+            <td>{{ row.uom }}</td>
+            <td>{{ row.qty }}</td>
+            <td>
+              <strong>{{ getRemainingQty(row) }}</strong>
+            </td>
+
+            <!-- Data Entry Columns -->
+            <td>
+              <input type="number" class="form-control form-control-sm" [(ngModel)]="row.planQty" placeholder="Qty" />
+            </td>
+            <td>
+              <input type="text" class="form-control form-control-sm" bsDatepicker [(ngModel)]="row.planStartDate" placeholder="Start" />
+            </td>
+            <td>
+              <input type="text" class="form-control form-control-sm" bsDatepicker [(ngModel)]="row.planEndDate" placeholder="End" />
+            </td>
+            <td>
+              <ng-select [items]="processList" bindLabel="label" bindValue="value" [multiple]="true" [(ngModel)]="row.processIds" placeholder="Select Process" appendTo="body">
+              </ng-select>
+            </td>
+            <td>
+              <ng-select [items]="machineList" bindLabel="label" bindValue="value" [multiple]="true" [(ngModel)]="row.machineIds" placeholder="Select Machine" appendTo="body">
+              </ng-select>
+            </td>
+            <td>
+              <input type="text" class="form-control form-control-sm" [(ngModel)]="row.remarks" placeholder="Remarks" />
+            </td>
+          </tr>
+          <tr *ngIf="gridData.length === 0">
+            <td colspan="19" class="text-center text-muted">No data found. Please adjust filters and search.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Footer Controls -->
+    <div class="d-flex justify-content-end mt-4">
+      <button class="btn btn-secondary me-2" (click)="onRefresh()">
+        <i class="pi pi-refresh"></i> Refresh
+      </button>
+      <button class="btn btn-primary" (click)="onSave()">
+        <i class="pi pi-save"></i> Save
+      </button>
+    </div>
+  </div>
+</div>
