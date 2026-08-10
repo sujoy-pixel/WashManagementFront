@@ -49,7 +49,7 @@
     <!-- Row 2 -->
     <div class="row align-items-center mb-2">
       <label class="form-label col-md-1">
-        Order
+        Order <span class="text-danger">*</span>
       </label>
       <div class="form-control col-md-2 common-border">
         <ng-select [(ngModel)]="Model.OrderId" placeholder="Select Order">
@@ -58,48 +58,47 @@
       </div>
 
       <label class="form-label col-md-1">
-        Date
+        Date <span class="text-danger">*</span>
       </label>
       <div class="form-control col-md-2 common-border">
         <input class="form-control" bsDatepicker [(ngModel)]="Model.Date" [bsConfig]="{dateInputFormat:'DD-MMM-YYYY'}">
       </div>
       <!-- Row 3 -->
-    
-        <label class="form-label col-md-1">
-          Shift
-        </label>
-        <div class="form-control col-md-2 common-border">
-          <ng-select [items]="shiftList" bindLabel="label" bindValue="value" [(ngModel)]="Model.ShiftId">
-          </ng-select>
-        </div>
-    
-      <!-- <label class="form-label col-md-1">
-        Report
-      </label> -->
-      <!-- <div class="form-control col-md-2 common-border">
-        <ng-select [items]="reportList" bindLabel="label" bindValue="value" [(ngModel)]="Model.ReportId">
-        </ng-select>
-      </div> -->
 
-      <!-- <label class="form-label col-md-1">
+      <label class="form-label col-md-1">
+        Shift <span class="text-danger">*</span>
+      </label>
+
+      <div class="form-control col-md-2 common-border">
+        <ng-select [(ngModel)]="Model.ShiftId" placeholder="Select Shift" (ngModelChange)="onShiftChange()">
+
+          <ng-option *ngFor="let u of shiftList" [value]="u.value">
+            {{u.label}}
+          </ng-option>
+
+        </ng-select>
+      </div>
+      <label class="form-label col-md-1">
         Batch No
       </label>
+
       <div class="form-control col-md-2 common-border">
-        <ng-select [items]="batchList" bindLabel="label" bindValue="value" [(ngModel)]="Model.BatchNo">
+        <ng-select [items]="batchList" bindLabel="label" bindValue="value" [(ngModel)]="Model.BatchNo"
+          placeholder="Select Batch No">
         </ng-select>
-      </div> -->
-    </div>
-
-
-
-    <!-- Search Button -->
-    <div class="row mt-4">
-      <div class="col text-end">
-        <button class="btn btn-gradient px-4 py-2" (click)="onSearch()">
-          <i class="fa fa-search me-2"></i> Search Report
-        </button>
       </div>
-    </div>
 
+
+
+
+      <!-- Search Button -->
+      <div class="row mt-4">
+        <div class="col text-end">
+          <button class="btn btn-gradient px-4 py-2" (click)="onSearch()">
+            <i class="fa fa-search me-2"></i> Search Report
+          </button>
+        </div>
+      </div>
+
+    </div>
   </div>
-</div>

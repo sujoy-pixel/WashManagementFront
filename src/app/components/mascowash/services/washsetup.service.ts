@@ -710,11 +710,17 @@ export class WashSetupService {
 
   }
 
+GetBatchNoByDateAndShift(param: any) {
+  debugger;
 
-
-
-
-
+  return this.http.post<any[]>(
+    this.baseUrl_ + 'Setup/GetBatchNoByDateAndShift',
+    param,
+    {
+      headers: this.token.headerToken()
+    }
+  );
+}
 
 
 
