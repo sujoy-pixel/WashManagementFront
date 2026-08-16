@@ -149,6 +149,11 @@ const routes: Routes = [
         path: 'setup/entry/date-wise-machine-plan',
         component: DateWiseMachinePlanComponent,
         runGuardsAndResolvers: 'always',
+      },
+      {
+        path: 'setup/entry/floor-status',
+        loadComponent: () => import('./setup/entry/floor-status-dashboard/floor-status-dashboard.component').then(m => m.FloorStatusDashboardComponent),
+        runGuardsAndResolvers: 'always',
       }
     ],
   },

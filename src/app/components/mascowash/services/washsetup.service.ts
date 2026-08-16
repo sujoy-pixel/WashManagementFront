@@ -722,7 +722,18 @@ GetBatchNoByDateAndShift(param: any) {
   );
 }
 
+getFloorStatusData(request: any) {
 
+  debugger;
+
+  return this.http.post<any[]>(
+    this.baseUrl_ + 'Setup/getFloorStatusData',
+    request,
+    {
+      headers: this.token.headerToken()
+    }
+  );
+}
 
 
 

@@ -19,6 +19,13 @@ const routes: Routes = [
         breadcrumb: "Dashboard",
       },
     },
+    {
+      path: "floor-status",
+      loadComponent: () => import('../mascowash/setup/entry/floor-status-dashboard/floor-status-dashboard.component').then(m => m.FloorStatusDashboardComponent),
+      data: {
+        breadcrumb: "Floor Status",
+      },
+    }
   ]
   }
 

@@ -356,6 +356,7 @@ export class DateWiseHourlyQcReportComponent implements OnInit {
   onBatchNoClear(): void {
     this.Model.BatchNo = null;
     this.batchList = [];
+    
   }
 
   /* ===================== VALIDATION ===================== */
@@ -415,6 +416,7 @@ debugger;
   onSearch(): void {
     if (!this.isFormValid()) return;
     this.printReport();
+    
   }
 
   printReport(): void {
