@@ -1,202 +1,449 @@
+<!-- ========================= HEADER CARD ========================= -->
 <div class="row">
   <div class="col-md-12">
     <div class="card custom-card">
       <div class="card-header border-bottom d-flex justify-content-between align-items-center">
-        <!-- LEFT : Title -->
         <div class="card-title mb-0">
-          <i class="fa fa-table me-2"></i> Floor Status Dashboard
+          Floor Status Dashboard
         </div>
 
-        <!-- RIGHT : Radio Buttons -->
-        <div class="d-flex align-items-center">
-          <div class="form-check form-check-inline me-3">
-            <input class="form-check-input" type="radio" name="orderType" id="typeBulk" value="Bulk" [(ngModel)]="orderType">
-            <label class="form-check-label fw-bold text-dark" for="typeBulk">Bulk</label>
-          </div>
-          <div class="form-check form-check-inline">
-            <input class="form-check-input" type="radio" name="orderType" id="typeSample" value="Sample" [(ngModel)]="orderType">
-            <label class="form-check-label fw-bold text-dark" for="typeSample">Sample</label>
-          </div>
-        </div>
       </div>
     </div>
   </div>
 </div>
+<div class="d-flex align-items-center justify-content-center gap-3  mb-4">
+  <div class="form-check form-check-inline mb-0">
+    <input class="form-check-input" type="radio" name="orderType" id="typeBulk" value="Bulk"
+      [(ngModel)]="filter.orderType">
+    <label class="form-check-label fw-semibold" for="typeBulk">Bulk</label>
+  </div>
+  <div class="form-check form-check-inline mb-0">
+    <input class="form-check-input" type="radio" name="orderType" id="typeSample" value="Sample"
+      [(ngModel)]="filter.orderType">
+    <label class="form-check-label fw-semibold" for="typeSample">Sample</label>
+  </div>
+</div>
 
+<!-- ========================= FILTER CARD ========================= -->
 <div class="mb-3">
   <div class="card custom-card mb-3">
     <div class="card-body">
       <div class="row g-3 align-items-end">
+
+        <!-- Unit -->
         <div class="col-md-2">
           <label class="d-none d-sm-inline text-dark">
             Unit <span class="text-danger">*</span>
           </label>
           <div class="form-control common-border">
-            <ng-select [(ngModel)]="selectedUnit" [items]="UnitList" bindLabel="label" bindValue="value" placeholder="Select Unit">
+            <ng-select [(ngModel)]="filter.UnitId" [items]="UnitList" bindLabel="label" bindValue="value"
+              placeholder="Select Unit">
             </ng-select>
           </div>
         </div>
+
+        <!-- From Date -->
         <div class="col-md-2">
           <label class="form-label">From Date <span class="text-danger">*</span></label>
           <div class="form-control common-border-input">
-            <input type="text" bsDatepicker [(ngModel)]="fromDate" placeholder="Select Date">
+            <input type="text" bsDatepicker [(ngModel)]="filter.fromDate" placeholder="dd/mm/yyyy">
           </div>
         </div>
+
+        <!-- To Date -->
         <div class="col-md-2">
           <label class="form-label">To Date <span class="text-danger">*</span></label>
           <div class="form-control common-border-input">
-            <input type="text" bsDatepicker [(ngModel)]="toDate" placeholder="Select Date">
+            <input type="text" bsDatepicker [(ngModel)]="filter.toDate" placeholder="dd/mm/yyyy">
           </div>
         </div>
+
+        <!-- Status Filter -->
         <div class="col-md-3">
-          <label class="d-none d-sm-inline text-dark">Status Dropdown</label>
+          <label class="d-none d-sm-inline text-dark">Status</label>
           <div class="form-control common-border">
-            <ng-select [(ngModel)]="selectedStatus" [items]="statuses" bindLabel="label" bindValue="value" placeholder="All Statuses">
+            <ng-select [(ngModel)]="selectedStatus" [items]="statusList" bindLabel="label" bindValue="value"
+              placeholder="All Statuses" (change)="onStatusFilter()">
             </ng-select>
           </div>
         </div>
+
+        <!-- Global Search (filters by status text in grid) -->
         <div class="col-md-3">
-          <label class="form-label">Global Search</label>
+          <label class="d-none d-sm-inline text-dark">Global Search</label>
           <div class="form-control common-border-input">
-            <input type="text" [(ngModel)]="globalSearch" placeholder="Search keyword...">
+            <input type="text" class="form-control border-0 p-0 bg-transparent" [(ngModel)]="globalSearch"
+              (ngModelChange)="onGlobalSearch()" placeholder="Search by Batch, Buyer, Status...">
           </div>
         </div>
+
       </div>
+
+      <!-- Action Buttons -->
       <div class="row mt-4">
         <div class="text-end header-action-buttons">
           <button class="btn btn-gradient px-4 py-2 me-2" (click)="onSearch()">
             <i class="fa fa-search me-2"></i> View
           </button>
-          <button class="btn btn-success px-4 py-2">
+          <button class="btn btn-success px-4 py-2 me-2" (click)="onExcel()">
             <i class="fa fa-file-excel-o me-2"></i> Excel
           </button>
-          <!-- <button class="btn btn-danger px-4 py-2 ms-2" (click)="onClear()">
+          <button class="btn btn-danger px-4 py-2" (click)="onClear()">
             <i class="fa fa-refresh me-2"></i> Clear
-          </button> -->
+          </button>
         </div>
       </div>
     </div>
   </div>
 
-  <p-card class="mb-3">
-    <div class="table-responsive mt-3 table-container-scroll-y" style="max-height: 600px;">
-      <table class="table table-striped table-bordered custom-table fixed-table floor-table">
-        <thead class="custom-table-header sticky-top">
-          <tr class="header-group-row">
-            <th colspan="10" class="text-center bg-gray-200 text-dark border-end">Master Batch Information</th>
-            <th colspan="4" class="text-center bg-gray-200 text-dark border-end">Quantitative & Quantitative Analysis</th>
-            <th colspan="5" class="text-center bg-gray-200 text-dark border-end">Operational Step Breakdown</th>
-            <th colspan="2" class="text-center bg-gray-200 text-dark">Live Statusing</th>
-          </tr>
+  <!-- ========================= DATA GRID ========================= -->
+  <p-card>
+
+    <!-- <pre>{{ filteredBatches | json }}</pre> -->
+    <div class="table-responsive table-container-scroll-y">
+      <!-- <table class="table table-bordered floor-table">
+
+        <thead>
           <tr>
-            <!-- Master Info -->
-            <th class="custom-table-th" style="width: 50px;">SL</th>
-            <th class="custom-table-th">Batch No</th>
-            <th class="custom-table-th">Buyer</th>
-            <th class="larger-column custom-table-th">Job</th>
-            <th class="custom-table-th">Style</th>
-            <th class="larger-column custom-table-th">Order</th>
-            <th class="custom-table-th">Type</th>
-            <th class="larger-column custom-table-th">Fabrication</th>
-            <th class="custom-table-th">Color</th>
-            <th class="custom-table-th">Dress Part</th>
-            <th class="border-end custom-table-th" style="width: 80px;">GSM</th>
-            
-            <!-- Quantitative -->
-            <th class="custom-table-th" style="padding: 0;">
-              <div class="text-center border-bottom pb-1">Shade Status</div>
-              <div class="d-flex w-100 mt-1" style="font-size: 10px;">
-                <div class="w-50 text-center border-end">Body</div>
-                <div class="w-50 text-center">Fabric</div>
-              </div>
-            </th>
-            <th class="larger-column custom-table-th" style="padding: 0;">
-              <div class="text-center border-bottom pb-1">Fabric Qty (KG)</div>
-              <div class="d-flex w-100 mt-1" style="font-size: 10px;">
-                <div class="w-50 text-center border-end">Body parts</div>
-                <div class="w-50 text-center">Other parts</div>
-              </div>
-            </th>
-            <th class="custom-table-th">Garments &<br>Panel Qty (Pcs)</th>
-            <th class="border-end custom-table-th">Operation<br>Start Date</th>
+            <th class="fth fth-sl">SL</th>
+            <th class="fth fth-batch">Batch No</th>
+            <th class="fth">Buyer</th>
+            <th class="fth">Job</th>
+            <th class="fth">Style</th>
+            <th class="fth">Order</th>
+            <th class="fth fth-type">Type</th>
+            <th class="fth fth-fab">Fabrication</th>
+            <th class="fth">Color</th>
+            <th class="fth fth-dress">Dress Part</th>
+            <th class="fth fth-gsm">GSM</th>
 
-            <!-- Operational Breakdown -->
-            <th class="custom-table-th">Operation Name</th>
-            <th class="custom-table-th">Machine Name</th>
-            <th class="custom-table-th">Operator Name</th>
-            <th class="larger-column custom-table-th" style="padding: 0;">
-              <div class="text-center border-bottom pb-1">Load & Unload</div>
-              <div class="d-flex w-100 mt-1" style="font-size: 10px;">
-                <div class="w-50 text-center border-end">Start</div>
-                <div class="w-50 text-center">End</div>
+            <th class="fth fth-split">
+              <div class="split-head-top">Shade Status</div>
+              <div class="split-head-bottom">
+                <span class="split-half split-left">Body</span>
+                <span class="split-half">Fabric</span>
               </div>
             </th>
-            <th class="border-end custom-table-th">Duration</th>
 
-            <!-- Live Statusing -->
-            <th class="custom-table-th">Total<br>Duration</th>
-            <th class="custom-table-th">Status</th>
+            <th class="fth fth-split">
+              <div class="split-head-top">Fabric Qty (KG)</div>
+              <div class="split-head-bottom">
+                <span class="split-half split-left">Body</span>
+                <span class="split-half">Other</span>
+              </div>
+            </th>
+
+
+            <th class="fth fth-gpqty">Garments &<br>Panel Qty (Pcs)</th>
+
+            <th class="fth fth-date">Operation<br>Start Date</th>
+
+
+            <th class="fth fth-opname">Operation Name</th>
+            <th class="fth fth-machine">Machine Name</th>
+            <th class="fth fth-operator">Operator Name</th>
+
+
+            <th class="fth fth-split">
+              <div class="split-head-top">Load & Unload</div>
+              <div class="split-head-bottom">
+                <span class="split-half split-left">Start</span>
+                <span class="split-half">End</span>
+              </div>
+            </th>
+
+            <th class="fth fth-dur">Duration</th>
+            <th class="fth fth-tdur">Total<br>Duration</th>
+            <th class="fth fth-status">Status</th>
           </tr>
         </thead>
+
+
         <tbody>
-          <ng-container *ngFor="let batch of batches">
-            <tr *ngFor="let op of batch.operations; let i = index" [class.table-warning]="op.name + ' Running' === batch.status && op.loadUnloadStart && !op.loadUnloadEnd">
-              
-              <!-- Master Info (only on first row of batch) -->
-              <td *ngIf="i === 0" [attr.rowspan]="batch.operations.length" class="text-center">{{batch.sl}}</td>
-              <td *ngIf="i === 0" [attr.rowspan]="batch.operations.length" class="fw-bold text-center" style="transform: rotate(-90deg); white-space: nowrap;">{{batch.batchNo}}</td>
-              <td *ngIf="i === 0" [attr.rowspan]="batch.operations.length" class="text-center">{{batch.buyer}}</td>
-              <td *ngIf="i === 0" [attr.rowspan]="batch.operations.length" class="text-center">{{ batch.jobStyle ? (batch.jobStyle.split('|')[0] || '') : '' }}</td>
-              <td *ngIf="i === 0" [attr.rowspan]="batch.operations.length" class="text-center">{{ batch.jobStyle ? (batch.jobStyle.split('|')[1] || '') : '' }}</td>
-              <td *ngIf="i === 0" [attr.rowspan]="batch.operations.length" class="text-center" style="transform: rotate(-90deg); white-space: nowrap;">{{batch.order}}</td>
-              <td *ngIf="i === 0" [attr.rowspan]="batch.operations.length" class="text-center">{{batch.type}}</td>
-              <td *ngIf="i === 0" [attr.rowspan]="batch.operations.length" class="text-center" style="white-space: pre-wrap; font-size: 11px;">{{batch.fabrication}}</td>
-              <td *ngIf="i === 0" [attr.rowspan]="batch.operations.length" class="text-center" style="transform: rotate(-90deg); white-space: nowrap;">{{batch.color}}</td>
-              <td *ngIf="i === 0" [attr.rowspan]="batch.operations.length" class="text-center" style="transform: rotate(-90deg); white-space: nowrap;">{{batch.dressPart}}</td>
-              <td *ngIf="i === 0" [attr.rowspan]="batch.operations.length" class="border-end text-center">{{batch.gsm}}</td>
+          <ng-container *ngFor="let batch of filteredBatches">
+            <tr *ngFor="let op of batch.operations; let i = index"
+              [class.row-running]="batch.status && batch.status.includes('Running') && op.loadStart && !op.loadEnd"
+              [class.row-completed]="batch.status && batch.status.includes('End')">
 
-              <!-- Quantitative (only on first row) -->
-              <td *ngIf="i === 0" [attr.rowspan]="batch.operations.length" style="padding: 0;">
-                <div class="d-flex h-100 align-items-center">
-                  <div class="w-50 text-center border-end">{{batch.shadeBody}}</div>
-                  <div class="w-50 text-center">{{batch.shadeFabric}}</div>
-                </div>
-              </td>
-              <td *ngIf="i === 0" [attr.rowspan]="batch.operations.length" style="padding: 0;">
-                <div class="d-flex h-100 align-items-center">
-                  <div class="w-50 text-center border-end">{{batch.fabricQtyBody}}</div>
-                  <div class="w-50 text-center">{{batch.fabricQtyOther}}</div>
-                </div>
-              </td>
-              <td *ngIf="i === 0" [attr.rowspan]="batch.operations.length" class="text-center fw-bold">{{batch.garmentsQty}}</td>
-              <td *ngIf="i === 0" [attr.rowspan]="batch.operations.length" class="border-end text-center" style="transform: rotate(-90deg); white-space: nowrap;">{{batch.operationStartDate}}</td>
 
-              <!-- Operational Breakdown (rendered for every row) -->
-              <td class="fw-semibold text-center">{{op.name}}</td>
-              <td class="text-center">{{op.machineName}}</td>
-              <td class="text-center">{{op.operatorName}}</td>
-              <td style="padding: 0;">
-                <div class="d-flex h-100 align-items-center">
-                  <div class="w-50 text-center border-end font-monospace" style="font-size: 11px;">{{op.loadUnloadStart}}</div>
-                  <div class="w-50 text-center font-monospace" style="font-size: 11px;">{{op.loadUnloadEnd}}</div>
-                </div>
-              </td>
-              <td class="border-end text-center fw-semibold">{{op.duration}}</td>
 
-              <!-- Live Statusing (only on first row) -->
-              <td *ngIf="i === 0" [attr.rowspan]="batch.operations.length" class="fw-bold text-center">{{batch.totalDuration}}</td>
-              <td *ngIf="i === 0" [attr.rowspan]="batch.operations.length" class="text-center">
-                <span style="transform: rotate(-90deg); display: inline-block; white-space: nowrap; font-weight: bold;" 
-                      [ngClass]="{'text-success': batch.status.includes('End'), 'text-warning': batch.status.includes('Running')}">
+              <td *ngIf="i === 0" [attr.rowspan]="batch.operations.length" class="ftd ftd-center">{{batch.sl}}</td>
+              <td *ngIf="i === 0" [attr.rowspan]="batch.operations.length" class="ftd ftd-center ftd-bold ftd-batch">
+                {{batch.batchNo}}</td>
+              <td *ngIf="i === 0" [attr.rowspan]="batch.operations.length" class="ftd ftd-center">{{batch.buyer}}</td>
+              <td *ngIf="i === 0" [attr.rowspan]="batch.operations.length" class="ftd ftd-center">{{batch.job}}</td>
+              <td *ngIf="i === 0" [attr.rowspan]="batch.operations.length" class="ftd ftd-center">{{batch.style}}</td>
+              <td *ngIf="i === 0" [attr.rowspan]="batch.operations.length" class="ftd ftd-center">{{batch.order}}</td>
+              <td *ngIf="i === 0" [attr.rowspan]="batch.operations.length" class="ftd ftd-center">{{batch.type}}</td>
+              <td *ngIf="i === 0" [attr.rowspan]="batch.operations.length" class="ftd ftd-center ftd-small">
+                {{batch.fabrication}}</td>
+              <td *ngIf="i === 0" [attr.rowspan]="batch.operations.length" class="ftd ftd-center">{{batch.color}}</td>
+              <td *ngIf="i === 0" [attr.rowspan]="batch.operations.length" class="ftd ftd-center">{{batch.dressPart}}
+              </td>
+              <td *ngIf="i === 0" [attr.rowspan]="batch.operations.length" class="ftd ftd-center">{{batch.gsm}}</td>
+
+
+              <td *ngIf="i === 0" [attr.rowspan]="batch.operations.length" class="ftd ftd-split">
+
+                <span class="split-half split-left">1</span>
+                <span class="split-half">2</span>
+              </td>
+
+
+              <td *ngIf="i === 0" [attr.rowspan]="batch.operations.length" class="ftd ftd-split">
+
+                <span class="split-half split-left">100</span>
+                <span class="split-half">200</span>
+              </td>
+
+
+              <td *ngIf="i === 0" [attr.rowspan]="batch.operations.length" class="ftd ftd-center ftd-bold">
+                {{batch.garmentsQty}}</td>
+
+              <td *ngIf="i === 0" [attr.rowspan]="batch.operations.length" class="ftd ftd-center ftd-date">
+                {{batch.operationStartDate | date:'dd-MM-yyyy'}}
+              </td>
+
+
+              <td class="ftd ftd-center ftd-semibold">{{op.operationName}}</td>
+              <td class="ftd ftd-center">{{op.machineName}}</td>
+              <td class="ftd ftd-center">{{op.operatorName}}</td>
+
+              <td class="ftd ftd-split">
+                <span class="split-half split-left ftd-mono">{{op.loadStart}}</span>
+                <span class="split-half ftd-mono">{{op.loadEnd}}</span>
+              </td>
+
+              <td class="ftd ftd-center ftd-semibold">{{op.duration}}</td>
+
+
+              <td *ngIf="i === 0" [attr.rowspan]="batch.operations.length" class="ftd ftd-center ftd-bold">
+                {{batch.totalDuration}}</td>
+
+              <td *ngIf="i === 0" [attr.rowspan]="batch.operations.length" class="ftd ftd-center">
+                <span class="status-badge" [class.badge-running]="batch.status && batch.status.includes('Running')"
+                  [class.badge-end]="batch.status && batch.status.includes('End')">
                   {{batch.status}}
                 </span>
               </td>
             </tr>
           </ng-container>
         </tbody>
+
+      </table> -->
+
+
+      <table class="table table-bordered floor-table">
+        <thead>
+          <!-- ================= MAIN HEADER ================= -->
+          <tr>
+            <th class="fth" rowspan="2">SL</th>
+            <th class="fth" rowspan="2">Batch No</th>
+            <th class="fth" rowspan="2">Buyer</th>
+            <th class="fth" rowspan="2">Job</th>
+            <th class="fth" rowspan="2">Style</th>
+            <th class="fth" rowspan="2">Order</th>
+            <th class="fth" rowspan="2">Type</th>
+            <th class="fth" rowspan="2">Fabrication</th>
+            <th class="fth" rowspan="2">Color</th>
+            <th class="fth" rowspan="2">Dress Part</th>
+            <th class="fth" rowspan="2">GSM</th>
+
+            <!-- Shade Status -->
+            <th class="fth" colspan="2" class="shade-header">
+              Shade Status
+            </th>
+
+            <!-- Fabric Qty -->
+            <th class="fth" colspan="2" class="shade-header">
+              Fabric Qty (KG)
+            </th>
+
+            <th class="fth" rowspan="2">Garments &<br>Panel Qty (Pcs)</th>
+            <th class="fth" rowspan="2">Operation<br>Start Date</th>
+
+            <!-- Operational Columns -->
+            <th class="fth" rowspan="2">Operation Name</th>
+            <th class="fth" rowspan="2">Machine Name</th>
+            <th class="fth" rowspan="2">Operator Name</th>
+            <th class="fth" colspan="2" class="shade-header">
+              Load & Unload
+            </th>
+            <th class="fth" rowspan="2">Duration</th>
+            <th class="fth" rowspan="2">Total<br>Duration</th>
+            <th class="fth" rowspan="2">Status</th>
+          </tr>
+
+          <!-- ================= SUB HEADER ================= -->
+          <tr>
+            <!-- Shade Status -->
+            <th id="1" class="fth">Body</th>
+            <th id="2" class="fth">Fabric</th>
+
+            <!-- Fabric Qty -->
+            <th id="3" class="fth">Body</th>
+            <th id="4" class="fth">Other</th>
+
+            <th id="5" class="fth">Start</th>
+            <th id="6" class="fth">End</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          <ng-container *ngFor="let batch of filteredBatches">
+
+            <tr *ngFor="let op of batch.operations; let i = index"
+              [class.row-running]="batch.status?.includes('Running') && op.loadStart && !op.loadEnd"
+              [class.row-completed]="batch.status?.includes('End')">
+
+              <!-- ================= BATCH INFORMATION ================= -->
+
+              <td *ngIf="i === 0" [attr.rowspan]="batch.operations.length">
+                {{ batch.sl }}
+              </td>
+
+              <td *ngIf="i === 0" [attr.rowspan]="batch.operations.length">
+                {{ batch.batchNo }}
+              </td>
+
+              <td *ngIf="i === 0" [attr.rowspan]="batch.operations.length">
+                {{ batch.buyer }}
+              </td>
+
+              <td *ngIf="i === 0" [attr.rowspan]="batch.operations.length">
+                {{ batch.job }}
+              </td>
+
+              <td *ngIf="i === 0" [attr.rowspan]="batch.operations.length">
+                {{ batch.style }}
+              </td>
+
+              <td *ngIf="i === 0" [attr.rowspan]="batch.operations.length">
+                {{ batch.order }}
+              </td>
+
+              <td *ngIf="i === 0" [attr.rowspan]="batch.operations.length">
+                {{ batch.type || '' }}
+              </td>
+
+              <td *ngIf="i === 0" [attr.rowspan]="batch.operations.length">
+                {{ batch.fabrication || '' }}
+              </td>
+
+              <td *ngIf="i === 0" [attr.rowspan]="batch.operations.length">
+                {{ batch.color }}
+              </td>
+
+              <td *ngIf="i === 0" [attr.rowspan]="batch.operations.length">
+                {{ batch.dressPart }}
+              </td>
+
+              <td *ngIf="i === 0" [attr.rowspan]="batch.operations.length">
+                {{ batch.gsm }}
+              </td>
+
+
+              <!-- ================= SHADE STATUS ================= -->
+
+              <td *ngIf="i === 0" [attr.rowspan]="batch.operations.length">
+                {{ batch.shadeBody || '' }}
+              </td>
+
+              <td *ngIf="i === 0" [attr.rowspan]="batch.operations.length">
+                {{ batch.shadeFabric || '' }}
+              </td>
+
+
+              <!-- ================= FABRIC QTY ================= -->
+
+              <td *ngIf="i === 0" [attr.rowspan]="batch.operations.length">
+                {{ batch.fabricQtyBody ?? '' }}
+              </td>
+
+              <td *ngIf="i === 0" [attr.rowspan]="batch.operations.length">
+                {{ batch.fabricQtyOther ?? '' }}
+              </td>
+
+
+              <!-- ================= GARMENTS QTY ================= -->
+
+              <td *ngIf="i === 0" [attr.rowspan]="batch.operations.length">
+                {{ batch.garmentsQty }}
+              </td>
+
+
+              <!-- ================= OPERATION START DATE ================= -->
+
+              <td *ngIf="i === 0" [attr.rowspan]="batch.operations.length">
+                {{ batch.operationStartDate | date:'dd-MM-yyyy' }}
+              </td>
+
+
+              <!-- ================= OPERATION INFORMATION ================= -->
+
+              <td>
+                {{ op.operationName }}
+              </td>
+
+              <td>
+                {{ op.machineName || '' }}
+              </td>
+
+              <td>
+                {{ op.operatorName || '' }}
+              </td>
+
+
+              <!-- ================= LOAD & UNLOAD ================= -->
+
+              <td>
+                {{ op.loadStart || '' }}
+              </td>
+
+              <td>
+                {{ op.loadEnd || '' }}
+              </td>
+
+
+              <!-- ================= OPERATION DURATION ================= -->
+
+              <td>
+                {{ op.duration || '' }}
+              </td>
+
+
+              <!-- ================= TOTAL DURATION ================= -->
+
+              <td *ngIf="i === 0" [attr.rowspan]="batch.operations.length">
+                {{ batch.totalDuration || '' }}
+              </td>
+
+
+              <!-- ================= STATUS ================= -->
+
+              <td *ngIf="i === 0" [attr.rowspan]="batch.operations.length">
+
+                <span class="status-badge" [class.badge-running]="batch.status?.includes('Running')"
+                  [class.badge-end]="batch.status?.includes('End')">
+
+                  {{ batch.status }}
+
+                </span>
+
+              </td>
+
+            </tr>
+
+          </ng-container>
+        </tbody>
       </table>
-      <div class="empty-state-message" *ngIf="batches.length === 0">
-        <p>No results found. Try adjusting your search filters.</p>
+
+      <!-- Empty State -->
+      <div class="floor-empty-state" *ngIf="filteredBatches.length === 0">
+        <div class="floor-empty-icon">
+          <i class="fa fa-clipboard-list"></i>
+        </div>
+        <p>No results found. Use filters above and click Search.</p>
       </div>
     </div>
   </p-card>

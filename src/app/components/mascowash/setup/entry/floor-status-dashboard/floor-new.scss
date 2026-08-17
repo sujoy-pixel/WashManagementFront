@@ -1,0 +1,31 @@
+table, th, td {
+  border: 1px solid black !important;
+  border-collapse: collapse;
+}
+
+.shade-header {
+  padding: 0 !important;
+  min-width: 150px;
+}
+
+.shade-title {
+  padding: 5px;
+  text-align: center;
+  border-bottom: 1px solid #ccc;
+}
+
+.shade-sub-header {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+}
+
+.shade-sub-header span {
+  padding: 4px;
+  text-align: center;
+  font-size: 10px;
+}
+
+.shade-sub-header span:first-child {
+  border-right: 1px solid #ccc;
+}
+
