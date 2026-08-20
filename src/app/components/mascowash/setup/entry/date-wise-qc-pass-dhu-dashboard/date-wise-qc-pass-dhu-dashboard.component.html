@@ -1,0 +1,136 @@
+<div class="row">
+  <div class="col-md-12">
+    <div class="card custom-card">
+      <div class="card-header border-bottom d-flex justify-content-between align-items-center">
+        <div class="card-title mb-0">
+          Date wise QC Pass &amp; DHU Dashboard
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="mb-3">
+  <div class="card custom-card mb-3">
+    <div class="card-body">
+      <div class="row g-3 align-items-end">
+        <div class="col-md-3">
+          <label class="d-none d-sm-inline text-dark">
+            Unit <span class="text-danger">*</span>
+          </label>
+          <div class="form-control common-border">
+            <ng-select [(ngModel)]="filter.UnitId" [items]="UnitList" bindLabel="label" bindValue="value"
+              placeholder="Select Unit">
+            </ng-select>
+          </div>
+        </div>
+
+        <div class="col-md-3">
+          <label class="form-label">From Date <span class="text-danger">*</span></label>
+          <div class="form-control common-border-input">
+            <input type="text" bsDatepicker [(ngModel)]="filter.fromDate" placeholder="dd/mm/yyyy">
+          </div>
+        </div>
+
+        <div class="col-md-3">
+          <label class="form-label">To Date <span class="text-danger">*</span></label>
+          <div class="form-control common-border-input">
+            <input type="text" bsDatepicker [(ngModel)]="filter.toDate" placeholder="dd/mm/yyyy">
+          </div>
+        </div>
+
+        <div class="col-md-3">
+          <label class="d-none d-sm-inline text-dark">Search Here (Global Search)</label>
+          <div class="form-control common-border-input">
+            <input type="text" class="form-control border-0 p-0 bg-transparent" [(ngModel)]="globalSearch"
+              (ngModelChange)="onGlobalSearch()" placeholder="Search Here (Global Search)">
+          </div>
+        </div>
+      </div>
+
+      <div class="row mt-4">
+        <div class="text-end header-action-buttons">
+          <button class="btn btn-gradient px-4 py-2 me-2" (click)="onSearch()" [disabled]="isLoading">
+            <i class="fa fa-search me-2"></i> View
+          </button>
+          <!-- <button class="btn btn-success px-4 py-2 me-2" (click)="onExcel()">
+            <i class="fa fa-file-excel-o me-2"></i> Excel
+          </button> -->
+          <button class="btn btn-danger px-4 py-2" (click)="onClear()">
+            <i class="fa fa-refresh me-2"></i> Clear
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <p-card>
+    <div class="table-responsive table-container-scroll-y">
+      <table class="table table-bordered floor-table">
+        <thead>
+          <tr>
+            <th class="fth">Date</th>
+            <th class="fth">Tracking No.</th>
+            <th class="fth">Receive From</th>
+            <th class="fth">Buyer</th>
+            <th class="fth">Job</th>
+            <th class="fth">Order</th>
+            <th class="fth">Style</th>
+            <th class="fth">Color</th>
+            <th class="fth">Dress Part</th>
+            <th class="fth">Wash Category</th>
+            <th class="fth">Item Name</th>
+            <th class="fth">Shift</th>
+            <th class="fth">QC Name</th>
+            <th class="fth">Receive Qty</th>
+            <th class="fth">UoM</th>
+            <th class="fth">Batch No</th>
+            <th class="fth">Total Check QTY</th>
+            <th class="fth">Total Okay QTY</th>
+            <th class="fth">Total Defect QTY</th>
+            <th class="fth">Defect %</th>
+            <th class="fth">Defects Balance QTY</th>
+            <th class="fth">Rectify Defects Qty</th>
+            <th class="fth">Total Reject QTY</th>
+            <th class="fth">Reject %</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let row of filteredRows; trackBy: trackByRow">
+            <td class="ftd ftd-center ftd-date">{{ row.date | date:'d-MMM-yy' }}</td>
+            <td class="ftd ftd-center ftd-bold">{{ row.trackingNo }}</td>
+            <td class="ftd ftd-center">{{ row.receiveFrom }}</td>
+            <td class="ftd ftd-center">{{ row.buyer }}</td>
+            <td class="ftd ftd-center">{{ row.job }}</td>
+            <td class="ftd ftd-center">{{ row.orderNo }}</td>
+            <td class="ftd ftd-center">{{ row.style }}</td>
+            <td class="ftd ftd-center">{{ row.color }}</td>
+            <td class="ftd ftd-center">{{ row.dressPart }}</td>
+            <td class="ftd ftd-center">{{ row.washCategory }}</td>
+            <td class="ftd ftd-center">{{ row.itemName }}</td>
+            <td class="ftd ftd-center">{{ row.shift }}</td>
+            <td class="ftd ftd-center">{{ row.qcName }}</td>
+            <td class="ftd ftd-center ftd-semibold">{{ row.receiveQty | number }}</td>
+            <td class="ftd ftd-center">{{ row.uom }}</td>
+            <td class="ftd ftd-center ftd-bold ftd-batch">{{ row.batchNo }}</td>
+            <td class="ftd ftd-center">{{ row.totalCheckQty | number:'1.2-2' }}</td>
+            <td class="ftd ftd-center">{{ row.totalOkayQty | number:'1.2-2' }}</td>
+            <td class="ftd ftd-center">{{ row.totalDefectQty | number:'1.2-2' }}</td>
+            <td class="ftd ftd-center ftd-semibold">{{ formatPercent(row.defectPercent) }}</td>
+            <td class="ftd ftd-center">{{ row.defectsBalanceQty | number:'1.2-2' }}</td>
+            <td class="ftd ftd-center">{{ row.rectifyDefectsQty | number:'1.2-2' }}</td>
+            <td class="ftd ftd-center">{{ row.totalRejectQty | number:'1.2-2' }}</td>
+            <td class="ftd ftd-center ftd-semibold">{{ formatPercent(row.rejectPercent) }}</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="floor-empty-state" *ngIf="filteredRows.length === 0 && !isLoading">
+        <div class="floor-empty-icon">
+          <i class="fa fa-clipboard-list"></i>
+        </div>
+        <p>No results found. Use filters above and click View.</p>
+      </div>
+    </div>
+  </p-card>
+</div>

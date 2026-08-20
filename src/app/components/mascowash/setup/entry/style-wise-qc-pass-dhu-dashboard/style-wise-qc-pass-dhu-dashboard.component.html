@@ -1,0 +1,146 @@
+<div class="row">
+  <div class="col-md-12">
+    <div class="card custom-card">
+      <div class="card-header border-bottom d-flex justify-content-between align-items-center">
+        <div class="card-title mb-0">
+          Style-wise QC Pass &amp; DHU Dashboard
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="mb-3">
+  <div class="card custom-card mb-3">
+    <div class="card-body">
+      <div class="row g-3 align-items-end">
+        <div class="col-md-3">
+          <label class="d-none d-sm-inline text-dark">
+            Unit <span class="text-danger">*</span>
+          </label>
+          <div class="form-control common-border">
+            <ng-select [(ngModel)]="filter.UnitId" [items]="UnitList" bindLabel="label" bindValue="value"
+              placeholder="Select Unit">
+            </ng-select>
+          </div>
+        </div>
+
+        <div class="col-md-3">
+          <label class="form-label">From Date <span class="text-danger">*</span></label>
+          <div class="form-control common-border-input">
+            <input type="text" bsDatepicker [(ngModel)]="filter.fromDate" placeholder="dd/mm/yyyy">
+          </div>
+        </div>
+
+        <div class="col-md-3">
+          <label class="form-label">To Date <span class="text-danger">*</span></label>
+          <div class="form-control common-border-input">
+            <input type="text" bsDatepicker [(ngModel)]="filter.toDate" placeholder="dd/mm/yyyy">
+          </div>
+        </div>
+
+        <div class="col-md-3">
+          <label class="d-none d-sm-inline text-dark">Search Here (Global Search)</label>
+          <div class="form-control common-border-input">
+            <input type="text" class="form-control border-0 p-0 bg-transparent" [(ngModel)]="globalSearch"
+              (ngModelChange)="onGlobalSearch()" placeholder="Search Here (Global Search)">
+          </div>
+        </div>
+      </div>
+
+      <div class="row mt-4">
+        <div class="text-end header-action-buttons">
+          <button class="btn btn-gradient px-4 py-2 me-2" (click)="onSearch()" [disabled]="isLoading">
+            <i class="fa fa-search me-2"></i> View
+          </button>
+          <!-- <button class="btn btn-success px-4 py-2 me-2" (click)="onExcel()" [disabled]="isLoading || !filteredRows.length">
+            <i class="fa fa-file-excel-o me-2"></i> Excel
+          </button> -->
+          <button class="btn btn-danger px-4 py-2" (click)="onClear()">
+            <i class="fa fa-refresh me-2"></i> Clear
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <p-card>
+    <div class="table-responsive table-container-scroll-y">
+      <table class="table table-bordered floor-table">
+        <thead>
+          <tr>
+            <th class="fth">Receive form</th>
+            <th class="fth">Buyer</th>
+            <th class="fth">Job</th>
+            <th class="fth">Order</th>
+            <th class="fth">Style</th>
+            <th class="fth">Color</th>
+            <th class="fth">Dress Part</th>
+            <th class="fth">Wash Category</th>
+            <th class="fth">Item Name</th>
+            <th class="fth">Received Qty</th>
+            <th class="fth">UoM</th>
+            <th class="fth">No of Batch</th>
+            <th class="fth">Total Check QTY</th>
+            <th class="fth">Total Okay QTY</th>
+            <th class="fth">Total Defect QTY</th>
+            <th class="fth">Defect %</th>
+            <th class="fth">Defects Balance QTY</th>
+            <th class="fth">Rectify Defects Qty</th>
+            <th class="fth">Total Reject QTY</th>
+            <th class="fth">Reject %</th>
+          </tr>
+        </thead>
+        <tbody>
+          <ng-container *ngFor="let row of filteredRows; trackBy: trackByRow">
+            <!-- Standard Data Row -->
+            <tr *ngIf="!row.isSubTotal">
+              <td class="ftd ftd-center">{{ row.receiveFrom }}</td>
+              <td class="ftd ftd-center">{{ row.buyer }}</td>
+              <td class="ftd ftd-center">{{ row.job }}</td>
+              <td class="ftd ftd-center">{{ row.orderNo }}</td>
+              <td class="ftd ftd-center">{{ row.style }}</td>
+              <td class="ftd ftd-center">{{ row.color }}</td>
+              <td class="ftd ftd-center">{{ row.dressPart }}</td>
+              <td class="ftd ftd-center">{{ row.washCategory }}</td>
+              <td class="ftd ftd-center">{{ row.itemName }}</td>
+              <td class="ftd ftd-center ftd-semibold">{{ row.receiveQty | number }}</td>
+              <td class="ftd ftd-center">{{ row.uom }}</td>
+              <td class="ftd ftd-center ftd-bold ftd-batch-count">{{ row.noOfBatch }}</td>
+              <td class="ftd ftd-center">{{ row.totalCheckQty | number }}</td>
+              <td class="ftd ftd-center">{{ row.totalOkayQty | number }}</td>
+              <td class="ftd ftd-center">{{ row.totalDefectQty | number }}</td>
+              <td class="ftd ftd-center ftd-semibold">{{ formatPercent(row.defectPercent) }}</td>
+              <td class="ftd ftd-center">{{ row.defectsBalanceQty | number }}</td>
+              <td class="ftd ftd-center">{{ row.rectifyDefectsQty | number }}</td>
+              <td class="ftd ftd-center">{{ row.totalRejectQty | number }}</td>
+              <td class="ftd ftd-center ftd-semibold">{{ formatPercent(row.rejectPercent) }}</td>
+            </tr>
+            <!-- Subtotal Row -->
+            <tr *ngIf="row.isSubTotal" class="subtotal-row">
+              <td colspan="9" class="ftd text-end ftd-bold">Sub Total:</td>
+              <td class="ftd ftd-center ftd-bold">{{ row.receiveQty | number }}</td>
+              <td class="ftd ftd-center ftd-bold">{{ row.uom }}</td>
+              <td class="ftd ftd-center ftd-bold">{{ row.noOfBatch }}</td>
+              <td class="ftd ftd-center ftd-bold">{{ row.totalCheckQty | number }}</td>
+              <td class="ftd ftd-center ftd-bold">{{ row.totalOkayQty | number }}</td>
+              <td class="ftd ftd-center ftd-bold">{{ row.totalDefectQty | number }}</td>
+              <td class="ftd ftd-center ftd-bold">{{ formatPercent(row.defectPercent) }}</td>
+              <td class="ftd ftd-center ftd-bold">{{ row.defectsBalanceQty | number }}</td>
+              <td class="ftd ftd-center ftd-bold">{{ row.rectifyDefectsQty | number }}</td>
+              <td class="ftd ftd-center ftd-bold">{{ row.totalRejectQty | number }}</td>
+              <td class="ftd ftd-center ftd-bold">{{ formatPercent(row.rejectPercent) }}</td>
+            </tr>
+          </ng-container>
+        </tbody>
+      </table>
+
+      <div class="floor-empty-state" *ngIf="filteredRows.length === 0 && !isLoading">
+        <div class="floor-empty-icon">
+          <i class="fa fa-clipboard-list"></i>
+        </div>
+        <p>No results found. Use filters above and click View.</p>
+      </div>
+    </div>
+  </p-card>
+</div>

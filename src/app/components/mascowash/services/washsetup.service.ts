@@ -735,6 +735,26 @@ getFloorStatusData(request: any) {
   );
 }
 
+getDateWiseQcPassDhuData(request: any) {
+  return this.http.post<any[]>(
+    this.baseUrl_ + 'Setup/getDateWiseQcPassDhuData',
+    request,
+    {
+      headers: this.token.headerToken()
+    }
+  );
+}
+
+getStyleWiseQcPassDhuData(request: any) {
+  return this.http.post<any[]>(
+    this.baseUrl_ + 'Setup/getStyleWiseQcPassDhuData',
+    request,
+    {
+      headers: this.token.headerToken()
+    }
+  );
+}
+
 
 
 

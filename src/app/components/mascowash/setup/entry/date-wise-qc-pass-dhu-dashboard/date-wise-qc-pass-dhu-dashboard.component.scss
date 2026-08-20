@@ -1,0 +1,234 @@
+.floor-table {
+  border-collapse: collapse !important;
+  font-size: 10.5px;
+  line-height: 1.3;
+  width: 100%;
+  min-width: 2400px;
+  margin: 0;
+  background: #fff;
+
+  > tbody tr {
+    transition: background-color 0.15s ease;
+  }
+
+  th,
+  td {
+    border: 1px solid #000 !important;
+    padding: 5px 6px !important;
+    vertical-align: middle;
+    white-space: nowrap;
+  }
+}
+
+.floor-table thead {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.floor-table thead tr {
+  background: linear-gradient(180deg, #2c3e6b 0%, #1e2d52 100%) !important;
+}
+
+.fth {
+  color: #ffffff !important;
+  font-weight: 600;
+  font-size: 10.5px;
+  text-align: center;
+  vertical-align: middle;
+  letter-spacing: 0.02em;
+  border-color: #1a2540 !important;
+  padding: 6px 5px !important;
+  line-height: 1.25;
+  user-select: none;
+}
+
+.ftd {
+  color: #2d2d2d;
+  font-size: 11px;
+  background: #ffffff;
+}
+
+.ftd-center {
+  text-align: center;
+}
+
+.ftd-bold {
+  font-weight: 700;
+  color: #111;
+}
+
+.ftd-semibold {
+  font-weight: 600;
+  color: #222;
+}
+
+.ftd-date {
+  font-size: 10.5px;
+}
+
+.ftd-batch {
+  color: #1a237e;
+  font-size: 11.5px;
+  letter-spacing: 0.02em;
+}
+
+.floor-table > tbody > tr:nth-child(even) .ftd {
+  background: #f4f6fa;
+}
+
+.floor-table > tbody > tr:nth-child(odd) .ftd {
+  background: #ffffff;
+}
+
+.floor-table > tbody > tr:hover .ftd {
+  background: #e3e8f0 !important;
+}
+
+.table-container-scroll-y {
+  max-height: calc(100vh - 260px);
+  overflow: auto;
+  border: 1px solid #3a3f51;
+  border-radius: 0;
+
+  &::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+  &::-webkit-scrollbar-track {
+    background: #e8eaef;
+    border-left: 1px solid #c0c4cc;
+  }
+  &::-webkit-scrollbar-thumb {
+    background: linear-gradient(180deg, #8892a4, #6b7280);
+    border: 1px solid #555d6e;
+    border-radius: 0;
+  }
+  &::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(180deg, #6b7280, #4b5563);
+  }
+  &::-webkit-scrollbar-corner {
+    background: #d1d5db;
+  }
+}
+
+.floor-empty-state {
+  text-align: center;
+  padding: 60px 20px;
+  color: #6b7280;
+
+  .floor-empty-icon {
+    font-size: 48px;
+    color: #c0c4cc;
+    margin-bottom: 16px;
+  }
+
+  p {
+    font-size: 14px;
+    margin: 0;
+    font-weight: 500;
+  }
+}
+
+.common-border {
+  padding: 0 !important;
+  height: 38px;
+
+  ::ng-deep .ng-select {
+    border: none !important;
+    height: 38px;
+  }
+  ::ng-deep .ng-select .ng-select-container {
+    border: none !important;
+    height: 38px;
+    min-height: 38px;
+    box-shadow: none !important;
+    border-radius: 0;
+  }
+}
+
+.common-border-input {
+  padding: 0 !important;
+  height: 38px;
+  display: flex;
+  align-items: center;
+
+  input {
+    border: none !important;
+    outline: none !important;
+    box-shadow: none !important;
+    font-size: 13px;
+    background: transparent;
+    width: 100%;
+  }
+}
+
+.header-action-buttons {
+  .btn {
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    border-radius: 3px;
+    transition: all 0.15s ease;
+  }
+
+  .btn-gradient {
+    background: linear-gradient(135deg, #2c3e6b, #3b5998);
+    color: #fff;
+    border: none;
+
+    &:hover {
+      background: linear-gradient(135deg, #1e2d52, #2c3e6b);
+      color: #fff;
+    }
+  }
+
+  .btn-success {
+    background: #2e7d32;
+    border-color: #1b5e20;
+
+    &:hover {
+      background: #1b5e20;
+    }
+  }
+
+  .btn-danger {
+    background: #c62828;
+    border-color: #8e0000;
+
+    &:hover {
+      background: #8e0000;
+    }
+  }
+}
+
+::ng-deep .p-card {
+  border-radius: 0 !important;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08) !important;
+  border: 1px solid #d1d5db !important;
+
+  .p-card-content,
+  .p-card-body {
+    padding: 0 !important;
+  }
+}
+
+@media (max-width: 768px) {
+  .floor-table {
+    font-size: 10px;
+  }
+
+  .fth {
+    font-size: 9.5px;
+    padding: 4px 3px !important;
+  }
+
+  .ftd {
+    padding: 3px 3px !important;
+    font-size: 10px;
+  }
+
+  .table-container-scroll-y {
+    max-height: calc(100vh - 320px);
+  }
+}

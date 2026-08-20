@@ -154,6 +154,17 @@ const routes: Routes = [
         path: 'setup/entry/floor-status',
         loadComponent: () => import('./setup/entry/floor-status-dashboard/floor-status-dashboard.component').then(m => m.FloorStatusDashboardComponent),
         runGuardsAndResolvers: 'always',
+      },
+    
+      {
+        path: 'setup/entry/date-wise-qc-pass-dhu',
+        loadComponent: () => import('./setup/entry/date-wise-qc-pass-dhu-dashboard/date-wise-qc-pass-dhu-dashboard.component').then(m => m.DateWiseQcPassDhuDashboardComponent),
+        runGuardsAndResolvers: 'always',
+      },
+      {
+        path: 'setup/entry/style-wise-qc-pass-dhu',
+        loadComponent: () => import('./setup/entry/style-wise-qc-pass-dhu-dashboard/style-wise-qc-pass-dhu-dashboard.component').then(m => m.StyleWiseQcPassDhuDashboardComponent),
+        runGuardsAndResolvers: 'always',
       }
     ],
   },
