@@ -539,7 +539,7 @@ confirmSizeQty() {
 }
 
 
-  /* ===================== ACTIONS ===================== */
+
 openPrepareTab(row: WashBatchRow): void {
 
   if (row.iszid == 0) {
@@ -601,7 +601,7 @@ openPrepareTab(row: WashBatchRow): void {
 
     // ===== TOTAL =====
     totalQty: row.totalQty - row.alreadyPreparedQty,
-
+    
   };
   // openPrepareTab(row: WashBatchRow): void {
 

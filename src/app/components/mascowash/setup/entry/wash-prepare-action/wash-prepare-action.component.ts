@@ -360,13 +360,17 @@ export class WashPrepareActionComponent implements OnInit {
     });
   }
 
+ /* ===================== TOTALS ===================== */
+  calculateTotalsp(): void {
+    this.totalPcs = this.sizeQty.reduce((s, x) => s + (+x.pcs || 0), 0);
+  }
   /* ===================== TOTALS ===================== */
   calculateTotals(): void {
     this.totalPcs = this.sizeQty.reduce((s, x) => s + (+x.pcs || 0), 0);
   }
 
   calculateTotalsKG(): void {
-    this.totalKg = this.sizeQty.reduce((s, x) => s + (+x.kg || 0), 0);
+    this.totalKg = this.sizeQty.reduce((s, x) => s + (+x.kg || 0), 0);//ok
   }
 
   
