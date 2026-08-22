@@ -438,98 +438,218 @@ debugger;
 
 
 
-  openSizePopup(row: any) {
+  // openSizePopup(row: any) {
 
-    this.selectedRow = row;
+  //   this.selectedRow = row;
 
-    const grouped = row.sizeDetails.reduce((acc: any, item: any) => {
+  //   const grouped = row.sizeDetails.reduce((acc: any, item: any) => {
 
-      if (!acc[item.sizeId]) {
-        acc[item.sizeId] = {
-          sizeId: item.sizeId,
-          size: item.size,
-          qty: 0
-        };
-      }
+  //     if (!acc[item.sizeId]) {
+  //       acc[item.sizeId] = {
+  //         sizeId: item.sizeId,
+  //         size: item.size,
+  //         qty: 0
+  //       };
+  //     }
 
-      acc[item.sizeId].qty += Number(item.qty);
+  //     acc[item.sizeId].qty += Number(item.qty);
 
-      return acc;
+  //     return acc;
 
-    }, {});
+  //   }, {});
 
-    this.sizeList = Object.values(grouped);
+  //   this.sizeList = Object.values(grouped);
 
-    console.log('Unique Size List:', this.sizeList);
+  //   console.log('Unique Size List:', this.sizeList);
 
-    this.calculateTotal();
+  //   this.calculateTotal();
 
-    this.sizePopupVisible = true;
-  }
-
-
-  calculateTotal() {
-    this.totalSizeQty = this.sizeList.reduce((s, x) => s + (+x.qty || 0), 0);
-  }
-
-  confirmSizeQty() {
-    this.selectedRow.totalQty = this.totalSizeQty;
-    this.selectedRow.sizeDetails = [...this.sizeList];
-
-    this.sizePopupVisible = false;
-  }
+  //   this.sizePopupVisible = true;
+  // }
 
 
+  // calculateTotal() {
+  //   this.totalSizeQty = this.sizeList.reduce((s, x) => s + (+x.qty || 0), 0);
+  // }
+
+  // confirmSizeQty() {
+  //   this.selectedRow.totalQty = this.totalSizeQty;
+  //   this.selectedRow.sizeDetails = [...this.sizeList];
+
+  //   this.sizePopupVisible = false;
+  // }
+
+openSizePopup(row: any) {
+
+  this.selectedRow = row;
+
+  const grouped = row.sizeDetails.reduce((acc: any, item: any) => {
+
+    if (!acc[item.sizeId]) {
+      acc[item.sizeId] = {
+        sizeId: item.sizeId,
+        size: item.size,
+        qty: 0,
+        isZid: item.isZid
+      };
+    }
+
+    // If isZid = 0, qty must always be 0
+    if (Number(item.isZid) === 0) {
+      acc[item.sizeId].qty = 0;
+    } else {
+      acc[item.sizeId].qty += Number(item.qty) || 0;
+    }
+
+    return acc;
+
+  }, {});
+
+  this.sizeList = Object.values(grouped);
+
+  console.log('Unique Size List:', this.sizeList);
+
+  this.calculateTotal();
+
+  this.sizePopupVisible = true;
+}
+
+
+calculateTotal() {
+  this.totalSizeQty = this.sizeList.reduce(
+    (s, x) => s + (+x.qty || 0),
+    0
+  );
+}
+
+
+confirmSizeQty() {
+
+  // Final safety check before saving
+  this.sizeList.forEach((x: any) => {
+    if (Number(x.isZid) === 0) {
+      x.qty = 0;
+    }
+  });
+
+  this.selectedRow.totalQty = this.totalSizeQty;
+  this.selectedRow.sizeDetails = [...this.sizeList];
+
+  this.sizePopupVisible = false;
+}
 
 
   /* ===================== ACTIONS ===================== */
+openPrepareTab(row: WashBatchRow): void {
 
-  openPrepareTab(row: WashBatchRow): void {
-    if (row.totalQty == row.alreadyPreparedQty) {
-      this.toastr.warning('All quantity already prepared for this batch.');
-      return;
-    }
-    debugger;
-    if (!row?.orderId) return;
+  if (row.iszid == 0) {
+    // If IsZid = 0, size quantity must always be 0
+    row.sizeDetails?.forEach((x: any) => {
+      x.qty = 0;
+    });
+  }
 
-    // ✅ Calculate sum from size details
-    const sizeSum = (row.sizeDetails || []).reduce((acc, curr) => acc + (Number(curr.qty) || 0), 0);
+  if (row.totalQty == row.alreadyPreparedQty) {
+    this.toastr.warning('All quantity already prepared for this batch.');
+    return;
+  }
 
-    const navState = {
+  debugger;
 
-      // ===== MASTER IDS =====
-      buyerId: row.buyerNo,
-      jobId: row.jobId,
-      styleId: row.styleNo,
-      orderId: row.orderId,
-      fabricationId: row.fabricationId,
-      colorId: row.icleid,
-      dressPartId: row.dressPartId,
-      uomId: row.uomId,
-      fromUnitId: row.fromUnitId,
-      iszid: row.iszid,
+  if (!row?.orderId) return;
 
-      // ===== DISPLAY =====
-      buyer: row.buyerName ?? '',
-      jobNo: row.jobInfo ?? '',
-      styleNo: row.styleName ?? '',
-      orderNo: row.orderNo ?? '',
-      documentNo: row.receiveNo ?? '',
-      fabrication: row.fabricationName ?? '',
-      composition: row.composition ?? '',
-      color: row.color ?? '',
-      gsm: row.gsm,
-      date: new Date().toISOString().split('T')[0],
-      trackingNo: row.trackingNo ?? '',
-      type: row.type ?? '',
-      RemainingQty: row.remainingQty ?? 0,
+  // Calculate size quantity
+  // If iszid = 0, sizeSum must be 0
+  const sizeSum = row.iszid == 0
+    ? 0
+    : (row.sizeDetails || []).reduce(
+        (acc, curr) => acc + (Number(curr.qty) || 0),
+        0
+      );
+
+  const navState = {
+
+    // ===== MASTER IDS =====
+    buyerId: row.buyerNo,
+    jobId: row.jobId,
+    styleId: row.styleNo,
+    orderId: row.orderId,
+    fabricationId: row.fabricationId,
+    colorId: row.icleid,
+    dressPartId: row.dressPartId,
+    uomId: row.uomId,
+    fromUnitId: row.fromUnitId,
+    iszid: row.iszid,
+
+    // ===== DISPLAY =====
+    buyer: row.buyerName ?? '',
+    jobNo: row.jobInfo ?? '',
+    styleNo: row.styleName ?? '',
+    orderNo: row.orderNo ?? '',
+    documentNo: row.receiveNo ?? '',
+    fabrication: row.fabricationName ?? '',
+    composition: row.composition ?? '',
+    color: row.color ?? '',
+    gsm: row.gsm,
+    date: new Date().toISOString().split('T')[0],
+    trackingNo: row.trackingNo ?? '',
+    type: row.type ?? '',
+    RemainingQty: row.remainingQty ?? 0,
+
+    // ===== CHILD =====
+    sizeDetails: row.sizeDetails ?? [],
+
+    // ===== TOTAL =====
+    totalQty: row.totalQty - row.alreadyPreparedQty,
+
+  };
+  // openPrepareTab(row: WashBatchRow): void {
+
+  //   if (row.totalQty == row.alreadyPreparedQty) {
+  //     this.toastr.warning('All quantity already prepared for this batch.');
+  //     return;
+  //   }
+  //   debugger;
+  //   if (!row?.orderId) return;
+
+  //   // ✅ Calculate sum from size details
+  //   const sizeSum = (row.sizeDetails || []).reduce((acc, curr) => acc + (Number(curr.qty) || 0), 0);
+
+  //   const navState = {
+
+  //     // ===== MASTER IDS =====
+  //     buyerId: row.buyerNo,
+  //     jobId: row.jobId,
+  //     styleId: row.styleNo,
+  //     orderId: row.orderId,
+  //     fabricationId: row.fabricationId,
+  //     colorId: row.icleid,
+  //     dressPartId: row.dressPartId,
+  //     uomId: row.uomId,
+  //     fromUnitId: row.fromUnitId,
+  //     iszid: row.iszid,
+
+  //     // ===== DISPLAY =====
+  //     buyer: row.buyerName ?? '',
+  //     jobNo: row.jobInfo ?? '',
+  //     styleNo: row.styleName ?? '',
+  //     orderNo: row.orderNo ?? '',
+  //     documentNo: row.receiveNo ?? '',
+  //     fabrication: row.fabricationName ?? '',
+  //     composition: row.composition ?? '',
+  //     color: row.color ?? '',
+  //     gsm: row.gsm,
+  //     date: new Date().toISOString().split('T')[0],
+  //     trackingNo: row.trackingNo ?? '',
+  //     type: row.type ?? '',
+  //     RemainingQty: row.remainingQty ?? 0,
      
-      // ===== CHILD =====
-      sizeDetails: row.sizeDetails ?? [],
-      // ✅ Use sum of sizes if available, otherwise fallback to existing logic
-      totalQty: row.totalQty - row.alreadyPreparedQty
-      // sizeSum > 0 ? sizeSum : ((row.remainingQty ?? 0) === 0 ? row.totalQty : row.remainingQty)
-    };
+  //     // ===== CHILD =====
+  //     sizeDetails: row.sizeDetails ?? [],
+  //     // ✅ Use sum of sizes if available, otherwise fallback to existing logic
+  //     totalQty: row.totalQty - row.alreadyPreparedQty
+  //     // sizeSum > 0 ? sizeSum : ((row.remainingQty ?? 0) === 0 ? row.totalQty : row.remainingQty)
+  //   };
 
     localStorage.setItem(
       'WASH_PREPARE_NAV_STATE',

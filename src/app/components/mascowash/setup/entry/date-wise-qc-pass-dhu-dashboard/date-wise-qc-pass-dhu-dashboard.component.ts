@@ -2,12 +2,12 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule, DatePipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { NgSelectModule } from '@ng-select/ng-select';
-import { BsDatepickerModule } from 'ngx-bootstrap/datepicker';
+import { BsDatepickerModule ,BsDatepickerConfig} from 'ngx-bootstrap/datepicker';
 import { CardModule } from 'primeng/card';
 import { ToastrService } from 'ngx-toastr';
 import * as XLSX from 'xlsx';
 import { WashSetupService } from '../../../services/washsetup.service';
-
+// import { BsDatepickerConfig } from 'ngx-bootstrap/datepicker';
 interface QcPassDhuRow {
   date: string | Date | null;
   trackingNo: string;
@@ -50,7 +50,10 @@ export class DateWiseQcPassDhuDashboardComponent implements OnInit {
     fromDate: null,
     toDate: null
   };
-
+  
+  bsConfig: Partial<BsDatepickerConfig> = {
+    dateInputFormat: 'D MMM YYYY'
+  };
   UnitList: any[] = [];
   globalSearch = '';
   isLoading = false;

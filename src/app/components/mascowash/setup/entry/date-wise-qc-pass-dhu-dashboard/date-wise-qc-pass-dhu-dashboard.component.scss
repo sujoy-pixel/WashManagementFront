@@ -20,11 +20,19 @@
   }
 }
 
+// .floor-table thead {
+//   position: sticky;
+//   top: 0;
+//   z-index: 10;
+// }
+
 .floor-table thead {
   position: sticky;
   top: 0;
   z-index: 10;
+  height: 50px !important;
 }
+
 
 .floor-table thead tr {
   background: linear-gradient(180deg, #2c3e6b 0%, #1e2d52 100%) !important;
