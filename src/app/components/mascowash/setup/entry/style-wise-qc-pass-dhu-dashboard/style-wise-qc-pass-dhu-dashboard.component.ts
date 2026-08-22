@@ -7,6 +7,8 @@ import { CardModule } from 'primeng/card';
 import { ToastrService } from 'ngx-toastr';
 import * as XLSX from 'xlsx';
 import { WashSetupService } from '../../../services/washsetup.service';
+import { format } from 'date-fns';
+import { BsDatepickerConfig } from 'ngx-bootstrap/datepicker';
 
 interface StyleWiseDhuRow {
   receiveFrom?: string;
@@ -45,7 +47,11 @@ export class StyleWiseQcPassDhuDashboardComponent implements OnInit {
   filter: any = {
     UnitId: null,
     fromDate: null,
-    toDate: null
+    toDate: new Date()
+  };
+  
+  bsConfig: Partial<BsDatepickerConfig> = {
+    dateInputFormat: 'D MMM YYYY'
   };
 
   UnitList: any[] = [];

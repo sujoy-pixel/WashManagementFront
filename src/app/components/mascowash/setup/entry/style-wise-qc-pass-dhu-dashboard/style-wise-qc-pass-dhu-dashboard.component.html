@@ -28,22 +28,31 @@
         <div class="col-md-3">
           <label class="form-label">From Date <span class="text-danger">*</span></label>
           <div class="form-control common-border-input">
-            <input type="text" bsDatepicker [(ngModel)]="filter.fromDate" placeholder="dd/mm/yyyy">
+            <input type="text" bsDatepicker [(ngModel)]="filter.fromDate" [bsConfig]="bsConfig" placeholder="d MMM yyyy">
           </div>
         </div>
 
         <div class="col-md-3">
           <label class="form-label">To Date <span class="text-danger">*</span></label>
           <div class="form-control common-border-input">
-            <input type="text" bsDatepicker [(ngModel)]="filter.toDate" placeholder="dd/mm/yyyy">
+            <input type="text" bsDatepicker [(ngModel)]="filter.toDate"  [bsConfig]="bsConfig" placeholder="d MMM yyyy">
           </div>
         </div>
 
-        <div class="col-md-3">
+        <!-- <div class="col-md-3">
           <label class="d-none d-sm-inline text-dark">Search Here (Global Search)</label>
           <div class="form-control common-border-input">
             <input type="text" class="form-control border-0 p-0 bg-transparent" [(ngModel)]="globalSearch"
               (ngModelChange)="onGlobalSearch()" placeholder="Search Here (Global Search)">
+          </div>
+        </div> -->
+      </div>
+      <div class="row g-3 align-items-end mt-1">
+        <div class="col-md-3">
+          <label class="d-none d-sm-inline text-dark">Global Search</label>
+          <div class="form-control common-border-input">
+            <input type="text" class="form-control border-0 p-0 bg-transparent" [(ngModel)]="globalSearch"
+              (ngModelChange)="onGlobalSearch()" placeholder="Global Search">
           </div>
         </div>
       </div>
