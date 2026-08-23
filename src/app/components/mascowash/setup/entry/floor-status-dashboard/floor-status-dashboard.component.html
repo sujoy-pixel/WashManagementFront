@@ -293,8 +293,7 @@
           <ng-container *ngFor="let batch of filteredBatches">
 
             <tr *ngFor="let op of batch.operations; let i = index"
-              [class.row-running]="batch.status?.includes('Running') && op.loadStart && !op.loadEnd"
-              [class.row-completed]="batch.status?.includes('End')">
+              >
 
               <!-- ================= BATCH INFORMATION ================= -->
 
@@ -423,8 +422,8 @@
 
               <td *ngIf="i === 0" [attr.rowspan]="batch.operations.length">
 
-                <span class="status-badge" [class.badge-running]="batch.status?.includes('Running')"
-                  [class.badge-end]="batch.status?.includes('End')">
+                <span class="status-badge"
+                  >
 
                   {{ batch.status }}
 
