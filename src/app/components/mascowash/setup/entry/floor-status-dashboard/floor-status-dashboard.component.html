@@ -290,153 +290,155 @@
         </thead>
 
         <tbody>
-          <ng-container *ngFor="let batch of filteredBatches">
+  <ng-container *ngFor="let batch of filteredBatches">
 
-            <tr *ngFor="let op of batch.operations; let i = index"
-              [class.row-running]="containsText(batch.status, 'running') && op.loadStart && !op.loadEnd"
-              
-              [class.row-completed]="containsText(batch.status, 'end')">
+    <tr
+      *ngFor="let op of batch.operations; let i = index"
+      [class.row-running]="containsText(batch.status, 'running') && op.loadStart && !op.loadEnd"
+      [class.row-completed]="containsText(batch.status, 'end')"
+    >
 
-              <!-- ================= BATCH INFORMATION ================= -->
+      <!-- ================= BATCH INFORMATION ================= -->
 
-              <td *ngIf="i === 0" [attr.rowspan]="batch.operations.length">
-                {{ batch.sl }}
-              </td>
+      <td *ngIf="i === 0" [attr.rowspan]="batch.operations.length">
+        {{ batch.sl }}
+      </td>
 
-              <td *ngIf="i === 0" [attr.rowspan]="batch.operations.length">
-                {{ batch.batchNo }}
-              </td>
+      <td *ngIf="i === 0" [attr.rowspan]="batch.operations.length">
+        {{ batch.batchNo }}
+      </td>
 
-              <td *ngIf="i === 0" [attr.rowspan]="batch.operations.length">
-                {{ batch.buyer }}
-              </td>
+      <td *ngIf="i === 0" [attr.rowspan]="batch.operations.length">
+        {{ batch.buyer }}
+      </td>
 
-              <td *ngIf="i === 0" [attr.rowspan]="batch.operations.length">
-                {{ batch.job }}
-              </td>
+      <td *ngIf="i === 0" [attr.rowspan]="batch.operations.length">
+        {{ batch.job }}
+      </td>
 
-              <td *ngIf="i === 0" [attr.rowspan]="batch.operations.length">
-                {{ batch.style }}
-              </td>
+      <td *ngIf="i === 0" [attr.rowspan]="batch.operations.length">
+        {{ batch.style }}
+      </td>
 
-              <td *ngIf="i === 0" [attr.rowspan]="batch.operations.length">
-                {{ batch.order }}
-              </td>
+      <td *ngIf="i === 0" [attr.rowspan]="batch.operations.length">
+        {{ batch.order }}
+      </td>
 
-              <td *ngIf="i === 0" [attr.rowspan]="batch.operations.length">
-                {{ batch.type || '' }}
-              </td>
+      <td *ngIf="i === 0" [attr.rowspan]="batch.operations.length">
+        {{ batch.type || '' }}
+      </td>
 
-              <td *ngIf="i === 0" [attr.rowspan]="batch.operations.length">
-                {{ batch.fabrication || '' }}
-              </td>
+      <td *ngIf="i === 0" [attr.rowspan]="batch.operations.length">
+        {{ batch.fabrication || '' }}
+      </td>
 
-              <td *ngIf="i === 0" [attr.rowspan]="batch.operations.length">
-                {{ batch.color }}
-              </td>
+      <td *ngIf="i === 0" [attr.rowspan]="batch.operations.length">
+        {{ batch.color }}
+      </td>
 
-              <td *ngIf="i === 0" [attr.rowspan]="batch.operations.length">
-                {{ batch.dressPart }}
-              </td>
+      <td *ngIf="i === 0" [attr.rowspan]="batch.operations.length">
+        {{ batch.dressPart }}
+      </td>
 
-              <td *ngIf="i === 0" [attr.rowspan]="batch.operations.length">
-                {{ batch.gsm }}
-              </td>
-
-
-              <!-- ================= SHADE STATUS ================= -->
-
-              <td *ngIf="i === 0" [attr.rowspan]="batch.operations.length">
-                {{ batch.shadeBody || '' }}
-              </td>
-
-              <td *ngIf="i === 0" [attr.rowspan]="batch.operations.length">
-                {{ batch.shadeFabric || '' }}
-              </td>
+      <td *ngIf="i === 0" [attr.rowspan]="batch.operations.length">
+        {{ batch.gsm }}
+      </td>
 
 
-              <!-- ================= FABRIC QTY ================= -->
+      <!-- ================= SHADE STATUS ================= -->
 
-              <td *ngIf="i === 0" [attr.rowspan]="batch.operations.length">
-                {{ batch.fabricQtyBody ?? '' }}
-              </td>
+      <td *ngIf="i === 0" [attr.rowspan]="batch.operations.length">
+        {{ batch.shadeBody || '' }}
+      </td>
 
-              <td *ngIf="i === 0" [attr.rowspan]="batch.operations.length">
-                {{ batch.fabricQtyOther ?? '' }}
-              </td>
-
-
-              <!-- ================= GARMENTS QTY ================= -->
-
-              <td *ngIf="i === 0" [attr.rowspan]="batch.operations.length">
-                {{ batch.garmentsQty }}
-              </td>
+      <td *ngIf="i === 0" [attr.rowspan]="batch.operations.length">
+        {{ batch.shadeFabric || '' }}
+      </td>
 
 
-              <!-- ================= OPERATION START DATE ================= -->
+      <!-- ================= FABRIC QTY ================= -->
 
-              <td *ngIf="i === 0" [attr.rowspan]="batch.operations.length">
-                {{ batch.operationStartDate | date:'dd-MM-yyyy' }}
-              </td>
+      <td *ngIf="i === 0" [attr.rowspan]="batch.operations.length">
+        {{ batch.fabricQtyBody ?? '' }}
+      </td>
 
-
-              <!-- ================= OPERATION INFORMATION ================= -->
-
-              <td>
-                {{ op.operationName }}
-              </td>
-
-              <td>
-                {{ op.machineName || '' }}
-              </td>
-
-              <td>
-                {{ op.operatorName || '' }}
-              </td>
+      <td *ngIf="i === 0" [attr.rowspan]="batch.operations.length">
+        {{ batch.fabricQtyOther ?? '' }}
+      </td>
 
 
-              <!-- ================= LOAD & UNLOAD ================= -->
+      <!-- ================= GARMENTS QTY ================= -->
 
-              <td>
-                {{ op.loadStart || '' }}
-              </td>
-
-              <td>
-                {{ op.loadEnd || '' }}
-              </td>
+      <td *ngIf="i === 0" [attr.rowspan]="batch.operations.length">
+        {{ batch.garmentsQty }}
+      </td>
 
 
-              <!-- ================= OPERATION DURATION ================= -->
+      <!-- ================= OPERATION START DATE ================= -->
 
-              <td>
-                {{ op.duration || '' }}
-              </td>
-
-
-              <!-- ================= TOTAL DURATION ================= -->
-
-              <td *ngIf="i === 0" [attr.rowspan]="batch.operations.length">
-                {{ batch.totalDuration || '' }}
-              </td>
+      <td *ngIf="i === 0" [attr.rowspan]="batch.operations.length">
+        {{ batch.operationStartDate | date:'dd-MM-yyyy' }}
+      </td>
 
 
-              <!-- ================= STATUS ================= -->
+      <!-- ================= OPERATION INFORMATION ================= -->
 
-              <td *ngIf="i === 0" [attr.rowspan]="batch.operations.length">
+      <td>
+        {{ op.operationName }}
+      </td>
 
-                <span class="status-badge" [class.badge-running]="containsText(batch.status, 'running')"
-                  [class.badge-end]="containsText(batch.status, 'end')">
+      <td>
+        {{ op.machineName || '' }}
+      </td>
 
-                  {{ batch.status }}
+      <td>
+        {{ op.operatorName || '' }}
+      </td>
 
-                </span>
 
-              </td>
+      <!-- ================= LOAD & UNLOAD ================= -->
 
-            </tr>
+      <td>
+        {{ op.loadStart || '' }}
+      </td>
 
-          </ng-container>
-        </tbody>
+      <td>
+        {{ op.loadEnd || '' }}
+      </td>
+
+
+      <!-- ================= OPERATION DURATION ================= -->
+
+      <td>
+        {{ op.duration || '' }}
+      </td>
+
+
+      <!-- ================= TOTAL DURATION ================= -->
+
+      <td *ngIf="i === 0" [attr.rowspan]="batch.operations.length">
+        {{ batch.totalDuration || '' }}
+      </td>
+
+
+      <!-- ================= STATUS ================= -->
+
+      <td *ngIf="i === 0" [attr.rowspan]="batch.operations.length">
+
+        <span
+          class="status-badge"
+          [class.badge-running]="containsText(batch.status, 'running')"
+          [class.badge-end]="containsText(batch.status, 'end')"
+        >
+          {{ batch.status }}
+        </span>
+
+      </td>
+
+    </tr>
+
+  </ng-container>
+</tbody>
       </table>
 
       <!-- Empty State -->
