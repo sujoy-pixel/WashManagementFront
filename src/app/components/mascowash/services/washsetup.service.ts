@@ -755,6 +755,46 @@ getStyleWiseQcPassDhuData(request: any) {
   );
 }
 
+getStyleWiseRejectionSizes(request: any) {
+  return this.http.post<any[]>(
+    this.baseUrl_ + 'Setup/getStyleWiseRejectionSizes',
+    request,
+    {
+      headers: this.token.headerToken()
+    }
+  );
+}
+
+getStyleWiseRejectionData(request: any) {
+  return this.http.post<any[]>(
+    this.baseUrl_ + 'Setup/getStyleWiseRejectionData',
+    request,
+    {
+      headers: this.token.headerToken()
+    }
+  );
+}
+
+getDateWiseRejectionSizes(request: any) {
+  return this.http.post<any[]>(
+    this.baseUrl_ + 'Setup/getDateWiseRejectionSizes',
+    request,
+    {
+      headers: this.token.headerToken()
+    }
+  );
+}
+
+getDateWiseRejectionData(request: any) {
+  return this.http.post<any[]>(
+    this.baseUrl_ + 'Setup/getDateWiseRejectionData',
+    request,
+    {
+      headers: this.token.headerToken()
+    }
+  );
+}
+
 
 
 

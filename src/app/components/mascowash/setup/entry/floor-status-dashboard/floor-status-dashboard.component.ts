@@ -259,6 +259,10 @@ export class FloorStatusDashboardComponent implements OnInit {
     return a.localeCompare(b);
   }
 
+  containsText(value: any, searchTerm: string): boolean {
+    return value != null && String(value).toLowerCase().indexOf(searchTerm) !== -1;
+  }
+
   // ================= FILTERS =================
   onStatusFilter() { this.applyCombinedFilter(); }
   onGlobalSearch() { this.applyCombinedFilter(); }
@@ -274,29 +278,29 @@ export class FloorStatusDashboardComponent implements OnInit {
     if (term.length) {
       result = result.filter(b => {
         const batchHit =
-          b.batchNo?.toLowerCase().includes(term) ||
-          b.buyer?.toLowerCase().includes(term) ||
-          b.job?.toLowerCase().includes(term) ||
-          b.style?.toLowerCase().includes(term) ||
-          b.order?.toLowerCase().includes(term) ||
-          b.type?.toLowerCase().includes(term) ||
-          b.fabrication?.toLowerCase().includes(term) ||
-          b.color?.toLowerCase().includes(term) ||
-          b.dressPart?.toLowerCase().includes(term) ||
-          b.gsm?.toLowerCase().includes(term) ||
-          b.status?.toLowerCase().includes(term) ||
-          b.totalDuration?.toLowerCase().includes(term) ||
-          (b.fabricQtyBody  != null && b.fabricQtyBody.toString().includes(term)) ||
-          (b.fabricQtyOther != null && b.fabricQtyOther.toString().includes(term)) ||
-          (b.garmentsQty    != null && b.garmentsQty.toString().includes(term));
+          this.containsText(b.batchNo, term) ||
+          this.containsText(b.buyer, term) ||
+          this.containsText(b.job, term) ||
+          this.containsText(b.style, term) ||
+          this.containsText(b.order, term) ||
+          this.containsText(b.type, term) ||
+          this.containsText(b.fabrication, term) ||
+          this.containsText(b.color, term) ||
+          this.containsText(b.dressPart, term) ||
+          this.containsText(b.gsm, term) ||
+          this.containsText(b.status, term) ||
+          this.containsText(b.totalDuration, term) ||
+          this.containsText(b.fabricQtyBody, term) ||
+          this.containsText(b.fabricQtyOther, term) ||
+          this.containsText(b.garmentsQty, term);
 
         const opHit = b.operations?.some(op =>
-          op.operationName?.toLowerCase().includes(term) ||
-          op.machineName?.toLowerCase().includes(term) ||
-          op.operatorName?.toLowerCase().includes(term) ||
-          op.loadStart?.toLowerCase().includes(term) ||
-          op.loadEnd?.toLowerCase().includes(term) ||
-          op.duration?.toLowerCase().includes(term)
+          this.containsText(op.operationName, term) ||
+          this.containsText(op.machineName, term) ||
+          this.containsText(op.operatorName, term) ||
+          this.containsText(op.loadStart, term) ||
+          this.containsText(op.loadEnd, term) ||
+          this.containsText(op.duration, term)
         );
 
         return batchHit || opHit;

@@ -3,7 +3,7 @@
     <div class="card custom-card">
       <div class="card-header border-bottom d-flex justify-content-between align-items-center">
         <div class="card-title mb-0">
-          Style-wise QC Pass &amp; DHU Dashboard
+          Style-wise Rejection Dashboard
         </div>
       </div>
     </div>
@@ -14,83 +14,65 @@
   <div class="card custom-card mb-3">
     <div class="card-body">
       <div class="row g-3 align-items-end">
-        <div class="col-md-3">
+        <div class="col-md-2">
           <label class="d-none d-sm-inline text-dark">
             Unit <span class="text-danger">*</span>
           </label>
           <div class="form-control common-border">
             <ng-select [(ngModel)]="filter.UnitId" [items]="UnitList" bindLabel="label" bindValue="value"
-              placeholder="Select Unit">
+              placeholder="Select Unit" (change)="onUnitChange()">
             </ng-select>
           </div>
         </div>
 
         <div class="col-md-3">
+          <label class="d-none d-sm-inline text-dark">
+            Buyer <span class="text-danger">*</span>
+          </label>
+          <div class="form-control common-border">
+            <ng-select [(ngModel)]="filter.BuyerId" [items]="BuyerList" bindLabel="label" bindValue="value"
+              placeholder="Select Buyer" (change)="onBuyerChange()">
+            </ng-select>
+          </div>
+        </div>
+
+        <div class="col-md-2">
           <label class="form-label">From Date <span class="text-danger">*</span></label>
           <div class="form-control common-border-input">
             <input type="text" bsDatepicker [(ngModel)]="filter.fromDate" [bsConfig]="bsConfig" placeholder="d MMM yyyy">
           </div>
         </div>
 
-        <div class="col-md-3">
+        <div class="col-md-2">
           <label class="form-label">To Date <span class="text-danger">*</span></label>
           <div class="form-control common-border-input">
-            <input type="text" bsDatepicker [(ngModel)]="filter.toDate"  [bsConfig]="bsConfig" placeholder="d MMM yyyy">
+            <input type="text" bsDatepicker [(ngModel)]="filter.toDate" [bsConfig]="bsConfig" placeholder="d MMM yyyy">
           </div>
         </div>
+      </div>
 
-        <!-- <div class="col-md-3">
-          <label class="d-none d-sm-inline text-dark">Search Here (Global Search)</label>
-          <div class="form-control common-border-input">
-            <input type="text" class="form-control border-0 p-0 bg-transparent" [(ngModel)]="globalSearch"
-              (ngModelChange)="onGlobalSearch()" placeholder="Search Here (Global Search)">
-          </div>
-        </div> -->
-      </div>
-      <!-- <div class="row g-3 align-items-end mt-1">
-        <div class="col-md-3">
+      <div class="row g-3 align-items-end mt-1">
+        <div class="col-md-4">
           <label class="d-none d-sm-inline text-dark">Global Search</label>
           <div class="form-control common-border-input">
             <input type="text" class="form-control border-0 p-0 bg-transparent" [(ngModel)]="globalSearch"
               (ngModelChange)="onGlobalSearch()" placeholder="Global Search">
           </div>
         </div>
-      </div> -->
- <div class="row g-3 align-items-end mt-1">
-        <div class="col-md-3">
-          <label class="d-none d-sm-inline text-dark">Global Search</label>
-          <div class="form-control common-border-input">
-            <input type="text" class="form-control border-0 p-0 bg-transparent" [(ngModel)]="globalSearch"
-              (ngModelChange)="onGlobalSearch()" placeholder="Global Search">
+        <div class="col-md-8">
+          <div class="text-end header-action-buttons">
+            <button class="btn btn-gradient px-4 py-2 me-2" (click)="onSearch()" [disabled]="isLoading">
+              <i class="fa fa-search me-2"></i> View
+            </button>
+            <button class="btn btn-success px-4 py-2 me-2" (click)="onExcel()">
+              <i class="fa fa-file-excel-o me-2"></i> Excel
+            </button>
+            <button class="btn btn-danger px-4 py-2" (click)="onClear()">
+              <i class="fa fa-refresh me-2"></i> Clear
+            </button>
           </div>
-           </div>
-          <div class="col-md-9">
-            <div class="text-end header-action-buttons">
-              <button class="btn btn-gradient px-4 py-2 me-2" (click)="onSearch()" [disabled]="isLoading">
-                <i class="fa fa-search me-2"></i> View
-              </button>
-              <button class="btn btn-success px-4 py-2 me-2" (click)="onExcel()">
-                <i class="fa fa-file-excel-o me-2"></i> Excel
-              </button>
-              <button class="btn btn-danger px-4 py-2" (click)="onClear()">
-                <i class="fa fa-refresh me-2"></i> Clear
-              </button>
-            </div>
-          </div>
-      </div>
-      <!-- <div class="row mt-4">
-        <div class="text-end header-action-buttons">
-          <button class="btn btn-gradient px-4 py-2 me-2" (click)="onSearch()" [disabled]="isLoading">
-            <i class="fa fa-search me-2"></i> View
-          </button>
-          <button class="btn btn-success px-4 py-2 me-2" (click)="onExcel()" [disabled]="isLoading || !filteredRows.length">
-            <i class="fa fa-file-excel-o me-2"></i> Excel
-          </button>
-          <button class="btn btn-danger px-4 py-2" (click)="onClear()">
-            <i class="fa fa-refresh me-2"></i> Clear
-          </button>
         </div>
-      </div> -->
+      </div>
     </div>
   </div>
 
@@ -99,7 +81,7 @@
       <table class="table table-bordered floor-table">
         <thead>
           <tr>
-            <th class="fth">Receive form</th>
+            <th class="fth">Receive From</th>
             <th class="fth">Buyer</th>
             <th class="fth">Job</th>
             <th class="fth">Order</th>
@@ -112,16 +94,19 @@
             <th class="fth">UoM</th>
             <th class="fth">No of Batch</th>
             <th class="fth">Total Check QTY</th>
-            <th class="fth">Total Okay QTY</th>
-            <th class="fth">Total Defect QTY</th>
-            <th class="fth">Defect %</th>
-            <th class="fth">Defects Balance QTY</th>
-            <th class="fth">Rectify Defects Qty</th>
             <th class="fth">Total Reject QTY</th>
             <th class="fth">Reject %</th>
+            <!-- Dynamic size headers loaded from DB based on Buyer -->
+            <th class="fth" *ngFor="let col of sizeColumns; trackBy: trackBySize">{{ col.label }}</th>
           </tr>
         </thead>
         <tbody>
+          <!-- Loading state: fixedColumnCount (15 static columns) + dynamic size columns -->
+          <tr *ngIf="isLoading">
+            <td class="ftd ftd-center ftd-bold loading-cell" [attr.colspan]="fixedColumnCount + sizeColumns.length">
+              <i class="fa fa-spinner fa-spin me-2"></i>Loading data...
+            </td>
+          </tr>
           <ng-container *ngFor="let row of filteredRows; trackBy: trackByRow">
             <!-- Standard Data Row -->
             <tr *ngIf="!row.isSubTotal">
@@ -138,38 +123,38 @@
               <td class="ftd ftd-center">{{ row.uom }}</td>
               <td class="ftd ftd-center ftd-bold ftd-batch-count">{{ row.noOfBatch }}</td>
               <td class="ftd ftd-center">{{ row.totalCheckQty | number }}</td>
-              <td class="ftd ftd-center">{{ row.totalOkayQty | number }}</td>
-              <td class="ftd ftd-center">{{ row.totalDefectQty | number }}</td>
-              <td class="ftd ftd-center ftd-semibold">{{ formatPercent(row.defectPercent) }}</td>
-              <td class="ftd ftd-center">{{ row.defectsBalanceQty | number }}</td>
-              <td class="ftd ftd-center">{{ row.rectifyDefectsQty | number }}</td>
-              <td class="ftd ftd-center">{{ row.totalRejectQty | number }}</td>
+              <td class="ftd ftd-center ftd-semibold">{{ row.totalRejectQty | number }}</td>
               <td class="ftd ftd-center ftd-semibold">{{ formatPercent(row.rejectPercent) }}</td>
+              <td class="ftd ftd-center ftd-size-reject" *ngFor="let col of sizeColumns; trackBy: trackBySize">
+                {{ row.sizeRejects[col.size] || '' }}
+              </td>
             </tr>
-            <!-- Subtotal Row -->
+            <!-- Subtotal Row: colspan = textColumnCount (9 text columns only),
+                 followed by the 6 metric cells, matching the standard row layout exactly -->
             <tr *ngIf="row.isSubTotal" class="subtotal-row">
-              <td colspan="9" class="ftd text-end ftd-bold">Sub Total:</td>
+              <td [attr.colspan]="textColumnCount" class="ftd text-end ftd-bold">Sub Total:</td>
               <td class="ftd ftd-center ftd-bold">{{ row.receiveQty | number }}</td>
               <td class="ftd ftd-center ftd-bold">{{ row.uom }}</td>
               <td class="ftd ftd-center ftd-bold">{{ row.noOfBatch }}</td>
               <td class="ftd ftd-center ftd-bold">{{ row.totalCheckQty | number }}</td>
-              <td class="ftd ftd-center ftd-bold">{{ row.totalOkayQty | number }}</td>
-              <td class="ftd ftd-center ftd-bold">{{ row.totalDefectQty | number }}</td>
-              <td class="ftd ftd-center ftd-bold">{{ formatPercent(row.defectPercent) }}</td>
-              <td class="ftd ftd-center ftd-bold">{{ row.defectsBalanceQty | number }}</td>
-              <td class="ftd ftd-center ftd-bold">{{ row.rectifyDefectsQty | number }}</td>
               <td class="ftd ftd-center ftd-bold">{{ row.totalRejectQty | number }}</td>
               <td class="ftd ftd-center ftd-bold">{{ formatPercent(row.rejectPercent) }}</td>
+              <!-- Subtotal: always show the numeric sum, including 0 - unlike data rows,
+                   a blank cell here would read as "not calculated" rather than "zero". -->
+              <td class="ftd ftd-center ftd-bold" *ngFor="let col of sizeColumns; trackBy: trackBySize">
+                {{ row.sizeRejects[col.size] ?? 0 }}
+              </td>
             </tr>
           </ng-container>
         </tbody>
       </table>
 
-      <div class="floor-empty-state" *ngIf="filteredRows.length === 0 && !isLoading">
+      <div class="floor-empty-state" *ngIf="!isLoading && filteredRows.length === 0">
         <div class="floor-empty-icon">
           <i class="fa fa-clipboard-list"></i>
         </div>
-        <p>No results found. Use filters above and click View.</p>
+        <p *ngIf="sizeColumns.length === 0; else noDataMsg">Select Unit, Buyer and Date range, then click View to load data.</p>
+        <ng-template #noDataMsg><p>No results found for the selected filters.</p></ng-template>
       </div>
     </div>
   </p-card>

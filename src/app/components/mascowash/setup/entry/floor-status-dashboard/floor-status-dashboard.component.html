@@ -1,4 +1,4 @@
-<!-- ========================= HEADER CARD ========================= -->
+
 <div class="row">
   <div class="col-md-12">
     <div class="card custom-card">
@@ -162,8 +162,8 @@
         <tbody>
           <ng-container *ngFor="let batch of filteredBatches">
             <tr *ngFor="let op of batch.operations; let i = index"
-              [class.row-running]="batch.status && batch.status.includes('Running') && op.loadStart && !op.loadEnd"
-              [class.row-completed]="batch.status && batch.status.includes('End')">
+              [class.row-running]="containsText(batch.status, 'running') && op.loadStart && !op.loadEnd"
+              [class.row-completed]="containsText(batch.status, 'end')">
 
 
 
@@ -221,8 +221,8 @@
                 {{batch.totalDuration}}</td>
 
               <td *ngIf="i === 0" [attr.rowspan]="batch.operations.length" class="ftd ftd-center">
-                <span class="status-badge" [class.badge-running]="batch.status && batch.status.includes('Running')"
-                  [class.badge-end]="batch.status && batch.status.includes('End')">
+                <span class="status-badge" [class.badge-running]="containsText(batch.status, 'running')"
+                  [class.badge-end]="containsText(batch.status, 'end')">
                   {{batch.status}}
                 </span>
               </td>
@@ -293,8 +293,9 @@
           <ng-container *ngFor="let batch of filteredBatches">
 
             <tr *ngFor="let op of batch.operations; let i = index"
-              [class.row-running]="batch.status?.includes('Running') && op.loadStart && !op.loadEnd"
-              [class.row-completed]="batch.status?.includes('End')">
+              [class.row-running]="containsText(batch.status, 'running') && op.loadStart && !op.loadEnd"
+              
+              [class.row-completed]="containsText(batch.status, 'end')">
 
               <!-- ================= BATCH INFORMATION ================= -->
 
@@ -423,8 +424,8 @@
 
               <td *ngIf="i === 0" [attr.rowspan]="batch.operations.length">
 
-                <span class="status-badge" [class.badge-running]="batch.status?.includes('Running')"
-                  [class.badge-end]="batch.status?.includes('End')">
+                <span class="status-badge" [class.badge-running]="containsText(batch.status, 'running')"
+                  [class.badge-end]="containsText(batch.status, 'end')">
 
                   {{ batch.status }}
 

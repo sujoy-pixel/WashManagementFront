@@ -165,6 +165,16 @@ const routes: Routes = [
         path: 'setup/entry/style-wise-qc-pass-dhu',
         loadComponent: () => import('./setup/entry/style-wise-qc-pass-dhu-dashboard/style-wise-qc-pass-dhu-dashboard.component').then(m => m.StyleWiseQcPassDhuDashboardComponent),
         runGuardsAndResolvers: 'always',
+      },
+      {
+        path: 'setup/entry/style-wise-rejection',
+        loadComponent: () => import('./setup/entry/style-wise-rejection-dashboard/style-wise-rejection-dashboard.component').then(m => m.StyleWiseRejectionDashboardComponent),
+        runGuardsAndResolvers: 'always',
+      },
+      {
+        path: 'setup/entry/date-wise-rejection',
+        loadComponent: () => import('./setup/entry/date-wise-rejection-dashboard/date-wise-rejection-dashboard.component').then(m => m.DateWiseRejectionDashboardComponent),
+        runGuardsAndResolvers: 'always',
       }
     ],
   },
