@@ -335,7 +335,72 @@ export class WashBatchPrepareOperationComponent implements OnInit {
   }
 
   /* ===================== GRID BIND ===================== */
-  bindDetailRows(rows: any[]): void {
+//   bindDetailRows(rows: any[]): void {
+// debugger;
+//     const map = new Map<string, any>();
+
+//     rows.forEach(item => {
+
+//       // ✅ GROUP KEY (IMPORTANT)
+//       const key = [
+//         item.buyerNo,
+//         item.jobId,
+//         item.styleNo,
+//         item.orderId,
+//         item.icleid,
+//         item.dressPartId,
+//       ].join('|');
+
+//       // ✅ FIRST TIME CREATE
+//       if (!map.has(key)) {
+//         map.set(key, {
+//           ...item,
+
+//           // reset values for accumulation
+//           // totalQty: 0,
+//           // remainingQty: 0,
+//          totalQty: Number(item.totalQty || 0),
+//         remainingQty: Number(item.remainingQty || 0),
+//         alreadyPreparedQty: Number(item.alreadyPreparedQty || 0),
+//           sizeDetails: [],
+
+//           // dropdowns
+//           colorList: [{ value: item.icleid, label: item.color }],
+//           fabricationList: [{ value: item.fabricationId, label: item.fabricationName }],
+//           dressPartList: [{ value: item.dressPartId, label: item.dressPart }],
+//           uomList: [{ value: item.uomDetailsId, label: item.uom }]
+//         });
+//       }
+
+//       const row = map.get(key);
+      
+//       // ✅ CUMULATIVE SUM
+//       // row.totalQty += Number(item.qty || 0);
+//      // row.remainingQty += Number(item.remainingQty || 0);
+
+//       // ✅ SIZE ADD (important for popup)
+//       row.sizeDetails.push({
+//         sizeId: item.iszid,
+//         size: item.size,
+//         qty: Number(item.qty || 0)
+//       });
+
+//     });
+
+//     // ✅ FINAL LIST (ONLY GROUPED ROWS)
+//     this.detailList = Array.from(map.values());
+
+//     /* ===== Dropdowns ===== */
+//     this.buyerList = this.unique(this.detailList, 'buyerNo', 'buyerName');
+//     this.jobList = this.unique(this.detailList, 'jobId', 'jobInfo');
+//     this.styleList = this.unique(this.detailList, 'styleNo', 'styleName');
+//     this.orderList = this.unique(this.detailList, 'orderId', 'orderNo');
+//     this.colorList = this.unique(this.detailList, 'icleid', 'color');
+//     this.dressPartList = this.unique(this.detailList, 'dressPartId', 'dressPart');
+
+//     console.log("✅ FINAL GROUPED LIST:", this.detailList);
+//   }
+bindDetailRows(rows: any[]): void {
 debugger;
     const map = new Map<string, any>();
 
@@ -355,10 +420,6 @@ debugger;
       if (!map.has(key)) {
         map.set(key, {
           ...item,
-
-          // reset values for accumulation
-          // totalQty: 0,
-          // remainingQty: 0,
          totalQty: Number(item.totalQty || 0),
         remainingQty: Number(item.remainingQty || 0),
         alreadyPreparedQty: Number(item.alreadyPreparedQty || 0),
@@ -373,17 +434,17 @@ debugger;
       }
 
       const row = map.get(key);
-      
-      // ✅ CUMULATIVE SUM
-      // row.totalQty += Number(item.qty || 0);
-     // row.remainingQty += Number(item.remainingQty || 0);
 
       // ✅ SIZE ADD (important for popup)
-      row.sizeDetails.push({
-        sizeId: item.iszid,
-        size: item.size,
-        qty: Number(item.qty || 0)
-      });
+      // SKIP: sizeId = 0 (not a real size) OR qty <= 0 (nothing meaningful to show/count)
+      const sizeQty = Number(item.qty || 0);
+      if (Number(item.iszid) !== 0 && sizeQty > 0) {
+        row.sizeDetails.push({
+          sizeId: item.iszid,
+          size: item.size,
+          qty: sizeQty
+        });
+      }
 
     });
 
@@ -400,6 +461,95 @@ debugger;
 
     console.log("✅ FINAL GROUPED LIST:", this.detailList);
   }
+// bindDetailRows(rows: any[]): void {
+//   const map = new Map<string, any>();
+
+//   rows.forEach(item => {
+
+//     // ✅ GROUP KEY (IMPORTANT)
+//     const key = [
+//       item.buyerNo,
+//       item.jobId,
+//       item.styleNo,
+//       item.orderId,
+//       item.icleid,
+//       item.dressPartId,
+//     ].join('|');
+
+//     // ✅ FIRST TIME CREATE
+//     if (!map.has(key)) {
+//       map.set(key, {
+//         ...item,
+//         totalQty: 0,                 // recomputed below from valid sizes only
+//         remainingQty: Number(item.remainingQty || 0),
+//         alreadyPreparedQty: Number(item.alreadyPreparedQty || 0),
+//         sizeDetails: [],
+//         sizeIdSeen: new Set<number>(), // guards against duplicate sizeId entries across sizeDetails arrays
+
+//         // dropdowns
+//         colorList: [{ value: item.icleid, label: item.color }],
+//         fabricationList: [{ value: item.fabricationId, label: item.fabricationName }],
+//         dressPartList: [{ value: item.dressPartId, label: item.dressPart }],
+//         uomList: [{ value: item.uomDetailsId, label: item.uom }]
+//       });
+//     }
+
+//     const row = map.get(key);
+
+//     // ✅ Source can hand us size info two ways for a row:
+//     //   (a) a nested `item.sizeDetails` array (as your DB payload showed), and/or
+//     //   (b) a single flat `item.iszid` / `item.size` / `item.qty` on the row itself.
+//     // Normalize both into one list, then filter junk in ONE place.
+//     const rawSizeEntries: any[] = Array.isArray(item.sizeDetails) && item.sizeDetails.length
+//       ? item.sizeDetails
+//       : [{ sizeId: item.iszid, size: item.size, qty: item.qty }];
+
+//     rawSizeEntries.forEach((s: any) => {
+//       const sizeIdNum = Number(s.sizeId ?? s.iszid);
+
+//       // ✅ SKIP JUNK: sizeId = 0 (or missing), or size label is null/empty
+//       if (!sizeIdNum || sizeIdNum <= 0 || !s.size) {
+//         return;
+//       }
+
+//       // ✅ SKIP DUPLICATES: same sizeId already recorded for this grouped row
+//       if (row.sizeIdSeen.has(sizeIdNum)) {
+//         return;
+//       }
+//       row.sizeIdSeen.add(sizeIdNum);
+
+//       const qty = Number(s.qty || 0);
+
+//       row.sizeDetails.push({
+//         sizeId: sizeIdNum,
+//         size: s.size,
+//         qty: qty
+//       });
+
+//       // ✅ ACCUMULATE TOTAL FROM VALID SIZES ONLY
+//       row.totalQty += qty;
+//     });
+//   });
+
+//   // ✅ FINAL LIST (ONLY GROUPED ROWS) — strip internal helper before exposing
+//   this.detailList = Array.from(map.values()).map(row => {
+//     delete row.sizeIdSeen;
+//     return row;
+//   });
+
+//   /* ===== Dropdowns ===== */
+//   this.buyerList = this.unique(this.detailList, 'buyerNo', 'buyerName');
+//   this.jobList = this.unique(this.detailList, 'jobId', 'jobInfo');
+//   this.styleList = this.unique(this.detailList, 'styleNo', 'styleName');
+//   this.orderList = this.unique(this.detailList, 'orderId', 'orderNo');
+//   this.colorList = this.unique(this.detailList, 'icleid', 'color');
+//   this.dressPartList = this.unique(this.detailList, 'dressPartId', 'dressPart');
+
+//   console.log("✅ FINAL GROUPED LIST:", this.detailList);
+// }
+
+
+
   // bindDetailRows(rows: any[]): void {
   //   debugger;
   //   const map = new Map<string, WashBatchRow>();

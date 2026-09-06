@@ -1,0 +1,206 @@
+<div class="row">
+  <div class="col-md-12">
+    <div class="card custom-card">
+      <div class="card-header border-bottom d-flex justify-content-between align-items-center">
+        <div class="card-title mb-0">
+          Date-wise Balance Dashboard
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="d-flex align-items-center justify-content-center gap-3 mb-4">
+  <div class="form-check form-check-inline mb-0">
+    <input class="form-check-input" type="radio" name="balanceViewType" id="viewGarments"
+           [value]="1" [(ngModel)]="filter.viewType" (change)="onViewTypeChange()">
+    <label class="form-check-label fw-semibold" for="viewGarments">Garments</label>
+  </div>
+  <div class="form-check form-check-inline mb-0">
+    <input class="form-check-input" type="radio" name="balanceViewType" id="viewFabric"
+           [value]="2" [(ngModel)]="filter.viewType" (change)="onViewTypeChange()">
+    <label class="form-check-label fw-semibold" for="viewFabric">Fabric &amp; Cutting Parts</label>
+  </div>
+</div>
+
+<div class="mb-3">
+  <div class="card custom-card mb-3">
+    <div class="card-body">
+      <div class="row g-3 align-items-end">
+        <div class="col-md-4">
+          <label class="d-none d-sm-inline text-dark">
+            Unit <span class="text-danger">*</span>
+          </label>
+          <div class="form-control common-border">
+            <ng-select [(ngModel)]="filter.UnitId" [items]="UnitList" bindLabel="label" bindValue="value"
+              placeholder="Select Unit">
+            </ng-select>
+          </div>
+        </div>
+
+        <div class="col-md-4">
+          <label class="form-label">From Date <span class="text-danger">*</span></label>
+          <div class="form-control common-border-input">
+            <input type="text" bsDatepicker [(ngModel)]="filter.fromDate" [bsConfig]="bsConfig" placeholder="d MMM yyyy">
+          </div>
+        </div>
+
+        <div class="col-md-4">
+          <label class="form-label">To Date <span class="text-danger">*</span></label>
+          <div class="form-control common-border-input">
+            <input type="text" bsDatepicker [(ngModel)]="filter.toDate" [bsConfig]="bsConfig" placeholder="d MMM yyyy">
+          </div>
+        </div>
+      </div>
+
+      <div class="row g-3 align-items-end mt-1">
+        <div class="col-md-4">
+          <label class="d-none d-sm-inline text-dark">Global Search</label>
+          <div class="form-control common-border-input">
+            <input type="text" class="form-control border-0 p-0 bg-transparent" [(ngModel)]="globalSearch"
+              (ngModelChange)="onGlobalSearch()" placeholder="Global Search (Buyer, Job, Style, Order, Color)">
+          </div>
+        </div>
+        <div class="col-md-8">
+          <div class="text-end header-action-buttons">
+            <button class="btn btn-gradient px-4 py-2 me-2" (click)="onSearch()" [disabled]="isLoading">
+              <i class="fa fa-search me-2"></i> View
+            </button>
+            <button class="btn btn-success px-4 py-2 me-2" (click)="onExcel()">
+              <i class="fa fa-file-excel-o me-2"></i> Excel
+            </button>
+            <button class="btn btn-danger px-4 py-2" (click)="onClear()">
+              <i class="fa fa-refresh me-2"></i> Clear
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Garments Grid (viewType 1) -->
+  <p-card *ngIf="filter.viewType === 1">
+    <div class="table-responsive table-container-scroll-y">
+      <table class="table table-bordered floor-table">
+        <thead>
+          <tr>
+            <th class="fth">Receive From</th>
+            <th class="fth">Buyer</th>
+            <th class="fth">Job</th>
+            <th class="fth">Order</th>
+            <th class="fth">Style</th>
+            <th class="fth">Color</th>
+            <th class="fth">Dress Part</th>
+            <th class="fth">GSM</th>
+            <th class="fth">Fabric Composition</th>
+            <th class="fth">Fabric Con per Dzn</th>
+            <th class="fth">Order Qty</th>
+            <th class="fth">Shipment Date</th>
+            <th class="fth">Receive Qty</th>
+            <th class="fth">Cum. Receive Qty</th>
+            <th class="fth">Delivery Qty</th>
+            <th class="fth">Cum. Delivery Qty</th>
+            <th class="fth">Approval / Trail</th>
+            <th class="fth">Balance Qty</th>
+            <th class="fth">Wash Type</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngIf="isLoading">
+            <td class="ftd ftd-center ftd-bold loading-cell" colspan="19">
+              <i class="fa fa-spinner fa-spin me-2"></i>Loading data...
+            </td>
+          </tr>
+          <ng-container *ngIf="!isLoading">
+            <tr *ngFor="let row of garmentFilteredRows; trackBy: trackByGarment">
+              <td class="ftd ftd-center">{{ row.receiveFrom }}</td>
+              <td class="ftd ftd-center">{{ row.buyer }}</td>
+              <td class="ftd ftd-center">{{ row.job }}</td>
+              <td class="ftd ftd-center">{{ row.orderNo }}</td>
+              <td class="ftd ftd-center">{{ row.style }}</td>
+              <td class="ftd ftd-center">{{ row.color }}</td>
+              <td class="ftd ftd-center">{{ row.dressPart }}</td>
+              <td class="ftd ftd-center">{{ row.gsm }}</td>
+              <td class="ftd ftd-center">{{ row.fabricComposition }}</td>
+              <td class="ftd ftd-center">{{ row.fabricConPerDzn }}</td>
+              <td class="ftd ftd-center ftd-semibold">{{ row.orderQty | number }}</td>
+              <td class="ftd ftd-center">{{ formatDate(row.shipmentDate) }}</td>
+              <td class="ftd ftd-center ftd-semibold">{{ row.receiveQty | number }}</td>
+              <td class="ftd ftd-center ftd-bold">{{ row.cumReceiveQty | number }}</td>
+              <td class="ftd ftd-center ftd-semibold">{{ row.deliveryQty | number }}</td>
+              <td class="ftd ftd-center ftd-bold">{{ row.cumDeliveryQty | number }}</td>
+              <td class="ftd ftd-center">{{ row.approvalTrail | number }}</td>
+              <td class="ftd ftd-center ftd-bold ftd-batch-count">{{ row.balanceQty | number }}</td>
+              <td class="ftd ftd-center">{{ row.washType }}</td>
+            </tr>
+          </ng-container>
+        </tbody>
+      </table>
+
+      <div class="floor-empty-state" *ngIf="!isLoading && garmentFilteredRows.length === 0">
+        <div class="floor-empty-icon">
+          <i class="fa fa-clipboard-list"></i>
+        </div>
+        <p>Select Unit and Date range, then click View to load data.</p>
+      </div>
+    </div>
+  </p-card>
+
+  <!-- Fabric & Cutting Parts Grid (viewType 2) -->
+  <p-card *ngIf="filter.viewType === 2">
+    <div class="table-responsive table-container-scroll-y">
+      <table class="table table-bordered floor-table">
+        <thead>
+          <tr>
+            <th class="fth">Receive From</th>
+            <th class="fth">Buyer</th>
+            <th class="fth">Job</th>
+            <th class="fth">Order</th>
+            <th class="fth">Style</th>
+            <th class="fth">Color</th>
+            <th class="fth">Batch/Lot</th>
+            <th class="fth">Dia</th>
+            <th class="fth">Order Qty (Kg)</th>
+            <th class="fth">Receive Roll</th>
+            <th class="fth">Calculated Qty (Kg)</th>
+            <th class="fth">Delivery Roll</th>
+            <th class="fth">Calculated Delivery Qty (Kg)</th>
+            <th class="fth">Balance Qty (Kg)</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngIf="isLoading">
+            <td class="ftd ftd-center ftd-bold loading-cell" colspan="14">
+              <i class="fa fa-spinner fa-spin me-2"></i>Loading data...
+            </td>
+          </tr>
+          <ng-container *ngIf="!isLoading">
+            <tr *ngFor="let row of fabricFilteredRows; trackBy: trackByFabric">
+              <td class="ftd ftd-center">{{ row.receiveFrom }}</td>
+              <td class="ftd ftd-center">{{ row.buyer }}</td>
+              <td class="ftd ftd-center">{{ row.job }}</td>
+              <td class="ftd ftd-center">{{ row.orderNo }}</td>
+              <td class="ftd ftd-center">{{ row.style }}</td>
+              <td class="ftd ftd-center">{{ row.color }}</td>
+              <td class="ftd ftd-center">{{ row.batchLot }}</td>
+              <td class="ftd ftd-center">{{ row.dia }}</td>
+              <td class="ftd ftd-center ftd-semibold">{{ row.orderQtyKg | number }}</td>
+              <td class="ftd ftd-center">{{ row.receiveRoll }}</td>
+              <td class="ftd ftd-center ftd-bold">{{ row.calculatedQtyKg | number }}</td>
+              <td class="ftd ftd-center">{{ row.deliveryRoll }}</td>
+              <td class="ftd ftd-center ftd-bold">{{ row.calculatedDeliveryQtyKg | number }}</td>
+              <td class="ftd ftd-center ftd-bold ftd-batch-count">{{ row.balanceQtyKg | number }}</td>
+            </tr>
+          </ng-container>
+        </tbody>
+      </table>
+
+      <div class="floor-empty-state" *ngIf="!isLoading && fabricFilteredRows.length === 0">
+        <div class="floor-empty-icon">
+          <i class="fa fa-clipboard-list"></i>
+        </div>
+        <p>Select Unit and Date range, then click View to load data.</p>
+      </div>
+    </div>
+  </p-card>
+</div>

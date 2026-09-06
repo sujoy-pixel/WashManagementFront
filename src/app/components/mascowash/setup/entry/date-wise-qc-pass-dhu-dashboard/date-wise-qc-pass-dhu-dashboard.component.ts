@@ -162,7 +162,7 @@ export class DateWiseQcPassDhuDashboardComponent implements OnInit {
       shift: this.cleanStr(row.shift ?? row.Shift),
       qcName: this.cleanStr(row.qcName ?? row.QcName),
       receiveQty: this.toNumber(row.receiveQty ?? row.ReceiveQty),
-      uom: this.cleanStr(row.uom ?? row.UoM ?? row.UOM),
+      uom: this.cleanStr(row.uoM ?? row.uoM ?? row.uoM),
       batchNo: this.cleanStr(row.batchNo ?? row.BatchNo),
       totalCheckQty,
       totalOkayQty,

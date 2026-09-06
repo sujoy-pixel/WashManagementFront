@@ -175,6 +175,21 @@ const routes: Routes = [
         path: 'setup/entry/date-wise-rejection',
         loadComponent: () => import('./setup/entry/date-wise-rejection-dashboard/date-wise-rejection-dashboard.component').then(m => m.DateWiseRejectionDashboardComponent),
         runGuardsAndResolvers: 'always',
+      },
+      {
+        path: 'setup/entry/rejection-dashboard',
+        loadComponent: () => import('./setup/entry/rejection-dashboard/rejection-dashboard.component').then(m => m.RejectionDashboardComponent),
+        runGuardsAndResolvers: 'always',
+      },
+      {
+        path: 'setup/entry/date-wise-balance',
+        loadComponent: () => import('./setup/entry/date-wise-balance-dashboard/date-wise-balance-dashboard.component').then(m => m.DateWiseBalanceDashboardComponent),
+        runGuardsAndResolvers: 'always',
+      },
+      {
+        path: 'setup/entry/order-wise-balance',
+        loadComponent: () => import('./setup/entry/order-wise-balance-dashboard/order-wise-balance-dashboard.component').then(m => m.OrderWiseBalanceDashboardComponent),
+        runGuardsAndResolvers: 'always',
       }
     ],
   },

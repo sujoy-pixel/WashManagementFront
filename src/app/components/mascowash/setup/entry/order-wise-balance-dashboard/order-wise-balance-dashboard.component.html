@@ -1,0 +1,300 @@
+<div class="row">
+  <div class="col-md-12">
+    <div class="card custom-card">
+      <div class="card-header border-bottom d-flex justify-content-between align-items-center">
+        <div class="card-title mb-0">
+          Order-wise Balance Dashboard
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="d-flex align-items-center justify-content-center gap-3 mb-4">
+  <div class="form-check form-check-inline mb-0">
+    <input class="form-check-input" type="radio" name="orderBalanceViewType" id="viewGarments"
+           [value]="1" [(ngModel)]="filter.viewType" (change)="onViewTypeChange()">
+    <label class="form-check-label fw-semibold" for="viewGarments">Garments</label>
+  </div>
+  <div class="form-check form-check-inline mb-0">
+    <input class="form-check-input" type="radio" name="orderBalanceViewType" id="viewFabric"
+           [value]="2" [(ngModel)]="filter.viewType" (change)="onViewTypeChange()">
+    <label class="form-check-label fw-semibold" for="viewFabric">Fabric &amp; Cutting Parts</label>
+  </div>
+</div>
+
+<div class="mb-3">
+  <div class="card custom-card mb-3">
+    <div class="card-body">
+      <div class="row g-3 align-items-end">
+        <div class="col-md-2">
+          <label class="d-none d-sm-inline text-dark">Unit <span class="text-danger">*</span></label>
+          <div class="form-control common-border">
+            <ng-select [(ngModel)]="filter.UnitId"
+                       [items]="UnitList"
+                       bindLabel="label"
+                       bindValue="value"
+                       placeholder="Select Unit">
+            </ng-select>
+          </div>
+        </div>
+
+        <div class="col-md-2">
+          <label class="form-label">From Date <span class="text-danger">*</span></label>
+          <div class="form-control common-border-input">
+            <input type="text" bsDatepicker
+                   [(ngModel)]="filter.fromDate"
+                   [bsConfig]="bsConfig"
+                   placeholder="d MMM yyyy">
+          </div>
+        </div>
+
+        <div class="col-md-2">
+          <label class="form-label">To Date <span class="text-danger">*</span></label>
+          <div class="form-control common-border-input">
+            <input type="text" bsDatepicker
+                   [(ngModel)]="filter.toDate"
+                   [bsConfig]="bsConfig"
+                   placeholder="d MMM yyyy">
+          </div>
+        </div>
+
+        <div class="col-md-6">
+          <div class="text-end header-action-buttons">
+            <button class="btn btn-gradient px-4 py-2 me-2"
+                    (click)="onSearch()"
+                    [disabled]="isLoading">
+              <i class="fa fa-search me-2"></i> View
+            </button>
+            <button class="btn btn-success px-4 py-2 me-2" (click)="onExcel()">
+              <i class="fa fa-file-excel-o me-2"></i> Excel
+            </button>
+            <button class="btn btn-danger px-4 py-2" (click)="onClear()">
+              <i class="fa fa-refresh me-2"></i> Clear
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="row g-3 align-items-end mt-1" *ngIf="(filter.viewType === 1 && garmentRows.length) || (filter.viewType === 2 && fabricRows.length)">
+        <div class="col-md-4">
+          <label class="d-none d-sm-inline text-dark">Global Search</label>
+          <div class="form-control common-border-input">
+            <input type="text"
+                   class="form-control border-0 p-0 bg-transparent"
+                   [(ngModel)]="globalSearch"
+                   (ngModelChange)="onGlobalSearch()"
+                   placeholder="Search Buyer / Job / Order / Style / Color...">
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <p-card>
+    <div class="table-responsive table-container-scroll-y">
+
+      <!-- =====================================================
+           GARMENTS (Pcs) VIEW
+           ===================================================== -->
+      <table class="table table-bordered floor-table"
+             *ngIf="filter.viewType === 1">
+        <thead>
+          <tr>
+            <th class="fth sticky-col">Receive from</th>
+            <th class="fth">Buyer</th>
+            <th class="fth">Job</th>
+            <th class="fth">Order</th>
+            <th class="fth">Style</th>
+            <th class="fth">Color</th>
+            <th class="fth">Dress Part</th>
+            <th class="fth">Wash Type</th>
+            <th class="fth">Fabric Composition</th>
+            <th class="fth">GSM</th>
+            <th class="fth">Fabric Con. per Dzn</th>
+            <th class="fth">Order Qty (Pcs)</th>
+            <th class="fth">Shipment Date</th>
+            <th class="fth">1st Receive Date</th>
+            <th class="fth">Last Receive Date</th>
+            <th class="fth">Total Receive Qty (Pcs)</th>
+            <th class="fth">Receive Balance (Pcs)</th>
+            <th class="fth">1st Delivery Date</th>
+            <th class="fth">Last Delivery Date</th>
+            <th class="fth">Total Delivery Qty (Pcs)</th>
+            <th class="fth">Ready for Delivery (Pcs)</th>
+            <th class="fth">Approval / Trail</th>
+            <th class="fth">Delivery Balance Qty (Pcs)</th>
+            <th class="fth">Wash Status</th>
+            <th class="fth">Remarks</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let r of garmentFilteredRows; trackBy: trackByGarment">
+            <td class="ftd ftd-center sticky-col">{{ r.receiveFrom }}</td>
+            <td class="ftd ftd-center">{{ r.buyer }}</td>
+            <td class="ftd ftd-center">{{ r.job }}</td>
+            <td class="ftd ftd-center">{{ r.orderNo }}</td>
+            <td class="ftd ftd-center">{{ r.style }}</td>
+            <td class="ftd ftd-center">{{ r.color }}</td>
+            <td class="ftd ftd-center">{{ r.dressPart }}</td>
+            <td class="ftd ftd-center">{{ r.washType }}</td>
+            <td class="ftd ftd-center">{{ r.fabricComposition }}</td>
+            <td class="ftd ftd-center">{{ r.gsm }}</td>
+            <td class="ftd ftd-center ftd-semibold">{{ r.fabricConPerDzn === null || r.fabricConPerDzn === undefined ? '-' : fmtNum(r.fabricConPerDzn) }}</td>
+            <td class="ftd ftd-center">{{ fmtNum(r.orderQtyPcs) }}</td>
+            <td class="ftd ftd-center">{{ formatDate(r.shipmentDate) }}</td>
+            <td class="ftd ftd-center">{{ formatDate(r.firstReceiveDate) }}</td>
+            <td class="ftd ftd-center">{{ formatDate(r.lastReceiveDate) }}</td>
+            <td class="ftd ftd-center">{{ fmtNum(r.totalReceiveQtyPcs) }}</td>
+            <td class="ftd ftd-center ftd-bold">{{ fmtNum(r.receiveBalancePcs) }}</td>
+            <td class="ftd ftd-center">{{ formatDate(r.firstDeliveryDate) }}</td>
+            <td class="ftd ftd-center">{{ formatDate(r.lastDeliveryDate) }}</td>
+            <td class="ftd ftd-center">{{ fmtNum(r.totalDeliveryQtyPcs) }}</td>
+            <td class="ftd ftd-center ftd-bold">{{ fmtNum(r.readyForDeliveryPcs) }}</td>
+            <td class="ftd ftd-center">{{ r.approvalTrail | number:'1.0-2' }}</td>
+            <td class="ftd ftd-center ftd-bold">{{ fmtNum(r.deliveryBalanceQtyPcs) }}</td>
+            <td class="ftd ftd-center">
+              <span class="badge"
+                    [ngClass]="{
+                      'bg-warning': r.washStatus === 'Dryer Running',
+                      'bg-info':    r.washStatus === 'Hydro Running',
+                      'bg-primary': r.washStatus === 'Acid Wash Running',
+                      'bg-secondary': !r.washStatus
+                    }">
+                {{ r.washStatus || '-' }}
+              </span>
+            </td>
+            <td class="ftd ftd-center">{{ r.remarks || '-' }}</td>
+          </tr>
+          <tr *ngIf="garmentFilteredRows.length">
+            <td class="ftf ftf-center sticky-col" [attr.colspan]="6">
+              Total ({{ garmentFilteredRows.length }} rows)
+            </td>
+            <td class="ftf ftf-center">{{ totalsGarment.orderQtyPcs | number:'1.0-2' }}</td>
+            <td class="ftf ftf-center" colspan="3"></td>
+            <td class="ftf ftf-center">{{ totalsGarment.totalReceiveQtyPcs | number:'1.0-2' }}</td>
+            <td class="ftf ftf-center">{{ totalsGarment.receiveBalancePcs | number:'1.0-2' }}</td>
+            <td class="ftf ftf-center" colspan="2"></td>
+            <td class="ftf ftf-center">{{ totalsGarment.totalDeliveryQtyPcs | number:'1.0-2' }}</td>
+            <td class="ftf ftf-center">{{ totalsGarment.readyForDeliveryPcs | number:'1.0-2' }}</td>
+            <td class="ftf ftf-center">{{ totalsGarment.approvalTrail | number:'1.0-2' }}</td>
+            <td class="ftf ftf-center">{{ totalsGarment.deliveryBalanceQtyPcs | number:'1.0-2' }}</td>
+            <td class="ftf ftf-center" colspan="2"></td>
+          </tr>
+        </tbody>
+      </table>
+
+      <!-- =====================================================
+           FABRIC & CUTTING PARTS (Kg) VIEW
+           ===================================================== -->
+      <table class="table table-bordered floor-table"
+             *ngIf="filter.viewType === 2">
+        <thead>
+          <tr>
+            <th class="fth sticky-col">Receive from</th>
+            <th class="fth">Buyer</th>
+            <th class="fth">Job</th>
+            <th class="fth">Order</th>
+            <th class="fth">Style</th>
+            <th class="fth">Color</th>
+            <th class="fth">Dress Part</th>
+            <th class="fth">Wash Type</th>
+            <th class="fth">Fabric Composition</th>
+            <th class="fth">Batch / Lot</th>
+            <th class="fth">GSM</th>
+            <th class="fth">Dia</th>
+            <th class="fth">Order Qty (Kg)</th>
+            <th class="fth">Shipment Date</th>
+            <th class="fth">1st Receive Date</th>
+            <th class="fth">Last Receive Date</th>
+            <th class="fth">Total Receive Roll</th>
+            <th class="fth">Total Receive Qty (Kg)</th>
+            <th class="fth">Receive Balance (Kg)</th>
+            <th class="fth">1st Delivery Date</th>
+            <th class="fth">Last Delivery Date</th>
+            <th class="fth">Total Delivery Roll</th>
+            <th class="fth">Total Delivery Qty (Kg)</th>
+            <th class="fth">Ready for Delivery (Kg)</th>
+            <th class="fth">Delivery Balance Qty (kg)</th>
+            <th class="fth">Wash Status</th>
+            <th class="fth">Remarks</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let r of fabricFilteredRows; trackBy: trackByFabric">
+            <td class="ftd ftd-center sticky-col">{{ r.receiveFrom }}</td>
+            <td class="ftd ftd-center">{{ r.buyer }}</td>
+            <td class="ftd ftd-center">{{ r.job }}</td>
+            <td class="ftd ftd-center">{{ r.orderNo }}</td>
+            <td class="ftd ftd-center">{{ r.style }}</td>
+            <td class="ftd ftd-center">{{ r.color }}</td>
+            <td class="ftd ftd-center">{{ r.dressPart }}</td>
+            <td class="ftd ftd-center">{{ r.washType }}</td>
+            <td class="ftd ftd-center">{{ r.fabricComposition }}</td>
+            <td class="ftd ftd-center">{{ r.batchLot }}</td>
+            <td class="ftd ftd-center">{{ r.gsm }}</td>
+            <td class="ftd ftd-center">{{ r.dia ?? '-' }}</td>
+            <td class="ftd ftd-center">{{ fmtNum(r.orderQtyKg) }}</td>
+            <td class="ftd ftd-center">{{ formatDate(r.shipmentDate) }}</td>
+            <td class="ftd ftd-center">{{ formatDate(r.firstReceiveDate) }}</td>
+            <td class="ftd ftd-center">{{ formatDate(r.lastReceiveDate) }}</td>
+            <td class="ftd ftd-center">{{ r.totalReceiveRoll | number:'1.0-0' }}</td>
+            <td class="ftd ftd-center">{{ fmtNum(r.totalReceiveQtyKg) }}</td>
+            <td class="ftd ftd-center ftd-bold">{{ fmtNum(r.receiveBalanceKg) }}</td>
+            <td class="ftd ftd-center">{{ formatDate(r.firstDeliveryDate) }}</td>
+            <td class="ftd ftd-center">{{ formatDate(r.lastDeliveryDate) }}</td>
+            <td class="ftd ftd-center">{{ r.totalDeliveryRoll | number:'1.0-0' }}</td>
+            <td class="ftd ftd-center">{{ fmtNum(r.totalDeliveryQtyKg) }}</td>
+            <td class="ftd ftd-center ftd-bold">{{ fmtNum(r.readyForDeliveryKg) }}</td>
+            <td class="ftd ftd-center ftd-bold">{{ fmtNum(r.deliveryBalanceKg) }}</td>
+            <td class="ftd ftd-center">
+              <span class="badge"
+                    [ngClass]="{
+                      'bg-warning': r.washStatus === 'Dryer Running',
+                      'bg-info':    r.washStatus === 'Hydro Running',
+                      'bg-primary': r.washStatus === 'Acid Wash Running',
+                      'bg-secondary': !r.washStatus
+                    }">
+                {{ r.washStatus || '-' }}
+              </span>
+            </td>
+            <td class="ftd ftd-center">{{ r.remarks || '-' }}</td>
+          </tr>
+          <tr *ngIf="fabricFilteredRows.length">
+            <td class="ftf ftf-center sticky-col" [attr.colspan]="6">
+              Total ({{ fabricFilteredRows.length }} rows)
+            </td>
+            <td class="ftf ftf-center" colspan="6"></td>
+            <td class="ftf ftf-center">{{ totalsFabric.orderQtyKg | number:'1.0-2' }}</td>
+            <td class="ftf ftf-center" colspan="3"></td>
+            <td class="ftf ftf-center">{{ totalsFabric.totalReceiveRoll | number:'1.0-2' }}</td>
+            <td class="ftf ftf-center">{{ totalsFabric.totalReceiveQtyKg | number:'1.0-2' }}</td>
+            <td class="ftf ftf-center">{{ totalsFabric.receiveBalanceKg | number:'1.0-2' }}</td>
+            <td class="ftf ftf-center" colspan="2"></td>
+            <td class="ftf ftf-center">{{ totalsFabric.totalDeliveryRoll | number:'1.0-2' }}</td>
+            <td class="ftf ftf-center">{{ totalsFabric.totalDeliveryQtyKg | number:'1.0-2' }}</td>
+            <td class="ftf ftf-center">{{ totalsFabric.readyForDeliveryKg | number:'1.0-2' }}</td>
+            <td class="ftf ftf-center">{{ totalsFabric.deliveryBalanceKg | number:'1.0-2' }}</td>
+            <td class="ftf ftf-center" colspan="2"></td>
+          </tr>
+        </tbody>
+      </table>
+
+      <!-- Empty state -->
+      <div class="floor-empty-state"
+           *ngIf="(filter.viewType === 1 && garmentFilteredRows.length === 0 && !isLoading) ||
+                   (filter.viewType === 2 && fabricFilteredRows.length === 0 && !isLoading)">
+        <div class="floor-empty-icon">
+          <i class="fa fa-clipboard-list"></i>
+        </div>
+        <p>Select Unit, From Date, To Date and click View to load the dashboard.</p>
+      </div>
+
+      <!-- Loading overlay -->
+      <div class="text-center py-4" *ngIf="isLoading">
+        <i class="fa fa-spinner fa-spin fa-2x"></i>
+        <p class="mt-2">Loading...</p>
+      </div>
+    </div>
+  </p-card>
+</div>

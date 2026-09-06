@@ -1,0 +1,243 @@
+<div class="row">
+  <div class="col-md-12">
+    <div class="card custom-card">
+      <div class="card-header border-bottom d-flex justify-content-between align-items-center">
+        <div class="card-title mb-0">
+          Rejection Dashboard
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="d-flex align-items-center justify-content-center gap-3 mb-4">
+  <div class="form-check form-check-inline mb-0">
+    <input class="form-check-input" type="radio" name="viewType" id="viewStyle" value="style"
+      [(ngModel)]="filter.viewType" (change)="onViewTypeChange()">
+    <label class="form-check-label fw-semibold" for="viewStyle">Style Wise</label>
+  </div>
+  <div class="form-check form-check-inline mb-0">
+    <input class="form-check-input" type="radio" name="viewType" id="viewDate" value="date"
+      [(ngModel)]="filter.viewType" (change)="onViewTypeChange()">
+    <label class="form-check-label fw-semibold" for="viewDate">Date Wise</label>
+  </div>
+</div>
+
+<div class="mb-3">
+  <div class="card custom-card mb-3">
+    <div class="card-body">
+      <div class="row g-3 align-items-end">
+        <div class="col-md-2">
+          <label class="d-none d-sm-inline text-dark">
+            Unit <span class="text-danger">*</span>
+          </label>
+          <div class="form-control common-border">
+            <ng-select [(ngModel)]="filter.UnitId" [items]="UnitList" bindLabel="label" bindValue="value"
+              placeholder="Select Unit" (change)="onUnitChange()">
+            </ng-select>
+          </div>
+        </div>
+
+        <div class="col-md-3">
+          <label class="d-none d-sm-inline text-dark">
+            Buyer <span class="text-danger">*</span>
+          </label>
+          <div class="form-control common-border">
+            <ng-select [(ngModel)]="filter.BuyerId" [items]="BuyerList" bindLabel="label" bindValue="value"
+              placeholder="Select Buyer" (change)="onBuyerChange()">
+            </ng-select>
+          </div>
+        </div>
+
+        <div class="col-md-2">
+          <label class="form-label">From Date <span class="text-danger">*</span></label>
+          <div class="form-control common-border-input">
+            <input type="text" bsDatepicker [(ngModel)]="filter.fromDate" [bsConfig]="bsConfig" placeholder="d MMM yyyy">
+          </div>
+        </div>
+
+        <div class="col-md-2">
+          <label class="form-label">To Date <span class="text-danger">*</span></label>
+          <div class="form-control common-border-input">
+            <input type="text" bsDatepicker [(ngModel)]="filter.toDate" [bsConfig]="bsConfig" placeholder="d MMM yyyy">
+          </div>
+        </div>
+      </div>
+
+      <div class="row g-3 align-items-end mt-1">
+        <div class="col-md-4">
+          <label class="d-none d-sm-inline text-dark">Global Search</label>
+          <div class="form-control common-border-input">
+            <input type="text" class="form-control border-0 p-0 bg-transparent" [(ngModel)]="globalSearch"
+              (ngModelChange)="onGlobalSearch()" placeholder="Global Search">
+          </div>
+        </div>
+        <div class="col-md-8">
+          <div class="text-end header-action-buttons">
+            <button class="btn btn-gradient px-4 py-2 me-2" (click)="onSearch()" [disabled]="isLoading">
+              <i class="fa fa-search me-2"></i> View
+            </button>
+            <button class="btn btn-success px-4 py-2 me-2" (click)="onExcel()">
+              <i class="fa fa-file-excel-o me-2"></i> Excel
+            </button>
+            <button class="btn btn-danger px-4 py-2" (click)="onClear()">
+              <i class="fa fa-refresh me-2"></i> Clear
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Style Wise Grid -->
+  <p-card *ngIf="filter.viewType === 'style'">
+    <div class="table-responsive table-container-scroll-y">
+      <table class="table table-bordered floor-table">
+        <thead>
+          <tr>
+            <th class="fth">Receive From</th>
+            <th class="fth">Buyer</th>
+            <th class="fth">Job</th>
+            <th class="fth">Order</th>
+            <th class="fth">Style</th>
+            <th class="fth">Color</th>
+            <th class="fth">Dress Part</th>
+            <th class="fth">Wash Category</th>
+            <th class="fth">Item Name</th>
+            <th class="fth">Received Qty</th>
+            <th class="fth">UoM</th>
+            <th class="fth">No of Batch</th>
+            <th class="fth">Total Check QTY</th>
+            <th class="fth">Total Reject QTY</th>
+            <th class="fth">Reject %</th>
+            <th class="fth" *ngFor="let col of sizeColumns; trackBy: trackBySize">{{ col.label }}</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngIf="isLoading">
+            <td class="ftd ftd-center ftd-bold loading-cell" [attr.colspan]="15 + sizeColumns.length">
+              <i class="fa fa-spinner fa-spin me-2"></i>Loading data...
+            </td>
+          </tr>
+          <ng-container *ngIf="!isLoading">
+            <ng-container *ngFor="let row of styleFilteredRows; trackBy: trackByRow">
+              <tr *ngIf="!row.isSubTotal">
+                <td class="ftd ftd-center">{{ row.receiveFrom }}</td>
+                <td class="ftd ftd-center">{{ row.buyer }}</td>
+                <td class="ftd ftd-center">{{ row.job }}</td>
+                <td class="ftd ftd-center">{{ row.orderNo }}</td>
+                <td class="ftd ftd-center">{{ row.style }}</td>
+                <td class="ftd ftd-center">{{ row.color }}</td>
+                <td class="ftd ftd-center">{{ row.dressPart }}</td>
+                <td class="ftd ftd-center">{{ row.washCategory }}</td>
+                <td class="ftd ftd-center">{{ row.itemName }}</td>
+                <td class="ftd ftd-center ftd-semibold">{{ row.receiveQty | number }}</td>
+                <td class="ftd ftd-center">{{ row.uom }}</td>
+                <td class="ftd ftd-center ftd-bold ftd-batch-count">{{ row.noOfBatch }}</td>
+                <td class="ftd ftd-center">{{ row.totalCheckQty | number }}</td>
+                <td class="ftd ftd-center ftd-semibold">{{ row.totalRejectQty | number }}</td>
+                <td class="ftd ftd-center ftd-semibold">{{ formatPercent(row.rejectPercent) }}</td>
+                <td class="ftd ftd-center ftd-size-reject" *ngFor="let col of sizeColumns; trackBy: trackBySize">
+                  {{ row.sizeRejects[col.size] || '' }}
+                </td>
+              </tr>
+              <tr *ngIf="row.isSubTotal" class="subtotal-row">
+                <td [attr.colspan]="9" class="ftd text-end ftd-bold">Sub Total:</td>
+                <td class="ftd ftd-center ftd-bold">{{ row.receiveQty | number }}</td>
+                <td class="ftd ftd-center ftd-bold">{{ row.uom }}</td>
+                <td class="ftd ftd-center ftd-bold">{{ row.noOfBatch }}</td>
+                <td class="ftd ftd-center ftd-bold">{{ row.totalCheckQty | number }}</td>
+                <td class="ftd ftd-center ftd-bold">{{ row.totalRejectQty | number }}</td>
+                <td class="ftd ftd-center ftd-bold">{{ formatPercent(row.rejectPercent) }}</td>
+                <td class="ftd ftd-center ftd-bold" *ngFor="let col of sizeColumns; trackBy: trackBySize">
+                  {{ row.sizeRejects[col.size] ?? 0 }}
+                </td>
+              </tr>
+            </ng-container>
+          </ng-container>
+        </tbody>
+      </table>
+
+      <div class="floor-empty-state" *ngIf="!isLoading && styleFilteredRows.length === 0">
+        <div class="floor-empty-icon">
+          <i class="fa fa-clipboard-list"></i>
+        </div>
+        <p *ngIf="sizeColumns.length === 0; else styleNoDataMsg">Select Unit, Buyer and Date range, then click View to load data.</p>
+        <ng-template #styleNoDataMsg><p>No results found for the selected filters.</p></ng-template>
+      </div>
+    </div>
+  </p-card>
+
+  <!-- Date Wise Grid -->
+  <p-card *ngIf="filter.viewType === 'date'">
+    <div class="table-responsive table-container-scroll-y">
+      <table class="table table-bordered floor-table">
+        <thead>
+          <tr>
+            <th class="fth">Date</th>
+            <th class="fth">Tracking No.</th>
+            <th class="fth">Receive From</th>
+            <th class="fth">Buyer</th>
+            <th class="fth">Job</th>
+            <th class="fth">Order</th>
+            <th class="fth">Style</th>
+            <th class="fth">Color</th>
+            <th class="fth">Dress Part</th>
+            <th class="fth">Wash Category</th>
+            <th class="fth">Item Name</th>
+            <th class="fth">Shift</th>
+            <th class="fth">QC Name</th>
+            <th class="fth">Receive Qty</th>
+            <th class="fth">UoM</th>
+            <th class="fth">Batch No</th>
+            <th class="fth">Total Check QTY</th>
+            <th class="fth">Total Reject QTY</th>
+            <th class="fth">Reject %</th>
+            <th class="fth" *ngFor="let col of sizeColumns; trackBy: trackBySize">{{ col.label }}</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngIf="isLoading">
+            <td class="ftd ftd-center ftd-bold loading-cell" [attr.colspan]="fixedColumnCount + sizeColumns.length">
+              <i class="fa fa-spinner fa-spin me-2"></i>Loading data...
+            </td>
+          </tr>
+          <ng-container *ngIf="!isLoading">
+            <tr *ngFor="let row of dateFilteredRows; trackBy: trackByRow">
+              <td class="ftd ftd-center">{{ formatDate(row.date) }}</td>
+              <td class="ftd ftd-center">{{ row.trackingNo }}</td>
+              <td class="ftd ftd-center">{{ row.receiveFrom }}</td>
+              <td class="ftd ftd-center">{{ row.buyer }}</td>
+              <td class="ftd ftd-center">{{ row.job }}</td>
+              <td class="ftd ftd-center">{{ row.orderNo }}</td>
+              <td class="ftd ftd-center">{{ row.style }}</td>
+              <td class="ftd ftd-center">{{ row.color }}</td>
+              <td class="ftd ftd-center">{{ row.dressPart }}</td>
+              <td class="ftd ftd-center">{{ row.washCategory }}</td>
+              <td class="ftd ftd-center">{{ row.itemName }}</td>
+              <td class="ftd ftd-center">{{ row.shift }}</td>
+              <td class="ftd ftd-center">{{ row.qcName }}</td>
+              <td class="ftd ftd-center ftd-semibold">{{ row.receiveQty | number }}</td>
+              <td class="ftd ftd-center">{{ row.uom }}</td>
+              <td class="ftd ftd-center ftd-bold ftd-batch-count">{{ row.batchNo }}</td>
+              <td class="ftd ftd-center">{{ row.totalCheckQty | number }}</td>
+              <td class="ftd ftd-center ftd-semibold">{{ row.totalRejectQty | number }}</td>
+              <td class="ftd ftd-center ftd-semibold">{{ formatPercent(row.rejectPercent) }}</td>
+              <td class="ftd ftd-center ftd-size-reject" *ngFor="let col of sizeColumns; trackBy: trackBySize">
+                {{ row.sizeRejects[col.size] || '' }}
+              </td>
+            </tr>
+          </ng-container>
+        </tbody>
+      </table>
+
+      <div class="floor-empty-state" *ngIf="!isLoading && dateFilteredRows.length === 0">
+        <div class="floor-empty-icon">
+          <i class="fa fa-clipboard-list"></i>
+        </div>
+        <p *ngIf="sizeColumns.length === 0; else dateNoDataMsg">Select Unit, Buyer and Date range, then click View to load data.</p>
+        <ng-template #dateNoDataMsg><p>No results found for the selected filters.</p></ng-template>
+      </div>
+    </div>
+  </p-card>
+</div>

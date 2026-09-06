@@ -795,8 +795,25 @@ getDateWiseRejectionData(request: any) {
   );
 }
 
+getDateWiseBalanceData(request: any) {
+  return this.http.post<any[]>(
+    this.baseUrl_ + 'Setup/getDateWiseBalanceData',
+    request,
+    {
+      headers: this.token.headerToken()
+    }
+  );
+}
 
-
+getOrderWiseBalanceData(request: any) {
+  return this.http.post<any[]>(
+    this.baseUrl_ + 'Setup/getOrderWiseBalanceData',
+    request,
+    {
+      headers: this.token.headerToken()
+    }
+  );
+}
 
 
 
