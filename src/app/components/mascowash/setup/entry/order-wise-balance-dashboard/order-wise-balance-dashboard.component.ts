@@ -519,40 +519,6 @@ export class OrderWiseBalanceDashboardComponent implements OnInit {
   }
 
   // =========================================================================
-  // Totals (live, recomputed on every search)
-  // =========================================================================
-  get totalsGarment() {
-    const rows = this.garmentFilteredRows;
-    const sum = (sel: (r: OrderBalanceGarmentRow) => number | null | undefined) =>
-      rows.reduce((acc, r) => acc + (sel(r) ?? 0), 0);
-    return {
-      orderQtyPcs:           sum(r => r.orderQtyPcs),
-      totalReceiveQtyPcs:    sum(r => r.totalReceiveQtyPcs),
-      receiveBalancePcs:     sum(r => r.receiveBalancePcs),
-      totalDeliveryQtyPcs:   sum(r => r.totalDeliveryQtyPcs),
-      readyForDeliveryPcs:   sum(r => r.readyForDeliveryPcs),
-      approvalTrail:         sum(r => r.approvalTrail),
-      deliveryBalanceQtyPcs: sum(r => r.deliveryBalanceQtyPcs)
-    };
-  }
-
-  get totalsFabric() {
-    const rows = this.fabricFilteredRows;
-    const sum = (sel: (r: OrderBalanceFabricRow) => number | null | undefined) =>
-      rows.reduce((acc, r) => acc + (sel(r) ?? 0), 0);
-    return {
-      orderQtyKg:         sum(r => r.orderQtyKg),
-      totalReceiveRoll:   sum(r => r.totalReceiveRoll),
-      totalReceiveQtyKg:  sum(r => r.totalReceiveQtyKg),
-      receiveBalanceKg:   sum(r => r.receiveBalanceKg),
-      totalDeliveryRoll:  sum(r => r.totalDeliveryRoll),
-      totalDeliveryQtyKg: sum(r => r.totalDeliveryQtyKg),
-      readyForDeliveryKg: sum(r => r.readyForDeliveryKg),
-      deliveryBalanceKg:  sum(r => r.deliveryBalanceKg)
-    };
-  }
-
-  // =========================================================================
   // Helpers
   // =========================================================================
   private resetGrid(): void {
