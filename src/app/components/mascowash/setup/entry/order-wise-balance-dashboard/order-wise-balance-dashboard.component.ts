@@ -198,6 +198,9 @@ export class OrderWiseBalanceDashboardComponent implements OnInit {
     // ONE call for both views - @ViewType decides the result shape.
     this.washService.getOrderWiseBalanceData(request).subscribe({
       next: (res: any) => {
+
+        console.log('Request sent:', request);
+        console.log('Response received:', res);
         this.isLoading = false;
 
         // Service normalizes to { viewType, rows }; also tolerate a raw array.

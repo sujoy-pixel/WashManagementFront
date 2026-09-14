@@ -1,113 +1,214 @@
-::ng-deep {
+// ==========================================================================
+// Flat / tile navigation menu — the landing view shown after login.
+// Centered, spacious, and colour-coded per section for a modern, premium feel.
+// ==========================================================================
 
-  .rtl .todo-blog .todo-details {
-    margin-left: 15px !important;
-    margin-right: inherit !important;
+.tile-menu-page {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: calc(100vh - 230px);
+  padding: 48px 20px 60px;
+}
+
+.tile-menu-wrap {
+  width: 100%;
+  max-width: 920px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 30px;
+}
+
+// ---- Contextual header (only visible once drilled into a section) --------
+
+.tile-menu-header {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.tile-nav-btn {
+  width: 38px;
+  height: 38px;
+  flex: 0 0 auto;
+  border-radius: 12px;
+  border: 1px solid #e7ebf5;
+  background: #ffffff;
+  color: #3b4468;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 6px rgba(27, 42, 74, 0.06);
+  transition: all 0.18s ease;
+
+  i {
+    font-size: 1rem;
   }
 
-
-}
-.dashboard-layout {
-  height: 100vh;
-}
-
-.main-content {
-  padding: 20px;
-}
-.chart-wrapper {
-  width: 100%;
-  overflow-x: auto;
-  background-color: #f8f9fa;
-  padding: 16px;
-  border-radius: 12px;
-}
-
-ngx-charts-bar-vertical {
-  display: block;
-  width: 100%;
-}
-
-.card {
-  border-radius: 12px;
-}
-
-.card-header h4 {
-  font-weight: 600;
-}
-
-@media (max-width: 768px) {
-  .chart-wrapper {
-    padding: 8px;
+  &:hover {
+    background: #4f46e5;
+    border-color: #4f46e5;
+    color: #ffffff;
+    transform: translateY(-1px);
   }
 }
-.card {
-  border-radius: 12px;
-  overflow: hidden;
+
+.tile-breadcrumb {
+  font-size: 0.88rem;
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+
+  a {
+    color: #8791ab;
+    text-decoration: none;
+    font-weight: 500;
+
+    &:hover {
+      color: #4f46e5;
+      text-decoration: underline;
+    }
+
+    &.active {
+      color: #1e2749;
+      font-weight: 700;
+      pointer-events: none;
+    }
+  }
+
+  .crumb-sep {
+    margin: 0 6px;
+    font-size: 0.7rem;
+    color: #c3c9db;
+  }
 }
 
-.card-header {
-  font-weight: bold;
-  font-size: 1.2rem;
+// ---- State panels (loading / error / empty) -------------------------------
+
+.tile-state-panel {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 60px 0;
+  text-align: center;
+
+  .tile-state-icon {
+    font-size: 2.6rem;
+  }
 }
 
-ngx-charts-bar-vertical .data-label text {
-  fill: rgb(231, 20, 20);
-  font-weight: bold;
-  font-size: 13px;
-  background-color: red !important;
-}
-::ng-deep .data-label text {
-  fill: #000 !important;
-  /* Black text for better contrast */
-  font-size: 14px !important;
-  /* Bigger font */
-  font-weight: 600 !important;
-  /* Bold */
-}
+// ---- Tile grid --------------------------------------------------------
 
-
-.dashboard-page {
-  background-color: #f4f7fa;
-  /* Light gray background */
-  min-height: 100vh;
-  /* Full page height */
-  padding: 20px;
-}
-
-.dashboard-page {
-  background-color: #f4f7fa;
-  min-height: 100vh;
-  padding: 20px;
-}
-
-.card.custom-card {
-  background-color: #fff;
-  border-radius: 12px;
-  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
-  border: none;
-  color: #333;
-}
-
-.card-header {
-  background-color: #0056b3;
-  color: white;
-  font-weight: 700;
-  font-size: 1.25rem;
-  border-bottom: none;
-  border-radius: 12px 12px 0 0;
-}
-
-.card-body {
-  color: #444;
-}
-
-.card-title {
-  font-weight: 600;
-  color: #222;
-}
-.chart-container {
+.tile-grid {
   width: 100%;
-  height: 350px;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(168px, 200px));
+  justify-content: center;
+  gap: 24px;
+}
+
+@keyframes tileFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.tile-card {
   position: relative;
+  height: 184px;
+  border-radius: 24px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  padding: 18px 14px;
+  cursor: pointer;
+  text-align: center;
+  border: 1px solid rgba(255, 255, 255, 0.7);
+  box-shadow: 0 6px 18px rgba(30, 39, 73, 0.09);
+  transition: transform 0.24s cubic-bezier(.22, 1, .36, 1), box-shadow 0.24s ease;
+  outline: none;
+  animation: tileFadeIn 0.4s cubic-bezier(.22, 1, .36, 1) both;
+
+  &:hover,
+  &:focus-visible {
+    transform: translateY(-8px) scale(1.02);
+    box-shadow: 0 20px 34px rgba(30, 39, 73, 0.18);
+  }
+
+  &:active {
+    transform: translateY(-3px) scale(0.99);
+  }
 }
 
+.tile-icon-wrap {
+  width: 62px;
+  height: 62px;
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.92);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 10px rgba(30, 39, 73, 0.12);
+
+  i {
+    font-size: 1.65rem;
+  }
+}
+
+.tile-title {
+  font-weight: 700;
+  font-size: 0.96rem;
+  color: #1e2749;
+  line-height: 1.25;
+  word-break: break-word;
+}
+
+.tile-chevron {
+  position: absolute;
+  top: 14px;
+  right: 16px;
+  font-size: 0.85rem;
+  opacity: 0.75;
+}
+
+@media (max-width: 576px) {
+  .tile-menu-page {
+    padding: 30px 14px 40px;
+  }
+
+  .tile-grid {
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 16px;
+  }
+
+  .tile-card {
+    height: 150px;
+    border-radius: 20px;
+  }
+
+  .tile-icon-wrap {
+    width: 50px;
+    height: 50px;
+
+    i {
+      font-size: 1.3rem;
+    }
+  }
+
+  .tile-title {
+    font-size: 0.82rem;
+  }
+}

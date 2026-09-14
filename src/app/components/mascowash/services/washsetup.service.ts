@@ -815,6 +815,37 @@ getOrderWiseBalanceData(request: any) {
   );
 }
 
+/**
+ * Date Wise Machine Plan - grid data (Buyer through Qty/Remaining Qty
+ * columns), sourced from the Wash Order receive table and filtered by
+ * Work Order Receive Date. Backing SP not yet created - see
+ * RequirmentFile\Date wise Machine Plan\.
+ */
+getDateWiseMachinePlanGrid(request: any) {
+  return this.http.post<any[]>(
+    this.baseUrl_ + 'Setup/GetDateWiseMachinePlanGrid',
+    request,
+    {
+      headers: this.token.headerToken()
+    }
+  );
+}
+
+/**
+ * Date Wise Machine Plan - Save. Payload shape mirrors
+ * sp_SaveWashDateWiseMachinePlan's three table-valued parameters
+ * (@PlanData / @ProcessData / @MachineData), correlated by RowGuid.
+ */
+saveDateWiseMachinePlan(request: any) {
+  return this.http.post(
+    this.baseUrl_ + 'Setup/SaveDateWiseMachinePlan',
+    request,
+    {
+      headers: this.token.headerToken()
+    }
+  );
+}
+
 
 
 

@@ -84,6 +84,7 @@
       <table class="table table-bordered floor-table">
         <thead>
           <tr>
+            <th class="fth">Date</th>
             <th class="fth">Receive From</th>
             <th class="fth">Buyer</th>
             <th class="fth">Job</th>
@@ -91,18 +92,17 @@
             <th class="fth">Style</th>
             <th class="fth">Color</th>
             <th class="fth">Dress Part</th>
-            <th class="fth">GSM</th>
-            <th class="fth">Fabric Composition</th>
-            <th class="fth">Fabric Con per Dzn</th>
-            <th class="fth">Order Qty</th>
-            <th class="fth">Shipment Date</th>
-            <th class="fth">Receive Qty</th>
-            <th class="fth">Cum. Receive Qty</th>
-            <th class="fth">Delivery Qty</th>
-            <th class="fth">Cum. Delivery Qty</th>
-            <th class="fth">Approval / Trail</th>
-            <th class="fth">Balance Qty</th>
             <th class="fth">Wash Type</th>
+            <th class="fth">Fabric Composition</th>
+            <th class="fth">GSM</th>
+            <th class="fth">Fabric Con per Dzn</th>
+            <th class="fth">Order Qty (Pcs)</th>
+            <th class="fth">Shipment Date</th>
+            <th class="fth">Receive Qty (Pcs)</th>
+            <th class="fth">Cum. Receive Qty (Pcs)</th>
+            <th class="fth">Delivery Qty (Pcs)</th>
+            <th class="fth">Cum. Delivery Qty (Pcs)</th>
+            <th class="fth">Balance Qty (Pcs)</th>
           </tr>
         </thead>
         <tbody>
@@ -112,29 +112,57 @@
             </td>
           </tr>
           <ng-container *ngIf="!isLoading">
-            <tr *ngFor="let row of garmentFilteredRows; trackBy: trackByGarment">
-              <td class="ftd ftd-center">{{ row.receiveFrom }}</td>
-              <td class="ftd ftd-center">{{ row.buyer }}</td>
-              <td class="ftd ftd-center">{{ row.job }}</td>
-              <td class="ftd ftd-center">{{ row.orderNo }}</td>
-              <td class="ftd ftd-center">{{ row.style }}</td>
-              <td class="ftd ftd-center">{{ row.color }}</td>
-              <td class="ftd ftd-center">{{ row.dressPart }}</td>
-              <td class="ftd ftd-center">{{ row.gsm }}</td>
-              <td class="ftd ftd-center">{{ row.fabricComposition }}</td>
-              <td class="ftd ftd-center">{{ row.fabricConPerDzn }}</td>
-              <td class="ftd ftd-center ftd-semibold">{{ row.orderQty | number }}</td>
-              <td class="ftd ftd-center">{{ formatDate(row.shipmentDate) }}</td>
-              <td class="ftd ftd-center ftd-semibold">{{ row.receiveQty | number }}</td>
-              <td class="ftd ftd-center ftd-bold">{{ row.cumReceiveQty | number }}</td>
-              <td class="ftd ftd-center ftd-semibold">{{ row.deliveryQty | number }}</td>
-              <td class="ftd ftd-center ftd-bold">{{ row.cumDeliveryQty | number }}</td>
-              <td class="ftd ftd-center">{{ row.approvalTrail | number }}</td>
-              <td class="ftd ftd-center ftd-bold ftd-batch-count">{{ row.balanceQty | number }}</td>
-              <td class="ftd ftd-center">{{ row.washType }}</td>
-            </tr>
+            <ng-container *ngFor="let row of garmentFilteredRows; trackBy: trackByGarment">
+
+              <!-- Sub Total row: closes out a Buyer/Job/Order/Style/Color group -->
+              <tr *ngIf="row.isSubtotal" class="ftd-subtotal-row">
+                <td class="ftd ftd-center ftd-bold" colspan="12">Sub Total:</td>
+                <td class="ftd ftd-center ftd-bold">{{ fmtNum(row.orderQty) || '-' }}</td>
+                <td class="ftd ftd-center"></td>
+                <td class="ftd ftd-center"></td>
+                <td class="ftd ftd-center ftd-bold ftd-cumulative">{{ fmtNum(row.cumReceiveQty) || '-' }}</td>
+                <td class="ftd ftd-center"></td>
+                <td class="ftd ftd-center ftd-bold ftd-cumulative">{{ fmtNum(row.cumDeliveryQty) || '-' }}</td>
+                <td class="ftd ftd-center ftd-bold ftd-balance">{{ fmtNum(row.balanceQty) || '-' }}</td>
+              </tr>
+
+              <!-- Daily transaction row -->
+              <tr *ngIf="!row.isSubtotal">
+                <td class="ftd ftd-center">{{ formatDate(row.date) }}</td>
+                <td class="ftd ftd-center">{{ row.receiveFrom || '-' }}</td>
+                <td class="ftd ftd-center ftd-bold">{{ row.buyer || '-' }}</td>
+                <td class="ftd ftd-center ftd-bold">{{ row.job || '-' }}</td>
+                <td class="ftd ftd-center ftd-bold">{{ row.orderNo || '-' }}</td>
+                <td class="ftd ftd-center">{{ row.style || '-' }}</td>
+                <td class="ftd ftd-center">{{ row.color || '-' }}</td>
+                <td class="ftd ftd-center">{{ row.dressPart || '-' }}</td>
+                <td class="ftd ftd-center">{{ row.washType || '-' }}</td>
+                <td class="ftd ftd-center">{{ row.fabricComposition || '-' }}</td>
+                <td class="ftd ftd-center">{{ row.gsm || '-' }}</td>
+                <td class="ftd ftd-center">{{ row.fabricConPerDzn || '-' }}</td>
+                <td class="ftd ftd-center ftd-semibold">{{ fmtNum(row.orderQty) || '-' }}</td>
+                <td class="ftd ftd-center">{{ formatDate(row.shipmentDate) }}</td>
+                <td class="ftd ftd-center ftd-semibold">{{ fmtNum(row.receiveQty) || '-' }}</td>
+                <td class="ftd ftd-center ftd-bold ftd-cumulative">{{ fmtNum(row.cumReceiveQty) || '-' }}</td>
+                <td class="ftd ftd-center ftd-semibold">{{ fmtNum(row.deliveryQty) || '-' }}</td>
+                <td class="ftd ftd-center ftd-bold ftd-cumulative">{{ fmtNum(row.cumDeliveryQty) || '-' }}</td>
+                <td class="ftd ftd-center ftd-bold ftd-balance">{{ fmtNum(row.balanceQty) || '-' }}</td>
+              </tr>
+            </ng-container>
           </ng-container>
         </tbody>
+        <tfoot *ngIf="!isLoading && garmentGrandTotal">
+          <tr class="ftd-grandtotal-row">
+            <td class="ftd ftd-center ftd-bold" colspan="12">Grand Total:</td>
+            <td class="ftd ftd-center ftd-bold">{{ fmtNum(garmentGrandTotal.orderQty) || '-' }}</td>
+            <td class="ftd ftd-center"></td>
+            <td class="ftd ftd-center ftd-bold">{{ fmtNum(garmentGrandTotal.receiveQty) || '-' }}</td>
+            <td class="ftd ftd-center ftd-bold ftd-cumulative">{{ fmtNum(garmentGrandTotal.cumReceiveQty) || '-' }}</td>
+            <td class="ftd ftd-center ftd-bold">{{ fmtNum(garmentGrandTotal.deliveryQty) || '-' }}</td>
+            <td class="ftd ftd-center ftd-bold ftd-cumulative">{{ fmtNum(garmentGrandTotal.cumDeliveryQty) || '-' }}</td>
+            <td class="ftd ftd-center ftd-bold ftd-balance">{{ fmtNum(garmentGrandTotal.balanceQty) || '-' }}</td>
+          </tr>
+        </tfoot>
       </table>
 
       <div class="floor-empty-state" *ngIf="!isLoading && garmentFilteredRows.length === 0">
@@ -152,47 +180,95 @@
       <table class="table table-bordered floor-table">
         <thead>
           <tr>
+            <th class="fth">Date</th>
             <th class="fth">Receive From</th>
             <th class="fth">Buyer</th>
             <th class="fth">Job</th>
             <th class="fth">Order</th>
             <th class="fth">Style</th>
             <th class="fth">Color</th>
+            <th class="fth">Dress Part</th>
+            <th class="fth">Wash Type</th>
+            <th class="fth">Fabric Composition</th>
             <th class="fth">Batch/Lot</th>
+            <th class="fth">GSM</th>
             <th class="fth">Dia</th>
             <th class="fth">Order Qty (Kg)</th>
+            <th class="fth">Shipment Date</th>
             <th class="fth">Receive Roll</th>
-            <th class="fth">Calculated Qty (Kg)</th>
+            <th class="fth">Receive Qty (Kg)</th>
+            <th class="fth">Cum. Receive Qty (Kg)</th>
             <th class="fth">Delivery Roll</th>
-            <th class="fth">Calculated Delivery Qty (Kg)</th>
+            <th class="fth">Delivery Qty (Kg)</th>
+            <th class="fth">Cum. Delivery Qty (Kg)</th>
             <th class="fth">Balance Qty (Kg)</th>
           </tr>
         </thead>
         <tbody>
           <tr *ngIf="isLoading">
-            <td class="ftd ftd-center ftd-bold loading-cell" colspan="14">
+            <td class="ftd ftd-center ftd-bold loading-cell" colspan="22">
               <i class="fa fa-spinner fa-spin me-2"></i>Loading data...
             </td>
           </tr>
           <ng-container *ngIf="!isLoading">
-            <tr *ngFor="let row of fabricFilteredRows; trackBy: trackByFabric">
-              <td class="ftd ftd-center">{{ row.receiveFrom }}</td>
-              <td class="ftd ftd-center">{{ row.buyer }}</td>
-              <td class="ftd ftd-center">{{ row.job }}</td>
-              <td class="ftd ftd-center">{{ row.orderNo }}</td>
-              <td class="ftd ftd-center">{{ row.style }}</td>
-              <td class="ftd ftd-center">{{ row.color }}</td>
-              <td class="ftd ftd-center">{{ row.batchLot }}</td>
-              <td class="ftd ftd-center">{{ row.dia }}</td>
-              <td class="ftd ftd-center ftd-semibold">{{ row.orderQtyKg | number }}</td>
-              <td class="ftd ftd-center">{{ row.receiveRoll }}</td>
-              <td class="ftd ftd-center ftd-bold">{{ row.calculatedQtyKg | number }}</td>
-              <td class="ftd ftd-center">{{ row.deliveryRoll }}</td>
-              <td class="ftd ftd-center ftd-bold">{{ row.calculatedDeliveryQtyKg | number }}</td>
-              <td class="ftd ftd-center ftd-bold ftd-batch-count">{{ row.balanceQtyKg | number }}</td>
-            </tr>
+            <ng-container *ngFor="let row of fabricFilteredRows; trackBy: trackByFabric">
+
+              <!-- Sub Total row: closes out a Buyer/Job/Order/Style/Color group -->
+              <tr *ngIf="row.isSubtotal" class="ftd-subtotal-row">
+                <td class="ftd ftd-center ftd-bold" colspan="13">Sub Total:</td>
+                <td class="ftd ftd-center ftd-bold">{{ fmtNum(row.orderQtyKg) || '-' }}</td>
+                <td class="ftd ftd-center"></td>
+                <td class="ftd ftd-center"></td>
+                <td class="ftd ftd-center"></td>
+                <td class="ftd ftd-center ftd-bold ftd-cumulative">{{ fmtNum(row.cumReceiveQtyKg) || '-' }}</td>
+                <td class="ftd ftd-center"></td>
+                <td class="ftd ftd-center"></td>
+                <td class="ftd ftd-center ftd-bold ftd-cumulative">{{ fmtNum(row.cumDeliveryQtyKg) || '-' }}</td>
+                <td class="ftd ftd-center ftd-bold ftd-balance">{{ fmtNum(row.balanceQtyKg) || '-' }}</td>
+              </tr>
+
+              <!-- Daily transaction row -->
+              <tr *ngIf="!row.isSubtotal">
+                <td class="ftd ftd-center">{{ formatDate(row.date) }}</td>
+                <td class="ftd ftd-center">{{ row.receiveFrom || '-' }}</td>
+                <td class="ftd ftd-center ftd-bold">{{ row.buyer || '-' }}</td>
+                <td class="ftd ftd-center ftd-bold">{{ row.job || '-' }}</td>
+                <td class="ftd ftd-center ftd-bold">{{ row.orderNo || '-' }}</td>
+                <td class="ftd ftd-center">{{ row.style || '-' }}</td>
+                <td class="ftd ftd-center">{{ row.color || '-' }}</td>
+                <td class="ftd ftd-center">{{ row.dressPart || '-' }}</td>
+                <td class="ftd ftd-center">{{ row.washType || '-' }}</td>
+                <td class="ftd ftd-center">{{ row.fabricComposition || '-' }}</td>
+                <td class="ftd ftd-center">{{ row.batchLot || '-' }}</td>
+                <td class="ftd ftd-center">{{ row.gsm || '-' }}</td>
+                <td class="ftd ftd-center">{{ row.dia ?? '-' }}</td>
+                <td class="ftd ftd-center ftd-semibold">{{ fmtNum(row.orderQtyKg) || '-' }}</td>
+                <td class="ftd ftd-center">{{ formatDate(row.shipmentDate) }}</td>
+                <td class="ftd ftd-center">{{ row.receiveRoll | number:'1.0-0' }}</td>
+                <td class="ftd ftd-center ftd-semibold">{{ fmtNum(row.receiveQtyKg) || '-' }}</td>
+                <td class="ftd ftd-center ftd-bold ftd-cumulative">{{ fmtNum(row.cumReceiveQtyKg) || '-' }}</td>
+                <td class="ftd ftd-center">{{ row.deliveryRoll | number:'1.0-0' }}</td>
+                <td class="ftd ftd-center ftd-semibold">{{ fmtNum(row.deliveryQtyKg) || '-' }}</td>
+                <td class="ftd ftd-center ftd-bold ftd-cumulative">{{ fmtNum(row.cumDeliveryQtyKg) || '-' }}</td>
+                <td class="ftd ftd-center ftd-bold ftd-balance">{{ fmtNum(row.balanceQtyKg) || '-' }}</td>
+              </tr>
+            </ng-container>
           </ng-container>
         </tbody>
+        <tfoot *ngIf="!isLoading && fabricGrandTotal">
+          <tr class="ftd-grandtotal-row">
+            <td class="ftd ftd-center ftd-bold" colspan="13">Grand Total:</td>
+            <td class="ftd ftd-center ftd-bold">{{ fmtNum(fabricGrandTotal.orderQtyKg) || '-' }}</td>
+            <td class="ftd ftd-center"></td>
+            <td class="ftd ftd-center"></td>
+            <td class="ftd ftd-center ftd-bold">{{ fmtNum(fabricGrandTotal.receiveQtyKg) || '-' }}</td>
+            <td class="ftd ftd-center ftd-bold ftd-cumulative">{{ fmtNum(fabricGrandTotal.cumReceiveQtyKg) || '-' }}</td>
+            <td class="ftd ftd-center"></td>
+            <td class="ftd ftd-center ftd-bold">{{ fmtNum(fabricGrandTotal.deliveryQtyKg) || '-' }}</td>
+            <td class="ftd ftd-center ftd-bold ftd-cumulative">{{ fmtNum(fabricGrandTotal.cumDeliveryQtyKg) || '-' }}</td>
+            <td class="ftd ftd-center ftd-bold ftd-balance">{{ fmtNum(fabricGrandTotal.balanceQtyKg) || '-' }}</td>
+          </tr>
+        </tfoot>
       </table>
 
       <div class="floor-empty-state" *ngIf="!isLoading && fabricFilteredRows.length === 0">

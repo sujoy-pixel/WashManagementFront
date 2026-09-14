@@ -1,164 +1,188 @@
-import { Component, OnInit, ViewChild, AfterViewInit,HostListener } from '@angular/core';
-import {MatPaginator} from '@angular/material/paginator';
-import {MatSort} from '@angular/material/sort';
-import {MatTableDataSource} from '@angular/material/table';
-import { ApexRandomData } from 'src/app/shared/data/dashboard/dashboardData';
-import { ChartOptions, ChartType, ChartData, ChartDataset } from 'chart.js';
-import ChartDataLabels from 'chartjs-plugin-datalabels';
-import { Chart, registerables } from 'chart.js';
-import { WashSetupService } from 'src/app/components/mascowash/services/washsetup.service';
-Chart.register(...registerables, ChartDataLabels);
+import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
+import { MenuService } from 'src/app/shared/services/menu.service';
+import { AuthService } from 'src/app/shared/services/firebase/auth.service';
+
+export interface TileMenuNode {
+  id: number;
+  title: string;
+  path?: string;
+  icon: string;
+  gradient: string;
+  accent: string;
+  children: TileMenuNode[];
+}
+
 @Component({
   selector: 'app-dashboard',
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.scss']
 })
-export class DashboardComponent {
-  DashboardArrayList: any = [];
-  currentYear: any;
-  _TotalMasterLC = 0;
-  _TotalB2BLC = 0;
-  _labelsListMasterLC: any = [];
-  _labelsListB2BLC: any = [];
- 
+export class DashboardComponent implements OnInit {
+
+  // Tile (flat) menu state
+  loadingMenu = true;
+  menuLoadError = false;
+  rootTiles: TileMenuNode[] = [];
+  currentTiles: TileMenuNode[] = [];
+  breadcrumbTrail: TileMenuNode[] = [];
+
+  // Icon keyword map -> feather icon class (used across the rest of the app: "fe fe-xxx")
+  private iconMap: { keys: string[]; icon: string }[] = [
+    { keys: ['social'], icon: 'users' },
+    { keys: ['environment'], icon: 'globe' },
+    { keys: ['material'], icon: 'package' },
+    { keys: ['dashboard', 'report', 'summary'], icon: 'bar-chart-2' },
+    { keys: ['entry', 'data entry', 'add'], icon: 'edit-3' },
+    { keys: ['marking'], icon: 'tag' },
+    { keys: ['bsci'], icon: 'shield' },
+    { keys: ['leed'], icon: 'award' },
+    { keys: ['sedex'], icon: 'check-circle' },
+    { keys: ['ics'], icon: 'clipboard' },
+    { keys: ['betterwork', 'better work'], icon: 'briefcase' },
+    { keys: ['setup', 'settings', 'configuration'], icon: 'settings' },
+    { keys: ['user', 'admin', 'role'], icon: 'user' },
+    { keys: ['wash'], icon: 'droplet' },
+    { keys: ['machine', 'plan'], icon: 'cpu' },
+    { keys: ['order'], icon: 'shopping-bag' },
+    { keys: ['rejection', 'reject'], icon: 'alert-triangle' },
+    { keys: ['balance'], icon: 'trending-up' },
+    { keys: ['invoice', 'lc'], icon: 'file-text' },
+  ];
+
+  // A modern, professional palette: each entry pairs a soft pastel background
+  // with a punchy accent color for the icon, so every tile reads as distinct
+  // yet part of one cohesive, elegant set.
+  private palette: { gradient: string; accent: string }[] = [
+    { gradient: 'linear-gradient(145deg, #eef2ff 0%, #e0e7ff 100%)', accent: '#4f46e5' }, // indigo
+    { gradient: 'linear-gradient(145deg, #ecfeff 0%, #cffafe 100%)', accent: '#0891b2' }, // cyan
+    { gradient: 'linear-gradient(145deg, #fff7ed 0%, #ffedd5 100%)', accent: '#ea580c' }, // orange
+    { gradient: 'linear-gradient(145deg, #ecfdf5 0%, #d1fae5 100%)', accent: '#059669' }, // emerald
+    { gradient: 'linear-gradient(145deg, #fdf2f8 0%, #fce7f3 100%)', accent: '#db2777' }, // pink
+    { gradient: 'linear-gradient(145deg, #f5f3ff 0%, #ede9fe 100%)', accent: '#7c3aed' }, // violet
+    { gradient: 'linear-gradient(145deg, #eff6ff 0%, #dbeafe 100%)', accent: '#2563eb' }, // blue
+    { gradient: 'linear-gradient(145deg, #fefce8 0%, #fef9c3 100%)', accent: '#ca8a04' }, // amber
+  ];
+
   constructor(
-    private service: WashSetupService) { }
-  
-  ngOnInit() {
-    this.LoadDashboardData();
+    private menuService: MenuService,
+    private authService: AuthService,
+    private router: Router
+  ) { }
+
+  ngOnInit(): void {
+    this.loadTileMenu();
   }
-  public barChartDataMaster: ChartData<'bar'> = {
-    labels: [],       // empty array of labels initially
-    datasets: []      // empty datasets initially
-  };
-  public barChartDataB2B: ChartData<'bar'> = {
-    labels: [],       // empty array of labels initially
-    datasets: []      // empty datasets initially
-  };
 
-  LoadDashboardData() {
-    this.DashboardArrayList = [];
-
-    // this.service.GetDashboardData().subscribe(
-    //   (data: any) => {
-    //     console.log('Dashboard List', data);
-    //     if (data._LMasterLC && data._LMasterLC.length > 0) {
-    //       this.currentYear = (data._LMasterLC[0].currentYear);
-    //       this._TotalMasterLC = 0;
-    //       this._TotalB2BLC = 0;
-    //       this._labelsListMasterLC = [];
-    //       this._labelsListB2BLC = [];
-    //       for (var i = 0; i < data._LMasterLC.length; i++)
-    //       {
-    //         this._TotalMasterLC += parseInt(data._LMasterLC[i].totalFileNo);
-    //         this._labelsListMasterLC.push(data._LMasterLC[i].monthName)
-    //       }
-    //       for (var i = 0; i < data._LB2BLC.length; i++)
-    //         {
-    //         this._TotalB2BLC += parseInt(data._LB2BLC[i].totalFileNo);
-    //         this._labelsListB2BLC.push(data._LB2BLC[i].monthName);
-    //       }
-
-    //       //=========================Master LC Chart=============
-         
-    //       const labelsMasterLC: string[] = [];
-    //       const dataSetMasterLC: number[] = [];
-          
-         
-    //       data._LMasterLC.forEach((item: any) => {
-
-    //         labelsMasterLC.push(item.monthName);
-    //         dataSetMasterLC.push(item.totalFileNo);
-
-    //       });
-    //       const backgroundColors = dataSetMasterLC.map(() =>
-    //         `hsl(${Math.floor(Math.random() * 360)}, 70%, 60%)`
-    //       );
-    //       this.barChartDataMaster= {
-    //         labels: labelsMasterLC,
-    //         datasets: [
-    //           {
-    //             data: dataSetMasterLC,
-    //             backgroundColor: backgroundColors,
-    //             borderRadius: 8,
-    //           },
-    //         ],
-    //       };
-    //        //=========================B2B LC Chart=============
-         
-    //        const labelsB2BLC: string[] = [];
-    //        const dataSetB2BLC: number[] = [];
-           
-          
-    //        data._LB2BLC.forEach((item: any) => {
- 
-    //         labelsB2BLC.push(item.monthName);
-    //         dataSetB2BLC.push(item.totalFileNo);
- 
-    //        });
-    //        const backgroundColorsB2B = dataSetB2BLC.map(() =>
-    //          `hsl(${Math.floor(Math.random() * 360)}, 70%, 60%)`
-    //        );
-    //        this.barChartDataB2B= {
-    //          labels: labelsB2BLC,
-    //          datasets: [
-    //            {
-    //              data: dataSetB2BLC,
-    //              backgroundColor: backgroundColorsB2B,
-    //              borderRadius: 8,
-    //            },
-    //          ],
-    //        };
-        
-    //      // console.log("Label",this.labels);
-    //     } else {
-    //       alert('No data found in _LMasterLC');
-    //     }
-    //   },
-    //   (error) => {}
-    // );
+  get isAtRoot(): boolean {
+    return this.breadcrumbTrail.length === 0;
   }
-  
 
-  public barChartType: ChartType = 'bar';
+  get sectionTitle(): string {
+    return this.breadcrumbTrail.length
+      ? this.breadcrumbTrail[this.breadcrumbTrail.length - 1].title
+      : '';
+  }
 
-  public ChartDataLabels = ChartDataLabels;
+  loadTileMenu(): void {
+    this.loadingMenu = true;
+    this.menuLoadError = false;
 
-  
-  
-  public barChartOptions: ChartOptions = {
-    responsive: true,
-    maintainAspectRatio: false,
-    plugins: {
-      legend: { display: false },
-      datalabels: {
-        anchor: 'end',
-        align: 'end',
-        color: '#444',
-        font: {
-          weight: 'bold',
-          size: 14,
-        },
+    let userId: any = this.authService.decodedToken?.nameid;
+    if (!userId) {
+      userId = localStorage.getItem('user_create_id');
+    }
+
+    this.menuService.GetMenusByUserId(userId).subscribe(
+      (res: any) => {
+        this.loadingMenu = false;
+        const flatList = res || [];
+        this.rootTiles = this.buildTileTree(flatList);
+        this.currentTiles = this.rootTiles;
+        this.breadcrumbTrail = [];
       },
-      tooltip: {
-        enabled: true,
-      },
-    },
-    scales: {
-      x: {},
-      y: {
-        beginAtZero: true,
-        title: {
-          display: true,
-          text: 'Quantity',
-        }
+      () => {
+        this.loadingMenu = false;
+        this.menuLoadError = true;
+      }
+    );
+  }
+
+  private buildTileTree(flatList: any[]): TileMenuNode[] {
+    let colorIndex = 0;
+
+    const mapNode = (item: any): TileMenuNode => {
+      const colors = this.palette[colorIndex % this.palette.length];
+      const node: TileMenuNode = {
+        id: item.menu_Id,
+        title: item.menu_Name,
+        path: item.page_link,
+        icon: this.resolveIcon(item.menu_Name),
+        gradient: colors.gradient,
+        accent: colors.accent,
+        children: []
+      };
+      colorIndex++;
+      return node;
+    };
+
+    const nodesById: { [id: number]: TileMenuNode } = {};
+    flatList.forEach((item: any) => {
+      nodesById[item.menu_Id] = mapNode(item);
+    });
+
+    const roots: TileMenuNode[] = [];
+    flatList.forEach((item: any) => {
+      const node = nodesById[item.menu_Id];
+      const parentId = item.parent_Menu_Id;
+      if (parentId && parentId !== 0 && nodesById[parentId]) {
+        nodesById[parentId].children.push(node);
+      } else {
+        roots.push(node);
+      }
+    });
+
+    return roots;
+  }
+
+  private resolveIcon(title: string): string {
+    const lowerTitle = (title || '').toLowerCase();
+    for (const entry of this.iconMap) {
+      if (entry.keys.some(k => lowerTitle.includes(k))) {
+        return entry.icon;
       }
     }
-  };
- 
+    return 'grid';
+  }
+
+  openTile(node: TileMenuNode): void {
+    if (node.children && node.children.length > 0) {
+      this.breadcrumbTrail.push(node);
+      this.currentTiles = node.children;
+      return;
+    }
+    if (node.path) {
+      this.router.navigate([node.path]);
+    }
+  }
+
+  goHome(): void {
+    this.breadcrumbTrail = [];
+    this.currentTiles = this.rootTiles;
+  }
+
+  goToCrumb(index: number): void {
+    this.breadcrumbTrail = this.breadcrumbTrail.slice(0, index + 1);
+    this.currentTiles = this.breadcrumbTrail[index].children;
+  }
+
+  goBack(): void {
+    if (this.breadcrumbTrail.length === 0) {
+      return;
+    }
+    this.breadcrumbTrail.pop();
+    this.currentTiles = this.breadcrumbTrail.length
+      ? this.breadcrumbTrail[this.breadcrumbTrail.length - 1].children
+      : this.rootTiles;
+  }
 }
-
-
-  
-
-
