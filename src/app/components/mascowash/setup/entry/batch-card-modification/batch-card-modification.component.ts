@@ -47,6 +47,7 @@ interface WashBatchRow {
 
   type:         string;
   shade:        any;
+  reWash:       any;
 
   // ✅ SP returns MasterTotalPcs / MasterTotalKg
   totalPcs:     number;
@@ -336,6 +337,7 @@ debugger;
 
           type:        r.type        ?? r.Type        ?? '',
           shade:       r.shade       ?? r.Shade       ?? false,
+          reWash:      r.reWash      ?? r.ReWash      ?? false,
 
           // ✅ SP column names: MasterTotalPcs / MasterTotalKg
           totalPcs:    r.masterTotalPcs ?? r.MasterTotalPcs ?? r.totalPcs ?? r.TotalPcs ?? 0,
@@ -718,7 +720,8 @@ openPrepareTab(row: WashBatchRow): void {
     gsm:          row.gsm             ?? '',
     type:         row.type            ?? '',
     shade:        row.shade,
-    date:         new Date().toISOString().split('T')[0],  
+    reWash:       row.reWash,
+    date:         new Date().toISOString().split('T')[0],
 
     // ===== TRACKING =====
     trackingNo:   row.trackingNo      ?? '',

@@ -45,10 +45,13 @@
            [style.animation-delay.ms]="i * 45"
            (click)="openTile(tile)" tabindex="0"
            (keyup.enter)="openTile(tile)" role="button">
-        <div class="tile-icon-wrap" [style.color]="tile.accent">
-          <i class="fe fe-{{ tile.icon }}"></i>
+        <span class="tile-top-accent"></span>
+        <div class="tile-content">
+          <div class="tile-icon-wrap" [style.color]="tile.accent">
+            <i class="fe fe-{{ tile.icon }}"></i>
+          </div>
+          <div class="tile-title">{{ tile.title }}</div>
         </div>
-        <div class="tile-title">{{ tile.title }}</div>
         <div class="tile-chevron" *ngIf="tile.children?.length" [style.color]="tile.accent">
           <i class="fe fe-chevron-right"></i>
         </div>

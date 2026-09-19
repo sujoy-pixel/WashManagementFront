@@ -50,6 +50,14 @@ export class DashboardComponent implements OnInit {
     { keys: ['invoice', 'lc'], icon: 'file-text' },
   ];
 
+  // Menu titles that must never appear as a tile on this flat menu, even
+  // though they still exist (and still work) in the regular left sidebar.
+  // Matched case/space-insensitively so "Setup Pages", "setup  pages", etc.
+  // are all caught.
+  private hiddenTitles: string[] = [
+    'setup pages'
+  ];
+
   // A modern, professional palette: each entry pairs a soft pastel background
   // with a punchy accent color for the icon, so every tile reads as distinct
   // yet part of one cohesive, elegant set.
@@ -142,7 +150,21 @@ export class DashboardComponent implements OnInit {
       }
     });
 
-    return roots;
+    return this.filterHiddenNodes(roots);
+  }
+
+  // Removes any tile (at any depth) whose title is on the hidden list.
+  // Purely a display filter for this tile menu - it does not touch the
+  // underlying menu/permission data used by the left sidebar.
+  private filterHiddenNodes(nodes: TileMenuNode[]): TileMenuNode[] {
+    return nodes
+      .filter(n => !this.isHiddenTitle(n.title))
+      .map(n => ({ ...n, children: this.filterHiddenNodes(n.children) }));
+  }
+
+  private isHiddenTitle(title: string): boolean {
+    const normalized = (title || '').trim().toLowerCase().replace(/\s+/g, ' ');
+    return this.hiddenTitles.includes(normalized);
   }
 
   private resolveIcon(title: string): string {

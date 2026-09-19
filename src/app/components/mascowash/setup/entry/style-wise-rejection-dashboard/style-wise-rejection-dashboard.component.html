@@ -132,7 +132,7 @@
             <!-- Subtotal Row: colspan = textColumnCount (9 text columns only),
                  followed by the 6 metric cells, matching the standard row layout exactly -->
             <tr *ngIf="row.isSubTotal" class="subtotal-row">
-              <td [attr.colspan]="textColumnCount" class="ftd text-end ftd-bold">Sub Total:</td>
+              <td [attr.colspan]="textColumnCount" class="ftd text-end ftd-bold">{{ row.subTotalLabel || 'Sub Total:' }}</td>
               <td class="ftd ftd-center ftd-bold">{{ row.receiveQty | number }}</td>
               <td class="ftd ftd-center ftd-bold">{{ row.uom }}</td>
               <td class="ftd ftd-center ftd-bold">{{ row.noOfBatch }}</td>

@@ -14,7 +14,7 @@
 
 .tile-menu-wrap {
   width: 100%;
-  max-width: 920px;
+  max-width: 1080px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -103,13 +103,15 @@
 }
 
 // ---- Tile grid --------------------------------------------------------
+// Wide, horizontal "pill" cards: icon left, label right, a crisp accent
+// bar tracing the top edge — the flat, board-room-ready look.
 
 .tile-grid {
   width: 100%;
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(168px, 200px));
+  grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
   justify-content: center;
-  gap: 24px;
+  gap: 26px 24px;
 }
 
 @keyframes tileFadeIn {
@@ -126,62 +128,82 @@
 
 .tile-card {
   position: relative;
-  height: 184px;
-  border-radius: 24px;
+  min-height: 96px;
+  border-radius: 16px;
   display: flex;
-  flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 14px;
-  padding: 18px 14px;
+  padding: 20px 26px;
   cursor: pointer;
-  text-align: center;
-  border: 1px solid rgba(255, 255, 255, 0.7);
-  box-shadow: 0 6px 18px rgba(30, 39, 73, 0.09);
-  transition: transform 0.24s cubic-bezier(.22, 1, .36, 1), box-shadow 0.24s ease;
+  border: 1px solid rgba(255, 255, 255, 0.75);
+  box-shadow: 0 5px 16px rgba(30, 39, 73, 0.08);
+  transition: transform 0.22s cubic-bezier(.22, 1, .36, 1), box-shadow 0.22s ease;
   outline: none;
+  overflow: hidden;
   animation: tileFadeIn 0.4s cubic-bezier(.22, 1, .36, 1) both;
 
   &:hover,
   &:focus-visible {
-    transform: translateY(-8px) scale(1.02);
-    box-shadow: 0 20px 34px rgba(30, 39, 73, 0.18);
+    transform: translateY(-5px);
+    box-shadow: 0 16px 28px rgba(30, 39, 73, 0.16);
   }
 
   &:active {
-    transform: translateY(-3px) scale(0.99);
+    transform: translateY(-1px);
   }
 }
 
+// Thin dark-navy accent tracing the top edge, echoing the card's own
+// rounded corners — the signature "flat menu" detail.
+.tile-top-accent {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  border-radius: 16px 16px 0 0;
+  background: linear-gradient(90deg, #0b1f4d 0%, #1e3a7a 100%);
+}
+
+.tile-content {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  min-width: 0;
+}
+
 .tile-icon-wrap {
-  width: 62px;
-  height: 62px;
-  border-radius: 18px;
-  background: rgba(255, 255, 255, 0.92);
+  flex: 0 0 auto;
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.95);
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 4px 10px rgba(30, 39, 73, 0.12);
+  box-shadow: 0 3px 8px rgba(30, 39, 73, 0.14);
 
   i {
-    font-size: 1.65rem;
+    font-size: 1.3rem;
   }
 }
 
 .tile-title {
   font-weight: 700;
-  font-size: 0.96rem;
-  color: #1e2749;
+  font-size: 1.02rem;
+  color: #14224a;
   line-height: 1.25;
-  word-break: break-word;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .tile-chevron {
   position: absolute;
-  top: 14px;
-  right: 16px;
+  top: 16px;
+  right: 18px;
   font-size: 0.85rem;
-  opacity: 0.75;
+  opacity: 0.7;
 }
 
 @media (max-width: 576px) {
@@ -190,25 +212,30 @@
   }
 
   .tile-grid {
-    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    grid-template-columns: 1fr;
     gap: 16px;
   }
 
   .tile-card {
-    height: 150px;
-    border-radius: 20px;
+    min-height: 84px;
+    padding: 16px 20px;
+    border-radius: 14px;
+  }
+
+  .tile-top-accent {
+    border-radius: 14px 14px 0 0;
   }
 
   .tile-icon-wrap {
-    width: 50px;
-    height: 50px;
+    width: 40px;
+    height: 40px;
 
     i {
-      font-size: 1.3rem;
+      font-size: 1.1rem;
     }
   }
 
   .tile-title {
-    font-size: 0.82rem;
+    font-size: 0.92rem;
   }
 }

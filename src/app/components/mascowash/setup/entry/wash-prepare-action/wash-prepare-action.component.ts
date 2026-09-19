@@ -21,7 +21,8 @@ export class WashPrepareActionComponent implements OnInit {
   Model: any = {
     processList: [],
     machineList: [],
-    shade: true
+    shade: true,
+    reWash: false
   };
 
   processList: any[] = [];
@@ -266,6 +267,9 @@ export class WashPrepareActionComponent implements OnInit {
     /* ===== SHADE ===== */
     this.Model.shade = data.shade === 1 || data.shade === true || data.shade === '1';
 
+    /* ===== RE-WASH ===== */
+    this.Model.reWash = data.reWash === 1 || data.reWash === true || data.reWash === '1';
+
     /* ===== SAVE / UPDATE ===== */
     this.saveButtonTitle = this.batch.AutoBatchNo?.trim() ? 'Update' : 'Save';
 
@@ -423,7 +427,7 @@ if (this.saveButtonTitle === 'Update') {
 
   /* ===================== CLEAR ALL ===================== */
   clearAll(): void {
-    this.Model = { processList: [], machineList: [], shade: true };
+    this.Model = { processList: [], machineList: [], shade: true, reWash: false };
 
     this.batch = {
       buyer: '', jobNo: '', styleNo: '', orderNo: '', process: '',
@@ -503,7 +507,8 @@ if (this.saveButtonTitle === 'Update') {
       totalPcs:      safeTotalPcs,
       totalKg:       safeTotalKg,
       IsManualTotal: !!this.isTotalEditable,
-      shade:         this.Model.shade ? 1 : 0
+      shade:         this.Model.shade ? 1 : 0,
+      reWash:        this.Model.reWash ? 1 : 0
     };
 
     /* ===== SIZE DETAILS ===== */

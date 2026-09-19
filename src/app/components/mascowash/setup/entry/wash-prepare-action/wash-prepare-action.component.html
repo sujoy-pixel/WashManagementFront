@@ -49,6 +49,12 @@
                 {{ batch.AutoBatchNo }}
               </td>
             </tr>
+            <tr>
+              <th>Re-wash</th>
+              <td>
+                <input type="checkbox" [(ngModel)]="Model.reWash" [ngModelOptions]="{standalone: true}" />
+              </td>
+            </tr>
           </table>
           <table class="table info-table text-center mt-3">
             <thead>
