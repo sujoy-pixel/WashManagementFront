@@ -115,9 +115,10 @@ export class DateWiseBalanceDashboardComponent implements OnInit {
    * Grand Total footer figures - summed ONCE per Buyer/Job/Order/Style/Color
    * group (using each group's FINAL/last-date row), never across every daily
    * row, otherwise OrderQty (constant per group) and BalanceQty (a running
-   * snapshot) would be wildly overcounted. Always reflects the full loaded
-   * dataset (this.garmentRows / this.fabricRows), independent of global
-   * search filtering, so the footer doesn't disappear/shrink while searching.
+   * snapshot) would be wildly overcounted. Recomputed on top of whatever the
+   * global search currently matches (see onGlobalSearch), so - like the Sub
+   * Total rows - it updates dynamically as the user types/clears the filter,
+   * and falls back to the full dataset when the search box is empty.
    */
   garmentGrandTotal: { orderQty: number; receiveQty: number; cumReceiveQty: number; deliveryQty: number; cumDeliveryQty: number; balanceQty: number } | null = null;
   fabricGrandTotal: { orderQtyKg: number; receiveQtyKg: number; cumReceiveQtyKg: number; deliveryQtyKg: number; cumDeliveryQtyKg: number; balanceQtyKg: number } | null = null;
@@ -444,58 +445,136 @@ export class DateWiseBalanceDashboardComponent implements OnInit {
    * no searchable text of their own, so they're dropped while a term is
    * active and re-inserted once the search is cleared.
    */
+  // onGlobalSearch(): void {
+  //   const term = this.globalSearch?.trim()?.toLowerCase() ?? '';
+
+  //   if (term.length) {
+  //     if (this.viewType === 1) {
+  //       this.garmentFilteredRows = this.garmentRows.filter(r => {
+  //         return (
+  //           this.matches(r.receiveFrom, term) ||
+  //           this.matches(r.buyer, term) ||
+  //           this.matches(r.job, term) ||
+  //           this.matches(r.orderNo, term) ||
+  //           this.matches(r.style, term) ||
+  //           this.matches(r.color, term) ||
+  //           this.matches(r.dressPart, term) ||
+  //           this.matches(r.washType, term) ||
+  //           this.matchesNumber(r.orderQty, term) ||
+  //           this.matchesNumber(r.receiveQty, term) ||
+  //           this.matchesNumber(r.cumReceiveQty, term) ||
+  //           this.matchesNumber(r.deliveryQty, term) ||
+  //           this.matchesNumber(r.cumDeliveryQty, term) ||
+  //           this.matchesNumber(r.balanceQty, term)
+  //         );
+  //       });
+  //     } else {
+  //       this.fabricFilteredRows = this.fabricRows.filter(r => {
+  //         return (
+  //           this.matches(r.receiveFrom, term) ||
+  //           this.matches(r.buyer, term) ||
+  //           this.matches(r.job, term) ||
+  //           this.matches(r.orderNo, term) ||
+  //           this.matches(r.style, term) ||
+  //           this.matches(r.color, term) ||
+  //           this.matches(r.batchLot, term) ||
+  //           this.matchesNumber(r.dia, term) ||
+  //           this.matchesNumber(r.orderQtyKg, term) ||
+  //           this.matchesNumber(r.receiveRoll, term) ||
+  //           this.matchesNumber(r.cumReceiveQtyKg, term) ||
+  //           this.matchesNumber(r.deliveryRoll, term) ||
+  //           this.matchesNumber(r.cumDeliveryQtyKg, term) ||
+  //           this.matchesNumber(r.balanceQtyKg, term)
+  //         );
+  //       });
+  //     }
+  //   } else {
+  //     if (this.viewType === 1) {
+  //       this.garmentFilteredRows = this.insertGarmentSubtotals(this.garmentRows);
+  //     } else {
+  //       this.fabricFilteredRows = this.insertFabricSubtotals(this.fabricRows);
+  //     }
+  //   }
+  // }
+  /**
+   * Global search filters the raw (per-Date) rows, then RE-BUILDS the Sub Total
+   * rows AND the Grand Total over whatever survived the filter - so searching
+   * by Style/Color (or anything else) still shows each visible group's Sub
+   * Total line, and the footer's Grand Total shrinks/grows to match exactly
+   * what's on screen. Clearing the search restores both to the full dataset.
+   * When a term matches only part of a group (e.g. searching a daily qty), that
+   * group's Sub Total reflects the LAST VISIBLE date, not the group's true final
+   * date. Group-level fields (Buyer/Job/Order/Style/Color) always match all rows
+   * of a group, so those searches give exact group totals.
+   */
   onGlobalSearch(): void {
     const term = this.globalSearch?.trim()?.toLowerCase() ?? '';
 
-    if (term.length) {
-      if (this.viewType === 1) {
-        this.garmentFilteredRows = this.garmentRows.filter(r => {
-          return (
-            this.matches(r.receiveFrom, term) ||
-            this.matches(r.buyer, term) ||
-            this.matches(r.job, term) ||
-            this.matches(r.orderNo, term) ||
-            this.matches(r.style, term) ||
-            this.matches(r.color, term) ||
-            this.matches(r.dressPart, term) ||
-            this.matches(r.washType, term) ||
-            this.matchesNumber(r.orderQty, term) ||
-            this.matchesNumber(r.receiveQty, term) ||
-            this.matchesNumber(r.cumReceiveQty, term) ||
-            this.matchesNumber(r.deliveryQty, term) ||
-            this.matchesNumber(r.cumDeliveryQty, term) ||
-            this.matchesNumber(r.balanceQty, term)
-          );
-        });
-      } else {
-        this.fabricFilteredRows = this.fabricRows.filter(r => {
-          return (
-            this.matches(r.receiveFrom, term) ||
-            this.matches(r.buyer, term) ||
-            this.matches(r.job, term) ||
-            this.matches(r.orderNo, term) ||
-            this.matches(r.style, term) ||
-            this.matches(r.color, term) ||
-            this.matches(r.batchLot, term) ||
-            this.matchesNumber(r.dia, term) ||
-            this.matchesNumber(r.orderQtyKg, term) ||
-            this.matchesNumber(r.receiveRoll, term) ||
-            this.matchesNumber(r.cumReceiveQtyKg, term) ||
-            this.matchesNumber(r.deliveryRoll, term) ||
-            this.matchesNumber(r.cumDeliveryQtyKg, term) ||
-            this.matchesNumber(r.balanceQtyKg, term)
-          );
-        });
-      }
+    if (this.viewType === 1) {
+      const matched = term.length
+        ? this.garmentRows.filter(r => this.garmentMatches(r, term))
+        : this.garmentRows;
+      this.garmentFilteredRows = this.insertGarmentSubtotals(matched);
+      this.garmentGrandTotal = matched.length ? this.computeGarmentGrandTotal(matched) : null;
     } else {
-      if (this.viewType === 1) {
-        this.garmentFilteredRows = this.insertGarmentSubtotals(this.garmentRows);
-      } else {
-        this.fabricFilteredRows = this.insertFabricSubtotals(this.fabricRows);
-      }
+      const matched = term.length
+        ? this.fabricRows.filter(r => this.fabricMatches(r, term))
+        : this.fabricRows;
+      this.fabricFilteredRows = this.insertFabricSubtotals(matched);
+      this.fabricGrandTotal = matched.length ? this.computeFabricGrandTotal(matched) : null;
     }
   }
 
+  private garmentMatches(r: GarmentRow, term: string): boolean {
+    return (
+      this.matches(r.receiveFrom, term) ||
+      this.matches(r.buyer, term) ||
+      this.matches(r.job, term) ||
+      this.matches(r.orderNo, term) ||
+      this.matches(r.style, term) ||
+      this.matches(r.color, term) ||
+      this.matches(r.dressPart, term) ||
+      this.matches(r.washType, term) ||
+      this.matches(r.fabricComposition, term) ||
+      this.matches(r.gsm, term) ||
+      this.matches(r.fabricConPerDzn, term) ||
+      this.matches(this.formatDate(r.date), term) ||
+      this.matches(this.formatDate(r.shipmentDate), term) ||
+      this.matchesNumber(r.orderQty, term) ||
+      this.matchesNumber(r.receiveQty, term) ||
+      this.matchesNumber(r.cumReceiveQty, term) ||
+      this.matchesNumber(r.deliveryQty, term) ||
+      this.matchesNumber(r.cumDeliveryQty, term) ||
+      this.matchesNumber(r.balanceQty, term)
+    );
+  }
+
+  private fabricMatches(r: FabricRow, term: string): boolean {
+    return (
+      this.matches(r.receiveFrom, term) ||
+      this.matches(r.buyer, term) ||
+      this.matches(r.job, term) ||
+      this.matches(r.orderNo, term) ||
+      this.matches(r.style, term) ||
+      this.matches(r.color, term) ||
+      this.matches(r.dressPart, term) ||
+      this.matches(r.washType, term) ||
+      this.matches(r.fabricComposition, term) ||
+      this.matches(r.batchLot, term) ||
+      this.matches(r.gsm, term) ||
+      this.matches(this.formatDate(r.date), term) ||
+      this.matches(this.formatDate(r.shipmentDate), term) ||
+      this.matchesNumber(r.dia, term) ||
+      this.matchesNumber(r.orderQtyKg, term) ||
+      this.matchesNumber(r.receiveRoll, term) ||
+      this.matchesNumber(r.receiveQtyKg, term) ||
+      this.matchesNumber(r.cumReceiveQtyKg, term) ||
+      this.matchesNumber(r.deliveryRoll, term) ||
+      this.matchesNumber(r.deliveryQtyKg, term) ||
+      this.matchesNumber(r.cumDeliveryQtyKg, term) ||
+      this.matchesNumber(r.balanceQtyKg, term)
+    );
+  }
   onClear(): void {
     this.filter.fromDate = null;
     this.filter.toDate = null;

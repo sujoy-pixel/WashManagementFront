@@ -124,6 +124,10 @@ export class BatchCardModificationComponent implements OnInit {
   detailList: WashBatchRow[] = [];
   UnitList:   any[]          = [];
 
+  /* ===================== GLOBAL FILTER ===================== */
+  globalFilter = '';
+  filteredDetailList: WashBatchRow[] = [];
+
   /* ===================== DROPDOWNS ===================== */
   buyerList:       DropdownItem[] = [];
   jobList:         DropdownItem[] = [];
@@ -420,7 +424,44 @@ debugger;
     this.dressPartList   = this.unique(this.detailList, 'dressPartId',   'dressPart');
     this.uomList         = this.unique(this.detailList, 'uomDetailsId',  'uom');
 
+    this.applyGlobalFilter();
+
     console.log('✅ Bound Detail List:', this.detailList);
+  }
+
+  /* ===================== GLOBAL FILTER ===================== */
+  applyGlobalFilter(): void {
+    const term = (this.globalFilter || '').trim().toLowerCase();
+    if (!term) {
+      this.filteredDetailList = [...this.detailList];
+      return;
+    }
+
+    this.filteredDetailList = this.detailList.filter(row =>
+      [
+        row.batchNo, row.trackingNo, row.documentNo, row.loadunload,
+        this.labelOf(this.buyerList,       row.buyerId,       row.buyerName),
+        this.labelOf(this.jobList,         row.jobId,         row.jobInfo),
+        this.labelOf(this.styleList,       row.styleId,       row.styleName),
+        this.labelOf(this.orderList,       row.orderId,       row.orderNo),
+        this.labelOf(this.fabricationList, row.fabricationId, row.fabricationName),
+        this.labelOf(this.colorList,       row.icleid,        row.color),
+        this.labelOf(this.dressPartList,   row.dressPartId,   row.dressPart),
+        this.labelOf(this.uomList,         row.uomDetailsId,  row.uom),
+        row.type, row.fromUnitName,
+        row.totalQty, row.alreadyPreparedQty, row.remainingQty, row.alreadyPreparedKg
+      ].some(v => v != null && String(v).toLowerCase().includes(term))
+    );
+  }
+
+  clearGlobalFilter(): void {
+    this.globalFilter = '';
+    this.applyGlobalFilter();
+  }
+
+  // Grid dropdowns are editable, so match against the currently selected label
+  private labelOf(list: DropdownItem[], value: any, fallback: string): string {
+    return list.find(x => x.value === value)?.label ?? fallback ?? '';
   }
 
   /* ===================== UNIQUE HELPER ===================== */
@@ -782,6 +823,8 @@ openPrepareTab(row: WashBatchRow): void {
     this.dressPartList   = [];
     this.uomList         = [];
     this.detailList      = [];
+    this.globalFilter    = '';
+    this.filteredDetailList = [];
     this.sizeList        = [];
     this.sizePopupVisible = false;
   }

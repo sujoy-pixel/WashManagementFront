@@ -58,8 +58,16 @@ export class StyleWiseQcPassDhuDashboardComponent implements OnInit {
   globalSearch = '';
   isLoading = false;
 
+  /** Data rows only (no Sub Total rows), sorted Buyer -> Job -> Order -> Style -> Color. */
   allRows: StyleWiseDhuRow[] = [];
+  /** Rows on screen: matched data rows + a Sub Total after each Buyer/Job/Order/Style/Color group. */
   filteredRows: StyleWiseDhuRow[] = [];
+  /**
+   * Grand Total footer - recomputed over whatever the global search currently
+   * matches (see onGlobalSearch), so like the Sub Totals it updates as the user
+   * types/clears the filter and falls back to the full dataset when empty.
+   */
+  grandTotal: StyleWiseDhuRow | null = null;
 
   constructor(
     private washService: WashSetupService,
@@ -169,7 +177,7 @@ export class StyleWiseQcPassDhuDashboardComponent implements OnInit {
         totalDefectQty: this.toNumber(r.totalDefectQty ?? r.TotalDefectQty) || 0,
         defectPercent: this.toNumber(r.defectPercent ?? r.DefectPercent),
         defectsBalanceQty: this.toNumber(r.defectsBalanceQty ?? r.DefectsBalanceQty) || 0,
-        rectifyDefectsQty: this.toNumber(r.rectifyDefectsQty ?? r.RectifyDefectsQty) || 0,
+        rectifyDefectsQty: this.toNumber(r.rectifyDefectsQty ?? r.RectifyDefectsQty ?? r.rectifyDefectQty ?? r.RectifyDefectQty) || 0,
         totalRejectQty: this.toNumber(r.totalRejectQty ?? r.TotalRejectQty) || 0,
         rejectPercent: this.toNumber(r.rejectPercent ?? r.RejectPercent),
         isSubTotal: false
@@ -196,7 +204,15 @@ export class StyleWiseQcPassDhuDashboardComponent implements OnInit {
         let rectifyDefectsQty = 0;
         let totalRejectQty = 0;
 
+        // Receive Qty is per tracking no, repeated on every batch/shift row of
+        // that tracking no - count it once per tracking no.
+        const receiveByTracking = new Map<string, number>();
+
         rows.forEach(r => {
+          const trackingKey = String(r.trackingNo ?? r.TrackingNo ?? r.batchNo ?? r.BatchNo ?? '');
+          if (!receiveByTracking.has(trackingKey)) {
+            receiveByTracking.set(trackingKey, this.toNumber(r.receiveQty ?? r.ReceiveQty ?? r.receivedQty ?? r.ReceivedQty) || 0);
+          }
           totalCheckQty += this.toNumber(r.totalCheckQty ?? r.TotalCheckQty ?? r.totalCheckQTY) || 0;
           totalOkayQty += this.toNumber(r.totalOkayQty ?? r.TotalOkayQty ?? r.totalOkayQTY) || 0;
           totalDefectQty += this.toNumber(r.totalDefectQty ?? r.TotalDefectQty ?? r.totalDefectQTY) || 0;
@@ -215,7 +231,7 @@ export class StyleWiseQcPassDhuDashboardComponent implements OnInit {
           dressPart: this.cleanStr(first.dressPart ?? first.DressPart),
           washCategory: this.cleanStr(first.washCategory ?? first.WashCategory),
           itemName: this.cleanStr(first.itemName ?? first.ItemName),
-          receiveQty: this.toNumber(first.receiveQty ?? first.ReceiveQty ?? first.receivedQty ?? first.ReceivedQty),
+          receiveQty: Array.from(receiveByTracking.values()).reduce((sum, q) => sum + q, 0),
           uom: this.cleanStr(first.uom ?? first.UoM ?? first.UOM),
           noOfBatch: rows.length,
           totalCheckQty,
@@ -231,57 +247,49 @@ export class StyleWiseQcPassDhuDashboardComponent implements OnInit {
       });
     }
 
-    // Sort by buyer, then job, then orderNo
-    aggregated.sort((a, b) => {
-      const bComp = (a.buyer || '').localeCompare(b.buyer || '');
-      if (bComp !== 0) return bComp;
-      const jComp = (a.job || '').localeCompare(b.job || '');
-      if (jComp !== 0) return jComp;
-      return (a.orderNo || '').localeCompare(b.orderNo || '');
-    });
+    // Sort so each Buyer/Job/Order/Style/Color group is contiguous and its
+    // Sub Total lands right after the group's last row.
+    aggregated.sort((a, b) => this.groupCompare(a, b));
 
-    // Group and calculate subtotals
-    const finalRows: StyleWiseDhuRow[] = [];
-    let currentGroup: StyleWiseDhuRow[] = [];
-
-    for (let i = 0; i < aggregated.length; i++) {
-      const row = aggregated[i];
-      currentGroup.push(row);
-
-      const isLast = i === aggregated.length - 1;
-      let isDifferent = false;
-
-      if (!isLast) {
-        const next = aggregated[i + 1];
-        const buyerDiff = row.buyer !== next.buyer;
-        const jobPrefixDiff = this.getJobPrefix(row.job || '') !== this.getJobPrefix(next.job || '');
-        if (buyerDiff || jobPrefixDiff) {
-          isDifferent = true;
-        }
-      }
-
-      if (isLast || isDifferent) {
-        finalRows.push(...currentGroup);
-        finalRows.push(this.calculateSubtotal(currentGroup));
-        currentGroup = [];
-      }
-    }
-
-    this.allRows = finalRows;
+    this.allRows = aggregated;
     this.globalSearch = '';
-    this.filteredRows = [...this.allRows];
+    this.applyView(this.allRows);
   }
 
-  private getJobPrefix(job: string): string {
-    if (!job) return '';
-    const s = job.trim();
-    if (s.startsWith('SEL-')) {
-      const parts = s.split('-');
-      if (parts.length >= 4) {
-        return parts.slice(0, 3).join('-'); // e.g. SEL-BB2815-10
-      }
+  /** Buyer -> Job -> Order -> Style -> Color -> Dress Part comparator. */
+  private groupCompare(a: StyleWiseDhuRow, b: StyleWiseDhuRow): number {
+    return (a.buyer || '').localeCompare(b.buyer || '')
+      || (a.job || '').localeCompare(b.job || '')
+      || (a.orderNo || '').localeCompare(b.orderNo || '')
+      || (a.style || '').localeCompare(b.style || '')
+      || (a.color || '').localeCompare(b.color || '')
+      || (a.dressPart || '').localeCompare(b.dressPart || '');
+  }
+
+  /** Buyer/Job/Order/Style/Color grouping key - same grain as Date-wise Balance Dashboard. */
+  private groupKey(r: StyleWiseDhuRow): string {
+    return `${r.buyer}||${r.job}||${r.orderNo}||${r.style}||${r.color}`;
+  }
+
+  /** Inserts a "Sub Total" row after the last row of each Buyer/Job/Order/Style/Color group. */
+  private insertSubtotals(rows: StyleWiseDhuRow[]): StyleWiseDhuRow[] {
+    const result: StyleWiseDhuRow[] = [];
+    let i = 0;
+    while (i < rows.length) {
+      const key = this.groupKey(rows[i]);
+      let j = i;
+      while (j < rows.length && this.groupKey(rows[j]) === key) j++;
+      const group = rows.slice(i, j);
+      result.push(...group, this.calculateSubtotal(group));
+      i = j;
     }
-    return s;
+    return result;
+  }
+
+  /** Rebuilds the grid rows (with Sub Totals) and the Grand Total from the given data rows. */
+  private applyView(rows: StyleWiseDhuRow[]): void {
+    this.filteredRows = this.insertSubtotals(rows);
+    this.grandTotal = rows.length ? this.calculateSubtotal(rows) : null;
   }
 
   private calculateSubtotal(group: StyleWiseDhuRow[]): StyleWiseDhuRow {
@@ -305,7 +313,9 @@ export class StyleWiseQcPassDhuDashboardComponent implements OnInit {
       totalRejectQty += r.totalRejectQty || 0;
     });
 
-    const uom = group.length ? group[0].uom : '';
+    // Only show UoM when the whole group shares one (Pcs and Kg can't be mixed).
+    const uoms = Array.from(new Set(group.map(r => r.uom).filter(u => !!u)));
+    const uom = uoms.length === 1 ? uoms[0] : '';
 
     return {
       receiveQty,
@@ -324,21 +334,26 @@ export class StyleWiseQcPassDhuDashboardComponent implements OnInit {
   }
 
   private processMockData(): void {
-    this.allRows = this.buildMockRows();
+    this.allRows = this.buildMockRows().filter(r => !r.isSubTotal).sort((a, b) => this.groupCompare(a, b));
     this.globalSearch = '';
-    this.filteredRows = [...this.allRows];
+    this.applyView(this.allRows);
   }
 
+  /**
+   * Global search filters the data rows, then RE-BUILDS the Sub Total rows and
+   * the Grand Total over whatever matched - so both always reflect exactly
+   * what's on screen. Clearing the search restores the full dataset.
+   */
   onGlobalSearch(): void {
-    let result = [...this.allRows];
     const term = this.globalSearch?.trim()?.toLowerCase() ?? '';
+    const matched = term.length
+      ? this.allRows.filter(r => this.rowMatches(r, term))
+      : this.allRows;
+    this.applyView(matched);
+  }
 
-    if (term.length) {
-      result = result.filter(r => {
-        if (r.isSubTotal) {
-          return false;
-        }
-        return (
+  private rowMatches(r: StyleWiseDhuRow, term: string): boolean {
+    return (
           this.matches(r.receiveFrom, term) ||
           this.matches(r.buyer, term) ||
           this.matches(r.job, term) ||
@@ -357,38 +372,7 @@ export class StyleWiseQcPassDhuDashboardComponent implements OnInit {
           this.matchesNumber(r.defectsBalanceQty, term) ||
           this.matchesNumber(r.rectifyDefectsQty, term) ||
           this.matchesNumber(r.totalRejectQty, term)
-        );
-      });
-
-      const finalFiltered: StyleWiseDhuRow[] = [];
-      let currentGroup: StyleWiseDhuRow[] = [];
-
-      for (let i = 0; i < result.length; i++) {
-        const row = result[i];
-        currentGroup.push(row);
-
-        const isLast = i === result.length - 1;
-        let isDifferent = false;
-
-        if (!isLast) {
-          const next = result[i + 1];
-          const buyerDiff = row.buyer !== next.buyer;
-          const jobPrefixDiff = this.getJobPrefix(row.job || '') !== this.getJobPrefix(next.job || '');
-          if (buyerDiff || jobPrefixDiff) {
-            isDifferent = true;
-          }
-        }
-
-        if (isLast || isDifferent) {
-          finalFiltered.push(...currentGroup);
-          finalFiltered.push(this.calculateSubtotal(currentGroup));
-          currentGroup = [];
-        }
-      }
-      this.filteredRows = finalFiltered;
-    } else {
-      this.filteredRows = [...this.allRows];
-    }
+    );
   }
 
   onClear(): void {
@@ -404,30 +388,32 @@ export class StyleWiseQcPassDhuDashboardComponent implements OnInit {
       return;
     }
 
-    const exportData = this.filteredRows.map(row => {
+    const totalRow = (row: StyleWiseDhuRow, label: string) => ({
+      'Receive form': '',
+      'Buyer': '',
+      'Job': '',
+      'Order': '',
+      'Style': '',
+      'Color': label,
+      'Dress Part': '',
+      'Wash Category': '',
+      'Item Name': '',
+      'Received Qty': row.receiveQty ?? '',
+      'UoM': row.uom,
+      'No of Batch': row.noOfBatch ?? '',
+      'Total Check QTY': row.totalCheckQty ?? '',
+      'Total Okay QTY': row.totalOkayQty ?? '',
+      'Total Defect QTY': row.totalDefectQty ?? '',
+      'Defect %': this.formatPercent(row.defectPercent),
+      'Defects Balance QTY': row.defectsBalanceQty ?? '',
+      'Rectify Defects QTY': row.rectifyDefectsQty ?? '',
+      'Total Reject QTY': row.totalRejectQty ?? '',
+      'Reject %': this.formatPercent(row.rejectPercent)
+    });
+
+    const exportData: any[] = this.filteredRows.map(row => {
       if (row.isSubTotal) {
-        return {
-          'Receive form': '',
-          'Buyer': '',
-          'Job': '',
-          'Order': '',
-          'Style': '',
-          'Color': 'Sub Total:',
-          'Dress Part': '',
-          'Wash Category': '',
-          'Item Name': '',
-          'Received Qty': row.receiveQty ?? '',
-          'UoM': row.uom,
-          'No of Batch': row.noOfBatch ?? '',
-          'Total Check QTY': row.totalCheckQty ?? '',
-          'Total Okay QTY': row.totalOkayQty ?? '',
-          'Total Defect QTY': row.totalDefectQty ?? '',
-          'Defect %': this.formatPercent(row.defectPercent),
-          'Defects Balance QTY': row.defectsBalanceQty ?? '',
-          'Rectify Defects QTY': row.rectifyDefectsQty ?? '',
-          'Total Reject QTY': row.totalRejectQty ?? '',
-          'Reject %': this.formatPercent(row.rejectPercent)
-        };
+        return totalRow(row, 'Sub Total:');
       }
       return {
         'Receive form': row.receiveFrom,
@@ -452,6 +438,9 @@ export class StyleWiseQcPassDhuDashboardComponent implements OnInit {
         'Reject %': this.formatPercent(row.rejectPercent)
       };
     });
+    if (this.grandTotal) {
+      exportData.push(totalRow(this.grandTotal, 'Grand Total:'));
+    }
 
     const ws: XLSX.WorkSheet = XLSX.utils.json_to_sheet(exportData);
     ws['!cols'] = [
@@ -480,6 +469,7 @@ export class StyleWiseQcPassDhuDashboardComponent implements OnInit {
   private resetGrid(): void {
     this.allRows = [];
     this.filteredRows = [];
+    this.grandTotal = null;
   }
 
   private matches(value: string | undefined, term: string): boolean {

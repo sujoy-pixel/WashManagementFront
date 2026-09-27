@@ -122,7 +122,25 @@
           </tr>
         </thead>
         <tbody>
-          <tr *ngFor="let row of filteredRows; trackBy: trackByRow">
+          <ng-container *ngFor="let row of filteredRows; trackBy: trackByRow">
+
+          <!-- Sub Total row: closes out a Buyer/Job/Order/Style/Color group -->
+          <tr *ngIf="row.isSubtotal" class="ftd-subtotal-row">
+            <td class="ftd ftd-center ftd-bold" colspan="13">Sub Total:</td>
+            <td class="ftd ftd-center ftd-bold">{{ fmtNum(row.receiveQty) || '-' }}</td>
+            <td class="ftd ftd-center ftd-bold">{{ row.uom }}</td>
+            <td class="ftd ftd-center"></td>
+            <td class="ftd ftd-center ftd-bold">{{ fmtNum(row.totalCheckQty) }}</td>
+            <td class="ftd ftd-center ftd-bold">{{ fmtNum(row.totalOkayQty) }}</td>
+            <td class="ftd ftd-center ftd-bold">{{ fmtNum(row.totalDefectQty) }}</td>
+            <td class="ftd ftd-center ftd-bold">{{ formatPercent(row.defectPercent) }}</td>
+            <td class="ftd ftd-center ftd-bold">{{ fmtNum(row.defectsBalanceQty) }}</td>
+            <td class="ftd ftd-center ftd-bold">{{ fmtNum(row.rectifyDefectsQty) }}</td>
+            <td class="ftd ftd-center ftd-bold">{{ fmtNum(row.totalRejectQty) }}</td>
+            <td class="ftd ftd-center ftd-bold">{{ formatPercent(row.rejectPercent) }}</td>
+          </tr>
+
+          <tr *ngIf="!row.isSubtotal">
             <td class="ftd ftd-center ftd-date">{{ row.date | date:'d-MMM-yy' }}</td>
             <td class="ftd ftd-center ftd-bold">{{ row.trackingNo }}</td>
             <td class="ftd ftd-center">{{ row.receiveFrom }}</td>
@@ -136,7 +154,7 @@
             <td class="ftd ftd-center">{{ row.itemName }}</td>
             <td class="ftd ftd-center">{{ row.shift }}</td>
             <td class="ftd ftd-center">{{ row.qcName }}</td>
-            <td class="ftd ftd-center ftd-semibold">{{ row.receiveQty | number }}</td>
+            <td class="ftd ftd-center ftd-semibold">{{ fmtNum(row.receiveQty) || '-' }}</td>
             <td class="ftd ftd-center">{{ row.uom }}</td>
             <td class="ftd ftd-center ftd-bold ftd-batch">{{ row.batchNo }}</td>
             <td class="ftd ftd-center">{{ row.totalCheckQty | number:'1.2-2' }}</td>
@@ -148,7 +166,24 @@
             <td class="ftd ftd-center">{{ row.totalRejectQty | number:'1.2-2' }}</td>
             <td class="ftd ftd-center ftd-semibold">{{ formatPercent(row.rejectPercent) }}</td>
           </tr>
+          </ng-container>
         </tbody>
+        <tfoot *ngIf="!isLoading && grandTotal">
+          <tr class="ftd-grandtotal-row">
+            <td class="ftd ftd-center ftd-bold" colspan="13">Grand Total:</td>
+            <td class="ftd ftd-center ftd-bold">{{ fmtNum(grandTotal.receiveQty) || '-' }}</td>
+            <td class="ftd ftd-center"></td>
+            <td class="ftd ftd-center"></td>
+            <td class="ftd ftd-center ftd-bold">{{ fmtNum(grandTotal.totalCheckQty) }}</td>
+            <td class="ftd ftd-center ftd-bold">{{ fmtNum(grandTotal.totalOkayQty) }}</td>
+            <td class="ftd ftd-center ftd-bold">{{ fmtNum(grandTotal.totalDefectQty) }}</td>
+            <td class="ftd ftd-center ftd-bold">{{ formatPercent(grandTotal.defectPercent) }}</td>
+            <td class="ftd ftd-center ftd-bold">{{ fmtNum(grandTotal.defectsBalanceQty) }}</td>
+            <td class="ftd ftd-center ftd-bold">{{ fmtNum(grandTotal.rectifyDefectsQty) }}</td>
+            <td class="ftd ftd-center ftd-bold">{{ fmtNum(grandTotal.totalRejectQty) }}</td>
+            <td class="ftd ftd-center ftd-bold">{{ formatPercent(grandTotal.rejectPercent) }}</td>
+          </tr>
+        </tfoot>
       </table>
 
       <div class="floor-empty-state" *ngIf="filteredRows.length === 0 && !isLoading">

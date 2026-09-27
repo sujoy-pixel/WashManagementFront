@@ -118,7 +118,28 @@
             </td>
           </tr>
           <ng-container *ngIf="!isLoading">
-          <tr *ngFor="let r of garmentFilteredRows; trackBy: trackByGarment">
+          <ng-container *ngFor="let r of garmentFilteredRows; trackBy: trackByGarment">
+
+          <!-- Sub Total row: closes out a Buyer/Job/Order/Style/Color group -->
+          <tr *ngIf="r.isSubtotal" class="ftd-subtotal-row">
+            <td class="ftd ftd-center ftd-bold" colspan="11">Sub Total:</td>
+            <td class="ftd ftd-center ftd-bold">{{ fmtNum(r.orderQtyPcs) || '-' }}</td>
+            <td class="ftd ftd-center"></td>
+            <td class="ftd ftd-center"></td>
+            <td class="ftd ftd-center"></td>
+            <td class="ftd ftd-center ftd-bold">{{ fmtNum(r.totalReceiveQtyPcs) || '-' }}</td>
+            <td class="ftd ftd-center ftd-bold ftd-balance">{{ fmtNum(r.receiveBalancePcs) || '-' }}</td>
+            <td class="ftd ftd-center"></td>
+            <td class="ftd ftd-center"></td>
+            <td class="ftd ftd-center ftd-bold">{{ fmtNum(r.totalDeliveryQtyPcs) || '-' }}</td>
+            <td class="ftd ftd-center ftd-bold">{{ fmtNum(r.readyForDeliveryPcs) || '-' }}</td>
+            <td class="ftd ftd-center ftd-bold">{{ fmtNum(r.approvalTrail) || '-' }}</td>
+            <td class="ftd ftd-center ftd-bold ftd-balance">{{ fmtNum(r.deliveryBalanceQtyPcs) || '-' }}</td>
+            <td class="ftd ftd-center"></td>
+            <td class="ftd ftd-center"></td>
+          </tr>
+
+          <tr *ngIf="!r.isSubtotal">
             <td class="ftd ftd-center">{{ r.receiveFrom }}</td>
             <td class="ftd ftd-center">{{ r.buyer }}</td>
             <td class="ftd ftd-center">{{ r.job }}</td>
@@ -146,7 +167,27 @@
             <td class="ftd ftd-center">{{ r.remarks || '-' }}</td>
           </tr>
           </ng-container>
+          </ng-container>
         </tbody>
+        <tfoot *ngIf="!isLoading && garmentGrandTotal">
+          <tr class="ftd-grandtotal-row">
+            <td class="ftd ftd-center ftd-bold" colspan="11">Grand Total:</td>
+            <td class="ftd ftd-center ftd-bold">{{ fmtNum(garmentGrandTotal.orderQtyPcs) || '-' }}</td>
+            <td class="ftd ftd-center"></td>
+            <td class="ftd ftd-center"></td>
+            <td class="ftd ftd-center"></td>
+            <td class="ftd ftd-center ftd-bold">{{ fmtNum(garmentGrandTotal.totalReceiveQtyPcs) || '-' }}</td>
+            <td class="ftd ftd-center ftd-bold ftd-balance">{{ fmtNum(garmentGrandTotal.receiveBalancePcs) || '-' }}</td>
+            <td class="ftd ftd-center"></td>
+            <td class="ftd ftd-center"></td>
+            <td class="ftd ftd-center ftd-bold">{{ fmtNum(garmentGrandTotal.totalDeliveryQtyPcs) || '-' }}</td>
+            <td class="ftd ftd-center ftd-bold">{{ fmtNum(garmentGrandTotal.readyForDeliveryPcs) || '-' }}</td>
+            <td class="ftd ftd-center ftd-bold">{{ fmtNum(garmentGrandTotal.approvalTrail) || '-' }}</td>
+            <td class="ftd ftd-center ftd-bold ftd-balance">{{ fmtNum(garmentGrandTotal.deliveryBalanceQtyPcs) || '-' }}</td>
+            <td class="ftd ftd-center"></td>
+            <td class="ftd ftd-center"></td>
+          </tr>
+        </tfoot>
       </table>
 
       <div class="floor-empty-state" *ngIf="!isLoading && garmentFilteredRows.length === 0">
@@ -200,7 +241,29 @@
             </td>
           </tr>
           <ng-container *ngIf="!isLoading">
-          <tr *ngFor="let r of fabricFilteredRows; trackBy: trackByFabric">
+          <ng-container *ngFor="let r of fabricFilteredRows; trackBy: trackByFabric">
+
+          <!-- Sub Total row: closes out a Buyer/Job/Order/Style/Color group -->
+          <tr *ngIf="r.isSubtotal" class="ftd-subtotal-row">
+            <td class="ftd ftd-center ftd-bold" colspan="12">Sub Total:</td>
+            <td class="ftd ftd-center ftd-bold">{{ fmtNum(r.orderQtyKg) || '-' }}</td>
+            <td class="ftd ftd-center"></td>
+            <td class="ftd ftd-center"></td>
+            <td class="ftd ftd-center"></td>
+            <td class="ftd ftd-center ftd-bold">{{ fmtNum(r.totalReceiveRoll) || '-' }}</td>
+            <td class="ftd ftd-center ftd-bold">{{ fmtNum(r.totalReceiveQtyKg) || '-' }}</td>
+            <td class="ftd ftd-center ftd-bold ftd-balance">{{ fmtNum(r.receiveBalanceKg) || '-' }}</td>
+            <td class="ftd ftd-center"></td>
+            <td class="ftd ftd-center"></td>
+            <td class="ftd ftd-center ftd-bold">{{ fmtNum(r.totalDeliveryRoll) || '-' }}</td>
+            <td class="ftd ftd-center ftd-bold">{{ fmtNum(r.totalDeliveryQtyKg) || '-' }}</td>
+            <td class="ftd ftd-center ftd-bold">{{ fmtNum(r.readyForDeliveryKg) || '-' }}</td>
+            <td class="ftd ftd-center ftd-bold ftd-balance">{{ fmtNum(r.deliveryBalanceKg) || '-' }}</td>
+            <td class="ftd ftd-center"></td>
+            <td class="ftd ftd-center"></td>
+          </tr>
+
+          <tr *ngIf="!r.isSubtotal">
             <td class="ftd ftd-center">{{ r.receiveFrom }}</td>
             <td class="ftd ftd-center">{{ r.buyer }}</td>
             <td class="ftd ftd-center">{{ r.job }}</td>
@@ -230,7 +293,28 @@
             <td class="ftd ftd-center">{{ r.remarks || '-' }}</td>
           </tr>
           </ng-container>
+          </ng-container>
         </tbody>
+        <tfoot *ngIf="!isLoading && fabricGrandTotal">
+          <tr class="ftd-grandtotal-row">
+            <td class="ftd ftd-center ftd-bold" colspan="12">Grand Total:</td>
+            <td class="ftd ftd-center ftd-bold">{{ fmtNum(fabricGrandTotal.orderQtyKg) || '-' }}</td>
+            <td class="ftd ftd-center"></td>
+            <td class="ftd ftd-center"></td>
+            <td class="ftd ftd-center"></td>
+            <td class="ftd ftd-center ftd-bold">{{ fmtNum(fabricGrandTotal.totalReceiveRoll) || '-' }}</td>
+            <td class="ftd ftd-center ftd-bold">{{ fmtNum(fabricGrandTotal.totalReceiveQtyKg) || '-' }}</td>
+            <td class="ftd ftd-center ftd-bold ftd-balance">{{ fmtNum(fabricGrandTotal.receiveBalanceKg) || '-' }}</td>
+            <td class="ftd ftd-center"></td>
+            <td class="ftd ftd-center"></td>
+            <td class="ftd ftd-center ftd-bold">{{ fmtNum(fabricGrandTotal.totalDeliveryRoll) || '-' }}</td>
+            <td class="ftd ftd-center ftd-bold">{{ fmtNum(fabricGrandTotal.totalDeliveryQtyKg) || '-' }}</td>
+            <td class="ftd ftd-center ftd-bold">{{ fmtNum(fabricGrandTotal.readyForDeliveryKg) || '-' }}</td>
+            <td class="ftd ftd-center ftd-bold ftd-balance">{{ fmtNum(fabricGrandTotal.deliveryBalanceKg) || '-' }}</td>
+            <td class="ftd ftd-center"></td>
+            <td class="ftd ftd-center"></td>
+          </tr>
+        </tfoot>
       </table>
 
       <div class="floor-empty-state" *ngIf="!isLoading && fabricFilteredRows.length === 0">

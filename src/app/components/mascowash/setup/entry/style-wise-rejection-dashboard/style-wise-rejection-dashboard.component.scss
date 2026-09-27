@@ -115,6 +115,14 @@
 }
 
 /* Subtotal styling matching the grey rows in the reference dashboard */
+.grandtotal-row td.ftd {
+  background: linear-gradient(180deg, #2c3e6b 0%, #1e2d52 100%) !important;
+  color: #ffffff !important;
+  font-weight: 700 !important;
+  font-size: 12px;
+  border-top: 2px solid #111 !important;
+}
+
 .subtotal-row {
   background-color: #d1d1cf !important;
 

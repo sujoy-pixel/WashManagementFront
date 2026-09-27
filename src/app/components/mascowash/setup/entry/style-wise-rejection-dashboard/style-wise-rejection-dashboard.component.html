@@ -147,6 +147,21 @@
             </tr>
           </ng-container>
         </tbody>
+        <!-- Grand Total: recomputed over the rows matching the global search -->
+        <tfoot *ngIf="!isLoading && grandTotals.length">
+          <tr *ngFor="let row of grandTotals" class="grandtotal-row">
+            <td [attr.colspan]="textColumnCount" class="ftd text-end ftd-bold">{{ row.subTotalLabel }}</td>
+            <td class="ftd ftd-center ftd-bold">{{ row.receiveQty | number }}</td>
+            <td class="ftd ftd-center ftd-bold">{{ row.uom }}</td>
+            <td class="ftd ftd-center ftd-bold">{{ row.noOfBatch }}</td>
+            <td class="ftd ftd-center ftd-bold">{{ row.totalCheckQty | number }}</td>
+            <td class="ftd ftd-center ftd-bold">{{ row.totalRejectQty | number }}</td>
+            <td class="ftd ftd-center ftd-bold">{{ formatPercent(row.rejectPercent) }}</td>
+            <td class="ftd ftd-center ftd-bold" *ngFor="let col of sizeColumns; trackBy: trackBySize">
+              {{ row.sizeRejects[col.size] ?? 0 }}
+            </td>
+          </tr>
+        </tfoot>
       </table>
 
       <div class="floor-empty-state" *ngIf="!isLoading && filteredRows.length === 0">

@@ -1,62 +1,202 @@
-<div class="tile-menu-page">
-  <div class="tile-menu-wrap">
+<section class="hub" aria-label="Main menu">
+  <!-- Slow-moving aurora behind everything -->
+  <div class="aurora" aria-hidden="true">
+    <span class="blob blob-a"></span>
+    <span class="blob blob-b"></span>
+    <span class="blob blob-c"></span>
+    <span class="grain"></span>
+  </div>
 
-    <!-- Contextual header: only shown once the user has drilled into a section -->
-    <div class="tile-menu-header" *ngIf="!isAtRoot">
-      <button type="button" class="tile-nav-btn" (click)="goHome()" title="Back to start">
-        <i class="fe fe-home"></i>
-      </button>
-      <button type="button" class="tile-nav-btn" (click)="goBack()" title="Go back">
-        <i class="fe fe-arrow-left"></i>
-      </button>
+  <div class="hub-inner">
 
-      <nav class="tile-breadcrumb" aria-label="breadcrumb">
-        <span *ngFor="let crumb of breadcrumbTrail; let i = index; let last = last">
-          <a href="javascript:void(0)" (click)="goToCrumb(i)" [class.active]="last">{{ crumb.title }}</a>
-          <i class="fe fe-chevron-right crumb-sep" *ngIf="!last"></i>
-        </span>
+    <!-- Hero -->
+    <header class="hero" *ngIf="isAtRoot && !isSearching">
+      <span class="hero-chip"><span class="pulse-dot" aria-hidden="true"></span>{{ today }}</span>
+      <h1 class="hero-title">
+        {{ greeting }}<ng-container *ngIf="userName">, <span class="hero-name">{{ userName }}</span></ng-container>
+      </h1>
+      <p class="hero-sub" *ngIf="!loadingMenu && !menuLoadError && rootTiles.length">
+        {{ rootTiles.length }} {{ rootTiles.length === 1 ? 'module' : 'modules' }} &middot;
+        {{ totalPages }} {{ totalPages === 1 ? 'screen' : 'screens' }} ready for you
+      </p>
+    </header>
+
+    <!-- Toolbar: location + search -->
+    <div class="toolbar" [class.is-centered]="isAtRoot || isSearching"
+         *ngIf="!loadingMenu && !menuLoadError && rootTiles.length">
+      <nav class="crumbs" aria-label="Menu location" *ngIf="!isAtRoot && !isSearching">
+        <button type="button" class="glass-btn" (click)="goBack()" aria-label="Go back one level" title="Back (Esc)">
+          <i class="fe fe-arrow-left" aria-hidden="true"></i>
+        </button>
+        <ol class="crumb-list">
+          <li>
+            <button type="button" class="crumb-link" (click)="goHome()">
+              <i class="fe fe-home" aria-hidden="true"></i><span class="visually-hidden">Home</span>
+            </button>
+          </li>
+          <li *ngFor="let crumb of breadcrumbTrail; let i = index; let last = last">
+            <i class="fe fe-chevron-right crumb-sep" aria-hidden="true"></i>
+            <button *ngIf="!last; else lastCrumb" type="button" class="crumb-link" (click)="goToCrumb(i)">{{ crumb.title }}</button>
+            <ng-template #lastCrumb><span class="crumb-current" aria-current="page">{{ crumb.title }}</span></ng-template>
+          </li>
+        </ol>
       </nav>
-    </div>
 
-    <!-- Loading state -->
-    <div class="tile-state-panel" *ngIf="loadingMenu">
-      <div class="spinner-border text-primary" role="status">
-        <span class="visually-hidden">Loading...</span>
+      <div class="search" role="search">
+        <svg class="search-icon" viewBox="0 0 24 24" aria-hidden="true">
+          <path *ngFor="let p of icons['search']" [attr.d]="p.d" [class.duo]="p.duo"></path>
+        </svg>
+        <input #searchInput type="search" class="search-input" placeholder="Search any screen…"
+               aria-label="Search menu" autocomplete="off" spellcheck="false"
+               (input)="onSearch(searchInput.value)" (keydown)="onSearchKeydown($event)">
+        <button *ngIf="query; else shortcutHint" type="button" class="search-clear"
+                aria-label="Clear search" (click)="clearSearchAndFocus()">
+          <i class="fe fe-x" aria-hidden="true"></i>
+        </button>
+        <ng-template #shortcutHint><kbd class="search-kbd" aria-hidden="true">Ctrl K</kbd></ng-template>
       </div>
-      <p class="mt-3 text-muted">Loading your menu...</p>
     </div>
 
-    <!-- Error state -->
-    <div class="tile-state-panel" *ngIf="!loadingMenu && menuLoadError">
-      <i class="fe fe-alert-triangle tile-state-icon text-warning"></i>
-      <p class="mt-3 text-muted">Unable to load the menu right now. Please try again later.</p>
-    </div>
-
-    <!-- Empty state -->
-    <div class="tile-state-panel" *ngIf="!loadingMenu && !menuLoadError && currentTiles.length === 0">
-      <i class="fe fe-inbox tile-state-icon text-muted"></i>
-      <p class="mt-3 text-muted">No menu items found.</p>
-    </div>
-
-    <!-- Tile grid -->
-    <div class="tile-grid" *ngIf="!loadingMenu && !menuLoadError && currentTiles.length > 0">
-      <div class="tile-card" *ngFor="let tile of currentTiles; let i = index"
-           [style.background]="tile.gradient"
-           [style.animation-delay.ms]="i * 45"
-           (click)="openTile(tile)" tabindex="0"
-           (keyup.enter)="openTile(tile)" role="button">
-        <span class="tile-top-accent"></span>
-        <div class="tile-content">
-          <div class="tile-icon-wrap" [style.color]="tile.accent">
-            <i class="fe fe-{{ tile.icon }}"></i>
+    <!-- Section heading / search summary -->
+    <div class="section-head" *ngIf="!loadingMenu && !menuLoadError && (current || isSearching)">
+      <ng-container *ngIf="isSearching; else sectionHeading">
+        <h1 class="section-title">Search results</h1>
+        <p class="section-meta" aria-live="polite">
+          {{ totalHits }} {{ totalHits === 1 ? 'match' : 'matches' }} for “{{ query.trim() }}”
+          <ng-container *ngIf="totalHits > hits.length"> &middot; showing first {{ hits.length }}</ng-container>
+        </p>
+      </ng-container>
+      <ng-template #sectionHeading>
+        <div class="section-heading" *ngIf="current as sec" [attr.style]="sec.themeStyle">
+          <span class="section-mark" aria-hidden="true">
+            <svg *ngIf="sec.paths.length; else secFe" class="tile-svg" viewBox="0 0 24 24">
+              <path *ngFor="let p of sec.paths" [attr.d]="p.d" [class.duo]="p.duo"></path>
+            </svg>
+            <ng-template #secFe><i class="fe fe-{{ sec.feIcon }}"></i></ng-template>
+          </span>
+          <div class="section-text">
+            <h1 class="section-title">{{ sec.title }}</h1>
+            <p class="section-meta">
+              {{ currentTiles.length }} {{ currentTiles.length === 1 ? 'item' : 'items' }} &middot;
+              {{ sec.pageCount }} {{ sec.pageCount === 1 ? 'screen' : 'screens' }}
+            </p>
           </div>
-          <div class="tile-title">{{ tile.title }}</div>
         </div>
-        <div class="tile-chevron" *ngIf="tile.children?.length" [style.color]="tile.accent">
-          <i class="fe fe-chevron-right"></i>
+      </ng-template>
+    </div>
+
+    <!-- Loading -->
+    <div class="tile-grid" *ngIf="loadingMenu" aria-busy="true">
+      <span class="visually-hidden" aria-live="polite">Loading your menu…</span>
+      <div class="tile-cell" *ngFor="let s of skeletonTiles">
+        <div class="tile-card tile-skeleton" aria-hidden="true">
+          <span class="sk-badge"></span>
+          <span class="sk-lines"><span></span><span></span></span>
         </div>
       </div>
     </div>
+
+    <!-- Error -->
+    <div class="state" *ngIf="!loadingMenu && menuLoadError" role="alert"
+         style="--c1:#fbbf24;--c2:#f97316;--glow:245, 158, 11">
+      <span class="state-mark" aria-hidden="true">
+        <svg class="tile-svg" viewBox="0 0 24 24"><path *ngFor="let p of icons['offline']" [attr.d]="p.d" [class.duo]="p.duo"></path></svg>
+      </span>
+      <h2 class="state-title">Menu could not be loaded</h2>
+      <p class="state-text">Check your connection and try again. The sidebar menu is still available.</p>
+      <button type="button" class="pill-btn" (click)="loadTileMenu()">
+        <i class="fe fe-refresh-cw" aria-hidden="true"></i> Try again
+      </button>
+    </div>
+
+    <!-- Empty -->
+    <div class="state" *ngIf="!loadingMenu && !menuLoadError && !rootTiles.length"
+         style="--c1:#64748b;--c2:#1e293b;--glow:71, 85, 105">
+      <span class="state-mark" aria-hidden="true">
+        <svg class="tile-svg" viewBox="0 0 24 24"><path *ngFor="let p of icons['lock']" [attr.d]="p.d" [class.duo]="p.duo"></path></svg>
+      </span>
+      <h2 class="state-title">No menus assigned yet</h2>
+      <p class="state-text">Your account has no menu permissions. Please contact your system administrator.</p>
+    </div>
+
+    <ng-container *ngIf="!loadingMenu && !menuLoadError && rootTiles.length">
+      <!-- Search results -->
+      <ng-container *ngIf="isSearching; else browse">
+        <ul class="tile-grid dir-in" *ngIf="hits.length; else noResults" aria-label="Search results" (keydown)="onGridKeydown($event)">
+          <li *ngFor="let hit of hits; let i = index; trackBy: trackByHit" class="tile-cell" [class.has-stack]="hit.node.children.length" [style.animation-delay.ms]="i * 45">
+            <ng-container *ngTemplateOutlet="tileTpl; context: { $implicit: hit.node, hit: hit, i: i }"></ng-container>
+          </li>
+        </ul>
+        <ng-template #noResults>
+          <div class="state" style="--c1:#818cf8;--c2:#4f46e5;--glow:99, 102, 241">
+            <span class="state-mark" aria-hidden="true">
+              <svg class="tile-svg" viewBox="0 0 24 24"><path *ngFor="let p of icons['search']" [attr.d]="p.d" [class.duo]="p.duo"></path></svg>
+            </span>
+            <h2 class="state-title">No menu found</h2>
+            <p class="state-text">Nothing matches “{{ query.trim() }}”. Check the spelling or try a shorter word.</p>
+            <button type="button" class="pill-btn pill-btn--ghost" (click)="clearSearchAndFocus()">Clear search</button>
+          </div>
+        </ng-template>
+      </ng-container>
+
+      <!-- Current level -->
+      <ng-template #browse>
+        <ul class="tile-grid" [class.dir-in]="direction === 'in'" [class.dir-out]="direction === 'out'"
+            [attr.aria-label]="current ? current.title : 'Main menu'" (keydown)="onGridKeydown($event)">
+          <li *ngFor="let tile of currentTiles; let i = index; trackBy: trackById" class="tile-cell" [class.has-stack]="tile.children.length" [style.animation-delay.ms]="i * 55">
+            <ng-container *ngTemplateOutlet="tileTpl; context: { $implicit: tile, hit: null, i: i }"></ng-container>
+          </li>
+        </ul>
+      </ng-template>
+    </ng-container>
 
   </div>
-</div>
+</section>
+
+<!-- One tile: a section (drills in), a page (navigates) or an unlinked menu -->
+<ng-template #tileTpl let-node let-hit="hit" let-i="i">
+  <ng-template #tileBody>
+    <span class="tile-spot" aria-hidden="true"></span>
+    <span class="tile-mark" aria-hidden="true">
+      <svg *ngIf="node.paths.length; else feMark" class="tile-svg" viewBox="0 0 24 24">
+        <path *ngFor="let p of node.paths" [attr.d]="p.d" [class.duo]="p.duo" [attr.pathLength]="1"></path>
+      </svg>
+      <ng-template #feMark><i class="fe fe-{{ node.feIcon }}"></i></ng-template>
+    </span>
+    <span class="tile-text">
+      <span class="tile-title" *ngIf="hit; else plainTitle">{{ hit.before }}<mark>{{ hit.match }}</mark>{{ hit.after }}</span>
+      <ng-template #plainTitle><span class="tile-title">{{ node.title }}</span></ng-template>
+      <span class="tile-trail" *ngIf="hit && node.trail">{{ node.trail }}</span>
+      <span class="tile-chip" *ngIf="node.children.length">
+        <i class="fe fe-layers" aria-hidden="true"></i>{{ node.children.length }} {{ node.children.length === 1 ? 'item' : 'items' }}
+      </span>
+      <span class="tile-chip is-muted" *ngIf="!node.children.length && !node.path">
+        <i class="fe fe-clock" aria-hidden="true"></i>Coming soon
+      </span>
+    </span>
+  </ng-template>
+
+  <button *ngIf="node.children.length; else pageTile" type="button" class="tile-card is-section"
+          [attr.style]="node.themeStyle" (click)="openSection(node)"
+          [attr.aria-label]="node.title + ', ' + node.children.length + (node.children.length === 1 ? ' item' : ' items')">
+    <ng-container *ngTemplateOutlet="tileBody"></ng-container>
+    <span class="tile-go" aria-hidden="true"><i class="fe fe-chevron-right"></i></span>
+  </button>
+
+  <ng-template #pageTile>
+    <a *ngIf="node.path; else unavailableTile" class="tile-card is-page" [attr.href]="node.href"
+       [attr.style]="node.themeStyle"
+       [attr.target]="node.external ? '_blank' : null" [attr.rel]="node.external ? 'noopener' : null"
+       (click)="onPageClick($event, node)">
+      <ng-container *ngTemplateOutlet="tileBody"></ng-container>
+      <span class="tile-go" aria-hidden="true"><i class="fe" [ngClass]="node.external ? 'fe-external-link' : 'fe-arrow-right'"></i></span>
+    </a>
+  </ng-template>
+
+  <ng-template #unavailableTile>
+    <div class="tile-card is-disabled" aria-disabled="true" [attr.style]="node.themeStyle"
+         title="No page is linked to this menu yet">
+      <ng-container *ngTemplateOutlet="tileBody"></ng-container>
+    </div>
+  </ng-template>
+</ng-template>

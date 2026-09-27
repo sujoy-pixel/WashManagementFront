@@ -53,6 +53,7 @@ interface OrderBalanceGarmentRow {
   deliveryBalanceQtyPcs: number | null;
   washStatus: string;
   remarks: string;
+  isSubtotal?: boolean;
 }
 
 /** Fabric & Cutting Parts (Kg) view - same grain, different columns. */
@@ -84,6 +85,7 @@ interface OrderBalanceFabricRow {
   deliveryBalanceKg: number | null;
   washStatus: string;
   remarks: string;
+  isSubtotal?: boolean;
 }
 
 @Component({
@@ -116,6 +118,26 @@ export class OrderWiseBalanceDashboardComponent implements OnInit {
   garmentFilteredRows: OrderBalanceGarmentRow[] = [];
   fabricRows: OrderBalanceFabricRow[] = [];
   fabricFilteredRows: OrderBalanceFabricRow[] = [];
+
+  /**
+   * Grand Total footer figures - every column here is a per-row total (not a
+   * running/cumulative snapshot like the Date-wise dashboard), so unlike that
+   * screen the Grand Total is simply the sum of ALL matching rows, and each
+   * Sub Total is simply the sum of the rows within its Buyer/Job/Order/Style/
+   * Color group. Both are recomputed on top of whatever the global search
+   * currently matches (see onGlobalSearch), so they update dynamically as the
+   * user types/clears the filter, and fall back to the full dataset when the
+   * search box is empty.
+   */
+  garmentGrandTotal: {
+    orderQtyPcs: number; totalReceiveQtyPcs: number; receiveBalancePcs: number;
+    totalDeliveryQtyPcs: number; readyForDeliveryPcs: number; approvalTrail: number; deliveryBalanceQtyPcs: number;
+  } | null = null;
+
+  fabricGrandTotal: {
+    orderQtyKg: number; totalReceiveRoll: number; totalReceiveQtyKg: number; receiveBalanceKg: number;
+    totalDeliveryRoll: number; totalDeliveryQtyKg: number; readyForDeliveryKg: number; deliveryBalanceKg: number;
+  } | null = null;
 
   constructor(
     private washService: WashSetupService,
@@ -265,17 +287,15 @@ export class OrderWiseBalanceDashboardComponent implements OnInit {
       return row;
     });
 
-    // Sort by buyer -> job -> orderNo (matches SP ORDER BY grain)
-    this.garmentRows.sort((a, b) => {
-      const buyerComp = (a.buyer || '').localeCompare(b.buyer || '');
-      if (buyerComp !== 0) return buyerComp;
-      const jobComp = (a.job || '').localeCompare(b.job || '');
-      if (jobComp !== 0) return jobComp;
-      return (a.orderNo || '').localeCompare(b.orderNo || '');
-    });
+    // Sort by Buyer -> Job -> Order -> Style -> Color -> DressPart, so every
+    // row belonging to the same Buyer/Job/Order/Style/Color group is
+    // contiguous (DressPart rows within it appear together, in a stable order).
+    this.garmentRows.sort((a, b) => this.groupCompare(a, b));
+
+    this.garmentGrandTotal = this.computeGarmentGrandTotal(this.garmentRows);
 
     this.globalSearch = '';
-    this.garmentFilteredRows = [...this.garmentRows];
+    this.garmentFilteredRows = this.insertGarmentSubtotals(this.garmentRows);
   }
 
   private processFabricData(rawData: any[]): void {
@@ -315,78 +335,227 @@ export class OrderWiseBalanceDashboardComponent implements OnInit {
       return row;
     });
 
-    this.fabricRows.sort((a, b) => {
-      const buyerComp = (a.buyer || '').localeCompare(b.buyer || '');
-      if (buyerComp !== 0) return buyerComp;
-      const jobComp = (a.job || '').localeCompare(b.job || '');
-      if (jobComp !== 0) return jobComp;
-      return (a.orderNo || '').localeCompare(b.orderNo || '');
-    });
+    this.fabricRows.sort((a, b) => this.groupCompare(a, b));
+
+    this.fabricGrandTotal = this.computeFabricGrandTotal(this.fabricRows);
 
     this.globalSearch = '';
-    this.fabricFilteredRows = [...this.fabricRows];
+    this.fabricFilteredRows = this.insertFabricSubtotals(this.fabricRows);
   }
 
   // =========================================================================
   // Global Search - Buyer, Job, Order, Style, Color, DressPart, WashType,
   // WashStatus, ReceiveFrom (+ numeric fields).
+  //
+  // Filters the raw rows, then RE-BUILDS the Sub Total rows AND the Grand
+  // Total over whatever survived the filter - so searching by Style/Color (or
+  // anything else) still shows each visible group's Sub Total line, and the
+  // footer's Grand Total shrinks/grows to match exactly what's on screen.
+  // Clearing the search restores both to the full dataset.
   // =========================================================================
   onGlobalSearch(): void {
     const term = this.globalSearch?.trim()?.toLowerCase() ?? '';
 
-    if (!term.length) {
-      if (this.viewType === 1) {
-        this.garmentFilteredRows = [...this.garmentRows];
-      } else {
-        this.fabricFilteredRows = [...this.fabricRows];
-      }
-      return;
-    }
-
     if (this.viewType === 1) {
-      this.garmentFilteredRows = this.garmentRows.filter(r =>
-        this.matches(r.receiveFrom,   term) ||
-        this.matches(r.buyer,         term) ||
-        this.matches(r.job,           term) ||
-        this.matches(r.orderNo,       term) ||
-        this.matches(r.style,         term) ||
-        this.matches(r.color,         term) ||
-        this.matches(r.dressPart,     term) ||
-        this.matches(r.washType,      term) ||
-        this.matches(r.washStatus,    term) ||
-        this.matches(r.fabricComposition, term) ||
-        this.matchesNumber(r.orderQtyPcs,           term) ||
-        this.matchesNumber(r.totalReceiveQtyPcs,    term) ||
-        this.matchesNumber(r.receiveBalancePcs,     term) ||
-        this.matchesNumber(r.totalDeliveryQtyPcs,   term) ||
-        this.matchesNumber(r.readyForDeliveryPcs,   term) ||
-        this.matchesNumber(r.approvalTrail,         term) ||
-        this.matchesNumber(r.deliveryBalanceQtyPcs, term)
-      );
+      const matched = term.length
+        ? this.garmentRows.filter(r => this.garmentMatches(r, term))
+        : this.garmentRows;
+      this.garmentFilteredRows = this.insertGarmentSubtotals(matched);
+      this.garmentGrandTotal = matched.length ? this.computeGarmentGrandTotal(matched) : null;
     } else {
-      this.fabricFilteredRows = this.fabricRows.filter(r =>
-        this.matches(r.receiveFrom,    term) ||
-        this.matches(r.buyer,          term) ||
-        this.matches(r.job,            term) ||
-        this.matches(r.orderNo,        term) ||
-        this.matches(r.style,          term) ||
-        this.matches(r.color,          term) ||
-        this.matches(r.dressPart,      term) ||
-        this.matches(r.washType,       term) ||
-        this.matches(r.washStatus,     term) ||
-        this.matches(r.fabricComposition, term) ||
-        this.matches(r.batchLot,       term) ||
-        this.matchesNumber(r.dia,                  term) ||
-        this.matchesNumber(r.orderQtyKg,           term) ||
-        this.matchesNumber(r.totalReceiveRoll,     term) ||
-        this.matchesNumber(r.totalReceiveQtyKg,    term) ||
-        this.matchesNumber(r.receiveBalanceKg,     term) ||
-        this.matchesNumber(r.totalDeliveryRoll,    term) ||
-        this.matchesNumber(r.totalDeliveryQtyKg,   term) ||
-        this.matchesNumber(r.readyForDeliveryKg,   term) ||
-        this.matchesNumber(r.deliveryBalanceKg,    term)
-      );
+      const matched = term.length
+        ? this.fabricRows.filter(r => this.fabricMatches(r, term))
+        : this.fabricRows;
+      this.fabricFilteredRows = this.insertFabricSubtotals(matched);
+      this.fabricGrandTotal = matched.length ? this.computeFabricGrandTotal(matched) : null;
     }
+  }
+
+  private garmentMatches(r: OrderBalanceGarmentRow, term: string): boolean {
+    return (
+      this.matches(r.receiveFrom,   term) ||
+      this.matches(r.buyer,         term) ||
+      this.matches(r.job,           term) ||
+      this.matches(r.orderNo,       term) ||
+      this.matches(r.style,         term) ||
+      this.matches(r.color,         term) ||
+      this.matches(r.dressPart,     term) ||
+      this.matches(r.washType,      term) ||
+      this.matches(r.washStatus,    term) ||
+      this.matches(r.fabricComposition, term) ||
+      this.matchesNumber(r.orderQtyPcs,           term) ||
+      this.matchesNumber(r.totalReceiveQtyPcs,    term) ||
+      this.matchesNumber(r.receiveBalancePcs,     term) ||
+      this.matchesNumber(r.totalDeliveryQtyPcs,   term) ||
+      this.matchesNumber(r.readyForDeliveryPcs,   term) ||
+      this.matchesNumber(r.approvalTrail,         term) ||
+      this.matchesNumber(r.deliveryBalanceQtyPcs, term)
+    );
+  }
+
+  private fabricMatches(r: OrderBalanceFabricRow, term: string): boolean {
+    return (
+      this.matches(r.receiveFrom,    term) ||
+      this.matches(r.buyer,          term) ||
+      this.matches(r.job,            term) ||
+      this.matches(r.orderNo,        term) ||
+      this.matches(r.style,          term) ||
+      this.matches(r.color,          term) ||
+      this.matches(r.dressPart,      term) ||
+      this.matches(r.washType,       term) ||
+      this.matches(r.washStatus,     term) ||
+      this.matches(r.fabricComposition, term) ||
+      this.matches(r.batchLot,       term) ||
+      this.matchesNumber(r.dia,                  term) ||
+      this.matchesNumber(r.orderQtyKg,           term) ||
+      this.matchesNumber(r.totalReceiveRoll,     term) ||
+      this.matchesNumber(r.totalReceiveQtyKg,    term) ||
+      this.matchesNumber(r.receiveBalanceKg,     term) ||
+      this.matchesNumber(r.totalDeliveryRoll,    term) ||
+      this.matchesNumber(r.totalDeliveryQtyKg,   term) ||
+      this.matchesNumber(r.readyForDeliveryKg,   term) ||
+      this.matchesNumber(r.deliveryBalanceKg,    term)
+    );
+  }
+
+  /** Buyer/Job/Order/Style/Color -> DressPart comparator (keeps each group's rows contiguous). */
+  private groupCompare<T extends { buyer: string; job: string; orderNo: string; style: string; color: string; dressPart: string }>(
+    a: T, b: T
+  ): number {
+    const buyerComp = (a.buyer || '').localeCompare(b.buyer || '');
+    if (buyerComp !== 0) return buyerComp;
+    const jobComp = (a.job || '').localeCompare(b.job || '');
+    if (jobComp !== 0) return jobComp;
+    const orderComp = (a.orderNo || '').localeCompare(b.orderNo || '');
+    if (orderComp !== 0) return orderComp;
+    const styleComp = (a.style || '').localeCompare(b.style || '');
+    if (styleComp !== 0) return styleComp;
+    const colorComp = (a.color || '').localeCompare(b.color || '');
+    if (colorComp !== 0) return colorComp;
+    return (a.dressPart || '').localeCompare(b.dressPart || '');
+  }
+
+  /** Buyer/Job/Order/Style/Color grouping key (no DressPart - a group can span several DressParts). */
+  private groupKey(r: { buyer: string; job: string; orderNo: string; style: string; color: string }): string {
+    return `${r.buyer}||${r.job}||${r.orderNo}||${r.style}||${r.color}`;
+  }
+
+  /**
+   * Inserts a "Sub Total" row after the last DressPart of each
+   * Buyer/Job/Order/Style/Color group. Every summed column here is a
+   * per-row total (Order Qty, Receive/Delivery totals, balances), so the
+   * Sub Total is a plain sum across the group's rows - no "last row wins"
+   * logic is needed (unlike the Date-wise dashboard's running cumulative).
+   */
+  private insertGarmentSubtotals(rows: OrderBalanceGarmentRow[]): OrderBalanceGarmentRow[] {
+    const result: OrderBalanceGarmentRow[] = [];
+    let i = 0;
+    while (i < rows.length) {
+      const key = this.groupKey(rows[i]);
+      let orderQtyPcs = 0, totalReceiveQtyPcs = 0, receiveBalancePcs = 0,
+          totalDeliveryQtyPcs = 0, readyForDeliveryPcs = 0, approvalTrail = 0, deliveryBalanceQtyPcs = 0;
+      let j = i;
+      while (j < rows.length && this.groupKey(rows[j]) === key) {
+        const r = rows[j];
+        result.push(r);
+        orderQtyPcs += r.orderQtyPcs ?? 0;
+        totalReceiveQtyPcs += r.totalReceiveQtyPcs ?? 0;
+        receiveBalancePcs += r.receiveBalancePcs ?? 0;
+        totalDeliveryQtyPcs += r.totalDeliveryQtyPcs ?? 0;
+        readyForDeliveryPcs += r.readyForDeliveryPcs ?? 0;
+        approvalTrail += r.approvalTrail ?? 0;
+        deliveryBalanceQtyPcs += r.deliveryBalanceQtyPcs ?? 0;
+        j++;
+      }
+      result.push({
+        receiveFrom: '', buyer: '', job: '', orderNo: '', style: '', color: '', dressPart: '',
+        washType: '', fabricComposition: '', gsm: '', fabricConPerDzn: null,
+        orderQtyPcs,
+        shipmentDate: null, firstReceiveDate: null, lastReceiveDate: null,
+        totalReceiveQtyPcs, receiveBalancePcs,
+        firstDeliveryDate: null, lastDeliveryDate: null,
+        totalDeliveryQtyPcs, readyForDeliveryPcs, approvalTrail, deliveryBalanceQtyPcs,
+        washStatus: '', remarks: '',
+        isSubtotal: true
+      });
+      i = j;
+    }
+    return result;
+  }
+
+  private insertFabricSubtotals(rows: OrderBalanceFabricRow[]): OrderBalanceFabricRow[] {
+    const result: OrderBalanceFabricRow[] = [];
+    let i = 0;
+    while (i < rows.length) {
+      const key = this.groupKey(rows[i]);
+      let orderQtyKg = 0, totalReceiveRoll = 0, totalReceiveQtyKg = 0, receiveBalanceKg = 0,
+          totalDeliveryRoll = 0, totalDeliveryQtyKg = 0, readyForDeliveryKg = 0, deliveryBalanceKg = 0;
+      let j = i;
+      while (j < rows.length && this.groupKey(rows[j]) === key) {
+        const r = rows[j];
+        result.push(r);
+        orderQtyKg += r.orderQtyKg ?? 0;
+        totalReceiveRoll += r.totalReceiveRoll ?? 0;
+        totalReceiveQtyKg += r.totalReceiveQtyKg ?? 0;
+        receiveBalanceKg += r.receiveBalanceKg ?? 0;
+        totalDeliveryRoll += r.totalDeliveryRoll ?? 0;
+        totalDeliveryQtyKg += r.totalDeliveryQtyKg ?? 0;
+        readyForDeliveryKg += r.readyForDeliveryKg ?? 0;
+        deliveryBalanceKg += r.deliveryBalanceKg ?? 0;
+        j++;
+      }
+      result.push({
+        receiveFrom: '', buyer: '', job: '', orderNo: '', style: '', color: '', dressPart: '',
+        washType: '', fabricComposition: '', batchLot: '', gsm: '', dia: null,
+        orderQtyKg,
+        shipmentDate: null, firstReceiveDate: null, lastReceiveDate: null,
+        totalReceiveRoll, totalReceiveQtyKg, receiveBalanceKg,
+        firstDeliveryDate: null, lastDeliveryDate: null,
+        totalDeliveryRoll, totalDeliveryQtyKg, readyForDeliveryKg, deliveryBalanceKg,
+        washStatus: '', remarks: '',
+        isSubtotal: true
+      });
+      i = j;
+    }
+    return result;
+  }
+
+  /** Grand Total = plain sum of every matching row (all columns here are per-row totals). */
+  private computeGarmentGrandTotal(rows: OrderBalanceGarmentRow[]): {
+    orderQtyPcs: number; totalReceiveQtyPcs: number; receiveBalancePcs: number;
+    totalDeliveryQtyPcs: number; readyForDeliveryPcs: number; approvalTrail: number; deliveryBalanceQtyPcs: number;
+  } {
+    let orderQtyPcs = 0, totalReceiveQtyPcs = 0, receiveBalancePcs = 0,
+        totalDeliveryQtyPcs = 0, readyForDeliveryPcs = 0, approvalTrail = 0, deliveryBalanceQtyPcs = 0;
+    for (const r of rows) {
+      orderQtyPcs += r.orderQtyPcs ?? 0;
+      totalReceiveQtyPcs += r.totalReceiveQtyPcs ?? 0;
+      receiveBalancePcs += r.receiveBalancePcs ?? 0;
+      totalDeliveryQtyPcs += r.totalDeliveryQtyPcs ?? 0;
+      readyForDeliveryPcs += r.readyForDeliveryPcs ?? 0;
+      approvalTrail += r.approvalTrail ?? 0;
+      deliveryBalanceQtyPcs += r.deliveryBalanceQtyPcs ?? 0;
+    }
+    return { orderQtyPcs, totalReceiveQtyPcs, receiveBalancePcs, totalDeliveryQtyPcs, readyForDeliveryPcs, approvalTrail, deliveryBalanceQtyPcs };
+  }
+
+  private computeFabricGrandTotal(rows: OrderBalanceFabricRow[]): {
+    orderQtyKg: number; totalReceiveRoll: number; totalReceiveQtyKg: number; receiveBalanceKg: number;
+    totalDeliveryRoll: number; totalDeliveryQtyKg: number; readyForDeliveryKg: number; deliveryBalanceKg: number;
+  } {
+    let orderQtyKg = 0, totalReceiveRoll = 0, totalReceiveQtyKg = 0, receiveBalanceKg = 0,
+        totalDeliveryRoll = 0, totalDeliveryQtyKg = 0, readyForDeliveryKg = 0, deliveryBalanceKg = 0;
+    for (const r of rows) {
+      orderQtyKg += r.orderQtyKg ?? 0;
+      totalReceiveRoll += r.totalReceiveRoll ?? 0;
+      totalReceiveQtyKg += r.totalReceiveQtyKg ?? 0;
+      receiveBalanceKg += r.receiveBalanceKg ?? 0;
+      totalDeliveryRoll += r.totalDeliveryRoll ?? 0;
+      totalDeliveryQtyKg += r.totalDeliveryQtyKg ?? 0;
+      readyForDeliveryKg += r.readyForDeliveryKg ?? 0;
+      deliveryBalanceKg += r.deliveryBalanceKg ?? 0;
+    }
+    return { orderQtyKg, totalReceiveRoll, totalReceiveQtyKg, receiveBalanceKg, totalDeliveryRoll, totalDeliveryQtyKg, readyForDeliveryKg, deliveryBalanceKg };
   }
 
   // =========================================================================
@@ -413,33 +582,51 @@ export class OrderWiseBalanceDashboardComponent implements OnInit {
       return;
     }
 
-    const exportData = this.garmentFilteredRows.map(row => ({
-      'Receive From':               row.receiveFrom,
-      'Buyer':                      row.buyer,
-      'Job':                        row.job,
-      'Order':                      row.orderNo,
-      'Style':                      row.style,
-      'Color':                      row.color,
-      'Dress Part':                 row.dressPart,
-      'Wash Type':                  row.washType,
-      'Fabric Composition':         row.fabricComposition,
-      'GSM':                        row.gsm,
-      'Fabric Con. per Dzn':        row.fabricConPerDzn ?? '',
-      'Order Qty (Pcs)':            row.orderQtyPcs ?? '',
-      'Shipment Date':              this.formatDate(row.shipmentDate),
-      '1st Receive Date':           this.formatDate(row.firstReceiveDate),
-      'Last Receive Date':          this.formatDate(row.lastReceiveDate),
-      'Total Receive Qty (Pcs)':    row.totalReceiveQtyPcs ?? '',
-      'Receive Balance (Pcs)':      row.receiveBalancePcs ?? '',
-      '1st Delivery Date':          this.formatDate(row.firstDeliveryDate),
-      'Last Delivery Date':         this.formatDate(row.lastDeliveryDate),
-      'Total Delivery Qty (Pcs)':   row.totalDeliveryQtyPcs ?? '',
-      'Ready for Delivery (Pcs)':   row.readyForDeliveryPcs ?? '',
-      'Approval / Trail':           row.approvalTrail ?? '',
-      'Delivery Balance Qty (Pcs)': row.deliveryBalanceQtyPcs ?? '',
-      'Wash Status':                row.washStatus,
-      'Remarks':                    row.remarks
-    }));
+    const exportData = this.garmentFilteredRows.map(row => {
+      if (row.isSubtotal) {
+        return {
+          'Receive From': 'Sub Total:', 'Buyer': '', 'Job': '', 'Order': '', 'Style': '', 'Color': '',
+          'Dress Part': '', 'Wash Type': '', 'Fabric Composition': '', 'GSM': '', 'Fabric Con. per Dzn': '',
+          'Order Qty (Pcs)': row.orderQtyPcs ?? '',
+          'Shipment Date': '', '1st Receive Date': '', 'Last Receive Date': '',
+          'Total Receive Qty (Pcs)': row.totalReceiveQtyPcs ?? '',
+          'Receive Balance (Pcs)': row.receiveBalancePcs ?? '',
+          '1st Delivery Date': '', 'Last Delivery Date': '',
+          'Total Delivery Qty (Pcs)': row.totalDeliveryQtyPcs ?? '',
+          'Ready for Delivery (Pcs)': row.readyForDeliveryPcs ?? '',
+          'Approval / Trail': row.approvalTrail ?? '',
+          'Delivery Balance Qty (Pcs)': row.deliveryBalanceQtyPcs ?? '',
+          'Wash Status': '', 'Remarks': ''
+        };
+      }
+      return {
+        'Receive From':               row.receiveFrom,
+        'Buyer':                      row.buyer,
+        'Job':                        row.job,
+        'Order':                      row.orderNo,
+        'Style':                      row.style,
+        'Color':                      row.color,
+        'Dress Part':                 row.dressPart,
+        'Wash Type':                  row.washType,
+        'Fabric Composition':         row.fabricComposition,
+        'GSM':                        row.gsm,
+        'Fabric Con. per Dzn':        row.fabricConPerDzn ?? '',
+        'Order Qty (Pcs)':            row.orderQtyPcs ?? '',
+        'Shipment Date':              this.formatDate(row.shipmentDate),
+        '1st Receive Date':           this.formatDate(row.firstReceiveDate),
+        'Last Receive Date':          this.formatDate(row.lastReceiveDate),
+        'Total Receive Qty (Pcs)':    row.totalReceiveQtyPcs ?? '',
+        'Receive Balance (Pcs)':      row.receiveBalancePcs ?? '',
+        '1st Delivery Date':          this.formatDate(row.firstDeliveryDate),
+        'Last Delivery Date':         this.formatDate(row.lastDeliveryDate),
+        'Total Delivery Qty (Pcs)':   row.totalDeliveryQtyPcs ?? '',
+        'Ready for Delivery (Pcs)':   row.readyForDeliveryPcs ?? '',
+        'Approval / Trail':           row.approvalTrail ?? '',
+        'Delivery Balance Qty (Pcs)': row.deliveryBalanceQtyPcs ?? '',
+        'Wash Status':                row.washStatus,
+        'Remarks':                    row.remarks
+      };
+    });
 
     const ws: XLSX.WorkSheet = XLSX.utils.json_to_sheet(exportData);
     ws['!cols'] = [
@@ -463,7 +650,21 @@ export class OrderWiseBalanceDashboardComponent implements OnInit {
       return;
     }
 
-    const exportData = this.fabricFilteredRows.map(row => ({
+    const exportData = this.fabricFilteredRows.map(row => row.isSubtotal ? {
+      'Receive From': 'Sub Total:', 'Buyer': '', 'Job': '', 'Order': '', 'Style': '', 'Color': '',
+      'Dress Part': '', 'Wash Type': '', 'Fabric Composition': '', 'Batch / Lot': '', 'GSM': '', 'Dia': '',
+      'Order Qty (Kg)': row.orderQtyKg ?? '',
+      'Shipment Date': '', '1st Receive Date': '', 'Last Receive Date': '',
+      'Total Receive Roll': row.totalReceiveRoll ?? '',
+      'Total Receive Qty (Kg)': row.totalReceiveQtyKg ?? '',
+      'Receive Balance (Kg)': row.receiveBalanceKg ?? '',
+      '1st Delivery Date': '', 'Last Delivery Date': '',
+      'Total Delivery Roll': row.totalDeliveryRoll ?? '',
+      'Total Delivery Qty (Kg)': row.totalDeliveryQtyKg ?? '',
+      'Ready for Delivery (Kg)': row.readyForDeliveryKg ?? '',
+      'Delivery Balance Qty (Kg)': row.deliveryBalanceKg ?? '',
+      'Wash Status': '', 'Remarks': ''
+    } : {
       'Receive From':               row.receiveFrom,
       'Buyer':                      row.buyer,
       'Job':                        row.job,
@@ -491,7 +692,7 @@ export class OrderWiseBalanceDashboardComponent implements OnInit {
       'Delivery Balance Qty (Kg)':  row.deliveryBalanceKg ?? '',
       'Wash Status':                row.washStatus,
       'Remarks':                    row.remarks
-    }));
+    });
 
     const ws: XLSX.WorkSheet = XLSX.utils.json_to_sheet(exportData);
     ws['!cols'] = [
@@ -514,10 +715,12 @@ export class OrderWiseBalanceDashboardComponent implements OnInit {
   // TrackBy
   // =========================================================================
   trackByGarment(index: number, row: OrderBalanceGarmentRow): string {
+    if (row.isSubtotal) return `subtotal-${index}`;
     return `${row.buyer}-${row.job}-${row.orderNo}-${row.style}-${row.color}-${row.dressPart}-${index}`;
   }
 
   trackByFabric(index: number, row: OrderBalanceFabricRow): string {
+    if (row.isSubtotal) return `subtotal-${index}`;
     return `${row.buyer}-${row.job}-${row.orderNo}-${row.style}-${row.color}-${row.dressPart}-${row.batchLot}-${index}`;
   }
 
@@ -529,6 +732,8 @@ export class OrderWiseBalanceDashboardComponent implements OnInit {
     this.garmentFilteredRows = [];
     this.fabricRows = [];
     this.fabricFilteredRows = [];
+    this.garmentGrandTotal = null;
+    this.fabricGrandTotal = null;
   }
 
   formatDate(d: any): string {

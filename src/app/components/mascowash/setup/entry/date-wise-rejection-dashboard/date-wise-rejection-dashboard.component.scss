@@ -261,3 +261,30 @@
     max-height: calc(100vh - 320px);
   }
 }
+
+/* Sub Total row - closes out each Buyer/Job/Order/Style/Color group */
+.ftd-subtotal-row {
+  .ftd {
+    background: #e8e8e8 !important;
+    color: #111;
+    font-size: 11.5px;
+  }
+}
+
+.floor-table > tbody > tr.ftd-subtotal-row:hover .ftd {
+  background: #dcdcdc !important;
+}
+
+/* Grand Total footer row - totals over every row matching the global search */
+.ftd-grandtotal-row {
+  td.ftd {
+    background: linear-gradient(180deg, #2c3e6b 0%, #1e2d52 100%) !important;
+    color: #ffffff !important;
+    font-size: 12px;
+    border-top: 2px solid #111 !important;
+  }
+}
+
+.floor-table > tfoot > tr.ftd-grandtotal-row:hover .ftd {
+  filter: brightness(1.1);
+}

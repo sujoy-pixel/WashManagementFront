@@ -134,7 +134,7 @@
               <td class="ftd ftd-center">{{ row.dressPart }}</td>
               <td class="ftd ftd-center">{{ row.washCategory }}</td>
               <td class="ftd ftd-center">{{ row.itemName }}</td>
-              <td class="ftd ftd-center ftd-semibold">{{ row.receiveQty | number }}</td>
+              <td class="ftd ftd-center ftd-semibold">{{ row.receiveQty != null ? (row.receiveQty | number) : '-' }}</td>
               <td class="ftd ftd-center">{{ row.uom }}</td>
               <td class="ftd ftd-center ftd-bold ftd-batch-count">{{ row.noOfBatch }}</td>
               <td class="ftd ftd-center">{{ row.totalCheckQty | number }}</td>
@@ -163,6 +163,23 @@
             </tr>
           </ng-container>
         </tbody>
+        <!-- Grand Total: recomputed from the rows matching the global search -->
+        <tfoot *ngIf="!isLoading && grandTotal">
+          <tr class="grandtotal-row">
+            <td colspan="9" class="ftd text-end ftd-bold">Grand Total:</td>
+            <td class="ftd ftd-center ftd-bold">{{ grandTotal.receiveQty | number }}</td>
+            <td class="ftd ftd-center ftd-bold">{{ grandTotal.uom }}</td>
+            <td class="ftd ftd-center ftd-bold">{{ grandTotal.noOfBatch }}</td>
+            <td class="ftd ftd-center ftd-bold">{{ grandTotal.totalCheckQty | number }}</td>
+            <td class="ftd ftd-center ftd-bold">{{ grandTotal.totalOkayQty | number }}</td>
+            <td class="ftd ftd-center ftd-bold">{{ grandTotal.totalDefectQty | number }}</td>
+            <td class="ftd ftd-center ftd-bold">{{ formatPercent(grandTotal.defectPercent) }}</td>
+            <td class="ftd ftd-center ftd-bold">{{ grandTotal.defectsBalanceQty | number }}</td>
+            <td class="ftd ftd-center ftd-bold">{{ grandTotal.rectifyDefectsQty | number }}</td>
+            <td class="ftd ftd-center ftd-bold">{{ grandTotal.totalRejectQty | number }}</td>
+            <td class="ftd ftd-center ftd-bold">{{ formatPercent(grandTotal.rejectPercent) }}</td>
+          </tr>
+        </tfoot>
       </table>
 
       <div class="floor-empty-state" *ngIf="filteredRows.length === 0 && !isLoading">

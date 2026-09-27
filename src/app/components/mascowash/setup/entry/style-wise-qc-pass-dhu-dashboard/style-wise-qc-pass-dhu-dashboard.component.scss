@@ -112,6 +112,21 @@
     background-color: #fffae6 !important;
   }
 }
+
+/* Grand Total footer row - same look as Date-wise Balance Dashboard */
+.grandtotal-row {
+  td.ftd {
+    background: linear-gradient(180deg, #2c3e6b 0%, #1e2d52 100%) !important;
+    color: #ffffff !important;
+    font-size: 12px;
+    border-top: 2px solid #111 !important;
+  }
+}
+
+.floor-table > tfoot > tr.grandtotal-row:hover .ftd {
+  filter: brightness(1.1);
+}
+
 .table-container-scroll-y {
   max-height: calc(100vh - 260px);
   overflow: auto;

@@ -66,9 +66,30 @@
       </div>
     </div>
   
-    <!-- Search Button -->
+    <!-- Global Filter + Search Button -->
     <div class="row mt-4">
-      <div class="col text-end">
+      <div class="col d-flex justify-content-end align-items-center gap-3 flex-wrap">
+
+        <div class="global-search" [class.has-value]="globalFilter" [class.disabled]="detailList.length === 0">
+          <i class="fa fa-filter gs-icon"></i>
+          <input
+            type="text"
+            class="gs-input"
+            placeholder="Filter batch, buyer, style, color..."
+            [disabled]="detailList.length === 0"
+            [(ngModel)]="globalFilter"
+            (ngModelChange)="applyGlobalFilter()"
+            (keydown.escape)="clearGlobalFilter()">
+          <span class="gs-count" *ngIf="detailList.length > 0"
+                [class.gs-count-empty]="filteredDetailList.length === 0">
+            {{ filteredDetailList.length }}<small>/{{ detailList.length }}</small>
+          </span>
+          <button *ngIf="globalFilter" type="button" class="gs-clear" title="Clear (Esc)"
+                  (click)="clearGlobalFilter()">
+            <i class="fa fa-times"></i>
+          </button>
+        </div>
+
         <button class="btn btn-gradient px-4 py-2" (click)="onSearch()">
           <i class="fa fa-search me-2"></i> Search
         </button>
@@ -111,7 +132,7 @@
       </thead>
 
       <tbody>
-        <tr *ngFor="let row of detailList; let i = index">
+        <tr *ngFor="let row of filteredDetailList; let i = index">
 
           <!-- ✅ FIX 5+8: Edit td is NOW FIRST — matches thead -->
           <!-- <td class="text-center">
@@ -255,8 +276,9 @@
       </tbody>
     </table>
 
-    <div class="empty-state-message" *ngIf="detailList.length === 0">
-      <p>No results found. Try adjusting your search filters.</p>
+    <div class="empty-state-message" *ngIf="filteredDetailList.length === 0">
+      <p *ngIf="detailList.length === 0">No results found. Try adjusting your search filters.</p>
+      <p *ngIf="detailList.length > 0">No rows match "{{ globalFilter }}".</p>
     </div>
   </div>
 </p-card>

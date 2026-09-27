@@ -9,6 +9,7 @@ import { FormsModule } from '@angular/forms';
 import { NgSelectModule } from '@ng-select/ng-select';
 import { BsDatepickerModule } from 'ngx-bootstrap/datepicker';
 import { CardModule } from 'primeng/card';
+import Swal from 'sweetalert2';
 
 
 interface DropdownItem {
@@ -699,12 +700,27 @@ openPrepareTab(row: WashBatchRow): void {
     });
   }
 
+  // Fully prepared -> ask whether this should go as a Re-wash
   if (row.totalQty == row.alreadyPreparedQty) {
-    this.toastr.warning('All quantity already prepared for this batch.');
+    Swal.fire({
+      title: 'Already Prepared',
+      text: 'All quantity already prepared for this batch. Do you want to Re-wash?',
+      icon: 'question',
+      showCancelButton: true,
+      confirmButtonText: 'Yes, Re-wash',
+      cancelButtonText: 'No'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this.proceedPrepareTab(row, true);
+      }
+    });
     return;
   }
 
-  debugger;
+  this.proceedPrepareTab(row, false);
+}
+
+private proceedPrepareTab(row: WashBatchRow, isReWash: boolean): void {
 
   if (!row?.orderId) return;
 
@@ -750,8 +766,12 @@ openPrepareTab(row: WashBatchRow): void {
     sizeDetails: row.sizeDetails ?? [],
 
     // ===== TOTAL =====
-    totalQty: row.totalQty - row.alreadyPreparedQty,
-    
+    // Re-wash starts over from the full batch qty (remaining is 0 by definition)
+    totalQty: isReWash ? row.totalQty : (row.totalQty - row.alreadyPreparedQty),
+
+    // ===== RE-WASH =====
+    reWash: isReWash ? 1 : 0,
+
   };
   // openPrepareTab(row: WashBatchRow): void {
 

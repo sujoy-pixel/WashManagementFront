@@ -75,8 +75,13 @@ export class StyleWiseRejectionDashboardComponent implements OnInit {
   globalSearch = '';
   isLoading = false;
 
-  allRows: StyleWiseRejectionRow[] = [];
+  // Data rows only (no Sub Total rows), sorted by Buyer/Job/Order/Style/Color.
+  dataRows: StyleWiseRejectionRow[] = [];
+  // Data rows matching the global search + a Sub Total row after each group.
   filteredRows: StyleWiseRejectionRow[] = [];
+  // Grand Total footer row(s) over the rows matching the global search
+  // (one per UoM when the result mixes Pcs and Kg).
+  grandTotals: StyleWiseRejectionRow[] = [];
 
   constructor(
     private washService: WashSetupService,
@@ -284,54 +289,45 @@ export class StyleWiseRejectionDashboardComponent implements OnInit {
       return row;
     });
 
-    // FR-1.2: the grid must group items sharing the same Style AND Order
-    // combination. Sort by that pair first so every row belonging to one
-    // group is contiguous, with Buyer/Job as a stable secondary sort only
-    // (never part of the grouping key itself).
+    // Same grouping as the Date-wise Balance dashboard: Buyer -> Job -> Order
+    // -> Style -> Color, so every row of one group is contiguous and its
+    // Sub Total lands right after it.
     aggregated.sort((a, b) => {
+      const bComp = (a.buyer || '').localeCompare(b.buyer || '');
+      if (bComp !== 0) return bComp;
+      const jComp = (a.job || '').localeCompare(b.job || '');
+      if (jComp !== 0) return jComp;
       const oComp = (a.orderNo || '').localeCompare(b.orderNo || '');
       if (oComp !== 0) return oComp;
       const sComp = (a.style || '').localeCompare(b.style || '');
       if (sComp !== 0) return sComp;
-      const bComp = (a.buyer || '').localeCompare(b.buyer || '');
-      if (bComp !== 0) return bComp;
-      return (a.job || '').localeCompare(b.job || '');
+      return (a.color || '').localeCompare(b.color || '');
     });
 
-    // Group and calculate subtotals
-    const finalRows: StyleWiseRejectionRow[] = [];
-    let currentGroup: StyleWiseRejectionRow[] = [];
-
-    for (let i = 0; i < aggregated.length; i++) {
-      const row = aggregated[i];
-      currentGroup.push(row);
-
-      const isLast = i === aggregated.length - 1;
-      let isDifferent = false;
-
-      if (!isLast) {
-        const next = aggregated[i + 1];
-        if (!this.isSameStyleOrderGroup(row, next)) {
-          isDifferent = true;
-        }
-      }
-
-      if (isLast || isDifferent) {
-        finalRows.push(...currentGroup);
-        finalRows.push(...this.calculateSubtotals(currentGroup));
-        currentGroup = [];
-      }
-    }
-
-    this.allRows = finalRows;
+    this.dataRows = aggregated;
     this.globalSearch = '';
-    this.filteredRows = [...this.allRows];
+    this.onGlobalSearch();
   }
 
-  // FR-1.2 / AC-1.2: rows belong to the same group when they share the
-  // same Style AND Order combination - nothing else.
-  private isSameStyleOrderGroup(a: StyleWiseRejectionRow, b: StyleWiseRejectionRow): boolean {
-    return (a.orderNo || '') === (b.orderNo || '') && (a.style || '') === (b.style || '');
+  /** Buyer/Job/Order/Style/Color grouping key - same grain as the Date-wise Balance dashboard. */
+  private groupKey(r: StyleWiseRejectionRow): string {
+    return `${r.buyer}||${r.job}||${r.orderNo}||${r.style}||${r.color}`;
+  }
+
+  /** Inserts the Sub Total row(s) after the last row of each Buyer/Job/Order/Style/Color group. */
+  private insertSubtotals(rows: StyleWiseRejectionRow[]): StyleWiseRejectionRow[] {
+    const result: StyleWiseRejectionRow[] = [];
+    let i = 0;
+    while (i < rows.length) {
+      const key = this.groupKey(rows[i]);
+      let j = i;
+      while (j < rows.length && this.groupKey(rows[j]) === key) j++;
+      const group = rows.slice(i, j);
+      result.push(...group);
+      result.push(...this.calculateTotals(group, 'Sub Total'));
+      i = j;
+    }
+    return result;
   }
 
   private normKey(v: any): string {
@@ -405,13 +401,13 @@ export class StyleWiseRejectionDashboardComponent implements OnInit {
     this.sizeColumns = merged;
   }
 
-  // NFR: "Sub-totals must never combine conflicting UoMs." A Style/Order
-  // group is expected to share one UoM, but if the underlying data ever
-  // mixes e.g. Pcs and Kg rows in the same group, summing them together
-  // would silently produce a meaningless number. Instead, split the group
-  // by UoM and emit one Sub Total row per distinct UoM found, each
-  // labelled so it's clear which unit it covers.
-  private calculateSubtotals(group: StyleWiseRejectionRow[]): StyleWiseRejectionRow[] {
+  // NFR: "Sub-totals must never combine conflicting UoMs." A group is
+  // expected to share one UoM, but if the underlying data ever mixes e.g.
+  // Pcs and Kg rows, summing them together would silently produce a
+  // meaningless number. Instead, split by UoM and emit one total row per
+  // distinct UoM found, each labelled so it's clear which unit it covers.
+  // Used for both the Sub Total rows and the Grand Total footer.
+  private calculateTotals(group: StyleWiseRejectionRow[], label: string): StyleWiseRejectionRow[] {
     if (!group.length) return [];
 
     const byUom = new Map<string, StyleWiseRejectionRow[]>();
@@ -449,65 +445,43 @@ export class StyleWiseRejectionDashboardComponent implements OnInit {
         totalRejectQty,
         rejectPercent: this.calcPercent(totalRejectQty, totalCheckQty),
         isSubTotal: true,
-        subTotalLabel: multipleUoms ? `Sub Total (${uom}):` : 'Sub Total:'
+        subTotalLabel: multipleUoms ? `${label} (${uom}):` : `${label}:`
       } as StyleWiseRejectionRow;
     });
   }
 
+  /**
+   * Global search filters the data rows, then RE-BUILDS the Sub Total rows
+   * and the Grand Total over whatever matched - so both change dynamically
+   * as the user types, and fall back to the full dataset when cleared.
+   */
   onGlobalSearch(): void {
-    let result = [...this.allRows];
     const term = this.globalSearch?.trim()?.toLowerCase() ?? '';
+    const matched = term.length
+      ? this.dataRows.filter(r => this.rowMatches(r, term))
+      : this.dataRows;
 
-    if (term.length) {
-      result = result.filter(r => {
-        if (r.isSubTotal) {
-          return false;
-        }
-        return (
-          this.matches(r.receiveFrom, term) ||
-          this.matches(r.buyer, term) ||
-          this.matches(r.job, term) ||
-          this.matches(r.orderNo, term) ||
-          this.matches(r.style, term) ||
-          this.matches(r.color, term) ||
-          this.matches(r.dressPart, term) ||
-          this.matches(r.washCategory, term) ||
-          this.matches(r.itemName, term) ||
-          this.matches(r.uom, term) ||
-          this.matchesNumber(r.receiveQty, term) ||
-          this.matchesNumber(r.noOfBatch, term) ||
-          this.matchesNumber(r.totalCheckQty, term) ||
-          this.matchesNumber(r.totalRejectQty, term)
-        );
-      });
+    this.filteredRows = this.insertSubtotals(matched);
+    this.grandTotals = this.calculateTotals(matched, 'Grand Total');
+  }
 
-      const finalFiltered: StyleWiseRejectionRow[] = [];
-      let currentGroup: StyleWiseRejectionRow[] = [];
-
-      for (let i = 0; i < result.length; i++) {
-        const row = result[i];
-        currentGroup.push(row);
-
-        const isLast = i === result.length - 1;
-        let isDifferent = false;
-
-        if (!isLast) {
-          const next = result[i + 1];
-          if (!this.isSameStyleOrderGroup(row, next)) {
-            isDifferent = true;
-          }
-        }
-
-        if (isLast || isDifferent) {
-          finalFiltered.push(...currentGroup);
-          finalFiltered.push(...this.calculateSubtotals(currentGroup));
-          currentGroup = [];
-        }
-      }
-      this.filteredRows = finalFiltered;
-    } else {
-      this.filteredRows = [...this.allRows];
-    }
+  private rowMatches(r: StyleWiseRejectionRow, term: string): boolean {
+    return (
+      this.matches(r.receiveFrom, term) ||
+      this.matches(r.buyer, term) ||
+      this.matches(r.job, term) ||
+      this.matches(r.orderNo, term) ||
+      this.matches(r.style, term) ||
+      this.matches(r.color, term) ||
+      this.matches(r.dressPart, term) ||
+      this.matches(r.washCategory, term) ||
+      this.matches(r.itemName, term) ||
+      this.matches(r.uom, term) ||
+      this.matchesNumber(r.receiveQty, term) ||
+      this.matchesNumber(r.noOfBatch, term) ||
+      this.matchesNumber(r.totalCheckQty, term) ||
+      this.matchesNumber(r.totalRejectQty, term)
+    );
   }
 
   onClear(): void {
@@ -523,7 +497,7 @@ export class StyleWiseRejectionDashboardComponent implements OnInit {
       return;
     }
 
-    const exportData = this.filteredRows.map(row => {
+    const exportData = [...this.filteredRows, ...this.grandTotals].map(row => {
       const base: any = {};
       if (row.isSubTotal) {
         base['Receive From'] = row.subTotalLabel || 'Sub Total:';
@@ -597,8 +571,9 @@ export class StyleWiseRejectionDashboardComponent implements OnInit {
   }
 
   private resetGrid(): void {
-    this.allRows = [];
+    this.dataRows = [];
     this.filteredRows = [];
+    this.grandTotals = [];
   }
 
   private matches(value: string | undefined, term: string): boolean {

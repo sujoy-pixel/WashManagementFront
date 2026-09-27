@@ -35,6 +35,22 @@ interface DateWiseRejectionRow {
   sizeRejects: { [size: string]: number };
   totalRejectQty: number | null;
   rejectPercent: number | null;
+  isSubtotal?: boolean;
+}
+
+/**
+ * Sub Total / Grand Total figures.
+ * - receiveQty is per Tracking No (the same tracking no repeats across shifts/dates),
+ *   so it is counted ONCE per distinct Tracking No, never summed across every row.
+ * - Check / Reject / per-size rejects are genuinely additive per row.
+ */
+interface RejectionTotals {
+  receiveQty: number;
+  uom: string;
+  totalCheckQty: number;
+  totalRejectQty: number;
+  rejectPercent: number | null;
+  sizeRejects: { [size: string]: number };
 }
 
 @Component({
@@ -71,7 +87,10 @@ export class DateWiseRejectionDashboardComponent implements OnInit {
   isLoading = false;
 
   allRows: DateWiseRejectionRow[] = [];
+  // Display rows: matched rows + a Sub Total row after each Buyer/Job/Order/Style/Color group
   filteredRows: DateWiseRejectionRow[] = [];
+  // Recomputed over whatever the global search currently matches
+  grandTotal: RejectionTotals | null = null;
 
   constructor(
     private washService: WashSetupService,
@@ -282,16 +301,106 @@ export class DateWiseRejectionDashboardComponent implements OnInit {
       return row;
     });
 
-    // Sort by Date, then Tracking No
-    this.allRows.sort((a, b) => {
-      const dateA = a.date ? new Date(a.date).getTime() : 0;
-      const dateB = b.date ? new Date(b.date).getTime() : 0;
-      if (dateA !== dateB) return dateA - dateB;
-      return (a.trackingNo || '').localeCompare(b.trackingNo || '');
-    });
+    // Sort by group (Buyer/Job/Order/Style/Color), then Date, Tracking No, Shift,
+    // so each group's rows are contiguous and its Sub Total lands right after them.
+    this.allRows.sort((a, b) => this.groupThenDateCompare(a, b));
 
     this.globalSearch = '';
-    this.filteredRows = [...this.allRows];
+    this.applyView(this.allRows);
+  }
+
+  /** Rebuilds the grid rows (with Sub Totals) and the Grand Total from the given matched rows. */
+  private applyView(rows: DateWiseRejectionRow[]): void {
+    this.filteredRows = this.insertSubtotals(rows);
+    this.grandTotal = rows.length ? this.computeTotals(rows) : null;
+  }
+
+  /** Common Buyer -> Job -> Order -> Style -> Color -> Date -> Tracking No -> Shift comparator. */
+  private groupThenDateCompare(a: DateWiseRejectionRow, b: DateWiseRejectionRow): number {
+    const buyerComp = (a.buyer || '').localeCompare(b.buyer || '');
+    if (buyerComp !== 0) return buyerComp;
+    const jobComp = (a.job || '').localeCompare(b.job || '');
+    if (jobComp !== 0) return jobComp;
+    const orderComp = (a.orderNo || '').localeCompare(b.orderNo || '');
+    if (orderComp !== 0) return orderComp;
+    const styleComp = (a.style || '').localeCompare(b.style || '');
+    if (styleComp !== 0) return styleComp;
+    const colorComp = (a.color || '').localeCompare(b.color || '');
+    if (colorComp !== 0) return colorComp;
+    const dateA = a.date ? new Date(a.date).getTime() : 0;
+    const dateB = b.date ? new Date(b.date).getTime() : 0;
+    if (dateA !== dateB) return dateA - dateB;
+    const trackComp = (a.trackingNo || '').localeCompare(b.trackingNo || '');
+    if (trackComp !== 0) return trackComp;
+    return (a.shift || '').localeCompare(b.shift || '');
+  }
+
+  /** Buyer/Job/Order/Style/Color grouping key. */
+  private groupKey(r: DateWiseRejectionRow): string {
+    return `${r.buyer}||${r.job}||${r.orderNo}||${r.style}||${r.color}`;
+  }
+
+  /** Inserts a "Sub Total" row after the last row of each Buyer/Job/Order/Style/Color group. */
+  private insertSubtotals(rows: DateWiseRejectionRow[]): DateWiseRejectionRow[] {
+    const result: DateWiseRejectionRow[] = [];
+    let i = 0;
+    while (i < rows.length) {
+      const key = this.groupKey(rows[i]);
+      let j = i;
+      while (j < rows.length && this.groupKey(rows[j]) === key) {
+        result.push(rows[j]);
+        j++;
+      }
+      const t = this.computeTotals(rows.slice(i, j));
+      result.push({
+        date: null, trackingNo: '', receiveFrom: '', buyer: '', job: '', orderNo: '', style: '', color: '',
+        dressPart: '', washCategory: '', itemName: '', shift: '', qcName: '',
+        receiveQty: t.receiveQty,
+        uom: t.uom,
+        batchNo: '',
+        totalCheckQty: t.totalCheckQty,
+        sizeRejects: t.sizeRejects,
+        totalRejectQty: t.totalRejectQty,
+        rejectPercent: t.rejectPercent,
+        isSubtotal: true
+      });
+      i = j;
+    }
+    return result;
+  }
+
+  /**
+   * Totals over a set of data rows. Receive Qty is taken once per group + Tracking No
+   * (it repeats on every shift/date row of the same tracking no); everything else is summed.
+   */
+  private computeTotals(rows: DateWiseRejectionRow[]): RejectionTotals {
+    let receiveQty = 0, totalCheckQty = 0, totalRejectQty = 0;
+    const sizeRejects: { [size: string]: number } = {};
+    this.sizeColumns.forEach(col => sizeRejects[col.size] = 0);
+    const seenTracking = new Set<string>();
+    const uoms = new Set<string>();
+
+    for (const r of rows) {
+      const trackKey = `${this.groupKey(r)}||${r.trackingNo}`;
+      if (!seenTracking.has(trackKey)) {
+        seenTracking.add(trackKey);
+        receiveQty += r.receiveQty ?? 0;
+      }
+      if (r.uom) uoms.add(r.uom);
+      totalCheckQty += r.totalCheckQty ?? 0;
+      totalRejectQty += r.totalRejectQty ?? 0;
+      this.sizeColumns.forEach(col => sizeRejects[col.size] += r.sizeRejects[col.size] ?? 0);
+    }
+
+    return {
+      receiveQty,
+      // Only show UoM when every row agrees (Pcs and Kg must not be presented as one figure)
+      uom: uoms.size === 1 ? [...uoms][0] : '',
+      totalCheckQty,
+      totalRejectQty,
+      rejectPercent: this.calcPercent(totalRejectQty, totalCheckQty),
+      sizeRejects
+    };
   }
 
   private normKey(v: any): string {
@@ -354,11 +463,16 @@ export class DateWiseRejectionDashboardComponent implements OnInit {
     this.sizeColumns = merged;
   }
 
+  /**
+   * Global search filters the raw rows, then RE-BUILDS the Sub Total rows and the
+   * Grand Total over whatever survived, so both change dynamically as the user types.
+   * Clearing the search restores them to the full dataset.
+   */
   onGlobalSearch(): void {
     const term = this.globalSearch?.trim()?.toLowerCase() ?? '';
 
     if (term.length) {
-      this.filteredRows = this.allRows.filter(r => {
+      this.applyView(this.allRows.filter(r => {
         return (
           this.matches(this.formatDate(r.date), term) ||
           this.matches(r.trackingNo, term) ||
@@ -379,9 +493,9 @@ export class DateWiseRejectionDashboardComponent implements OnInit {
           this.matchesNumber(r.totalCheckQty, term) ||
           this.matchesNumber(r.totalRejectQty, term)
         );
-      });
+      }));
     } else {
-      this.filteredRows = [...this.allRows];
+      this.applyView(this.allRows);
     }
   }
 
@@ -398,7 +512,34 @@ export class DateWiseRejectionDashboardComponent implements OnInit {
       return;
     }
 
+    const totalsRow = (label: string, t: RejectionTotals) => {
+      const base: any = {};
+      base['Date'] = label;
+      ['Tracking No.', 'Receive From', 'Buyer', 'Job', 'Order', 'Style', 'Color', 'Dress Part',
+        'Wash Category', 'Item Name', 'Shift', 'QC Name'].forEach(h => base[h] = '');
+      base['Received Qty'] = t.receiveQty;
+      base['UoM'] = t.uom;
+      base['Batch No'] = '';
+      base['Total Check QTY'] = t.totalCheckQty;
+      this.sizeColumns.forEach(col => {
+        base['Reject ' + col.label] = t.sizeRejects[col.size] ?? 0;
+      });
+      base['Total Reject QTY'] = t.totalRejectQty;
+      base['Reject %'] = this.formatPercent(t.rejectPercent);
+      return base;
+    };
+
     const exportData = this.filteredRows.map(row => {
+      if (row.isSubtotal) {
+        return totalsRow('Sub Total:', {
+          receiveQty: row.receiveQty ?? 0,
+          uom: row.uom,
+          totalCheckQty: row.totalCheckQty ?? 0,
+          totalRejectQty: row.totalRejectQty ?? 0,
+          rejectPercent: row.rejectPercent,
+          sizeRejects: row.sizeRejects
+        });
+      }
       const base: any = {};
       base['Date'] = this.formatDate(row.date);
       base['Tracking No.'] = row.trackingNo;
@@ -424,6 +565,10 @@ export class DateWiseRejectionDashboardComponent implements OnInit {
       base['Reject %'] = this.formatPercent(row.rejectPercent);
       return base;
     });
+
+    if (this.grandTotal) {
+      exportData.push(totalsRow('Grand Total:', this.grandTotal));
+    }
 
     const ws: XLSX.WorkSheet = XLSX.utils.json_to_sheet(exportData);
     ws['!cols'] = [
@@ -452,6 +597,7 @@ export class DateWiseRejectionDashboardComponent implements OnInit {
   }
 
   trackByRow(index: number, row: DateWiseRejectionRow): string {
+    if (row.isSubtotal) return `subtotal-${index}`;
     return `${row.date}-${row.trackingNo}-${row.batchNo}-${index}`;
   }
 
@@ -462,6 +608,12 @@ export class DateWiseRejectionDashboardComponent implements OnInit {
   private resetGrid(): void {
     this.allRows = [];
     this.filteredRows = [];
+    this.grandTotal = null;
+  }
+
+  fmtNum(v: number | null | undefined): string {
+    if (v === null || v === undefined || isNaN(v as any)) return '';
+    return (v as number).toLocaleString('en-US', { maximumFractionDigits: 2 });
   }
 
   private matches(value: string | undefined, term: string): boolean {

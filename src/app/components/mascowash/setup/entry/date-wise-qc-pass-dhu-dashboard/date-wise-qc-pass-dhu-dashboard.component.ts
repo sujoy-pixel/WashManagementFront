@@ -33,6 +33,20 @@ interface QcPassDhuRow {
   rectifyDefectsQty: number | null;
   totalRejectQty: number | null;
   rejectPercent: number | null;
+  isSubtotal?: boolean;
+}
+
+/** Summed figures for a Sub Total row / the Grand Total footer. */
+interface QcPassDhuTotals {
+  receiveQty: number;
+  totalCheckQty: number;
+  totalOkayQty: number;
+  totalDefectQty: number;
+  defectPercent: number | null;
+  defectsBalanceQty: number;
+  rectifyDefectsQty: number;
+  totalRejectQty: number;
+  rejectPercent: number | null;
 }
 
 @Component({
@@ -59,7 +73,10 @@ export class DateWiseQcPassDhuDashboardComponent implements OnInit {
   isLoading = false;
 
   allRows: QcPassDhuRow[] = [];
+  /** Rows shown in the grid: matched data rows + a Sub Total row after each Buyer/Job/Order/Style/Color group. */
   filteredRows: QcPassDhuRow[] = [];
+  /** Grand Total footer - recomputed over whatever the global search currently matches. */
+  grandTotal: QcPassDhuTotals | null = null;
 
   constructor(
     private washService: WashSetupService,
@@ -135,48 +152,61 @@ export class DateWiseQcPassDhuDashboardComponent implements OnInit {
 
   private processRawData(rawData: any[]): void {
     this.allRows = (rawData || []).map(row => this.mapRow(row));
+    // Buyer -> Job -> Order -> Style -> Color -> Date, so each group's rows
+    // sit together and its Sub Total lands right after the group.
+    this.allRows.sort((a, b) => this.groupThenDateCompare(a, b));
     this.globalSearch = '';
-    this.filteredRows = [...this.allRows];
+    this.applyCombinedFilter();
   }
 
-  private mapRow(row: any): QcPassDhuRow {
-    const totalCheckQty = this.toNumber(row.totalCheckQty ?? row.TotalCheckQty ?? row.totalCheckQTY);
-    const totalOkayQty = this.toNumber(row.totalOkayQty ?? row.TotalOkayQty ?? row.totalOkayQTY);
-    const totalDefectQty = this.toNumber(row.totalDefectQty ?? row.TotalDefectQty ?? row.totalDefectQTY);
-    const totalRejectQty = this.toNumber(row.totalRejectQty ?? row.TotalRejectQty ?? row.totalRejectQTY);
-    const defectsBalanceQty = this.toNumber(row.defectsBalanceQty ?? row.DefectsBalanceQty ?? row.defectsBalanceQTY);
-    const rectifyDefectsQty = this.toNumber(row.rectifyDefectsQty ?? row.RectifyDefectsQty ?? row.rectifyDefectsQTY);
+  /** Case/format-insensitive column lookup (same approach as Date-wise Balance Dashboard). */
+  private mapRow(r: any): QcPassDhuRow {
+    const lookup = this.buildKeyLookup(r);
+    const val = (...aliases: string[]) => this.getVal(r, lookup, ...aliases);
+
+    const totalCheckQty = this.toNumber(val('totalCheckQty'));
+    const totalOkayQty = this.toNumber(val('totalOkayQty'));
+    const totalDefectQty = this.toNumber(val('totalDefectQty'));
+    const totalRejectQty = this.toNumber(val('totalRejectQty'));
+    const defectsBalanceQty = this.toNumber(val('defectsBalanceQty'));
+    const rectifyDefectsQty = this.toNumber(val('rectifyDefectsQty'));
 
     return {
-      date: row.date ?? row.Date ?? null,
-      trackingNo: this.cleanStr(row.trackingNo ?? row.TrackingNo),
-      receiveFrom: this.cleanStr(row.receiveFrom ?? row.ReceiveFrom),
-      buyer: this.cleanStr(row.buyer ?? row.Buyer),
-      job: this.cleanStr(row.job ?? row.Job),
-      orderNo: this.cleanStr(row.orderNo ?? row.OrderNo ?? row.order ?? row.Order),
-      style: this.cleanStr(row.style ?? row.Style),
-      color: this.cleanStr(row.color ?? row.Color),
-      dressPart: this.cleanStr(row.dressPart ?? row.DressPart),
-      washCategory: this.cleanStr(row.washCategory ?? row.WashCategory),
-      itemName: this.cleanStr(row.itemName ?? row.ItemName),
-      shift: this.cleanStr(row.shift ?? row.Shift),
-      qcName: this.cleanStr(row.qcName ?? row.QcName),
-      receiveQty: this.toNumber(row.receiveQty ?? row.ReceiveQty),
-      uom: this.cleanStr(row.uoM ?? row.uoM ?? row.uoM),
-      batchNo: this.cleanStr(row.batchNo ?? row.BatchNo),
+      date: val('date') ?? null,
+      trackingNo: this.cleanStr(val('trackingNo')),
+      receiveFrom: this.cleanStr(val('receiveFrom', 'receiveForm')),
+      buyer: this.cleanStr(val('buyer')),
+      job: this.cleanStr(val('job')),
+      orderNo: this.cleanStr(val('orderNo', 'order')),
+      style: this.cleanStr(val('style')),
+      color: this.cleanStr(val('color')),
+      dressPart: this.cleanStr(val('dressPart')),
+      washCategory: this.cleanStr(val('washCategory', 'washType')),
+      itemName: this.cleanStr(val('itemName')),
+      shift: this.cleanStr(val('shift')),
+      qcName: this.cleanStr(val('qcName')),
+      receiveQty: this.toNumber(val('receiveQty', 'receiveQtyKg', 'receiveQtyPcs')),
+      uom: this.cleanStr(val('uom')),
+      batchNo: this.cleanStr(val('batchNo')),
       totalCheckQty,
       totalOkayQty,
       totalDefectQty,
-      defectPercent: this.toNumber(row.defectPercent ?? row.DefectPercent) ?? this.calcPercent(totalDefectQty, totalCheckQty),
+      defectPercent: this.toNumber(val('defectPercent')) ?? this.calcPercent(totalDefectQty, totalCheckQty),
       defectsBalanceQty,
       rectifyDefectsQty,
       totalRejectQty,
-      rejectPercent: this.toNumber(row.rejectPercent ?? row.RejectPercent) ?? this.calcPercent(totalRejectQty, totalCheckQty)
+      rejectPercent: this.toNumber(val('rejectPercent')) ?? this.calcPercent(totalRejectQty, totalCheckQty)
     };
   }
 
   onGlobalSearch(): void { this.applyCombinedFilter(); }
 
+  /**
+   * Filters the data rows by the global search term, then RE-BUILDS the Sub
+   * Total rows and the Grand Total over whatever matched - so totals always
+   * reflect exactly what is on screen, and restore to the full dataset when
+   * the search box is cleared.
+   */
   private applyCombinedFilter(): void {
     let result = [...this.allRows];
     const term = this.globalSearch?.trim()?.toLowerCase() ?? '';
@@ -207,7 +237,92 @@ export class DateWiseQcPassDhuDashboardComponent implements OnInit {
       );
     }
 
-    this.filteredRows = result;
+    this.filteredRows = this.insertSubtotals(result);
+    this.grandTotal = result.length ? this.computeTotals(result) : null;
+  }
+
+  /** Buyer/Job/Order/Style/Color grouping key - same grain as Date-wise Balance Dashboard. */
+  private groupKey(r: QcPassDhuRow): string {
+    return `${r.buyer}||${r.job}||${r.orderNo}||${r.style}||${r.color}`;
+  }
+
+  private groupThenDateCompare(a: QcPassDhuRow, b: QcPassDhuRow): number {
+    const fields: (keyof QcPassDhuRow)[] = ['buyer', 'job', 'orderNo', 'style', 'color'];
+    for (const f of fields) {
+      const c = String(a[f] || '').localeCompare(String(b[f] || ''));
+      if (c !== 0) return c;
+    }
+    const aTime = a.date ? new Date(a.date as any).getTime() : 0;
+    const bTime = b.date ? new Date(b.date as any).getTime() : 0;
+    if (aTime !== bTime) return aTime - bTime;
+    return (a.batchNo || '').localeCompare(b.batchNo || '');
+  }
+
+  /** Appends a Sub Total row after each Buyer/Job/Order/Style/Color group (rows must be sorted by group). */
+  private insertSubtotals(rows: QcPassDhuRow[]): QcPassDhuRow[] {
+    const result: QcPassDhuRow[] = [];
+    let i = 0;
+    while (i < rows.length) {
+      const key = this.groupKey(rows[i]);
+      let j = i;
+      while (j < rows.length && this.groupKey(rows[j]) === key) {
+        result.push(rows[j]);
+        j++;
+      }
+      const t = this.computeTotals(rows.slice(i, j));
+      result.push({
+        date: null, trackingNo: '', receiveFrom: '', buyer: '', job: '', orderNo: '', style: '', color: '',
+        dressPart: '', washCategory: '', itemName: '', shift: '', qcName: '',
+        receiveQty: t.receiveQty,
+        uom: rows[i].uom,
+        batchNo: '',
+        totalCheckQty: t.totalCheckQty,
+        totalOkayQty: t.totalOkayQty,
+        totalDefectQty: t.totalDefectQty,
+        defectPercent: t.defectPercent,
+        defectsBalanceQty: t.defectsBalanceQty,
+        rectifyDefectsQty: t.rectifyDefectsQty,
+        totalRejectQty: t.totalRejectQty,
+        rejectPercent: t.rejectPercent,
+        isSubtotal: true
+      });
+      i = j;
+    }
+    return result;
+  }
+
+  /**
+   * QC quantities are per Date/Batch/Shift, so they are summed across every row.
+   * Receive Qty is the Tracking No's receive quantity and repeats on every QC
+   * row of that tracking, so it is counted ONCE per Tracking No + Color
+   * (otherwise it would be multiplied by the number of QC rows).
+   * Defect % / Reject % are recalculated from the summed quantities.
+   */
+  private computeTotals(rows: QcPassDhuRow[]): QcPassDhuTotals {
+    let receiveQty = 0, totalCheckQty = 0, totalOkayQty = 0, totalDefectQty = 0;
+    let defectsBalanceQty = 0, rectifyDefectsQty = 0, totalRejectQty = 0;
+    const seenReceive = new Set<string>();
+
+    for (const r of rows) {
+      const receiveKey = `${r.trackingNo}||${r.color}`;
+      if (!seenReceive.has(receiveKey)) {
+        seenReceive.add(receiveKey);
+        receiveQty += r.receiveQty ?? 0;
+      }
+      totalCheckQty += r.totalCheckQty ?? 0;
+      totalOkayQty += r.totalOkayQty ?? 0;
+      totalDefectQty += r.totalDefectQty ?? 0;
+      defectsBalanceQty += r.defectsBalanceQty ?? 0;
+      rectifyDefectsQty += r.rectifyDefectsQty ?? 0;
+      totalRejectQty += r.totalRejectQty ?? 0;
+    }
+
+    return {
+      receiveQty, totalCheckQty, totalOkayQty, totalDefectQty,
+      defectPercent: this.calcPercent(totalDefectQty, totalCheckQty),
+      defectsBalanceQty, rectifyDefectsQty, totalRejectQty,
+      rejectPercent: this.calcPercent(totalRejectQty, totalCheckQty)
+    };
   }
 
   onClear(): void {
@@ -223,7 +338,34 @@ export class DateWiseQcPassDhuDashboardComponent implements OnInit {
       return;
     }
 
-    const exportData = this.filteredRows.map(row => ({
+    const totalsRow = (label: string, t: QcPassDhuTotals, uom: string) => ({
+      'Date': label,
+      'Tracking No.': '', 'Receive From': '', 'Buyer': '', 'Job': '', 'Order': '', 'Style': '', 'Color': '',
+      'Dress Part': '', 'Wash Category': '', 'Item Name': '', 'Shift': '', 'QC Name': '',
+      'Receive Qty': t.receiveQty,
+      'UoM': uom,
+      'Batch No': '',
+      'Total Check QTY': t.totalCheckQty,
+      'Total Okay QTY': t.totalOkayQty,
+      'Total Defect QTY': t.totalDefectQty,
+      'Defect %': this.formatPercent(t.defectPercent),
+      'Defects Balance QTY': t.defectsBalanceQty,
+      'Rectify Defects QTY': t.rectifyDefectsQty,
+      'Total Reject QTY': t.totalRejectQty,
+      'Reject %': this.formatPercent(t.rejectPercent)
+    });
+
+    const exportData = this.filteredRows.map(row => row.isSubtotal ? totalsRow('Sub Total:', {
+      receiveQty: row.receiveQty ?? 0,
+      totalCheckQty: row.totalCheckQty ?? 0,
+      totalOkayQty: row.totalOkayQty ?? 0,
+      totalDefectQty: row.totalDefectQty ?? 0,
+      defectPercent: row.defectPercent,
+      defectsBalanceQty: row.defectsBalanceQty ?? 0,
+      rectifyDefectsQty: row.rectifyDefectsQty ?? 0,
+      totalRejectQty: row.totalRejectQty ?? 0,
+      rejectPercent: row.rejectPercent
+    }, row.uom) : ({
       'Date': this.formatDate(row.date),
       'Tracking No.': row.trackingNo,
       'Receive From': row.receiveFrom,
@@ -250,6 +392,10 @@ export class DateWiseQcPassDhuDashboardComponent implements OnInit {
       'Reject %': this.formatPercent(row.rejectPercent)
     }));
 
+    if (this.grandTotal) {
+      exportData.push(totalsRow('Grand Total:', this.grandTotal, ''));
+    }
+
     const ws: XLSX.WorkSheet = XLSX.utils.json_to_sheet(exportData);
     ws['!cols'] = [
       { wch: 12 }, { wch: 14 }, { wch: 14 }, { wch: 20 }, { wch: 20 }, { wch: 14 },
@@ -270,13 +416,43 @@ export class DateWiseQcPassDhuDashboardComponent implements OnInit {
     return `${value.toFixed(1)}%`;
   }
 
+  fmtNum(v: number | null | undefined, digits = 2): string {
+    if (v === null || v === undefined || isNaN(v as any)) return '';
+    return (v as number).toLocaleString('en-US', { minimumFractionDigits: digits, maximumFractionDigits: digits });
+  }
+
   trackByRow(index: number, row: QcPassDhuRow): string {
+    if (row.isSubtotal) return `subtotal-${index}`;
     return `${row.batchNo}-${row.trackingNo}-${row.date}-${index}`;
   }
 
   private resetGrid(): void {
     this.allRows = [];
     this.filteredRows = [];
+    this.grandTotal = null;
+  }
+
+  private buildKeyLookup(row: any): Map<string, string> {
+    const lookup = new Map<string, string>();
+    Object.keys(row || {}).forEach(k => {
+      const n = this.normKey(k);
+      if (n && !lookup.has(n)) lookup.set(n, k);
+    });
+    return lookup;
+  }
+
+  private getVal(row: any, lookup: Map<string, string>, ...aliases: string[]): any {
+    for (const alias of aliases) {
+      const actualKey = lookup.get(this.normKey(alias));
+      if (actualKey !== undefined) {
+        return row[actualKey];
+      }
+    }
+    return undefined;
+  }
+
+  private normKey(v: any): string {
+    return String(v ?? '').trim().toLowerCase().replace(/[^a-z0-9]/g, '');
   }
 
   private matches(value: string, term: string): boolean {
