@@ -527,7 +527,8 @@ debugger;
       this.toastr.warning('No Batch No available to print.');
       return;
     }
-    this.printReport('Batch Card Preview', row.batchNo);
+    // this.printReport('Batch Card Preview', row.batchNo);
+      this.printReport('Batch Card Preview Dublicate', row.batchNo);
   }
 
   printReport(reportType: string, batchNo: string): void {
@@ -537,7 +538,7 @@ debugger;
     const headers = { Authorization: `Bearer ${token}` };
 
     const objparam = {
-      ReportName:     'Batch Card Preview',
+      ReportName:     'Batch Card Preview Dublicate',
       Type:           'PDF',
       GenerateNumber: batchNo
     };

@@ -538,7 +538,8 @@ if (this.saveButtonTitle === 'Update') {
         if (res?.succeeded) {
           this.toastr.success('Saved successfully');
           this.batch.AutoBatchNo = res.message;
-          this.printReport('Batch Card Preview', res.message);
+          // this.printReport('Batch Card Preview', res.message);
+          this.printReport('Batch Card Preview Dublicate', res.message);
         } else {
           this.toastr.error(res?.errors?.[0] || 'Save failed');
         }
@@ -565,7 +566,7 @@ if (this.saveButtonTitle === 'Update') {
     const headers  = { Authorization: `Bearer ${token}` };
 
     const objparam = {
-      ReportName:     'Batch Card Preview',
+      ReportName:     ReportType,
       Type:           'PDF',
       GenerateNumber: GenerateNumber
     };
