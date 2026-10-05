@@ -775,7 +775,7 @@ openPrepareTab(row: WashBatchRow): void {
     machineIds:   row.machineIds      ?? '',   
 
     // ===== QTY & TOTALS =====
-    totalQty:            row.totalQty            ?? 0,  // Order Total Qty (10348)
+    totalQty:            row.alreadyPreparedQty            ?? 0,  // Order Total Qty (10348)
     totalKg:             row.alreadyPreparedKg             ?? 0,  
     alreadyPreparedQty:  row.alreadyPreparedQty  ?? 0,  // Cumulative prepared
     alreadyPreparedKg:   row.alreadyPreparedKg   ?? 0,  // Cumulative prepared Kg

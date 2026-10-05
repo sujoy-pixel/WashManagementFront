@@ -7,6 +7,7 @@ import { CardModule } from 'primeng/card';
 import { ToastrService } from 'ngx-toastr';
 import * as XLSX from 'xlsx';
 import { WashSetupService } from '../../../services/washsetup.service';
+import { DashboardPdfService, PdfColumn, PdfRow, PdfCell } from '../../../services/dashboard-pdf.service';
 import { BsDatepickerConfig } from 'ngx-bootstrap/datepicker';
 
 interface SizeColumn {
@@ -31,6 +32,10 @@ interface StyleWiseRejectionRow {
   sizeRejects: { [size: string]: number };
   totalRejectQty: number | null;
   rejectPercent: number | null;
+  /** Buyer|Job|Style|Order|Color|DressPart from the SP - each key's Receive Qty is counted once in totals. */
+  receiveKey?: string;
+  /** Every batch in the row is a re-wash batch (Check Qty 0 from the SP, Reject counted). */
+  isReWash?: boolean;
   isSubTotal: boolean;
   subTotalLabel?: string;
 }
@@ -74,6 +79,8 @@ export class StyleWiseRejectionDashboardComponent implements OnInit {
 
   globalSearch = '';
   isLoading = false;
+  /** Filter values the grid was last loaded with - printed on the PDF, so it describes the data, not later edits to the inputs. */
+  private exportFilter: any = null;
 
   // Data rows only (no Sub Total rows), sorted by Buyer/Job/Order/Style/Color.
   dataRows: StyleWiseRejectionRow[] = [];
@@ -86,7 +93,8 @@ export class StyleWiseRejectionDashboardComponent implements OnInit {
   constructor(
     private washService: WashSetupService,
     private datePipe: DatePipe,
-    private toastr: ToastrService
+    private toastr: ToastrService,
+    private pdf: DashboardPdfService
   ) {}
 
   ngOnInit(): void {
@@ -214,6 +222,7 @@ export class StyleWiseRejectionDashboardComponent implements OnInit {
       toDate: this.datePipe.transform(this.filter.toDate, 'yyyy-MM-dd') || ''
     };
 
+    this.exportFilter = { ...this.filter };
     this.isLoading = true;
     this.washService.getStyleWiseRejectionData(request).subscribe({
       next: (res: any[]) => {
@@ -263,6 +272,8 @@ export class StyleWiseRejectionDashboardComponent implements OnInit {
         sizeRejects: {},
         totalRejectQty: 0,
         rejectPercent: this.toNumber(this.getVal(r, lookup, 'rejectPercent')),
+        receiveKey: this.cleanStr(this.getVal(r, lookup, 'receiveKey')),
+        isReWash: this.getVal(r, lookup, 'isReWash') === true,
         isSubTotal: false
       };
 
@@ -425,9 +436,15 @@ export class StyleWiseRejectionDashboardComponent implements OnInit {
       let totalCheckQty = 0;
       let totalRejectQty = 0;
       const sizeRejects: { [size: string]: number } = {};
+      // Receive Qty is the order's receive per Buyer/Job/Style/Order/Color/Dress Part and can sit
+      // on several rows (e.g. two wash categories of the same dress part) - count each key once.
+      const seenReceive = new Set<string>();
 
       rows.forEach(r => {
-        receiveQty += r.receiveQty || 0;
+        if (!r.receiveKey || !seenReceive.has(r.receiveKey)) {
+          if (r.receiveKey) seenReceive.add(r.receiveKey);
+          receiveQty += r.receiveQty || 0;
+        }
         noOfBatch += r.noOfBatch || 0;
         totalCheckQty += r.totalCheckQty || 0;
         totalRejectQty += r.totalRejectQty || 0;
@@ -555,6 +572,66 @@ export class StyleWiseRejectionDashboardComponent implements OnInit {
     const today = new Date().toISOString().slice(0, 10);
     XLSX.writeFile(wb, `StyleWise_Rejection_${today}.xlsx`);
     this.toastr.success('Excel exported successfully');
+  }
+
+  /** PDF of exactly what the grid shows (search applied, Sub Totals + Grand Total(s) included). */
+  onPdf(): void {
+    if (!this.filteredRows.length) {
+      this.toastr.warning('No data to export');
+      return;
+    }
+    const n = (v: number | null | undefined) =>
+      v === null || v === undefined || isNaN(v as any) ? '' : v.toLocaleString('en-US', { maximumFractionDigits: 3 });
+    const p = (v: number | null) => this.formatPercent(v);
+    // Total rows always show the per-size sum (0 included), as on screen.
+    const totals = (r: StyleWiseRejectionRow, text: string): PdfCell[] => [
+      { content: text, colSpan: this.textColumnCount, align: 'right' },
+      n(r.receiveQty), r.uom, r.noOfBatch ?? '', n(r.totalCheckQty), n(r.totalRejectQty), p(r.rejectPercent),
+      ...this.sizeColumns.map(c => n(r.sizeRejects[c.size] ?? 0))
+    ];
+    const f = this.exportFilter ?? this.filter;
+
+    const columns: PdfColumn[] = [
+      { header: 'Receive From', align: 'center' },
+      { header: 'Buyer' }, { header: 'Job' }, { header: 'Order' }, { header: 'Style' }, { header: 'Color' },
+      { header: 'Dress Part' }, { header: 'Wash Category' }, { header: 'Item Name' },
+      { header: 'Received Qty', align: 'right' },
+      { header: 'UoM', align: 'center' },
+      { header: 'No of Batch', align: 'center' },
+      { header: 'Total Check QTY', align: 'right' },
+      { header: 'Total Reject QTY', align: 'right' },
+      { header: 'Reject %', align: 'right', minWidth: 10 },
+      ...this.sizeColumns.map(c => ({ header: c.label, align: 'center', minWidth: 7, group: 'Size-wise Reject Qty' } as PdfColumn))
+    ];
+    const rows: PdfRow[] = this.filteredRows.map(r => r.isSubTotal
+      ? { kind: 'subtotal', cells: totals(r, r.subTotalLabel || 'Sub Total:') }
+      : { cells: [
+          r.receiveFrom, r.buyer, r.job, r.orderNo, r.style, r.color, r.dressPart, r.washCategory, r.itemName,
+          n(r.receiveQty), r.uom, r.noOfBatch ?? '', n(r.totalCheckQty), n(r.totalRejectQty), p(r.rejectPercent),
+          ...this.sizeColumns.map(c => r.sizeRejects[c.size] ? n(r.sizeRejects[c.size]) : '')
+        ] });
+    const unit = this.UnitList.find(u => u.value === f.UnitId)?.label;
+
+    this.pdf.export({
+      title: 'Style-wise Rejection Dashboard',
+      company: unit,
+      meta: [
+        { label: 'Unit', value: unit },
+        { label: 'Buyer', value: this.BuyerList.find(b => String(b.value) === String(f.BuyerId))?.label },
+        { label: 'Period', value: `${this.formatPeriodDate(f.fromDate)} to ${this.formatPeriodDate(f.toDate)}` },
+        { label: 'Search', value: this.globalSearch?.trim() ? `"${this.globalSearch.trim()}"` : '' }
+      ],
+      columns,
+      rows,
+      footRows: this.grandTotals.map(g => totals(g, g.subTotalLabel || 'Grand Total:')),
+      fileName: 'StyleWise_Rejection'
+    })
+      .then(() => this.toastr.success('PDF exported successfully'))
+      .catch(() => this.toastr.error('Failed to export PDF'));
+  }
+
+  private formatPeriodDate(d: any): string {
+    return d ? (this.datePipe.transform(d, 'd MMM yyyy') || '') : '...';
   }
 
   formatPercent(value: number | null): string {

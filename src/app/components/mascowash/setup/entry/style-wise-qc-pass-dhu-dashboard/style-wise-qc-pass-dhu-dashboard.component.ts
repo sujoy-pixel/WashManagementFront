@@ -7,6 +7,7 @@ import { CardModule } from 'primeng/card';
 import { ToastrService } from 'ngx-toastr';
 import * as XLSX from 'xlsx';
 import { WashSetupService } from '../../../services/washsetup.service';
+import { DashboardPdfService, PdfColumn, PdfRow, PdfCell } from '../../../services/dashboard-pdf.service';
 import { format } from 'date-fns';
 import { BsDatepickerConfig } from 'ngx-bootstrap/datepicker';
 
@@ -31,6 +32,10 @@ interface StyleWiseDhuRow {
   rectifyDefectsQty: number | null;
   totalRejectQty: number | null;
   rejectPercent: number | null;
+  /** Buyer|Job|Style|Order|Color|DressPart from the SP - each key's Receive Qty is counted once in totals. */
+  receiveKey?: string;
+  /** Every batch in the row is a re-wash batch (Check Qty 0 from the SP). */
+  isReWash?: boolean;
   isSubTotal: boolean;
 }
 
@@ -57,6 +62,8 @@ export class StyleWiseQcPassDhuDashboardComponent implements OnInit {
   UnitList: any[] = [];
   globalSearch = '';
   isLoading = false;
+  /** Filter values the grid was last loaded with - printed on the PDF, so it describes the data, not later edits to the inputs. */
+  private exportFilter: any = null;
 
   /** Data rows only (no Sub Total rows), sorted Buyer -> Job -> Order -> Style -> Color. */
   allRows: StyleWiseDhuRow[] = [];
@@ -72,7 +79,8 @@ export class StyleWiseQcPassDhuDashboardComponent implements OnInit {
   constructor(
     private washService: WashSetupService,
     private datePipe: DatePipe,
-    private toastr: ToastrService
+    private toastr: ToastrService,
+    private pdf: DashboardPdfService
   ) {}
 
   ngOnInit(): void {
@@ -120,6 +128,7 @@ export class StyleWiseQcPassDhuDashboardComponent implements OnInit {
       toDate: this.datePipe.transform(this.filter.toDate, 'yyyy-MM-dd') || ''
     };
 
+    this.exportFilter = { ...this.filter };
     this.isLoading = true;
     this.washService.getStyleWiseQcPassDhuData(request).subscribe({
       next: (res: any[]) => {
@@ -180,6 +189,8 @@ export class StyleWiseQcPassDhuDashboardComponent implements OnInit {
         rectifyDefectsQty: this.toNumber(r.rectifyDefectsQty ?? r.RectifyDefectsQty ?? r.rectifyDefectQty ?? r.RectifyDefectQty) || 0,
         totalRejectQty: this.toNumber(r.totalRejectQty ?? r.TotalRejectQty) || 0,
         rejectPercent: this.toNumber(r.rejectPercent ?? r.RejectPercent),
+        receiveKey: this.cleanStr(r.receiveKey ?? r.ReceiveKey),
+        isReWash: (r.isReWash ?? r.IsReWash) === true,
         isSubTotal: false
       }));
     } else {
@@ -301,9 +312,15 @@ export class StyleWiseQcPassDhuDashboardComponent implements OnInit {
     let defectsBalanceQty = 0;
     let rectifyDefectsQty = 0;
     let totalRejectQty = 0;
+    // Receive Qty is the order's receive per Buyer/Job/Style/Order/Color/Dress Part and can sit
+    // on several rows (e.g. two wash categories of the same dress part) - count each key once.
+    const seenReceive = new Set<string>();
 
     group.forEach(r => {
-      receiveQty += r.receiveQty || 0;
+      if (!r.receiveKey || !seenReceive.has(r.receiveKey)) {
+        if (r.receiveKey) seenReceive.add(r.receiveKey);
+        receiveQty += r.receiveQty || 0;
+      }
       noOfBatch += r.noOfBatch || 0;
       totalCheckQty += r.totalCheckQty || 0;
       totalOkayQty += r.totalOkayQty || 0;
@@ -455,6 +472,69 @@ export class StyleWiseQcPassDhuDashboardComponent implements OnInit {
     const today = new Date().toISOString().slice(0, 10);
     XLSX.writeFile(wb, `StyleWise_QC_Pass_DHU_${today}.xlsx`);
     this.toastr.success('Excel exported successfully');
+  }
+
+  /** PDF of exactly what the grid shows (search applied, Sub Totals + Grand Total included). */
+  onPdf(): void {
+    if (!this.filteredRows.length) {
+      this.toastr.warning('No data to export');
+      return;
+    }
+    const n = (v: number | null | undefined) =>
+      v === null || v === undefined || isNaN(v as any) ? '' : v.toLocaleString('en-US', { maximumFractionDigits: 3 });
+    const p = (v: number | null) => this.formatPercent(v);
+    const label = (text: string): PdfCell => ({ content: text, colSpan: 9, align: 'right' });
+    const totals = (r: StyleWiseDhuRow, text: string): PdfCell[] => [
+      label(text), n(r.receiveQty), r.uom, r.noOfBatch ?? '', n(r.totalCheckQty), n(r.totalOkayQty), n(r.totalDefectQty),
+      p(r.defectPercent), n(r.defectsBalanceQty), n(r.rectifyDefectsQty), n(r.totalRejectQty), p(r.rejectPercent)
+    ];
+    const f = this.exportFilter ?? this.filter;
+
+    const columns: PdfColumn[] = [
+      { header: 'Receive From', align: 'center' },
+      { header: 'Buyer' }, { header: 'Job' }, { header: 'Order' }, { header: 'Style' }, { header: 'Color' },
+      { header: 'Dress Part' }, { header: 'Wash Category' }, { header: 'Item Name' },
+      { header: 'Received Qty', align: 'right' },
+      { header: 'UoM', align: 'center' },
+      { header: 'No of Batch', align: 'center' },
+      { header: 'Total Check QTY', align: 'right' },
+      { header: 'Total Okay QTY', align: 'right' },
+      { header: 'Total Defect QTY', align: 'right' },
+      { header: 'Defect %', align: 'right', minWidth: 10 },
+      { header: 'Defects Balance QTY', align: 'right' },
+      { header: 'Rectify Defects Qty', align: 'right' },
+      { header: 'Total Reject QTY', align: 'right' },
+      { header: 'Reject %', align: 'right', minWidth: 10 }
+    ];
+    const rows: PdfRow[] = this.filteredRows.map(r => r.isSubTotal
+      ? { kind: 'subtotal', cells: totals(r, 'Sub Total:') }
+      : { cells: [
+          r.receiveFrom, r.buyer, r.job, r.orderNo, r.style, r.color, r.dressPart, r.washCategory, r.itemName,
+          r.receiveQty != null ? n(r.receiveQty) : '-', r.uom, r.noOfBatch ?? '',
+          n(r.totalCheckQty), n(r.totalOkayQty), n(r.totalDefectQty), p(r.defectPercent),
+          n(r.defectsBalanceQty), n(r.rectifyDefectsQty), n(r.totalRejectQty), p(r.rejectPercent)
+        ] });
+    const unit = this.UnitList.find(u => u.value === f.UnitId)?.label;
+
+    this.pdf.export({
+      title: 'Style-wise QC Pass & DHU Dashboard',
+      company: unit,
+      meta: [
+        { label: 'Unit', value: unit },
+        { label: 'Period', value: `${this.formatPeriodDate(f.fromDate)} to ${this.formatPeriodDate(f.toDate)}` },
+        { label: 'Search', value: this.globalSearch?.trim() ? `"${this.globalSearch.trim()}"` : '' }
+      ],
+      columns,
+      rows,
+      footRows: this.grandTotal ? [totals(this.grandTotal, 'Grand Total:')] : [],
+      fileName: 'StyleWise_QC_Pass_DHU'
+    })
+      .then(() => this.toastr.success('PDF exported successfully'))
+      .catch(() => this.toastr.error('Failed to export PDF'));
+  }
+
+  private formatPeriodDate(d: any): string {
+    return d ? (this.datePipe.transform(d, 'd MMM yyyy') || '') : '...';
   }
 
   formatPercent(value: number | null): string {

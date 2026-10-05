@@ -7,6 +7,7 @@ import { CardModule } from 'primeng/card';
 import { ToastrService } from 'ngx-toastr';
 import * as XLSX from 'xlsx';
 import { WashSetupService } from '../../../services/washsetup.service';
+import { DashboardPdfService, PdfColumn, PdfRow, PdfCell } from '../../../services/dashboard-pdf.service';
 // import { BsDatepickerConfig } from 'ngx-bootstrap/datepicker';
 interface QcPassDhuRow {
   date: string | Date | null;
@@ -33,6 +34,10 @@ interface QcPassDhuRow {
   rectifyDefectsQty: number | null;
   totalRejectQty: number | null;
   rejectPercent: number | null;
+  /** Buyer|Job|Style|Order|Color|DressPart from the SP - each key's Receive Qty is counted once in totals. */
+  receiveKey?: string;
+  /** Re-wash batch (WBN-...(Rn)): Check Qty is 0 from the SP, Okay/Defect/Reject still counted. */
+  isReWash?: boolean;
   isSubtotal?: boolean;
 }
 
@@ -71,6 +76,8 @@ export class DateWiseQcPassDhuDashboardComponent implements OnInit {
   UnitList: any[] = [];
   globalSearch = '';
   isLoading = false;
+  /** Filter values the grid was last loaded with - printed on the PDF, so it describes the data, not later edits to the inputs. */
+  private exportFilter: any = null;
 
   allRows: QcPassDhuRow[] = [];
   /** Rows shown in the grid: matched data rows + a Sub Total row after each Buyer/Job/Order/Style/Color group. */
@@ -81,7 +88,8 @@ export class DateWiseQcPassDhuDashboardComponent implements OnInit {
   constructor(
     private washService: WashSetupService,
     private datePipe: DatePipe,
-    private toastr: ToastrService
+    private toastr: ToastrService,
+    private pdf: DashboardPdfService
   ) {}
 
   ngOnInit(): void {
@@ -130,6 +138,7 @@ export class DateWiseQcPassDhuDashboardComponent implements OnInit {
       toDate: this.datePipe.transform(this.filter.toDate, 'yyyy-MM-dd') || ''
     };
 
+    this.exportFilter = { ...this.filter };
     this.isLoading = true;
     this.washService.getDateWiseQcPassDhuData(request).subscribe({
       next: (res: any[]) => {
@@ -195,7 +204,9 @@ export class DateWiseQcPassDhuDashboardComponent implements OnInit {
       defectsBalanceQty,
       rectifyDefectsQty,
       totalRejectQty,
-      rejectPercent: this.toNumber(val('rejectPercent')) ?? this.calcPercent(totalRejectQty, totalCheckQty)
+      rejectPercent: this.toNumber(val('rejectPercent')) ?? this.calcPercent(totalRejectQty, totalCheckQty),
+      receiveKey: this.cleanStr(val('receiveKey')),
+      isReWash: val('isReWash') === true
     };
   }
 
@@ -208,37 +219,54 @@ export class DateWiseQcPassDhuDashboardComponent implements OnInit {
    * the search box is cleared.
    */
   private applyCombinedFilter(): void {
-    let result = [...this.allRows];
-    const term = this.globalSearch?.trim()?.toLowerCase() ?? '';
-    if (term.length) {
-      result = result.filter(r =>
-        this.matches(r.trackingNo, term) ||
-        this.matches(r.receiveFrom, term) ||
-        this.matches(r.buyer, term) ||
-        this.matches(r.job, term) ||
-        this.matches(r.orderNo, term) ||
-        this.matches(r.style, term) ||
-        this.matches(r.color, term) ||
-        this.matches(r.dressPart, term) ||
-        this.matches(r.washCategory, term) ||
-        this.matches(r.itemName, term) ||
-        this.matches(r.shift, term) ||
-        this.matches(r.qcName, term) ||
-        this.matches(r.uom, term) ||
-        this.matches(r.batchNo, term) ||
-        this.matches(this.formatDate(r.date), term) ||
-        this.matchesNumber(r.receiveQty, term) ||
-        this.matchesNumber(r.totalCheckQty, term) ||
-        this.matchesNumber(r.totalOkayQty, term) ||
-        this.matchesNumber(r.totalDefectQty, term) ||
-        this.matchesNumber(r.defectsBalanceQty, term) ||
-        this.matchesNumber(r.rectifyDefectsQty, term) ||
-        this.matchesNumber(r.totalRejectQty, term)
-      );
-    }
-
+    const result = this.filterBySearch(this.allRows, this.globalSearch);
     this.filteredRows = this.insertSubtotals(result);
     this.grandTotal = result.length ? this.computeTotals(result) : null;
+  }
+
+  /** Searchable values of a data row, keyed by column, lower-cased as displayed. */
+  private searchValues(r: QcPassDhuRow): Record<string, string> {
+    const s = (v: any) => (v === null || v === undefined ? '' : String(v).trim().toLowerCase());
+    return {
+      date: s(this.formatDate(r.date)), trackingNo: s(r.trackingNo), receiveFrom: s(r.receiveFrom),
+      buyer: s(r.buyer), job: s(r.job), orderNo: s(r.orderNo), style: s(r.style), color: s(r.color),
+      dressPart: s(r.dressPart), washCategory: s(r.washCategory), itemName: s(r.itemName),
+      shift: s(r.shift), qcName: s(r.qcName), uom: s(r.uom), batchNo: s(r.batchNo),
+      receiveQty: s(r.receiveQty), totalCheckQty: s(r.totalCheckQty), totalOkayQty: s(r.totalOkayQty),
+      totalDefectQty: s(r.totalDefectQty), defectsBalanceQty: s(r.defectsBalanceQty),
+      rectifyDefectsQty: s(r.rectifyDefectsQty), totalRejectQty: s(r.totalRejectQty)
+    };
+  }
+
+  /**
+   * Global search. A term that EXACTLY equals some column value (order "0427", dress part "Top",
+   * a batch no, a style...) keeps only the rows where that column equals it - a plain "contains"
+   * also pulled in batch nos / tracking nos / quantities that merely contain the digits, which
+   * added unrelated groups to the Sub Totals and Grand Total. Otherwise it falls back to
+   * "contains". Several words (e.g. "0427 top") must all match the same row.
+   */
+  private filterBySearch(rows: QcPassDhuRow[], rawTerm: string): QcPassDhuRow[] {
+    const term = (rawTerm ?? '').trim().toLowerCase().replace(/\s+/g, ' ');
+    if (!term) return [...rows];
+    const values = rows.map(r => this.searchValues(r));
+    const words = term.split(' ');
+    const tests = words.length > 1 && !this.exactTest(values, term)
+      ? words.map(w => this.termTest(values, w))
+      : [this.termTest(values, term)];
+    return rows.filter((_, i) => tests.every(t => t(values[i])));
+  }
+
+  private termTest(values: Record<string, string>[], t: string): (v: Record<string, string>) => boolean {
+    return this.exactTest(values, t) ?? (v => Object.values(v).some(x => x.includes(t)));
+  }
+
+  /** Rows whose column equals t, over the columns where t occurs as an exact value; null if none. */
+  private exactTest(values: Record<string, string>[], t: string): ((v: Record<string, string>) => boolean) | null {
+    const cols = new Set<string>();
+    values.forEach(v => Object.keys(v).forEach(k => { if (v[k] === t) cols.add(k); }));
+    if (!cols.size) return null;
+    const list = [...cols];
+    return v => list.some(k => v[k] === t);
   }
 
   /** Buyer/Job/Order/Style/Color grouping key - same grain as Date-wise Balance Dashboard. */
@@ -293,9 +321,9 @@ export class DateWiseQcPassDhuDashboardComponent implements OnInit {
 
   /**
    * QC quantities are per Date/Batch/Shift, so they are summed across every row.
-   * Receive Qty is the Tracking No's receive quantity and repeats on every QC
-   * row of that tracking, so it is counted ONCE per Tracking No + Color
-   * (otherwise it would be multiplied by the number of QC rows).
+   * Receive Qty is the order's receive for Buyer/Job/Style/Order/Color/Dress Part
+   * (same figure as the balance dashboards) and repeats on every QC row of that
+   * order, so it is counted ONCE per ReceiveKey (fallback: group + Tracking No + Dress Part).
    * Defect % / Reject % are recalculated from the summed quantities.
    */
   private computeTotals(rows: QcPassDhuRow[]): QcPassDhuTotals {
@@ -304,7 +332,7 @@ export class DateWiseQcPassDhuDashboardComponent implements OnInit {
     const seenReceive = new Set<string>();
 
     for (const r of rows) {
-      const receiveKey = `${r.trackingNo}||${r.color}`;
+      const receiveKey = r.receiveKey || `${this.groupKey(r)}||${r.trackingNo}||${r.dressPart}`;
       if (!seenReceive.has(receiveKey)) {
         seenReceive.add(receiveKey);
         receiveQty += r.receiveQty ?? 0;
@@ -411,6 +439,75 @@ export class DateWiseQcPassDhuDashboardComponent implements OnInit {
     this.toastr.success('Excel exported successfully');
   }
 
+  /** PDF of exactly what the grid shows (search applied, Sub Totals + Grand Total included). */
+  onPdf(): void {
+    if (!this.filteredRows.length) {
+      this.toastr.warning('No data to export');
+      return;
+    }
+    const n = (v: number | null | undefined) => this.fmtNum(v);
+    const p = (v: number | null) => this.formatPercent(v);
+    const label = (text: string): PdfCell => ({ content: text, colSpan: 13, align: 'right' });
+    const f = this.exportFilter ?? this.filter;
+
+    const columns: PdfColumn[] = [
+      { header: 'Date', align: 'center', minWidth: 12 },
+      { header: 'Tracking No.', align: 'center' },
+      { header: 'Receive From', align: 'center' },
+      { header: 'Buyer' }, { header: 'Job' }, { header: 'Order' }, { header: 'Style' }, { header: 'Color' },
+      { header: 'Dress Part' }, { header: 'Wash Category' }, { header: 'Item Name' },
+      { header: 'Shift', align: 'center' },
+      { header: 'QC Name' },
+      { header: 'Receive Qty', align: 'right' },
+      { header: 'UoM', align: 'center' },
+      { header: 'Batch No', align: 'center' },
+      { header: 'Total Check QTY', align: 'right' },
+      { header: 'Total Okay QTY', align: 'right' },
+      { header: 'Total Defect QTY', align: 'right' },
+      { header: 'Defect %', align: 'right', minWidth: 10 },
+      { header: 'Defects Balance QTY', align: 'right' },
+      { header: 'Rectify Defects Qty', align: 'right' },
+      { header: 'Total Reject QTY', align: 'right' },
+      { header: 'Reject %', align: 'right', minWidth: 10 }
+    ];
+    const rows: PdfRow[] = this.filteredRows.map(r => r.isSubtotal
+      ? { kind: 'subtotal', cells: [
+          label('Sub Total:'), n(r.receiveQty) || '-', r.uom, '', n(r.totalCheckQty), n(r.totalOkayQty), n(r.totalDefectQty),
+          p(r.defectPercent), n(r.defectsBalanceQty), n(r.rectifyDefectsQty), n(r.totalRejectQty), p(r.rejectPercent)
+        ] }
+      : { cells: [
+          this.formatDate(r.date), r.trackingNo, r.receiveFrom, r.buyer, r.job, r.orderNo, r.style, r.color, r.dressPart,
+          r.washCategory, r.itemName, r.shift, r.qcName, n(r.receiveQty) || '-', r.uom, r.batchNo,
+          n(r.totalCheckQty), n(r.totalOkayQty), n(r.totalDefectQty), p(r.defectPercent),
+          n(r.defectsBalanceQty), n(r.rectifyDefectsQty), n(r.totalRejectQty), p(r.rejectPercent)
+        ] });
+    const g = this.grandTotal;
+    const unit = this.UnitList.find(u => u.value === f.UnitId)?.label;
+
+    this.pdf.export({
+      title: 'Date-wise QC Pass & DHU Dashboard',
+      company: unit,
+      meta: [
+        { label: 'Unit', value: unit },
+        { label: 'Period', value: `${this.formatPeriodDate(f.fromDate)} to ${this.formatPeriodDate(f.toDate)}` },
+        { label: 'Search', value: this.globalSearch?.trim() ? `"${this.globalSearch.trim()}"` : '' }
+      ],
+      columns,
+      rows,
+      footRows: g ? [[
+        label('Grand Total:'), n(g.receiveQty) || '-', '', '', n(g.totalCheckQty), n(g.totalOkayQty), n(g.totalDefectQty),
+        p(g.defectPercent), n(g.defectsBalanceQty), n(g.rectifyDefectsQty), n(g.totalRejectQty), p(g.rejectPercent)
+      ]] : [],
+      fileName: 'DateWise_QC_Pass_DHU'
+    })
+      .then(() => this.toastr.success('PDF exported successfully'))
+      .catch(() => this.toastr.error('Failed to export PDF'));
+  }
+
+  private formatPeriodDate(d: any): string {
+    return d ? (this.datePipe.transform(d, 'd MMM yyyy') || '') : '...';
+  }
+
   formatPercent(value: number | null): string {
     if (value === null || value === undefined || isNaN(value)) return '';
     return `${value.toFixed(1)}%`;
@@ -453,14 +550,6 @@ export class DateWiseQcPassDhuDashboardComponent implements OnInit {
 
   private normKey(v: any): string {
     return String(v ?? '').trim().toLowerCase().replace(/[^a-z0-9]/g, '');
-  }
-
-  private matches(value: string, term: string): boolean {
-    return (value || '').toLowerCase().includes(term);
-  }
-
-  private matchesNumber(value: number | null, term: string): boolean {
-    return value != null && value.toString().includes(term);
   }
 
   private cleanStr(v: any): string {

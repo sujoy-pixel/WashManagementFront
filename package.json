@@ -55,6 +55,7 @@
     "html2pdf.js": "^0.10.2",
     "intl-tel-input": "^17.0.18",
     "jspdf": "^2.5.2",
+    "jspdf-autotable": "^3.8.4",
     "leaflet": "^1.8.0",
     "libphonenumber-js": "^1.10.9",
     "ng-animate": "^2.0.1",

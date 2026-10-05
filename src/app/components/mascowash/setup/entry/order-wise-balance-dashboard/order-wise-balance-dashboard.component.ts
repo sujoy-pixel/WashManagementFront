@@ -7,6 +7,7 @@ import { CardModule } from 'primeng/card';
 import { ToastrService } from 'ngx-toastr';
 import * as XLSX from 'xlsx';
 import { WashSetupService } from '../../../services/washsetup.service';
+import { DashboardPdfService, PdfColumn, PdfRow, PdfCell } from '../../../services/dashboard-pdf.service';
 
 /** Mirrors SP [dbo].[SP_Get_Wash_OrderWiseBalanceDashboard] @ViewType. */
 export type OrderBalanceViewType = 1 | 2;
@@ -113,6 +114,8 @@ export class OrderWiseBalanceDashboardComponent implements OnInit {
 
   globalSearch = '';
   isLoading = false;
+  /** Filter values the grid was last loaded with - printed on the PDF, so it describes the data, not later edits to the inputs. */
+  private exportFilter: any = null;
 
   garmentRows: OrderBalanceGarmentRow[] = [];
   garmentFilteredRows: OrderBalanceGarmentRow[] = [];
@@ -142,7 +145,8 @@ export class OrderWiseBalanceDashboardComponent implements OnInit {
   constructor(
     private washService: WashSetupService,
     private datePipe: DatePipe,
-    private toastr: ToastrService
+    private toastr: ToastrService,
+    private pdf: DashboardPdfService
   ) {}
 
   ngOnInit(): void {
@@ -215,6 +219,7 @@ export class OrderWiseBalanceDashboardComponent implements OnInit {
       viewType: this.viewType
     };
 
+    this.exportFilter = { ...this.filter };
     this.isLoading = true;
 
     // ONE call for both views - @ViewType decides the result shape.
@@ -709,6 +714,126 @@ export class OrderWiseBalanceDashboardComponent implements OnInit {
     const today = new Date().toISOString().slice(0, 10);
     XLSX.writeFile(wb, `OrderWise_Balance_Kg_${today}.xlsx`);
     this.toastr.success('Excel exported successfully');
+  }
+
+  // =========================================================================
+  // PDF - exactly what the grid holds (search applied, Sub Totals + Grand Total)
+  // =========================================================================
+  onPdf(): void {
+    const isGarment = this.viewType === 1;
+    if (!(isGarment ? this.garmentFilteredRows.length : this.fabricFilteredRows.length)) {
+      this.toastr.warning('No data to export');
+      return;
+    }
+    const n = (v: number | null | undefined) => this.fmtNum(v);
+    const int = (v: number | null | undefined) => v === null || v === undefined ? '' : Math.round(v).toLocaleString('en-US');
+    const d = (v: any) => this.formatDate(v);
+    const label = (text: string, span: number): PdfCell => ({ content: text, colSpan: span, align: 'right' });
+    const f = this.exportFilter ?? this.filter;
+    const meta = [
+      { label: 'Unit', value: this.UnitList.find(u => u.value === f.UnitId)?.label },
+      { label: 'Period', value: `${this.formatPeriodDate(f.fromDate)} to ${this.formatPeriodDate(f.toDate)}` },
+      { label: 'View', value: isGarment ? 'Garments (Pcs)' : 'Fabric & Cutting Parts (Kg)' },
+      { label: 'Search', value: this.globalSearch?.trim() ? `"${this.globalSearch.trim()}"` : '' }
+    ];
+    const lead: PdfColumn[] = [
+      { header: 'Receive From', align: 'center' },
+      { header: 'Buyer' }, { header: 'Job' }, { header: 'Order' }, { header: 'Style' }, { header: 'Color' },
+      { header: 'Dress Part' }, { header: 'Wash Type' }, { header: 'Fabric Composition' }
+    ];
+    const dateCol = (header: string): PdfColumn => ({ header, align: 'center', minWidth: 12 });
+
+    if (isGarment) {
+      const columns: PdfColumn[] = [
+        ...lead,
+        { header: 'GSM', align: 'center' },
+        { header: 'Fabric Con per Dzn', align: 'center' },
+        { header: 'Order Qty (Pcs)', align: 'right' },
+        dateCol('Shipment Date'), dateCol('1st Receive Date'), dateCol('Last Receive Date'),
+        { header: 'Total Receive Qty (Pcs)', align: 'right' },
+        { header: 'Receive Balance (Pcs)', align: 'right', tone: 'balance' },
+        dateCol('1st Delivery Date'), dateCol('Last Delivery Date'),
+        { header: 'Total Delivery Qty (Pcs)', align: 'right' },
+        { header: 'Ready for Delivery (Pcs)', align: 'right' },
+        { header: 'Approval / Trail', align: 'right' },
+        { header: 'Delivery Balance Qty (Pcs)', align: 'right', tone: 'balance' },
+        { header: 'Wash Status', align: 'center' },
+        { header: 'Remarks' }
+      ];
+      const rows: PdfRow[] = this.garmentFilteredRows.map(r => r.isSubtotal
+        ? { kind: 'subtotal', cells: [
+            label('Sub Total:', 11), n(r.orderQtyPcs), '', '', '', n(r.totalReceiveQtyPcs), n(r.receiveBalancePcs), '', '',
+            n(r.totalDeliveryQtyPcs), n(r.readyForDeliveryPcs), n(r.approvalTrail), n(r.deliveryBalanceQtyPcs), '', ''
+          ] }
+        : { cells: [
+            r.receiveFrom, r.buyer, r.job, r.orderNo, r.style, r.color, r.dressPart, r.washType, r.fabricComposition, r.gsm,
+            r.fabricConPerDzn === null || r.fabricConPerDzn === undefined ? '-' : n(r.fabricConPerDzn),
+            n(r.orderQtyPcs), d(r.shipmentDate), d(r.firstReceiveDate), d(r.lastReceiveDate),
+            n(r.totalReceiveQtyPcs), n(r.receiveBalancePcs), d(r.firstDeliveryDate), d(r.lastDeliveryDate),
+            n(r.totalDeliveryQtyPcs), n(r.readyForDeliveryPcs), n(r.approvalTrail), n(r.deliveryBalanceQtyPcs),
+            r.washStatus || '-', r.remarks || '-'
+          ] });
+      const g = this.garmentGrandTotal;
+      this.runPdfExport({
+        title: 'Order-wise Balance Dashboard', subtitle: 'Garments (Pcs)', meta, columns, rows,
+        footRows: g ? [[
+          label('Grand Total:', 11), n(g.orderQtyPcs), '', '', '', n(g.totalReceiveQtyPcs), n(g.receiveBalancePcs), '', '',
+          n(g.totalDeliveryQtyPcs), n(g.readyForDeliveryPcs), n(g.approvalTrail), n(g.deliveryBalanceQtyPcs), '', ''
+        ]] : [],
+        fileName: 'OrderWise_Balance_Garments'
+      });
+    } else {
+      const columns: PdfColumn[] = [
+        ...lead,
+        { header: 'Batch / Lot', align: 'center' },
+        { header: 'GSM', align: 'center' },
+        { header: 'Dia', align: 'center' },
+        { header: 'Order Qty (Kg)', align: 'right' },
+        dateCol('Shipment Date'), dateCol('1st Receive Date'), dateCol('Last Receive Date'),
+        { header: 'Total Receive Roll', align: 'right' },
+        { header: 'Total Receive Qty (Kg)', align: 'right' },
+        { header: 'Receive Balance (Kg)', align: 'right', tone: 'balance' },
+        dateCol('1st Delivery Date'), dateCol('Last Delivery Date'),
+        { header: 'Total Delivery Roll', align: 'right' },
+        { header: 'Total Delivery Qty (Kg)', align: 'right' },
+        { header: 'Ready for Delivery (Kg)', align: 'right' },
+        { header: 'Delivery Balance Qty (Kg)', align: 'right', tone: 'balance' },
+        { header: 'Wash Status', align: 'center' },
+        { header: 'Remarks' }
+      ];
+      const rows: PdfRow[] = this.fabricFilteredRows.map(r => r.isSubtotal
+        ? { kind: 'subtotal', cells: [
+            label('Sub Total:', 12), n(r.orderQtyKg), '', '', '', int(r.totalReceiveRoll), n(r.totalReceiveQtyKg), n(r.receiveBalanceKg),
+            '', '', int(r.totalDeliveryRoll), n(r.totalDeliveryQtyKg), n(r.readyForDeliveryKg), n(r.deliveryBalanceKg), '', ''
+          ] }
+        : { cells: [
+            r.receiveFrom, r.buyer, r.job, r.orderNo, r.style, r.color, r.dressPart, r.washType, r.fabricComposition,
+            r.batchLot, r.gsm, r.dia ?? '-', n(r.orderQtyKg), d(r.shipmentDate), d(r.firstReceiveDate), d(r.lastReceiveDate),
+            int(r.totalReceiveRoll), n(r.totalReceiveQtyKg), n(r.receiveBalanceKg), d(r.firstDeliveryDate), d(r.lastDeliveryDate),
+            int(r.totalDeliveryRoll), n(r.totalDeliveryQtyKg), n(r.readyForDeliveryKg), n(r.deliveryBalanceKg),
+            r.washStatus || '-', r.remarks || '-'
+          ] });
+      const g = this.fabricGrandTotal;
+      this.runPdfExport({
+        title: 'Order-wise Balance Dashboard', subtitle: 'Fabric & Cutting Parts (Kg)', meta, columns, rows,
+        footRows: g ? [[
+          label('Grand Total:', 12), n(g.orderQtyKg), '', '', '', int(g.totalReceiveRoll), n(g.totalReceiveQtyKg), n(g.receiveBalanceKg),
+          '', '', int(g.totalDeliveryRoll), n(g.totalDeliveryQtyKg), n(g.readyForDeliveryKg), n(g.deliveryBalanceKg), '', ''
+        ]] : [],
+        fileName: 'OrderWise_Balance_Fabric'
+      });
+    }
+  }
+
+  private runPdfExport(opts: Parameters<DashboardPdfService['export']>[0]): void {
+    const unit = opts.meta.find(m => m.label === 'Unit')?.value || undefined;
+    this.pdf.export({ ...opts, company: unit })
+      .then(() => this.toastr.success('PDF exported successfully'))
+      .catch(() => this.toastr.error('Failed to export PDF'));
+  }
+
+  private formatPeriodDate(d: any): string {
+    return d ? (this.datePipe.transform(d, 'd MMM yyyy') || '') : '...';
   }
 
   // =========================================================================

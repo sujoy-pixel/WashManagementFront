@@ -7,6 +7,7 @@ import { CardModule } from 'primeng/card';
 import { ToastrService } from 'ngx-toastr';
 import * as XLSX from 'xlsx';
 import { WashSetupService } from '../../../services/washsetup.service';
+import { DashboardPdfService, PdfColumn, PdfRow, PdfCell } from '../../../services/dashboard-pdf.service';
 
 /**
  * ViewType sent to usp_WashDateWiseBalanceDashboard:
@@ -105,6 +106,8 @@ export class DateWiseBalanceDashboardComponent implements OnInit {
 
   globalSearch = '';
   isLoading = false;
+  /** Filter values the grid was last loaded with - printed on the PDF, so it describes the data, not later edits to the inputs. */
+  private exportFilter: any = null;
 
   garmentRows: GarmentRow[] = [];
   garmentFilteredRows: GarmentRow[] = [];
@@ -126,7 +129,8 @@ export class DateWiseBalanceDashboardComponent implements OnInit {
   constructor(
     private washService: WashSetupService,
     private datePipe: DatePipe,
-    private toastr: ToastrService
+    private toastr: ToastrService,
+    private pdf: DashboardPdfService
   ) {}
 
   ngOnInit(): void {
@@ -189,6 +193,7 @@ export class DateWiseBalanceDashboardComponent implements OnInit {
       viewType: this.viewType          // -> SP @ViewType (1 = Garments, 2 = Fabric & Cutting Parts)
     };
 
+    this.exportFilter = { ...this.filter };
     this.isLoading = true;
 
     // ONE call for both views - request.viewType (1 / 2) decides which
@@ -711,6 +716,100 @@ export class DateWiseBalanceDashboardComponent implements OnInit {
     const today = new Date().toISOString().slice(0, 10);
     XLSX.writeFile(wb, `Fabric_Balance_${today}.xlsx`);
     this.toastr.success('Excel exported successfully');
+  }
+
+  /** PDF of exactly what the grid shows (search applied, Sub Totals + Grand Total included). */
+  onPdf(): void {
+    const isGarment = this.viewType === 1;
+    if (!(isGarment ? this.garmentFilteredRows.length : this.fabricFilteredRows.length)) {
+      this.toastr.warning('No data to export');
+      return;
+    }
+    const n = (v: number | null | undefined) => this.fmtNum(v) || '-';
+    const f = this.exportFilter ?? this.filter;
+    const meta = [
+      { label: 'Unit', value: this.UnitList.find(u => u.value === f.UnitId)?.label },
+      { label: 'Period', value: `${this.formatPeriodDate(f.fromDate)} to ${this.formatPeriodDate(f.toDate)}` },
+      { label: 'View', value: isGarment ? 'Garments (Pcs)' : 'Fabric & Cutting Parts (Kg)' },
+      { label: 'Search', value: this.globalSearch?.trim() ? `"${this.globalSearch.trim()}"` : '' }
+    ];
+    const lead: PdfColumn[] = [
+      { header: 'Date', align: 'center', minWidth: 12 },
+      { header: 'Receive From', align: 'center' },
+      { header: 'Buyer' }, { header: 'Job' }, { header: 'Order' }, { header: 'Style' }, { header: 'Color' },
+      { header: 'Dress Part' }, { header: 'Wash Type' }, { header: 'Fabric Composition' }
+    ];
+    const label = (text: string, span: number): PdfCell => ({ content: text, colSpan: span, align: 'right' });
+
+    if (isGarment) {
+      const columns: PdfColumn[] = [
+        ...lead,
+        { header: 'GSM', align: 'center' },
+        { header: 'Fabric Con per Dzn', align: 'center' },
+        { header: 'Order Qty (Pcs)', align: 'right' },
+        { header: 'Shipment Date', align: 'center', minWidth: 12 },
+        { header: 'Receive Qty (Pcs)', align: 'right' },
+        { header: 'Cum. Receive Qty (Pcs)', align: 'right', tone: 'cumulative' },
+        { header: 'Delivery Qty (Pcs)', align: 'right' },
+        { header: 'Cum. Delivery Qty (Pcs)', align: 'right', tone: 'cumulative' },
+        { header: 'Balance Qty (Pcs)', align: 'right', tone: 'balance' }
+      ];
+      const rows: PdfRow[] = this.garmentFilteredRows.map(r => r.isSubtotal
+        ? { kind: 'subtotal', cells: [label('Sub Total:', 12), n(r.orderQty), '', '', n(r.cumReceiveQty), '', n(r.cumDeliveryQty), n(r.balanceQty)] }
+        : { cells: [
+            this.formatDate(r.date), r.receiveFrom || '-', r.buyer || '-', r.job || '-', r.orderNo || '-', r.style || '-',
+            r.color || '-', r.dressPart || '-', r.washType || '-', r.fabricComposition || '-', r.gsm || '-', r.fabricConPerDzn || '-',
+            n(r.orderQty), this.formatDate(r.shipmentDate), n(r.receiveQty), n(r.cumReceiveQty), n(r.deliveryQty),
+            n(r.cumDeliveryQty), n(r.balanceQty)
+          ] });
+      const g = this.garmentGrandTotal;
+      this.runPdfExport({
+        title: 'Date-wise Balance Dashboard', subtitle: 'Garments (Pcs)', meta, columns, rows,
+        footRows: g ? [[label('Grand Total:', 12), n(g.orderQty), '', n(g.receiveQty), n(g.cumReceiveQty), n(g.deliveryQty), n(g.cumDeliveryQty), n(g.balanceQty)]] : [],
+        fileName: 'DateWise_Balance_Garments'
+      });
+    } else {
+      const columns: PdfColumn[] = [
+        ...lead,
+        { header: 'Batch/Lot', align: 'center' },
+        { header: 'GSM', align: 'center' },
+        { header: 'Dia', align: 'center' },
+        { header: 'Order Qty (Kg)', align: 'right' },
+        { header: 'Shipment Date', align: 'center', minWidth: 12 },
+        { header: 'Receive Roll', align: 'right' },
+        { header: 'Receive Qty (Kg)', align: 'right' },
+        { header: 'Cum. Receive Qty (Kg)', align: 'right', tone: 'cumulative' },
+        { header: 'Delivery Roll', align: 'right' },
+        { header: 'Delivery Qty (Kg)', align: 'right' },
+        { header: 'Cum. Delivery Qty (Kg)', align: 'right', tone: 'cumulative' },
+        { header: 'Balance Qty (Kg)', align: 'right', tone: 'balance' }
+      ];
+      const rows: PdfRow[] = this.fabricFilteredRows.map(r => r.isSubtotal
+        ? { kind: 'subtotal', cells: [label('Sub Total:', 13), n(r.orderQtyKg), '', '', '', n(r.cumReceiveQtyKg), '', '', n(r.cumDeliveryQtyKg), n(r.balanceQtyKg)] }
+        : { cells: [
+            this.formatDate(r.date), r.receiveFrom || '-', r.buyer || '-', r.job || '-', r.orderNo || '-', r.style || '-',
+            r.color || '-', r.dressPart || '-', r.washType || '-', r.fabricComposition || '-', r.batchLot || '-', r.gsm || '-',
+            r.dia ?? '-', n(r.orderQtyKg), this.formatDate(r.shipmentDate), n(r.receiveRoll), n(r.receiveQtyKg),
+            n(r.cumReceiveQtyKg), n(r.deliveryRoll), n(r.deliveryQtyKg), n(r.cumDeliveryQtyKg), n(r.balanceQtyKg)
+          ] });
+      const g = this.fabricGrandTotal;
+      this.runPdfExport({
+        title: 'Date-wise Balance Dashboard', subtitle: 'Fabric & Cutting Parts (Kg)', meta, columns, rows,
+        footRows: g ? [[label('Grand Total:', 13), n(g.orderQtyKg), '', '', n(g.receiveQtyKg), n(g.cumReceiveQtyKg), '', n(g.deliveryQtyKg), n(g.cumDeliveryQtyKg), n(g.balanceQtyKg)]] : [],
+        fileName: 'DateWise_Balance_Fabric'
+      });
+    }
+  }
+
+  private runPdfExport(opts: Parameters<DashboardPdfService['export']>[0]): void {
+    const unit = opts.meta.find(m => m.label === 'Unit')?.value || undefined;
+    this.pdf.export({ ...opts, company: unit })
+      .then(() => this.toastr.success('PDF exported successfully'))
+      .catch(() => this.toastr.error('Failed to export PDF'));
+  }
+
+  private formatPeriodDate(d: any): string {
+    return d ? (this.datePipe.transform(d, 'd MMM yyyy') || '') : '...';
   }
 
   trackByGarment(index: number, row: GarmentRow): string {
