@@ -791,7 +791,11 @@ openPrepareTab(row: WashBatchRow): void {
   };
 
   console.log('✅ navState to action page (edit):', navState);
-  localStorage.setItem('WASH_PREPARE_NAV_STATE', JSON.stringify(navState));
+  // ✅ Acid page has its own key so it never picks up normal-wash data
+  localStorage.setItem(
+    isAcidBatch ? 'ACID_WASH_PREPARE_NAV_STATE' : 'WASH_PREPARE_NAV_STATE',
+    JSON.stringify(navState)
+  );
 
   // ✅ Route condition: Go to Acid page if SourceTable is 'Acid', else Wash page
   const routeUrl = isAcidBatch 

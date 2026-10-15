@@ -12,6 +12,11 @@ import { SafeResourceUrl, DomSanitizer } from "@angular/platform-browser";
 import { BsDatepickerConfig } from 'ngx-bootstrap/datepicker';
 import { environment } from 'src/environments/environment';
 import { HttpClient } from '@angular/common/http';
+import Swal from 'sweetalert2';
+
+// Own key (written by Batch Card Modification for acid batches) — the normal
+// wash screens share 'WASH_PREPARE_NAV_STATE', which must not leak in here.
+const NAV_STATE_KEY = 'ACID_WASH_PREPARE_NAV_STATE';
 
 /* ─────────────────────────────────────────────
    INTERFACES — local grid model
@@ -51,6 +56,7 @@ interface AcidWashBatchPrepareResponse {
   qty?:               number; // ✅ For Edit Mode mapping
   kg?:                number; // ✅ For Edit Mode mapping
   detailId?:          number; // ✅ To capture ID from API for updates
+  shadeStatus?:       number | null; // 1 = OK, 0 = Not OK, null = not checked
 }
 
 /* ─────────────────────────────────────────────
@@ -188,6 +194,8 @@ export class AcidWashBatchPrepareComponent implements OnInit {
      LIFECYCLE
   ───────────────────────────────────────────── */
   ngOnInit(): void {
+    // ✅ Start from a clean form every time the page opens
+    this.resetForm();
     // ✅ Load process DDL first — THEN load parent data
     this.loadProcessDDLThenData();
   }
@@ -221,8 +229,9 @@ export class AcidWashBatchPrepareComponent implements OnInit {
      ✅ LOAD DATA FROM LOCALSTORAGE (EDIT MODE)
   ───────────────────────────────────────────── */
   private loadDataFromParent(): void {
-    debugger;
-    const navState = localStorage.getItem('WASH_PREPARE_NAV_STATE');
+    const navState = localStorage.getItem(NAV_STATE_KEY);
+    // ✅ Consume once — so the old batch does not come back on the next page load
+    localStorage.removeItem(NAV_STATE_KEY);
     if (!navState) {
       console.log('🟢 New batch mode — user selects process & machine manually');
       return;
@@ -230,6 +239,11 @@ export class AcidWashBatchPrepareComponent implements OnInit {
 
     const data = JSON.parse(navState);
     console.log('✅ Loaded Navigation State:', data);
+
+    // ✅ Ignore anything that is not a real acid batch edit
+    if (!data?.AutoBatchNo) {
+      return;
+    }
 
     /* ===== Edit Mode Detection ===== */
     this.MasterId   = data.MasterId ?? 0;
@@ -252,10 +266,10 @@ export class AcidWashBatchPrepareComponent implements OnInit {
     this.batchHeader.orderNo = data.orderNo ?? '';
     this.batchHeader.color   = data.color   ?? '';
     this.acidBatchNo = rawBatchNo; // Keep the original for display and API calls
-    this.batchQtyPcs=data.totalQty;
-    this.batchQtyKg=(data.RemainingKg + data.alreadyPreparedKg);
+    this.batchQtyPcs = Number(data.totalQty) || 0;
+    this.batchQtyKg  = (Number(data.RemainingKg) || 0) + (Number(data.alreadyPreparedKg) || 0);
 
-      this.totalPreparePcs = data.qty;
+      this.totalPreparePcs = Number(data.qty) || 0;
       this.totalPrepareKg = data.Kg || 0;
       this.totalPreparedPcs = data.alreadyPreparedQty || 0;
       this.totalPreparedKg = data.alreadyPreparedKg || 0;
@@ -399,14 +413,18 @@ export class AcidWashBatchPrepareComponent implements OnInit {
   /* ─────────────────────────────────────────────
      LOAD BATCH DATA
   ───────────────────────────────────────────── */
-    loadBatchData() {
-      debugger;
-    if (!this.washBatchNo) {
+  loadBatchData() {
+    const batchNo = (this.washBatchNo || '').trim();
+    if (!batchNo) {
       this.toastr.warning('Enter Wash Batch No');
       return;
     }
 
-    this.service.getBatchWishAsidPrepareData(this.washBatchNo).subscribe({
+    // ✅ Wipe the previous batch before loading the new one (keep the scanned no)
+    this.resetForm();
+    this.washBatchNo = batchNo;
+
+    this.service.getBatchWishAsidPrepareData(batchNo).subscribe({
       next: (res: any) => {
         const data: AcidWashBatchPrepareResponse[] =
           Array.isArray(res) ? res : res.data;
@@ -444,6 +462,18 @@ export class AcidWashBatchPrepareComponent implements OnInit {
         this.maxKg  = this.sizeQty.reduce((s, x) => s + x.prepareKg,  0);
 
         this.calculateTotals();
+
+        // ✅ Shade check — 0 means the batch shade was marked Not OK
+        if (data.some(x => x.shadeStatus === 0)) {
+          Swal.fire({
+            icon: 'warning',
+            title: 'Batch shade is not Ok',
+            text: `Wash Batch ${batchNo} shade status is Not OK.`,
+            confirmButtonText: 'OK',
+            allowOutsideClick: false,
+            allowEscapeKey: false
+          }).then(() => this.onClear()); // ✅ Not OK batch can't be prepared — wipe the page
+        }
       },
       error: (err) => {
         console.error(err);
@@ -559,9 +589,13 @@ export class AcidWashBatchPrepareComponent implements OnInit {
 
         this.toastr.success(this.isEditMode ? 'Updated successfully' : 'Saved successfully');
 
-        if (res?.message) {
-          this.acidBatchNo = res.message;
-          this.printReport('Batch Card Preview', this.acidBatchNo);
+        const savedAcidBatchNo = res?.message;
+
+        // ✅ Clear the page only after the save actually succeeded
+        this.onClear();
+
+        if (savedAcidBatchNo) {
+          this.printReport('Batch Card Preview', savedAcidBatchNo);
         }
       },
       error: (err: any) => {
@@ -573,7 +607,6 @@ export class AcidWashBatchPrepareComponent implements OnInit {
         );
       }
     });
-    this.onClear();
   }
 
   /* ─────────────────────────────────────────────
@@ -622,6 +655,13 @@ export class AcidWashBatchPrepareComponent implements OnInit {
      CLEAR / RESET
   ───────────────────────────────────────────── */
   onClear() {
+    localStorage.removeItem(NAV_STATE_KEY);
+    this.resetForm();
+    setTimeout(() => this.batchInput?.nativeElement.focus(), 100);
+  }
+
+  /** Puts every field back to its initial value (no cached batch left on screen). */
+  private resetForm() {
     this.washBatchNo = '';
     this.acidBatchNo = '';
     this.batchQtyPcs = 0;
@@ -638,6 +678,7 @@ export class AcidWashBatchPrepareComponent implements OnInit {
 
     this.Model.processList = [];
     this.Model.machineList = [];
+    this.machineList       = [];
 
     this.batchHeader = {
       prepareDate:  new Date(),
@@ -657,15 +698,15 @@ export class AcidWashBatchPrepareComponent implements OnInit {
     this.showSizeDetails  = true;
     this.applyToAll       = false;
     this.isTotalEditable  = false;
-    // this.totalPreparePcs  = 0;
-    // this.totalPrepareKg   = 0;
-    // this.totalPreparedPcs = 0;
-    // this.totalPreparedKg  = 0;
-    // this.initialTotalPcs  = 0;
-    // this.RemainingQty     = 0;
-    // this.RemainingKg      = 0;
-
-    setTimeout(() => this.batchInput?.nativeElement.focus(), 100);
+    this.totalPreparePcs  = 0;
+    this.totalPrepareKg   = 0;
+    this.totalPreparedPcs = 0;
+    this.totalPreparedKg  = 0;
+    this.initialTotalPcs  = 0;
+    this.RemainingQty     = 0;
+    this.RemainingKg      = 0;
+    this.alreadyPreparedQty = 0;
+    this.alreadyPreparedKg  = 0;
   }
 
   /* ─────────────────────────────────────────────
