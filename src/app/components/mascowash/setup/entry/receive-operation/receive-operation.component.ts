@@ -700,13 +700,13 @@ export class ReceiveOperationComponent implements OnInit {
       type: r.type,
 
       // ================= FABRIC =================
-      fabricationId: r.fabrication,
+      fabricationId: r.fabricationId,
       fabricationName: r.fabricationName,
       composition: r.composition,
 
       gsmId: r.gsmId,
       gsmName: r.gsm,
-      sizeId: r.iszId,
+      sizeId: r.iszid ?? r.iszId ?? null,
       colorId: r.icleid,
       colorName: r.color,
 
@@ -737,7 +737,8 @@ export class ReceiveOperationComponent implements OnInit {
 
     // ===== DROPDOWNS USE SAME LIST (NO UNIQUE) =====
 
-    this.jobList = this.unique(this.detailList, 'jobId', 'jobInfo');
+    this.fromUnitList = this.unique(this.detailList, 'fromUnitId', 'fromUnitName');
+    this.jobList =this.unique(this.detailList, 'jobId', 'jobInfo');
     this.buyerList = this.unique(this.detailList, 'buyerNo', 'buyerName');
     this.styleList = this.unique(this.detailList, 'styleNo', 'styleName');
     this.orderList = this.unique(this.detailList, 'orderId', 'orderNo');
@@ -781,7 +782,7 @@ export class ReceiveOperationComponent implements OnInit {
       fabricationId: d.fabricationId,
       composition: d.composition,
       gsmId: d.gsmId,
-      sizeId: d.iszId,
+      sizeId: d.sizeId ?? null,
       colorId: d.colorId,
       dressPartId: d.dressPartId,
 
@@ -799,9 +800,10 @@ export class ReceiveOperationComponent implements OnInit {
         ? new Date().toISOString()
         : new Date(d.shipmentDate).toISOString(),
       sizeDetails: [{
-        sizeId: d.sizeDetails?.[0]?.sizeId ?? '',
+        // Batch rows have no size breakdown: size may be 0/null - send null and the batch qty
+        sizeId: d.sizeDetails?.[0]?.sizeId || d.sizeId || null,
         size: d.sizeDetails?.[0]?.size ?? '',
-        qty: 0
+        qty: d.totalQty ?? 0
       }]
     }));
 

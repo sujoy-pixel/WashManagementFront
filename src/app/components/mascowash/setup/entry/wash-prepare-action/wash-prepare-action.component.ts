@@ -402,7 +402,8 @@ if (this.saveButtonTitle === 'Update') {
     return;
   }
 
-  if (this.totalPcs > maxAllowed) {
+  // Re-wash re-processes already-prepared qty, so the remaining-qty cap doesn't apply
+  if (this.totalPcs > maxAllowed && !this.Model.reWash) {
     this.toastr.warning(`Max allowed: ${maxAllowed}`, 'Exceeds Remaining Qty');
     this.totalPcs = maxAllowed;
   }
@@ -419,6 +420,20 @@ if (this.saveButtonTitle === 'Update') {
   }
 }
   onTotalKgChange(): void { }
+
+  /* ===================== RE-WASH ===================== */
+  // Re-wash re-processes already-prepared qty, so remaining-based values can
+  // come in negative - flip them to positive when the box is ticked.
+  onReWashChange(): void {
+    if (!this.Model.reWash) return;
+    this.sizeQty.forEach(x => {
+      x.pcs = Math.abs(+x.pcs || 0);
+      x.kg  = Math.abs(+x.kg  || 0);
+    });
+    this.totalPcs     = Math.abs(+this.totalPcs     || 0);
+    this.totalKg      = Math.abs(+this.totalKg      || 0);
+    this.remainingPcs = Math.abs(+this.remainingPcs || 0);
+  }
 
   /* ===================== SHADE ===================== */
   onShadeChange(event: any): void {
