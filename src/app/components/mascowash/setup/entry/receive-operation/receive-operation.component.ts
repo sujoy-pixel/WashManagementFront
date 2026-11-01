@@ -301,6 +301,9 @@ export class ReceiveOperationComponent implements OnInit {
           return;
         }
         this.bindDetailBatchNoRows(res);
+        if (this.detailList.every(d => (Number(d.remainingQty) || 0) <= 0)) {
+          this.toastr.info('This batch is already fully received');
+        }
       });
   }
 
@@ -488,6 +491,10 @@ export class ReceiveOperationComponent implements OnInit {
       }
 
       payload = this.buildSavePayForBatchload();
+      if (!payload.details.length) {
+        this.toastr.warning('Enter receive qty for at least one row');
+        return;
+      }
     }
     else if (this.searchList?.length) {
       if (!this.detailList?.length) {
@@ -718,7 +725,21 @@ export class ReceiveOperationComponent implements OnInit {
       uomId: r.uomDetailsId,
       uomName: r.uom,
       //qty: r.qty,
-      totalQty: r.qty,
+      totalQty: this.firstQty(r.qty, r.batchQty, r.receivedQty, r.balanceQty),   // first non-zero of Qty/BatchQty/ReceivedQty/BalanceQty
+
+      // ================= DYEING BATCH EXTRAS =================
+      batchLot: (r.batchLot ?? '').toString().trim() || (r.batchNo ?? '').toString().trim(),   // BatchLot, else BatchNo
+      fDia: r.fDia ?? r.fdia,
+      bodyPart: r.bodyPart,
+      roll: r.rolls ?? r.roll,
+      batchQty: this.firstQty(r.batchQty, r.qty, r.receivedQty, r.balanceQty),   // full batch qty for this body part
+      receivedQty: this.firstQty(r.receivedQty),                                 // already received in earlier receives
+      remainingQty: /full/i.test(r.receiveStatus ?? '')
+        ? 0                                                                      // fully received - nothing left
+        : this.firstQty(r.balanceQty, r.qty, r.batchQty, r.receivedQty),         // cap for this receive
+      receiveStatus: r.receiveStatus,                   // Not / Partial / Full Received
+      dyeingSystem: r.dyeingSystem,                     // N = new, O = old
+      dyeingDetailId: r.dyeingDetailId,
       // ================= SIZE & QTY =================
       //size: r.size,
       //qty: r.qty,
@@ -751,6 +772,27 @@ export class ReceiveOperationComponent implements OnInit {
 
 
 
+  // Dyeing batch: first value that is not null / 0, else 0
+  private firstQty(...values: any[]): number {
+    for (const v of values) {
+      const n = Number(v);
+      if (v !== null && v !== undefined && v !== '' && !isNaN(n) && n !== 0) return n;
+    }
+    return 0;
+  }
+
+  // Full / partial receive: 0 .. remaining batch qty
+  onBatchQtyChange(row: any): void {
+    const max = Number(row.remainingQty) || 0;
+    let qty = Number(row.totalQty);
+    if (isNaN(qty) || qty < 0) qty = 0;
+    if (qty > max) {
+      this.toastr.warning(`Max receivable: ${max}`, 'Exceeds Remaining Batch Qty');
+      qty = max;
+    }
+    row.totalQty = qty;
+  }
+
   buildSavePayForBatchload(): any {
     debugger;
     console.log('DETAIL LIST', this.detailList);
@@ -764,8 +806,17 @@ export class ReceiveOperationComponent implements OnInit {
       createdBy: 'SYSTEM'
     };
 
-    const details = this.detailList.map(d => ({
+    // Partial receive: rows left at 0 are not received this time
+    const details = this.detailList.filter(d => Number(d.totalQty) > 0).map(d => ({
       trackingBatchNo: this.Model.batchNo,
+      batchLot: d.batchLot,
+      fDia: d.fDia,
+      bodyPart: d.bodyPart,
+      roll: d.roll,
+      dyeingSystem: d.dyeingSystem,
+      dyeingDetailId: d.dyeingDetailId,
+      fabricationName: d.fabricationName,   // varchar fabrication text from dyeing
+      gsm: d.gsmName,                       // varchar GSM text from dyeing
       fromUnitId: d.fromUnitId,
       //receiveDate: d.receiveDate,
       receiveDate: new Date(d.receiveDate).getFullYear() < 1900
