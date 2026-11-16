@@ -40,6 +40,7 @@ interface GarmentRow {
   style: string;
   color: string;
   dressPart: string;
+  bodyPart: string;
   washType: string;
   fabricComposition: string;
   gsm: string;
@@ -64,11 +65,12 @@ interface FabricRow {
   style: string;
   color: string;
   dressPart: string;
+  bodyPart: string;
   washType: string;
   fabricComposition: string;
   batchLot: string;
   gsm: string;
-  dia: number | null;
+  dia: string;                     // dyeing F.Dia, may be "30, 32"
   orderQtyKg: number | null;
   shipmentDate: string | Date | null;
   receiveRoll: number | null;
@@ -124,7 +126,7 @@ export class DateWiseBalanceDashboardComponent implements OnInit {
    * and falls back to the full dataset when the search box is empty.
    */
   garmentGrandTotal: { orderQty: number; receiveQty: number; cumReceiveQty: number; deliveryQty: number; cumDeliveryQty: number; balanceQty: number } | null = null;
-  fabricGrandTotal: { orderQtyKg: number; receiveQtyKg: number; cumReceiveQtyKg: number; deliveryQtyKg: number; cumDeliveryQtyKg: number; balanceQtyKg: number } | null = null;
+  fabricGrandTotal: { orderQtyKg: number; receiveRoll: number; receiveQtyKg: number; cumReceiveQtyKg: number; deliveryQtyKg: number; cumDeliveryQtyKg: number; balanceQtyKg: number } | null = null;
 
   constructor(
     private washService: WashSetupService,
@@ -235,6 +237,7 @@ export class DateWiseBalanceDashboardComponent implements OnInit {
         style: this.cleanStr(this.getVal(r, lookup, 'style')),
         color: this.cleanStr(this.getVal(r, lookup, 'color')),
         dressPart: this.cleanStr(this.getVal(r, lookup, 'dressPart')),
+        bodyPart: this.cleanStr(this.getVal(r, lookup, 'bodyPart')),
         washType: this.cleanStr(this.getVal(r, lookup, 'washType', 'washCategory')),
         fabricComposition: this.cleanStr(this.getVal(r, lookup, 'fabricComposition')),
         gsm: this.cleanStr(this.getVal(r, lookup, 'gsm')),
@@ -275,11 +278,12 @@ export class DateWiseBalanceDashboardComponent implements OnInit {
         style: this.cleanStr(this.getVal(r, lookup, 'style')),
         color: this.cleanStr(this.getVal(r, lookup, 'color')),
         dressPart: this.cleanStr(this.getVal(r, lookup, 'dressPart')),
+        bodyPart: this.cleanStr(this.getVal(r, lookup, 'bodyPart')),
         washType: this.cleanStr(this.getVal(r, lookup, 'washType', 'washCategory')),
         fabricComposition: this.cleanStr(this.getVal(r, lookup, 'fabricComposition')),
         batchLot: this.cleanStr(this.getVal(r, lookup, 'batchLot', 'batchLotNo')),
         gsm: this.cleanStr(this.getVal(r, lookup, 'gsm')),
-        dia: this.toNumber(this.getVal(r, lookup, 'dia')),
+        dia: this.cleanStr(this.getVal(r, lookup, 'dia', 'fDia')),
         orderQtyKg: this.toNumber(this.getVal(r, lookup, 'orderQtyKg')),
         shipmentDate: r.shipmentDate ?? r.ShipmentDate ?? null,
         receiveRoll: this.toNumber(this.getVal(r, lookup, 'receiveRoll')),
@@ -339,9 +343,9 @@ export class DateWiseBalanceDashboardComponent implements OnInit {
   }
 
   private computeFabricGrandTotal(rows: FabricRow[]):
-    { orderQtyKg: number; receiveQtyKg: number; cumReceiveQtyKg: number; deliveryQtyKg: number; cumDeliveryQtyKg: number; balanceQtyKg: number } {
+    { orderQtyKg: number; receiveRoll: number; receiveQtyKg: number; cumReceiveQtyKg: number; deliveryQtyKg: number; cumDeliveryQtyKg: number; balanceQtyKg: number } {
     let orderQtyKg = 0, cumReceiveQtyKg = 0, cumDeliveryQtyKg = 0, balanceQtyKg = 0;
-    let receiveQtyKg = 0, deliveryQtyKg = 0;
+    let receiveQtyKg = 0, deliveryQtyKg = 0, receiveRoll = 0;
     let i = 0;
     while (i < rows.length) {
       const key = this.groupKey(rows[i]);
@@ -357,8 +361,9 @@ export class DateWiseBalanceDashboardComponent implements OnInit {
     for (const r of rows) {
       receiveQtyKg += r.receiveQtyKg ?? 0;
       deliveryQtyKg += r.deliveryQtyKg ?? 0;
+      receiveRoll += r.receiveRoll ?? 0;          // daily rolls are additive
     }
-    return { orderQtyKg, receiveQtyKg, cumReceiveQtyKg, deliveryQtyKg, cumDeliveryQtyKg, balanceQtyKg };
+    return { orderQtyKg, receiveRoll, receiveQtyKg, cumReceiveQtyKg, deliveryQtyKg, cumDeliveryQtyKg, balanceQtyKg };
   }
 
   /** Common Buyer -> Job -> Order -> Style -> Color -> Date comparator. */
@@ -399,7 +404,7 @@ export class DateWiseBalanceDashboardComponent implements OnInit {
       const last = rows[j - 1];
       result.push({
         date: null, receiveFrom: '', buyer: '', job: '', orderNo: '', style: '', color: '',
-        dressPart: '', washType: '', fabricComposition: '', gsm: '', fabricConPerDzn: '',
+        dressPart: '', bodyPart: '', washType: '', fabricComposition: '', gsm: '', fabricConPerDzn: '',
         orderQty: last.orderQty,
         shipmentDate: null,
         receiveQty: null,
@@ -425,13 +430,15 @@ export class DateWiseBalanceDashboardComponent implements OnInit {
         j++;
       }
       const last = rows[j - 1];
+      let groupRoll = 0;
+      for (let k = i; k < j; k++) groupRoll += rows[k].receiveRoll ?? 0;
       result.push({
         date: null, receiveFrom: '', buyer: '', job: '', orderNo: '', style: '', color: '',
-        dressPart: '', washType: '', fabricComposition: '', batchLot: '', gsm: '',
-        dia: null,
+        dressPart: '', bodyPart: '', washType: '', fabricComposition: '', batchLot: '', gsm: '',
+        dia: '',
         orderQtyKg: last.orderQtyKg,
         shipmentDate: null,
-        receiveRoll: null,
+        receiveRoll: groupRoll,
         receiveQtyKg: null,
         cumReceiveQtyKg: last.cumReceiveQtyKg,
         deliveryRoll: null,
@@ -539,6 +546,7 @@ export class DateWiseBalanceDashboardComponent implements OnInit {
       this.matches(r.style, term) ||
       this.matches(r.color, term) ||
       this.matches(r.dressPart, term) ||
+      this.matches(r.bodyPart, term) ||
       this.matches(r.washType, term) ||
       this.matches(r.fabricComposition, term) ||
       this.matches(r.gsm, term) ||
@@ -563,13 +571,14 @@ export class DateWiseBalanceDashboardComponent implements OnInit {
       this.matches(r.style, term) ||
       this.matches(r.color, term) ||
       this.matches(r.dressPart, term) ||
+      this.matches(r.bodyPart, term) ||
       this.matches(r.washType, term) ||
       this.matches(r.fabricComposition, term) ||
       this.matches(r.batchLot, term) ||
       this.matches(r.gsm, term) ||
       this.matches(this.formatDate(r.date), term) ||
       this.matches(this.formatDate(r.shipmentDate), term) ||
-      this.matchesNumber(r.dia, term) ||
+      this.matches(r.dia, term) ||
       this.matchesNumber(r.orderQtyKg, term) ||
       this.matchesNumber(r.receiveRoll, term) ||
       this.matchesNumber(r.receiveQtyKg, term) ||
@@ -606,7 +615,7 @@ export class DateWiseBalanceDashboardComponent implements OnInit {
         return {
           'Date': 'Sub Total:',
           'Receive From': '', 'Buyer': '', 'Job': '', 'Order': '', 'Style': '', 'Color': '',
-          'Dress Part': '', 'Wash Type': '', 'Fabric Composition': '', 'GSM': '', 'Fabric Con per Dzn': '',
+          'Dress Part': '', 'Body Part': '', 'Wash Type': '', 'Fabric Composition': '', 'GSM': '', 'Fabric Con per Dzn': '',
           'Order Qty (Pcs)': row.orderQty ?? '',
           'Shipment Date': '',
           'Receive Qty (Pcs)': '',
@@ -625,6 +634,7 @@ export class DateWiseBalanceDashboardComponent implements OnInit {
         'Style': row.style,
         'Color': row.color,
         'Dress Part': row.dressPart,
+        'Body Part': row.bodyPart,
         'Wash Type': row.washType,
         'Fabric Composition': row.fabricComposition,
         'GSM': row.gsm,
@@ -642,7 +652,7 @@ export class DateWiseBalanceDashboardComponent implements OnInit {
     const ws: XLSX.WorkSheet = XLSX.utils.json_to_sheet(exportData);
     ws['!cols'] = [
       { wch: 12 }, { wch: 12 }, { wch: 18 }, { wch: 20 }, { wch: 14 }, { wch: 18 },
-      { wch: 18 }, { wch: 14 }, { wch: 16 }, { wch: 16 }, { wch: 8 }, { wch: 16 },
+      { wch: 18 }, { wch: 14 }, { wch: 16 }, { wch: 16 }, { wch: 16 }, { wch: 8 }, { wch: 16 },
       { wch: 14 }, { wch: 12 }, { wch: 14 }, { wch: 16 }, { wch: 14 }, { wch: 16 },
       { wch: 14 }
     ];
@@ -665,10 +675,10 @@ export class DateWiseBalanceDashboardComponent implements OnInit {
         return {
           'Date': 'Sub Total:',
           'Receive From': '', 'Buyer': '', 'Job': '', 'Order': '', 'Style': '', 'Color': '',
-          'Dress Part': '', 'Wash Type': '', 'Fabric Composition': '', 'Batch/Lot': '', 'GSM': '', 'Dia': '',
+          'Dress Part': '', 'Body Part': '', 'Wash Type': '', 'Fabric Composition': '', 'Batch/Lot': '', 'GSM': '', 'Dia': '',
           'Order Qty (Kg)': row.orderQtyKg ?? '',
           'Shipment Date': '',
-          'Receive Roll': '',
+          'Receive Roll': row.receiveRoll ?? '',
           'Receive Qty (Kg)': '',
           'Cum. Receive Qty (Kg)': row.cumReceiveQtyKg ?? '',
           'Delivery Roll': '',
@@ -686,11 +696,12 @@ export class DateWiseBalanceDashboardComponent implements OnInit {
         'Style': row.style,
         'Color': row.color,
         'Dress Part': row.dressPart,
+        'Body Part': row.bodyPart,
         'Wash Type': row.washType,
         'Fabric Composition': row.fabricComposition,
         'Batch/Lot': row.batchLot,
         'GSM': row.gsm,
-        'Dia': row.dia ?? '',
+        'Dia': row.dia || '',
         'Order Qty (Kg)': row.orderQtyKg ?? '',
         'Shipment Date': this.formatDate(row.shipmentDate),
         'Receive Roll': row.receiveRoll ?? '',
@@ -706,8 +717,8 @@ export class DateWiseBalanceDashboardComponent implements OnInit {
     const ws: XLSX.WorkSheet = XLSX.utils.json_to_sheet(exportData);
     ws['!cols'] = [
       { wch: 12 }, { wch: 12 }, { wch: 18 }, { wch: 20 }, { wch: 14 }, { wch: 18 },
-      { wch: 18 }, { wch: 14 }, { wch: 16 }, { wch: 16 }, { wch: 14 }, { wch: 8 },
-      { wch: 8 }, { wch: 14 }, { wch: 14 }, { wch: 12 }, { wch: 14 }, { wch: 16 },
+      { wch: 18 }, { wch: 14 }, { wch: 16 }, { wch: 16 }, { wch: 16 }, { wch: 14 }, { wch: 8 },
+      { wch: 10 }, { wch: 14 }, { wch: 14 }, { wch: 12 }, { wch: 14 }, { wch: 16 },
       { wch: 14 }, { wch: 14 }, { wch: 16 }, { wch: 16 }
     ];
 
@@ -737,7 +748,7 @@ export class DateWiseBalanceDashboardComponent implements OnInit {
       { header: 'Date', align: 'center', minWidth: 12 },
       { header: 'Receive From', align: 'center' },
       { header: 'Buyer' }, { header: 'Job' }, { header: 'Order' }, { header: 'Style' }, { header: 'Color' },
-      { header: 'Dress Part' }, { header: 'Wash Type' }, { header: 'Fabric Composition' }
+      { header: 'Dress Part' }, { header: 'Body Part' }, { header: 'Wash Type' }, { header: 'Fabric Composition' }
     ];
     const label = (text: string, span: number): PdfCell => ({ content: text, colSpan: span, align: 'right' });
 
@@ -755,17 +766,17 @@ export class DateWiseBalanceDashboardComponent implements OnInit {
         { header: 'Balance Qty (Pcs)', align: 'right', tone: 'balance' }
       ];
       const rows: PdfRow[] = this.garmentFilteredRows.map(r => r.isSubtotal
-        ? { kind: 'subtotal', cells: [label('Sub Total:', 12), n(r.orderQty), '', '', n(r.cumReceiveQty), '', n(r.cumDeliveryQty), n(r.balanceQty)] }
+        ? { kind: 'subtotal', cells: [label('Sub Total:', 13), n(r.orderQty), '', '', n(r.cumReceiveQty), '', n(r.cumDeliveryQty), n(r.balanceQty)] }
         : { cells: [
             this.formatDate(r.date), r.receiveFrom || '-', r.buyer || '-', r.job || '-', r.orderNo || '-', r.style || '-',
-            r.color || '-', r.dressPart || '-', r.washType || '-', r.fabricComposition || '-', r.gsm || '-', r.fabricConPerDzn || '-',
+            r.color || '-', r.dressPart || '-', r.bodyPart || '-', r.washType || '-', r.fabricComposition || '-', r.gsm || '-', r.fabricConPerDzn || '-',
             n(r.orderQty), this.formatDate(r.shipmentDate), n(r.receiveQty), n(r.cumReceiveQty), n(r.deliveryQty),
             n(r.cumDeliveryQty), n(r.balanceQty)
           ] });
       const g = this.garmentGrandTotal;
       this.runPdfExport({
         title: 'Date-wise Balance Dashboard', subtitle: 'Garments (Pcs)', meta, columns, rows,
-        footRows: g ? [[label('Grand Total:', 12), n(g.orderQty), '', n(g.receiveQty), n(g.cumReceiveQty), n(g.deliveryQty), n(g.cumDeliveryQty), n(g.balanceQty)]] : [],
+        footRows: g ? [[label('Grand Total:', 13), n(g.orderQty), '', n(g.receiveQty), n(g.cumReceiveQty), n(g.deliveryQty), n(g.cumDeliveryQty), n(g.balanceQty)]] : [],
         fileName: 'DateWise_Balance_Garments'
       });
     } else {
@@ -785,17 +796,17 @@ export class DateWiseBalanceDashboardComponent implements OnInit {
         { header: 'Balance Qty (Kg)', align: 'right', tone: 'balance' }
       ];
       const rows: PdfRow[] = this.fabricFilteredRows.map(r => r.isSubtotal
-        ? { kind: 'subtotal', cells: [label('Sub Total:', 13), n(r.orderQtyKg), '', '', '', n(r.cumReceiveQtyKg), '', '', n(r.cumDeliveryQtyKg), n(r.balanceQtyKg)] }
+        ? { kind: 'subtotal', cells: [label('Sub Total:', 14), n(r.orderQtyKg), '', n(r.receiveRoll), '', n(r.cumReceiveQtyKg), '', '', n(r.cumDeliveryQtyKg), n(r.balanceQtyKg)] }
         : { cells: [
             this.formatDate(r.date), r.receiveFrom || '-', r.buyer || '-', r.job || '-', r.orderNo || '-', r.style || '-',
-            r.color || '-', r.dressPart || '-', r.washType || '-', r.fabricComposition || '-', r.batchLot || '-', r.gsm || '-',
-            r.dia ?? '-', n(r.orderQtyKg), this.formatDate(r.shipmentDate), n(r.receiveRoll), n(r.receiveQtyKg),
+            r.color || '-', r.dressPart || '-', r.bodyPart || '-', r.washType || '-', r.fabricComposition || '-', r.batchLot || '-', r.gsm || '-',
+            r.dia || '-', n(r.orderQtyKg), this.formatDate(r.shipmentDate), n(r.receiveRoll), n(r.receiveQtyKg),
             n(r.cumReceiveQtyKg), n(r.deliveryRoll), n(r.deliveryQtyKg), n(r.cumDeliveryQtyKg), n(r.balanceQtyKg)
           ] });
       const g = this.fabricGrandTotal;
       this.runPdfExport({
         title: 'Date-wise Balance Dashboard', subtitle: 'Fabric & Cutting Parts (Kg)', meta, columns, rows,
-        footRows: g ? [[label('Grand Total:', 13), n(g.orderQtyKg), '', '', n(g.receiveQtyKg), n(g.cumReceiveQtyKg), '', n(g.deliveryQtyKg), n(g.cumDeliveryQtyKg), n(g.balanceQtyKg)]] : [],
+        footRows: g ? [[label('Grand Total:', 14), n(g.orderQtyKg), '', n(g.receiveRoll), n(g.receiveQtyKg), n(g.cumReceiveQtyKg), '', n(g.deliveryQtyKg), n(g.cumDeliveryQtyKg), n(g.balanceQtyKg)]] : [],
         fileName: 'DateWise_Balance_Fabric'
       });
     }

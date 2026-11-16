@@ -556,7 +556,10 @@ export class ReceiveOperationComponent implements OnInit {
           console.log('SAVE RESPONSE', res);
 
           if (!res?.succeeded) {
-            this.toastr.error('Save Failed');
+            // show the real reason (SP message / SQL error) instead of a generic text
+            const reason = res?.errors?.[0] || res?.message;
+            console.error('SAVE FAILED', res);
+            this.toastr.error(reason || 'Save Failed', 'Save Failed');
             return;
           }
 
@@ -578,8 +581,13 @@ export class ReceiveOperationComponent implements OnInit {
           }
         },
 
-        error: () => {
-          this.toastr.error('Save Failed');
+        error: (err: any) => {
+          console.error('SAVE ERROR', err);
+          const e = err?.error;
+          const reason = e?.errors?.[0]
+            || (e?.errors && typeof e.errors === 'object' ? JSON.stringify(e.errors) : null)   // 400 model-binding errors
+            || e?.message || e?.title || (typeof e === 'string' ? e : null);
+          this.toastr.error(reason || 'Save Failed', 'Save Failed');
         }
       });
   }
@@ -640,6 +648,8 @@ export class ReceiveOperationComponent implements OnInit {
       Operation: 'TrackingNo',
       unitId: this.Model.UnitId,
       MasterId: 0,
+      trackingBit: true,    // Garments radio on dashboards
+      dyeingBit: false,
       TrackingNo: this.Model.trackingNo && this.Model.trackingNo !== 0 ? `${this.Model.trackingNo}` : `${this.Model.batchNo}`,
       createdBy: 'SYSTEM'
     };
@@ -729,7 +739,8 @@ export class ReceiveOperationComponent implements OnInit {
 
       // ================= DYEING BATCH EXTRAS =================
       batchLot: (r.batchLot ?? '').toString().trim() || (r.batchNo ?? '').toString().trim(),   // BatchLot, else BatchNo
-      fDia: r.fDia ?? r.fdia,
+      fDia: r.fDia ?? r.fdia,                           // shown in grid (tracking: dia description)
+      fDiaId: r.fDiaId ?? r.fdiaId ?? null,             // tracking: FabricDiaId, saved instead of the text
       bodyPart: r.bodyPart,
       roll: r.rolls ?? r.roll,
       batchQty: this.firstQty(r.batchQty, r.qty, r.receivedQty, r.balanceQty),   // full batch qty for this body part
@@ -802,6 +813,8 @@ export class ReceiveOperationComponent implements OnInit {
       operation: 'BatchNo',
       unitId: this.Model.UnitId,
       MasterId: 0,
+      trackingBit: false,
+      dyeingBit: true,      // Fabric & Cutting Parts radio on dashboards
       trackingNo: this.Model.trackingNo && this.Model.trackingNo !== 0 ? `${this.Model.trackingNo}` : `${this.Model.batchNo}`,
       createdBy: 'SYSTEM'
     };
@@ -810,7 +823,7 @@ export class ReceiveOperationComponent implements OnInit {
     const details = this.detailList.filter(d => Number(d.totalQty) > 0).map(d => ({
       trackingBatchNo: this.Model.batchNo,
       batchLot: d.batchLot,
-      fDia: d.fDia,
+      fDia: d.fDiaId != null ? String(d.fDiaId) : d.fDia,   // tracking -> FabricDiaId, dyeing -> dia text
       bodyPart: d.bodyPart,
       roll: d.roll,
       dyeingSystem: d.dyeingSystem,
@@ -868,6 +881,8 @@ export class ReceiveOperationComponent implements OnInit {
       Operation: 'Update',
       unitId: this.review.UnitId,
       MasterId: this.searchList[0].masterId,
+      trackingBit: null,    // null = SP keeps the original receive's type
+      dyeingBit: null,
       TrackingNo: this.detailList[0].trackingNo,
       // TrackingNo: this.Model.trackingNo && this.Model.trackingNo !== 0 ? `${this.Model.trackingNo}` : `${this.Model.batchNo}`,
       createdBy: 'SYSTEM'

@@ -19,6 +19,14 @@ export class WashSetupService {
   baseUrl = environment.apiUrl;
   baseUrl_ = this.baseUrl.replace(/[?&]$/, '');
 
+  /** One-time signed GatePass login link for the current Wash user (single sign-on). */
+  getGatePassSsoUrl(returnUrl: string): Observable<{ url: string }> {
+    return this.http.get<{ url: string }>(
+      this.baseUrl_ + 'GatePassSso/Url?returnUrl=' + encodeURIComponent(returnUrl),
+      { headers: this.token.headerToken() }      // login token - the API endpoint is [Authorize]
+    );
+  }
+
   constructor(private http: HttpClient, private token: TokenService) { }
 
   GetBuyerName(Id: number): Observable<any> {
