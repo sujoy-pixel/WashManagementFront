@@ -825,7 +825,7 @@ export class ReceiveOperationComponent implements OnInit {
       batchLot: d.batchLot,
       fDia: d.fDiaId != null ? String(d.fDiaId) : d.fDia,   // tracking -> FabricDiaId, dyeing -> dia text
       bodyPart: d.bodyPart,
-      roll: d.roll,
+      roll: d.roll != null && d.roll !== '' ? String(d.roll) : null,   // editable number input -> API expects text
       dyeingSystem: d.dyeingSystem,
       dyeingDetailId: d.dyeingDetailId,
       fabricationName: d.fabricationName,   // varchar fabrication text from dyeing
